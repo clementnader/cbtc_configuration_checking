@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from src.cc_param import *
+from src import *
 
 
 def main():

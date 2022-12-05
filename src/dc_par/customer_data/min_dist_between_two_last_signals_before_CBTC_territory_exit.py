@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from ...dc_sys_pkg import *
-from dc_sys_checking.src.dc_sys_pkg.seg_utils import *
 
 
 def get_sig_before_cbtc_exit(sig_dict: dict, sig_cols_name: dict[str, str]) -> list[str]:
@@ -15,24 +14,25 @@ def get_sig_before_cbtc_exit(sig_dict: dict, sig_cols_name: dict[str, str]) -> l
 
 
 def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool = False):
-    wb = load_wb()
-    sh_sig = wb.sheet_by_name("Sig")
-    sig_dict = get_dict(sh_sig, fixed_cols_ref=['B', 'C', 'D', 'E', 'Z'])
-    sig_cols_name = get_cols_name(sh_sig, cols_ref=['B', 'C', 'D', 'E', 'Z'])
+    sig_dict = load_sheet("sig")
+    sig_cols_name = get_cols_name("sig")
     sig_before_cbtc_exit = get_sig_before_cbtc_exit(sig_dict, sig_cols_name)
 
-    sh_seg = wb.sheet_by_name("Seg")
-    seg_dict = get_dict(sh_seg, fixed_cols_ref=['G', 'H', 'I', 'J', 'K'])
-    seg_cols_name = get_cols_name(sh_seg, cols_ref=['G', 'H', 'I', 'J', 'K'])
+    seg_dict = load_sheet("seg")
+    seg_cols_name = get_cols_name("seg")
 
     dict_min_dist = dict()
 
     for sig1 in sig_before_cbtc_exit:
         dir1 = sig_dict[sig1][sig_cols_name['E']]
+        seg1 = sig_dict[sig1][sig_cols_name['C']]
+        x1 = float(sig_dict[sig1][sig_cols_name['D']])
         for sig2 in sig_dict:
             if sig_dict[sig2][sig_cols_name['B']] != "HEURTOIR":
                 if not same_dir or sig_dict[sig2][sig_cols_name['E']] == dir1:
-                    d = get_sig_dist(sig1, sig2, sig_dict, sig_cols_name, seg_dict, seg_cols_name)
+                    seg2 = sig_dict[sig2][sig_cols_name['C']]
+                    x2 = float(sig_dict[sig2][sig_cols_name['D']])
+                    d = get_dist(seg1, x1, seg2, x2, seg_dict, seg_cols_name)
                     if d:
                         dict_min_dist[f"{sig1} to {sig2}"] = {"d": d}
 

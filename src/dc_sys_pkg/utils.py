@@ -13,7 +13,7 @@ def get_xlrd_line(line: int) -> int:
     return line - 1
 
 
-def compare_dict(dict1: dict, dict2: dict, dict1_name: str, dict2_name: str, lvl: int = 0):
+def compare_dict(dict1: dict, dict2: dict, dict1_name: str, dict2_name: str, lvl: int = 0) -> bool:
     if dict1 == dict2:
         return True
     if dict1.keys() != dict2.keys():
@@ -44,5 +44,5 @@ def compare_dict(dict1: dict, dict2: dict, dict1_name: str, dict2_name: str, lvl
     return False
 
 
-def get_print_prefix(lvl: int):
+def get_print_prefix(lvl: int) -> str:
     return '\t'*lvl

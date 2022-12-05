@@ -2,29 +2,28 @@
 # -*- coding: utf-8 -*-
 
 from ...dc_sys_pkg import *
-from dc_sys_checking.src.dc_sys_pkg.seg_utils import *
 
 
 def stopping_point_station_without_psd_dist():
-    wb = load_wb()
-    sh_tag = wb.sheet_by_name("Bal")
-    tag_dict = get_dict(sh_tag, fixed_cols_ref=['D', 'E'])
-    tag_cols_name = get_cols_name(sh_tag, cols_ref=['D', 'E'])
+    tag_dict = load_sheet("tag")
+    tag_cols_name = get_cols_name("tag")
 
-    sh_tag_gr = wb.sheet_by_name("StaticTag_Group")
-    tag_gr_dict = get_limits_dict(sh_tag_gr, line_ref=3, col_ref='C', nb_max_limits=10, delta_between_limits=1)
+    tag_gr_dict = load_sheet("tag_gr")
 
-    sh_seg = wb.sheet_by_name("Seg")
-    seg_dict = get_dict(sh_seg, fixed_cols_ref=['G', 'H', 'I', 'J', 'K'])
-    seg_cols_name = get_cols_name(sh_seg, cols_ref=['G', 'H', 'I', 'J', 'K'])
+    seg_dict = load_sheet("seg")
+    seg_cols_name = get_cols_name("seg")
 
     dict_max_dist = dict()
 
     for tag_gr in tag_gr_dict:
         tag_list = [tag for tag in tag_gr_dict[tag_gr]]
         for tag1 in tag_list:
+            seg1 = tag_dict[tag1][tag_cols_name['D']]
+            x1 = float(tag_dict[tag1][tag_cols_name['E']])
             for tag2 in tag_list:
-                d = get_tag_dist(tag1, tag2, tag_dict, tag_cols_name, seg_dict, seg_cols_name)
+                seg2 = tag_dict[tag2][tag_cols_name['D']]
+                x2 = float(tag_dict[tag2][tag_cols_name['E']])
+                d = get_dist(seg1, x1, seg2, x2, seg_dict, seg_cols_name)
                 if d:
                     dict_max_dist[f"{tag_gr}::{tag1} to {tag2}"] = {"d": d}
 
