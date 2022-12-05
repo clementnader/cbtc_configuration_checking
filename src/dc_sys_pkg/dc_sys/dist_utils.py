@@ -8,6 +8,8 @@ def get_dist(seg1, x1, seg2, x2, seg_dict: dict, seg_cols_name: dict[str, str]):
     """ Return the distance between (seg1, x1) and (seg2, x2). """
     x1 = float(x1)
     x2 = float(x2)
+    if seg1 == seg2:
+        return abs(x1-x2)
     dist, _, list_paths = get_downstream_path(seg1, seg2, seg_dict, seg_cols_name)
     if list_paths:
         downstream = True

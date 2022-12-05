@@ -30,6 +30,8 @@ def min_distance_between_vsp_overlap(same_dir: bool = False):
             vsp1_seg = sig_dict[sig_overlap][sig_cols_name['C']]
             vsp1_x = float(sig_dict[sig_overlap][sig_cols_name['D']]) + delta_vsp1
             sig_dir1 = sig_dict[sig_overlap][sig_cols_name['E']]
+            vsp1_seg, vsp1_x = get_correct_seg_offset(vsp1_seg, vsp1_x, seg_dict, seg_cols_name)
+
             for sig in sig_dict:
                 if sig_dict[sig][sig_cols_name['B']] != "HEURTOIR":
                     if delta_vsp_name in sig_dict[sig] \
@@ -38,6 +40,7 @@ def min_distance_between_vsp_overlap(same_dir: bool = False):
                         delta_vsp2 = float(sig_dict[sig][delta_vsp_name])
                         vsp2_seg = sig_dict[sig][sig_cols_name['C']]
                         vsp2_x = float(sig_dict[sig][sig_cols_name['D']]) + delta_vsp2
+                        vsp2_seg, vsp2_x = get_correct_seg_offset(vsp2_seg, vsp2_x, seg_dict, seg_cols_name)
 
                         d = get_dist(vsp1_seg, vsp1_x, vsp2_seg, vsp2_x, seg_dict, seg_cols_name)
                         if d:

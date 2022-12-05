@@ -28,7 +28,8 @@ def is_seg_downstream(start_seg, end_seg, seg_dict: dict, seg_cols_name: dict[st
             return True
         for next_seg in get_linked_segs(seg, seg_dict=seg_dict, seg_cols_name=seg_cols_name):
             if next_seg:
-                return inner_recurs_next_seg(next_seg)
+                if inner_recurs_next_seg(next_seg):
+                    return True
         return False
 
     return inner_recurs_next_seg(start_seg)
@@ -47,20 +48,20 @@ def get_straight_linked_segs(seg: str, seg_dict: dict, seg_cols_name: dict[str, 
             else ""
     return linked_segs
 
-#
-# def get_correct_seg_offset(seg, x, seg_dict, seg_cols_name):
-#     len_seg = get_len_seg(seg, seg_dict, seg_cols_name)
-#     downstream_segs = get_straight_linked_segs(seg, seg_dict, seg_cols_name, downstream=True)
-#     upstream_segs = get_straight_linked_segs(seg, seg_dict, seg_cols_name, downstream=False)
-#
-#     while x > len_seg:
-#         x -= len_seg
-#         seg = downstream_segs.pop(0)
-#         len_seg = get_len_seg(seg, seg_dict, seg_cols_name)
-#
-#     while x < 0:
-#         seg = upstream_segs.pop(0)
-#         len_seg = get_len_seg(seg, seg_dict, seg_cols_name)
-#         x += len_seg
-#
-#     return seg, x
+
+def get_correct_seg_offset(seg, x, seg_dict, seg_cols_name):
+    len_seg = get_len_seg(seg, seg_dict, seg_cols_name)
+    downstream_segs = get_straight_linked_segs(seg, seg_dict, seg_cols_name, downstream=True)
+    upstream_segs = get_straight_linked_segs(seg, seg_dict, seg_cols_name, downstream=False)
+
+    while x > len_seg:
+        x -= len_seg
+        seg = downstream_segs.pop(0)
+        len_seg = get_len_seg(seg, seg_dict, seg_cols_name)
+
+    while x < 0:
+        seg = upstream_segs.pop(0)
+        len_seg = get_len_seg(seg, seg_dict, seg_cols_name)
+        x += len_seg
+
+    return seg, x

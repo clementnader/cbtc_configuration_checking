@@ -6,7 +6,7 @@ from ..utils import *
 
 def get_cols_name_from_ref(sh: xlrd.sheet, cols_ref: list[str]) -> dict[str, str]:
     if not cols_ref:
-        return []
+        return {}
     xlrd_cols_ref = [get_xlrd_column(col_ref) for col_ref in cols_ref]
     dict_cols_name = dict()
     for n, j in enumerate(xlrd_cols_ref):
