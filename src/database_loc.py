@@ -7,3 +7,6 @@ DC_SYS_ADDR_OLD = r"C:\Users\naderc\Desktop\DB TSK Copie\Copy fd_checking\DC_SYS
 
 # ------------------------------- BXL -------------------------------#
 DC_SYS_ADDR = r"C:\Users\naderc\Desktop\DC_PAR_Checking\DC_SYS.xls"
+
+# ------------------------------- ANK -------------------------------#
+# DC_SYS_ADDR = r"C:\Users\naderc\Desktop\Ankara\DC_SYS.xls"

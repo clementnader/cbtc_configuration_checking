@@ -4,12 +4,12 @@
 from .seg_utils import get_len_seg, get_linked_segs
 
 
-def get_dist(seg1, x1, seg2, x2, seg_dict: dict, seg_cols_name: dict[str, str]):
+def get_dist(seg1, x1, seg2, x2, seg_dict: dict, seg_cols_name: dict[str, str], verbose: bool = True):
     """ Return the distance between (seg1, x1) and (seg2, x2). """
     x1 = float(x1)
     x2 = float(x2)
     if seg1 == seg2:
-        return abs(x1-x2)
+        return round(abs(x1-x2), 3)
     dist, _, list_paths = get_downstream_path(seg1, seg2, seg_dict, seg_cols_name)
     if list_paths:
         downstream = True
@@ -18,13 +18,14 @@ def get_dist(seg1, x1, seg2, x2, seg_dict: dict, seg_cols_name: dict[str, str]):
         if list_paths:
             downstream = False
         else:
-            print(f"No path found between {seg1} and {seg2}")
+            if verbose:
+                print(f"No path found between {seg1} and {seg2}")
             return 0
     if downstream:  # 1 -> 2
         dist -= x1 + (get_len_seg(seg2, seg_dict, seg_cols_name) - x2)
     else:  # 2 -> 1
         dist -= x2 + (get_len_seg(seg1, seg_dict, seg_cols_name) - x1)
-    return dist
+    return round(dist, 3)
 
 
 def get_list_of_paths(seg1, seg2, seg_dict: dict, seg_cols_name: dict[str, str]):

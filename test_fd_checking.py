@@ -23,7 +23,12 @@ def main():
     # min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir=True)
     # max_dist_local_tag_group()
     # smallest_size_of_a_switch_block_heel()
-    min_dist_between_platform_osp_and_end_of_next_platform()
+    # min_dist_between_platform_osp_and_end_of_next_platform()
+    # get_slope_at_plt()
+    # get_max_slope_within_cbtc_ter()
+    # get_max_slope_on_the_full_line()
+    get_block_min_length_within_cbtc_ter()
+    get_block_min_length_all_line()
     return
 
 

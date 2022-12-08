@@ -5,20 +5,24 @@ from ..utils import *
 from .sheet_cols_name import get_cols_name_from_ref, get_lim_cols_name_from_ref
 
 
-def get_dict_fixed_col(sh: xlrd.sheet, line_ref: int, cols_ref: list[str], name_col: str) -> dict:
+def get_dict_fixed_col(sh: xlrd.sheet, line_ref: int, cols_ref: list[str], generic_obj_name: bool) -> dict:
     xlrd_line_ref = get_xlrd_line(line_ref)
     xlrd_cols_ref = [get_xlrd_column(col_ref) for col_ref in cols_ref]
-    xlrd_name_col = get_xlrd_column(name_col)
+    xlrd_name_col = get_xlrd_column('A')
     list_cols_name = list(get_cols_name_from_ref(sh, cols_ref).values())
 
     sh_dict = dict()
     for i in range(xlrd_line_ref, sh.nrows):
-        obj_name = f"{sh.cell_value(i, xlrd_name_col)}"
-        sh_dict[obj_name] = dict()
-        for k, j in enumerate(xlrd_cols_ref):
-            value = f"{sh.cell_value(i, j)}"
-            if value:
-                sh_dict[obj_name][list_cols_name[k]] = f"{sh.cell_value(i, j)}"
+        if sh.cell_value(i, xlrd_name_col) != "":
+            if not generic_obj_name:
+                obj_name = f"{sh.cell_value(i, xlrd_name_col)}"
+            else:
+                obj_name = f"{sh.name}_{i-xlrd_line_ref+1}"
+            sh_dict[obj_name] = dict()
+            for k, j in enumerate(xlrd_cols_ref):
+                value = f"{sh.cell_value(i, j)}"
+                if value:
+                    sh_dict[obj_name][list_cols_name[k]] = f"{sh.cell_value(i, j)}"
     return sh_dict
 
 
@@ -43,10 +47,10 @@ def get_limits_dict(sh: xlrd.sheet, line_ref: int, col_ref: str, nb_max_limits: 
     return limits_dict
 
 
-def get_dict(sh: xlrd.sheet, fixed_cols_ref: list[str], name_col: str = 'A', line_ref: int = 3,
+def get_dict(sh: xlrd.sheet, fixed_cols_ref: list[str], generic_obj_name: bool = False, line_ref: int = 3,
              lim_first_col: str = None, nb_max_limits: int = 0, delta_between_limits: int = 0) -> dict:
 
-    sh_dict = get_dict_fixed_col(sh, line_ref=line_ref, cols_ref=fixed_cols_ref, name_col=name_col)
+    sh_dict = get_dict_fixed_col(sh, line_ref=line_ref, cols_ref=fixed_cols_ref, generic_obj_name=generic_obj_name)
     if lim_first_col and nb_max_limits and delta_between_limits:
         sh_dict_lim = get_limits_dict(sh, line_ref=line_ref, col_ref=lim_first_col, nb_max_limits=nb_max_limits,
                                       delta_between_limits=delta_between_limits)

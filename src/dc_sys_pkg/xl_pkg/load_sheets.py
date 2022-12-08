@@ -32,14 +32,15 @@ def get_sheet(wb, obj_name):
     sh = wb.sheet_by_name(SHEETS_INFO[obj_name]["sh_name"])
     # Get parameter or set default value
     fixed_cols_ref = SHEETS_INFO[obj_name]["cols"] if "cols" in SHEETS_INFO[obj_name] else []
-    name_col = SHEETS_INFO[obj_name]["name_col"] if "name_col" in SHEETS_INFO[obj_name] else 'A'
+    generic_obj_name = SHEETS_INFO[obj_name]["generic_obj_name"] \
+        if "generic_obj_name" in SHEETS_INFO[obj_name] else False
     line_ref = SHEETS_INFO[obj_name]["line_ref"] if "line_ref" in SHEETS_INFO[obj_name] else 3
     lim_first_col = SHEETS_INFO[obj_name]["lim_start_col"] if "lim_start_col" in SHEETS_INFO[obj_name] else None
     nb_max_limits = SHEETS_INFO[obj_name]["nb_max_limits"] if "nb_max_limits" in SHEETS_INFO[obj_name] else 0
     delta_between_limits = SHEETS_INFO[obj_name]["delta_between_limits"] \
         if "delta_between_limits" in SHEETS_INFO[obj_name] else 0
 
-    sh_dict = get_dict(sh, fixed_cols_ref=fixed_cols_ref, name_col=name_col, line_ref=line_ref,
+    sh_dict = get_dict(sh, fixed_cols_ref=fixed_cols_ref, generic_obj_name=generic_obj_name, line_ref=line_ref,
                        lim_first_col=lim_first_col, nb_max_limits=nb_max_limits,
                        delta_between_limits=delta_between_limits)
     cols_name = get_cols_name_from_ref(sh, cols_ref=fixed_cols_ref)
