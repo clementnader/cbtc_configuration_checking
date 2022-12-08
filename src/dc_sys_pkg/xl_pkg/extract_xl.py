@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..utils import *
+from ...xl_pkg import *
 from .sheet_cols_name import get_cols_name_from_ref, get_lim_cols_name_from_ref
 
 

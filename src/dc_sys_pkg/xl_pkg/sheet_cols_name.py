@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..utils import *
+from ...xl_pkg import *
 
 
 def get_cols_name_from_ref(sh: xlrd.sheet, cols_ref: list[str]) -> dict[str, str]:
