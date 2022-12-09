@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...dc_sys_pkg import *
+from ...dc_sys import *
 
 
 def get_sig_before_cbtc_exit(sig_dict: dict, sig_cols_name: dict[str, str]) -> list[str]:

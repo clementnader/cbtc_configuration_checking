@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 
+def sort_dict(in_dict):
+    return {key: in_dict[key] for key in sorted(in_dict)}
+
+
 def compare_dict(dict1: dict, dict2: dict, dict1_name: str, dict2_name: str, lvl: int = 0) -> bool:
     if dict1 == dict2:
         return True

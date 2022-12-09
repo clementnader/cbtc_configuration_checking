@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...dc_sys_pkg import *
+from ...dc_sys import *
 
 
 def max_dist_local_tag_group():

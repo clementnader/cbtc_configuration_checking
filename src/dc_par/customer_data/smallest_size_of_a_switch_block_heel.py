@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...dc_sys_pkg import *
+from ...dc_sys import *
 
 
 def get_segs_in_vb(vb_limits, seg_dict: dict, seg_cols_name: dict[str, str]):

@@ -1,28 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils import *
+from .cc_param_utils import *
 from ..html import *
 from .html_style_diff_file import additional_css_style
 import os
 
-MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\Ankara\ANK_L2_C11_D470_06_05_03_V06\ANK_L2_C11_D470_06_05_03_V06"
-
-TYPES_OF_TRAIN = ["BOMB", "ZELC"]
-LIST_TRAIN_NUM_LIMITS = [f"{1}-{36}",  # first type of train is between 1 and 36
-                         f"{37}-{144}"]  # second type of train is between 37 and 144
-NB_CABS_OF_TYPES = [1, 1]  # TODO
-
+# MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\Ankara\ANK_L2_C11_D470_06_05_03_V06\ANK_L2_C11_D470_06_05_03_V06"
+MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\ML4_TF3_C11_D470_06_05_05_V03\ML4_TF3_C11_D470_06_05_05_V03"
 RESULT_FOLDER = r"C:\Users\naderc\Desktop"
 
-TRAIN_UNIT_PREFIX = r"TrainUnit_"
-CAB_DIR_PREFIX = r"Cab"
-CC_PARAM_DIR = r"CCParameter"
-CC_PARAM_FILE = r"CCParameter.csv"
-
-RANK_COLUMN = 0
-ID_COLUMN = 1
-VALUE_COLUMN = 2
-INFO_COLUMN = 5
+# From DC_SYS > Train
+# TYPES_OF_TRAIN = ["BOMB", "ZELC"]
+# LIST_TRAIN_NUM_LIMITS = [f"{1}-{36}",  # first type of train is between 1 and 36
+#                          f"{37}-{144}"]  # second type of train is between 37 and 144
+# NB_CABS_OF_TYPES = [1, 1]  # TODO
+TYPES_OF_TRAIN = ["ML"]
+LIST_TRAIN_NUM_LIMITS = [f"{401}-{447}"]  # first type of train is between 1 and 36
+NB_CABS_OF_TYPES = [1]  # TODO
 
 
 def get_train_unit_files() -> dict[int, dict[str, str]]:
@@ -37,23 +33,6 @@ def get_train_unit_files() -> dict[int, dict[str, str]]:
             else:
                 print(f"{train_num=} is not identified as a possible train number in {LIST_TRAIN_NUM_LIMITS=}.")
     return sort_dict(dict_train_units)
-
-
-def sort_dict(in_dict):
-    return {key: in_dict[key] for key in sorted(in_dict)}
-
-
-def get_num_train(train: str) -> int:
-    return int(train.split(TRAIN_UNIT_PREFIX)[1])
-
-
-def get_type_of_train(train_num: int):
-    for type_of_train, train_num_lim in zip(TYPES_OF_TRAIN, LIST_TRAIN_NUM_LIMITS):
-        inf = int(train_num_lim.split("-")[0])
-        sup = int(train_num_lim.split("-")[1])
-        if inf <= train_num <= sup:
-            return type_of_train
-    return None
 
 
 def get_cc_param():

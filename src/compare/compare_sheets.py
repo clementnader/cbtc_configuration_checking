@@ -8,8 +8,8 @@ def compare_zc_area():
     compare_sheets("zc_area")
 
 
-def compare_zsm_cbtc():
-    compare_sheets("zsm_cbtc")
+def compare_zsm():
+    compare_sheets("zsm")
 
 
 def compare_slope():

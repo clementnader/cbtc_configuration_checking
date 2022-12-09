@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..dc_sys_pkg import *
+from ..dc_sys import *
+from ..utils import *
 
 
 def compare_sheets(obj_name):

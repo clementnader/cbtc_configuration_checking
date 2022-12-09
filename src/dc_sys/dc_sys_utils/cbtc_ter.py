@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .seg_utils import *
-from ..xl_pkg.load_sheets import load_sheet, get_cols_name, get_lim_cols_name
+from ..load_database.load_sheets import load_sheet, get_cols_name, get_lim_cols_name
 
 CBTC_TER_SEGMENTS = list()
 CBTC_TER_LIMITS = list()

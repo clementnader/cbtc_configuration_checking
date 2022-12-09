@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .dc_sys_pkg import *
+from .dc_sys import *
 from .compare import *
 from .constraints import *
 from .dc_par import *

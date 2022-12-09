@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...dc_sys_pkg import *
+from ...dc_sys import *
 
 
 def min_dist_between_platform_osp_and_end_of_next_platform():
