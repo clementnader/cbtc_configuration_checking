@@ -4,7 +4,7 @@
 from .dist_utils import get_dist
 
 
-def get_block_dist(block, block_lim_cols_name, seg_dict: dict, seg_cols_name: dict[str, str]):
+def get_len_block(block, block_lim_cols_name, seg_dict: dict, seg_cols_name: dict[str, str]):
     list_dist = list()
     for i, lim1 in enumerate(block["limits"]):
         seg1 = lim1[block_lim_cols_name[0]]

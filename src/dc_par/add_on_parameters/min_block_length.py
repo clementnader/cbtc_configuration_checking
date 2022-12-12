@@ -20,8 +20,8 @@ def get_block_min_length_within_cbtc_ter():
             limits_in_cbtc_ter.append(is_segment_in_cbtc_ter(seg, x))
 
         if all(limits_in_cbtc_ter):
-            dict_min_block_within_cbtc_ter[block] = get_block_dist(block_dict[block], block_lim_cols_name,
-                                                                   seg_dict, seg_cols_name)
+            dict_min_block_within_cbtc_ter[block] = get_len_block(block_dict[block], block_lim_cols_name, seg_dict,
+                                                                  seg_cols_name)
 
     min_block = min(dict_min_block_within_cbtc_ter.values())
     list_min_block = [block for block in dict_min_block_within_cbtc_ter
@@ -41,8 +41,8 @@ def get_block_min_length_all_line():
 
     dict_min_block_within_cbtc_ter = dict()
     for block in block_dict:
-        dict_min_block_within_cbtc_ter[block] = get_block_dist(block_dict[block], block_lim_cols_name,
-                                                               seg_dict, seg_cols_name)
+        dict_min_block_within_cbtc_ter[block] = get_len_block(block_dict[block], block_lim_cols_name, seg_dict,
+                                                              seg_cols_name)
 
     min_block = min(dict_min_block_within_cbtc_ter.values())
     list_min_block = [block for block in dict_min_block_within_cbtc_ter
