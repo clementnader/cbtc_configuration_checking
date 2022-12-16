@@ -13,7 +13,7 @@ LOADED_SHEETS_OLD = {sh: None for sh in SHEETS_INFO}
 LOADED_SHEETS_OLD_COLS = {sh: None for sh in SHEETS_INFO}
 
 
-def load_sheet(obj_name, old: bool = False):
+def load_sheet(obj_name, old: bool = False) -> dict:
     if old:
         global LOADED_SHEETS_OLD, LOADED_SHEETS_OLD_COLS
         if not LOADED_SHEETS_OLD[obj_name]:
@@ -48,7 +48,7 @@ def get_sheet(wb, obj_name):
     return sh_dict, {"fixed": cols_name, "limits": lim_cols_name}
 
 
-def get_cols_name(obj_name, old: bool = False):
+def get_cols_name(obj_name, old: bool = False) -> dict[str, str]:
     if old:
         global LOADED_SHEETS_OLD, LOADED_SHEETS_OLD_COLS
         if not LOADED_SHEETS_OLD_COLS[obj_name]:
@@ -63,7 +63,7 @@ def get_cols_name(obj_name, old: bool = False):
         return LOADED_SHEETS_COLS[obj_name]["fixed"]
 
 
-def get_lim_cols_name(obj_name, old: bool = False):
+def get_lim_cols_name(obj_name, old: bool = False) -> list[str]:
     if old:
         global LOADED_SHEETS_OLD, LOADED_SHEETS_OLD_COLS
         if not LOADED_SHEETS_OLD_COLS[obj_name]:

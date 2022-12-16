@@ -24,7 +24,7 @@ def get_cols_name_from_ref(sh: xlrd.sheet, cols_ref: list[str]) -> dict[str, str
     return dict_cols_name
 
 
-def get_lim_cols_name_from_ref(sh: xlrd.sheet, col_ref: str, delta_between_limits: int):
+def get_lim_cols_name_from_ref(sh: xlrd.sheet, col_ref: str, delta_between_limits: int) -> list[str]:
     if not col_ref or not delta_between_limits:
         return []
     xlrd_col_ref = get_xlrd_column(col_ref)

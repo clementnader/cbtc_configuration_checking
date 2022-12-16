@@ -25,7 +25,8 @@ def dc_par_add_on_param():
 
 
 def main():
-    create_fouling_points_file()
+    min_dist_between_tags()
+    # create_fouling_points_file()
     # compare_sheets()
     # print(get_segs_within_cbtc_ter())
     # cf_zsm_cbtc_10(tolerance=.0)
