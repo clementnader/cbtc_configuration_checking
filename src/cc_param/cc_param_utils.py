@@ -17,8 +17,8 @@ def get_num_train(train: str) -> int:
     return int(train.split(TRAIN_UNIT_PREFIX)[1])
 
 
-def get_type_of_train(train_num: int):
-    for type_of_train, train_num_lim in zip(TYPES_OF_TRAIN, LIST_TRAIN_NUM_LIMITS):
+def get_type_of_train(train_num: int, types_of_train: list[str], list_train_num_limits: list[str]):
+    for type_of_train, train_num_lim in zip(types_of_train, list_train_num_limits):
         inf = int(train_num_lim.split("-")[0])
         sup = int(train_num_lim.split("-")[1])
         if inf <= train_num <= sup:

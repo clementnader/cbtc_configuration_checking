@@ -30,17 +30,15 @@ def load_sheet(obj_name, old: bool = False) -> dict:
 
 def get_sheet(wb, obj_name):
     sh = wb.sheet_by_name(SHEETS_INFO[obj_name]["sh_name"])
-    # Get parameter or set default value
-    fixed_cols_ref = SHEETS_INFO[obj_name]["cols"] if "cols" in SHEETS_INFO[obj_name] else []
-    generic_obj_name = SHEETS_INFO[obj_name]["generic_obj_name"] \
-        if "generic_obj_name" in SHEETS_INFO[obj_name] else False
-    line_ref = SHEETS_INFO[obj_name]["line_ref"] if "line_ref" in SHEETS_INFO[obj_name] else 3
-    lim_first_col = SHEETS_INFO[obj_name]["lim_start_col"] if "lim_start_col" in SHEETS_INFO[obj_name] else None
-    nb_max_limits = SHEETS_INFO[obj_name]["nb_max_limits"] if "nb_max_limits" in SHEETS_INFO[obj_name] else 0
-    delta_between_limits = SHEETS_INFO[obj_name]["delta_between_limits"] \
-        if "delta_between_limits" in SHEETS_INFO[obj_name] else 0
 
-    sh_dict = get_dict(sh, fixed_cols_ref=fixed_cols_ref, generic_obj_name=generic_obj_name, line_ref=line_ref,
+    # Get parameter or set default value
+    fixed_cols_ref = SHEETS_INFO[obj_name].get("cols", [])
+    generic_obj_name = SHEETS_INFO[obj_name].get("generic_obj_name", False)
+    lim_first_col = SHEETS_INFO[obj_name].get("lim_start_col", None)
+    nb_max_limits = SHEETS_INFO[obj_name].get("nb_max_limits", 0)
+    delta_between_limits = SHEETS_INFO[obj_name].get("delta_between_limits", 0)
+
+    sh_dict = get_dict(sh, fixed_cols_ref=fixed_cols_ref, generic_obj_name=generic_obj_name,
                        lim_first_col=lim_first_col, nb_max_limits=nb_max_limits,
                        delta_between_limits=delta_between_limits)
     cols_name = get_cols_name_from_ref(sh, cols_ref=fixed_cols_ref)

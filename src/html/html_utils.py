@@ -6,9 +6,9 @@ def html_head(title: str, author: str, description: str, additional_style: str) 
     html_text = f"<head>\n\n"
     html_text += f"\t<meta charset=\"UTF-8\">\n"
     html_text += f"\t<title>{title}</title>\n"
-    if description:
+    if description is not None:
         html_text += f"\t<meta name=\"description\" content=\"{description}\"\n>"
-    if author:
+    if author is not None:
         html_text += f"<\tmeta name=\"description\" content=\"{author}\"\n>"
     html_text += html_style(additional_style)
     html_text += "\n</head>\n\n"

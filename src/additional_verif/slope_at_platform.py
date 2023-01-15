@@ -4,56 +4,31 @@
 from ..dc_sys import *
 
 
-def get_slope_at_plt():
-    plt_dict = load_sheet("plt")
+def get_slope_at_plt(in_cbtc: bool = True):
+    if in_cbtc:
+        plt_dict = get_plts_in_cbtc_ter()
+    else:
+        plt_dict = load_sheet("plt")
     plt_cols_name = get_cols_name("plt")
 
-    slope_dict = load_sheet("slope")
-    slope_cols_name = get_cols_name("slope")
-
-    seg_dict = load_sheet("seg")
-    seg_cols_name = get_cols_name("seg")
-
     dict_plt_slopes = dict()
-    for plt in plt_dict:
-        dict_plt_slopes[plt] = get_slope_plt(plt_dict[plt], plt_cols_name,
-                                             slope_dict, slope_cols_name, seg_dict, seg_cols_name)
+    for plt_name, plt_values in plt_dict.items():
+        min_slope, max_slope = get_slope_plt(plt_values, plt_cols_name)
+        dict_plt_slopes[plt_name] = {"min_slope": min_slope, "max_slope": max_slope}
 
-    min_slope = min(dict_plt_slopes[plt] for plt in dict_plt_slopes)
-    max_slope = max(dict_plt_slopes[plt] for plt in dict_plt_slopes)
-    print(f"{min_slope=:.4%}"
-          f"\nfor {[plt for plt in dict_plt_slopes if dict_plt_slopes[plt] == min_slope]}"
+    min_slope = min(plt_slope["min_slope"] for plt_slope in dict_plt_slopes.values())
+    max_slope = max(plt_slope["max_slope"] for plt_slope in dict_plt_slopes.values())
+    print(f"The maximum slopes in platforms both positive and negative are, {print_in_cbtc(in_cbtc)}:"
+          f"\n{min_slope=:.4%}"
+          f"\n > for {[plt for plt, plt_values in dict_plt_slopes.items() if plt_values['min_slope'] == min_slope]}"
           f"\n{max_slope=:.4%}"
-          f"\nfor {[plt for plt in dict_plt_slopes if dict_plt_slopes[plt] == max_slope]}")
+          f"\n > for {[plt for plt, plt_values in dict_plt_slopes.items() if plt_values['max_slope'] == max_slope]}")
     return dict_plt_slopes
 
 
-def get_slope_plt(plt, plt_cols_name, slope_dict, slope_cols_name, seg_dict, seg_cols_name):
+def get_slope_plt(plt, plt_cols_name):
     seg_lim1 = plt[plt_cols_name['I']]
     x_lim1 = float(plt[plt_cols_name['J']])
-
-    def inner_recurs_previous_seg(seg, x: float = None):
-        seg_slope = slope_on_seg_upstream(seg, slope_dict, slope_cols_name, x)
-        if seg_slope is not None:
-            return seg_slope
-        for previous_seg in get_linked_segs(seg, seg_dict=seg_dict, seg_cols_name=seg_cols_name, downstream=False):
-            if previous_seg:
-                return inner_recurs_previous_seg(previous_seg)
-
-    return inner_recurs_previous_seg(seg_lim1, x_lim1)
-
-
-def slope_on_seg_upstream(seg, slope_dict, slope_cols_name, x: float = None):
-    list_slopes = list()
-    for slope in slope_dict:
-        if slope_dict[slope][slope_cols_name['B']] == seg:
-            if x is None or float(slope_dict[slope][slope_cols_name['C']]) <= x:  # if x is specified,
-                # check if the slope is taken upstream (on the left) of the (seg, x) point
-                list_slopes.append(slope_dict[slope])
-    if list_slopes:
-        max_x = max(float(slope[slope_cols_name['C']]) for slope in list_slopes)  # get the value with the greatest x,
-        # i.e. corresponding to the furthest in the right
-        return [float(slope[slope_cols_name['A']]) for slope in list_slopes
-                if float(slope[slope_cols_name['C']]) == max_x][0]
-    else:
-        return None
+    seg_lim2 = plt[plt_cols_name['Q']]
+    x_lim2 = float(plt[plt_cols_name['R']])
+    return get_min_and_max_slopes_on_virtual_seg(seg_lim1, x_lim1, seg_lim2, x_lim2)

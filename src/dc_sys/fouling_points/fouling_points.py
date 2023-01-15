@@ -6,7 +6,7 @@ from ..load_database import *
 from ..dc_sys_utils import *
 from ...xl_pkg import *
 
-FOULING_POINT_TEMPLATE_RELATIVE_PATH = r"..\..\templates\Fouling Points template.xlsx"
+FOULING_POINT_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "Fouling Points template.xlsx")
 FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
 FOULING_POINT_TEMPLATE = os.path.join(FILE_DIRECTORY_PATH, FOULING_POINT_TEMPLATE_RELATIVE_PATH)
 OUTPUT_DIRECTORY = os.path.join(os.getenv("UserProfile"), r"Desktop")

@@ -3,3 +3,4 @@
 
 from .check_diff_files import check_diff_cc_param
 from .convert_cc_param import convert_ccparam
+from .checksum import checksum_compare_parser

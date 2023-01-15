@@ -2,28 +2,32 @@
 # -*- coding: utf-8 -*-
 
 from ..dc_sys import *
+from ..colors_pkg import *
 
 
-def min_dist_between_tags():
-    tag_dict = load_sheet("tag")
+def min_dist_between_tags(in_cbtc: bool = True):
+    if in_cbtc:
+        tag_dict = get_tags_in_cbtc_ter()
+    else:
+        tag_dict = load_sheet("tag")
     tag_cols_name = get_cols_name("tag")
     tag_list = list(tag_dict.keys())
-
-    seg_dict = load_sheet("seg")
-    seg_cols_name = get_cols_name("seg")
+    nb_tags = len(tag_list)
 
     tags_dist_dict = dict()
     for i, tag1 in enumerate(tag_list):
+        print_log(f"\t {i/nb_tags:.2%} processing distances between {tag1} and other tags...")
         seg1 = tag_dict[tag1][tag_cols_name['D']]
-        x1 = tag_dict[tag1][tag_cols_name['E']]
+        x1 = float(tag_dict[tag1][tag_cols_name['E']])
         for tag2 in tag_list[i+1:]:
             seg2 = tag_dict[tag2][tag_cols_name['D']]
-            x2 = tag_dict[tag2][tag_cols_name['E']]
-            d = get_dist(seg1, x1, seg2, x2, seg_dict, seg_cols_name, verbose=False)
-            if d:
+            x2 = float(tag_dict[tag2][tag_cols_name['E']])
+            d = get_dist(seg1, x1, seg2, x2)
+            if d is not None:
                 tags_dist_dict[f"{tag1} and {tag2}"] = d
 
-    min_dist = min(tags_dist_dict[tags] for tags in tags_dist_dict)
-    print(f"{min_dist=}"
-          f"\nfor {[tags for tags in tags_dist_dict if tags_dist_dict[tags] == min_dist]}")
+    min_dist = min(tags_values for tags_values in tags_dist_dict.values())
+    print(f"The minimal distance between two tags is, {print_in_cbtc(in_cbtc)}:"
+          f"\n{min_dist=}"
+          f"\n > for {[tags for tags, tags_values in tags_dist_dict.items() if tags_values == min_dist]}")
     return tags_dist_dict

@@ -17,27 +17,52 @@ def compare_sheets():
 
 
 def dc_par_add_on_param():
-    # get_max_slope_within_cbtc_ter()
-    # get_max_slope_on_the_full_line()
-    # get_block_min_length_within_cbtc_ter()
-    # get_block_min_length_all_line()
+    # get_max_slope(in_cbtc=False)
+    # get_block_min_length(in_cbtc=True)
+    return
+
+
+def dc_par_customer_data():
+    # max_dist_local_tag_group(in_cbtc=True)
+    # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to verify
+    # min_distance_between_vsp_overlap(in_cbtc=True)
+    # smallest_size_of_a_switch_block_heel(in_cbtc=True)
+    return
+
+
+def dc_par_constraints():
+    # min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc=True)
+    return
+
+
+def additional_verif():
+    # min_dist_between_tags(in_cbtc=True)  # take a while to process for the whole territory
+    # get_slope_at_plt(in_cbtc=True)
+    return
+
+
+def constraints():
+    r_cdv_5()  # TODO
+    # cf_zsm_cbtc_10(tolerance=.0)
     return
 
 
 def main():
-    min_dist_between_tags()
+    # pretty_print_dict(get_sws_in_cbtc_ter(), max_lvl=0)
+    # pretty_print_dict(get_plts_in_cbtc_ter(), max_lvl=0)
+
+    # create_cctool_oo_schema_info_file()
     # create_fouling_points_file()
+
+    constraints()
+
+    additional_verif()
+
+    dc_par_add_on_param()
+    dc_par_customer_data()
+    dc_par_constraints()
+
     # compare_sheets()
-    # print(get_segs_within_cbtc_ter())
-    # cf_zsm_cbtc_10(tolerance=.0)
-    # print(load_sheet("sw"))
-    # min_distance_between_vsp_overlap(same_dir=True)  # très long
-    # min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir=True)
-    # max_dist_local_tag_group()
-    # smallest_size_of_a_switch_block_heel()
-    # min_dist_between_platform_osp_and_end_of_next_platform()
-    # get_slope_at_plt()
-    # dc_par_add_on_param()
     return
 
 
