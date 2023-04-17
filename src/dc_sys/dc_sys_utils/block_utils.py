@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .segments_utils import get_linked_segs
-from .dist_utils import get_dist_downstream
-from .links_utils import is_seg_downstream, get_all_downstream_segs
+from ...utils import *
+from ..load_database.load_sheets import load_sheet, get_cols_name, get_lim_cols_name
 from .cbtc_territory_utils import is_point_in_cbtc_ter
-from ..load_database.load_sheets import load_sheet, get_lim_cols_name
-from ...colors_pkg import *
+from .dist_utils import get_dist_downstream, get_downstream_path
+from .links_utils import is_seg_downstream
+from .segments_utils import get_linked_segs
 
 
 def get_blocks_in_cbtc_ter():
@@ -28,16 +28,15 @@ def get_blocks_in_cbtc_ter():
     return within_cbtc_block_dict
 
 
-def get_len_block(block):
+def get_list_len_block(block):
     block_lim_cols_name = get_lim_cols_name("block")
     list_dist = get_len_block_list(block, block_lim_cols_name)
-    # TODO min or max ??
-    return min(list_dist)
+    return list_dist
 
 
 def get_len_block_list(block, block_lim_cols_name):
     list_dist = list()
-    upstream_limits, downstream_limits = find_upstream_n_downstream_limits(block, block_lim_cols_name)
+    upstream_limits, downstream_limits = find_upstream_n_downstream_limits(block)
     for up_lim in upstream_limits:
         seg1 = up_lim[block_lim_cols_name[0]]
         x1 = float(up_lim[block_lim_cols_name[1]])
@@ -50,7 +49,8 @@ def get_len_block_list(block, block_lim_cols_name):
     return list_dist
 
 
-def find_upstream_n_downstream_limits(block, block_lim_cols_name):
+def find_upstream_n_downstream_limits(block):
+    block_lim_cols_name = get_lim_cols_name("block")
     upstream_limits = list()
     downstream_limits = list()
     for lim1 in block["limits"]:
@@ -109,3 +109,34 @@ def does_path_exist_within_block(lim1, lim2, block_limits, block_lim_cols_name, 
         return inner_recurs_seg(seg1, seg2)
     else:
         return inner_recurs_seg(seg2, seg1)
+
+
+def get_segs_in_blocks(block):
+    """ Return the list of segments in a block. """
+    set_segs = set()
+    block_lim_cols_name = get_lim_cols_name("block")
+    upstream_limits, downstream_limits = find_upstream_n_downstream_limits(block)
+    for up_lim in upstream_limits:
+        up_seg = up_lim[block_lim_cols_name[0]]
+        for down_lim in downstream_limits:
+            down_seg = down_lim[block_lim_cols_name[0]]
+            _, _, list_paths = get_downstream_path(up_seg, down_seg)
+            for path in list_paths:
+                for seg in path:
+                    set_segs.add(seg)
+    return set_segs
+
+
+def is_seg_in_block(block, seg: str):
+    """ Return True if a segment is in a block else False. """
+    return seg in get_segs_in_blocks(block)
+
+
+def get_block_associated_to_sw(sw):
+    """ Get the block associated to a switch. """
+    sw_cols_name = get_cols_name("sw")
+    block_dict = load_sheet("block")
+    for block_name, block_value in block_dict.items():
+        if all(is_seg_in_block(block_value, sw[sw_cols_name[j]]) for j in ['B', 'C', 'D']):
+            return block_name, block_value
+    print(f"Unable to find block associated to SW: {sw}")

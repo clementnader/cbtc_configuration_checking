@@ -10,7 +10,7 @@ def from_seg_offset_to_kp(seg, x):
 
     track = seg_dict[seg][seg_cols_name['D']]
     orig_kp = float(seg_dict[seg][seg_cols_name['E']])
-    kp = orig_kp + float(x)
+    kp = round(orig_kp + float(x), 2)
     return track, kp
 
 

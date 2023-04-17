@@ -4,9 +4,7 @@
 import os
 from ..utils import *
 from .cc_param_utils import *
-from ..html import *
 from .html_style_diff_file import additional_css_style
-from ..colors_pkg import *
 
 # MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\Ankara\ANK_L2_C11_D470_06_05_03_V06\ANK_L2_C11_D470_06_05_03_V06"
 MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\ML4_TF3_C11_D470_06_05_05_V03\ML4_TF3_C11_D470_06_05_05_V03"

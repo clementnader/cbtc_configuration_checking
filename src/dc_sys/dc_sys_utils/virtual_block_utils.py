@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .links_utils import is_seg_downstream
 from .dist_utils import get_dist, get_list_of_paths
+from .links_utils import is_seg_downstream
 
 
 def give_point_seg_vb(vb_limits):

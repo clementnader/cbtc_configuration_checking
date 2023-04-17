@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from ..load_database import *
+from ...utils import *
 from ..dc_sys_utils import *
-from ...xl_pkg import *
 
 FOULING_POINT_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "Fouling Points template.xlsx")
 FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -40,4 +39,3 @@ def get_switch_pos():
         sw_pos_dict[sw] = {"track": track, "kp": kp}
 
     return sw_pos_dict
-

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...xl_pkg import *
+from ...utils import *
 from ...database_loc import *
 
 WB = None

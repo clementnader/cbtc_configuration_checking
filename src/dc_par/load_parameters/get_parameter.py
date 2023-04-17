@@ -1,17 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from .load_params import load_params
-from ...colors_pkg import *
 
 
-def get_param_value(param_name: str):
-    value, _, _, _ = get_param_info(param_name)
+def get_param_value(param_name: str, variables: dict = None):
+    value, unit = get_param_with_unit(param_name)
+    if variables is not None:
+        variables.update({param_name: f"{value} {unit}"})
     return value
 
 
-def get_param_with_unit(param_name: str):
+def get_param_with_unit(param_name: str, keep_km_per_h: bool = False):
     value, unit, _, _ = get_param_info(param_name)
+    if not keep_km_per_h and unit == "km/h":
+        value /= 3.6  # convert the value to m/s
+        unit = "m/s"
+    elif unit == "m/s2":
+        unit = "m/s^2"
+    elif unit == "m/s3":
+        unit = "m/s^3"
     return value, unit
 
 

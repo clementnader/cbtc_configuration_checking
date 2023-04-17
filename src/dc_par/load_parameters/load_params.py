@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unidecode
-from ...xl_pkg import *
+from ...utils import *
 from .load_xl import load_dc_par_wb
 
 LOADED_PARAMETERS = dict()
@@ -34,7 +34,7 @@ def get_sheet_param(wb: xlrd.Book, sh_name: str) -> dict:
         return {}
 
     param_name_col_title = get_and_decode_xlrd_value(sh, 1, PARAM_NAME_COL)
-    if param_name_col_title.upper() != PARAM_NAME_TITLE:
+    if param_name_col_title is None or param_name_col_title.upper() != PARAM_NAME_TITLE:
         return {}
 
     param_dict = dict()
@@ -52,7 +52,10 @@ def get_sheet_param(wb: xlrd.Book, sh_name: str) -> dict:
 def get_and_decode_xlrd_value(sh: xlrd.sheet, line: int, col: str) -> str:
     xlrd_line = get_xlrd_line(line)
     xlrd_col = get_xlrd_column(col)
-    cell_value = sh.cell_value(xlrd_line, xlrd_col)
+    try:
+        cell_value = sh.cell_value(xlrd_line, xlrd_col)
+    except IndexError:
+        cell_value = None
     if isinstance(cell_value, str):
         cell_value = unidecode.unidecode(cell_value).strip()
     return cell_value

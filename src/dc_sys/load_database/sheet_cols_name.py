@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...xl_pkg import *
+from ...utils import *
 
 
 def get_cols_name_from_ref(sh: xlrd.sheet, cols_ref: list[str]) -> dict[str, str]:
@@ -11,7 +11,10 @@ def get_cols_name_from_ref(sh: xlrd.sheet, cols_ref: list[str]) -> dict[str, str
     dict_cols_name = dict()
     for n, j in enumerate(xlrd_cols_ref):
         cell1 = f"{sh.cell_value(0, j)}"
-        cell2 = f"{sh.cell_value(1, j)}"
+        try:
+            cell2 = f"{sh.cell_value(1, j)}"
+        except IndexError:
+            cell2 = ""
         if not cell2:  # merged cells
             dict_cols_name[cols_ref[n]] = f"{cell1}"
         else:

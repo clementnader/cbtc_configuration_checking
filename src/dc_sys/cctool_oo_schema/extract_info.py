@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from ...xl_pkg import *
+from ...utils import xlrd
 
 CCTOOL_OO_SCHEMA_DIR = r"C:\Users\naderc\Desktop\Bxl"
 CCTOOL_OO_SCHEMA_FILE_NAME = r"CCTool-OO Schema.xls"

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .segments_utils import *
-from .links_utils import is_seg_downstream
-from .cbtc_territory_utils import is_point_in_cbtc_ter  # , is_seg_in_cbtc_ter_limits
+from ...utils import *
 from ..load_database.load_sheets import load_sheet, get_cols_name
-from ...colors_pkg import *
+from .cbtc_territory_utils import is_point_in_cbtc_ter  # , is_seg_in_cbtc_ter_limits
+from .links_utils import is_seg_downstream
+from .segments_utils import *
 
 
 def get_sws_in_cbtc_ter():
@@ -40,6 +40,21 @@ def is_sw_point_seg_upstream(sw, sw_cols_name):
     if all(other_segs_are_upstream):
         return False
     raise Exception("The point segment is not found upstream or downstream of the heels.")
+
+
+def get_heel_position(point_seg, heel) -> (str, str):
+    sw_dict = load_sheet("sw")
+    sw_cols_name = get_cols_name("sw")
+    for sw_name, sw_value in sw_dict.items():
+        sw_point_seg = sw_value[sw_cols_name['B']]
+        sw_right_heel = sw_value[sw_cols_name['C']]
+        sw_left_heel = sw_value[sw_cols_name['D']]
+        if point_seg == sw_point_seg:
+            if heel == sw_right_heel:
+                return sw_name, "DROITE"
+            if heel == sw_left_heel:
+                return sw_name, "GAUCHE"
+    return None, ""
 
 
 def give_sw_pos(sw, sw_cols_name):

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ...dc_sys import *
-from ...colors_pkg import *
 
 
-def min_distance_between_vsp_overlap(in_cbtc: bool = True, same_dir: bool = True):
+def min_distance_between_vsp_overlap(in_cbtc: bool = True, same_dir: bool = True, verbose: bool = False):
     if in_cbtc:
         sig_dict = get_sigs_in_cbtc_ter()
     else:
@@ -19,8 +19,9 @@ def min_distance_between_vsp_overlap(in_cbtc: bool = True, same_dir: bool = True
     dict_min_dist = dict()
     for i, home_sig_with_overlap in enumerate(home_sigs_with_overlap_list):
         if dist_vsp_col_name in sig_dict[home_sig_with_overlap]:
-            print_log(f"\t {i/nb_home_sigs_with_overlap:.2%} processing distances between {home_sig_with_overlap} VSP "
-                      f"and other signals VSPs...")
+            if verbose:
+                print_log(f"\t {i/nb_home_sigs_with_overlap:.2%} processing distances between "
+                          f"{home_sig_with_overlap} VSP and other signals VSPs...")
             dist_vsp1 = float(sig_dict[home_sig_with_overlap][dist_vsp_col_name])
             vsp1_seg = sig_dict[home_sig_with_overlap][sig_cols_name['C']]
             vsp1_x = float(sig_dict[home_sig_with_overlap][sig_cols_name['D']]) + dist_vsp1
@@ -45,7 +46,7 @@ def min_distance_between_vsp_overlap(in_cbtc: bool = True, same_dir: bool = True
     print(f"The minimum distance between two VSPs, one of whom is related to a Home Signal with Overlap is, "
           f"{print_in_cbtc(in_cbtc)}:"
           f"\n{min_dist=}"
-          f"\n > for: {[vsps for vsps, vsps_values in dict_min_dist.items() if vsps_values == min_dist]}")
+          f"\n > for: {[vsps for vsps, vsps_values in dict_min_dist.items() if vsps_values == min_dist]}\n")
     return dict_min_dist
 
 

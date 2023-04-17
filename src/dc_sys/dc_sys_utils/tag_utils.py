@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .cbtc_territory_utils import is_point_in_cbtc_ter
+from ...utils import *
 from ..load_database.load_sheets import load_sheet, get_cols_name
-from ...colors_pkg import *
+from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
 def get_tags_in_cbtc_ter():
-    tag_dict = load_sheet("tag")
+    tag_dict = load_sheet("tag", generic_name=True)
     tag_cols_name = get_cols_name("tag")
 
     within_cbtc_tag_dict = dict()
-    for tag_name, tag_values in tag_dict.items():
+    for tag_values in tag_dict.values():
+        tag_name = tag_values[tag_cols_name['B']]
         seg = tag_values[tag_cols_name['D']]
         x = float(tag_values[tag_cols_name['E']])
         if is_point_in_cbtc_ter(seg, x) is not False:

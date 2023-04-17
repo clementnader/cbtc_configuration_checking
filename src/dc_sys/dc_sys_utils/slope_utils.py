@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .links_utils import is_seg_downstream
-from .dist_utils import *
-from .cbtc_territory_utils import is_point_in_cbtc_ter
+from ...utils import *
 from ..load_database.load_sheets import load_sheet, get_cols_name
-from ...colors_pkg import *
+from .cbtc_territory_utils import is_point_in_cbtc_ter
+from .dist_utils import *
+from .links_utils import is_seg_downstream
 
 
 def get_slopes_in_cbtc_ter():
@@ -30,7 +30,7 @@ def get_min_and_max_slopes_at_point(seg, x):
 
     slopes = get_next_slopes(seg, x, slope_dict, slope_cols_name, downstream=True)
     slopes.extend(get_next_slopes(seg, x, slope_dict, slope_cols_name, downstream=False))
-    slopes_values = (float(slope[slope_cols_name['A']]) for slope in slopes)
+    slopes_values = [float(slope[slope_cols_name['A']]) for slope in slopes]
     return min(slopes_values), max(slopes_values)
 
 

@@ -5,12 +5,12 @@ import os
 import sys
 import subprocess
 import argparse
-from ..colors_pkg import *
+from ..utils import *
 
 ORIGINAL_FILE = "md5sum.txt"
 REGEN_FILE = "Appendix C_MD5 Checksum of the files analysed.txt"
 
-BASH_CMD = f"find . | sort | xargs md5sum > \"{REGEN_FILE}\""
+BASH_CMD = f"find -type f -print0 | sort | xargs -r0 md5sum > \"{REGEN_FILE}\""
 
 
 def get_software_location(sw):
@@ -38,7 +38,7 @@ def checksum_compare_parser():
         description=f"Regenerate using Git-Bash the MD5 checksum file to compare it to the original checksum file.",
     )
     parser.add_argument("-i", "--input_kit_c11_dir", dest="input_dir", action="store", type=str, required=True,
-                        metavar=f"{Color.blue}Kit_C11_D470{Color.reset}",
+                        metavar=f"{Color.turquoise}Kit_C11_D470{Color.reset}",
                         help=f"path to the kit C11_D470 folder "
                              f"{Color.dark_grey}(put it between quotes){Color.reset}")
     args = vars(parser.parse_args())
@@ -49,21 +49,21 @@ def checksum_compare_parser():
 def regen_checksum(path_kit_c11):
     if sys.platform == "win32" and "SHELL" not in os.environ.keys():  # For Windows when not using git-bash
         if GIT_PATH is None:
-            print(f"\n{Color.red}Git is not installed{Color.reset}")
+            print_error(f"\nGit is not installed.")
             print(f"The command:\n"
-                  f"\t{Color.dark_yellow}{BASH_CMD}{Color.reset}\n"
+                  f"\t{Color.light_orange}{BASH_CMD}{Color.reset}\n"
                   f"needs to be launched on your side.")
             return
         new_env = {"PATH": os.path.join(GIT_PATH, 'usr', 'bin')}
     else:
         new_env = None
-    print(f"\n{Color.blue}Generating MD5 checksums in file {REGEN_FILE}{Color.reset}")
-    print(f"\t> {Color.dark_yellow}{BASH_CMD}{Color.reset}")
+    print(f"\n{Color.blue}Generating MD5 checksums in file \"{REGEN_FILE}\"...{Color.reset}")
+    print(f"\t> {Color.light_orange}{BASH_CMD}{Color.reset}")
     subprocess.call(BASH_CMD, cwd=path_kit_c11, env=new_env, shell=True)
 
 
 def order_original_checksum(path_kit_c11):
-    print(f"\n{Color.blue}Reordering the original checksum file to be able to do the comparison{Color.reset}")
+    print(f"\n{Color.blue}Reordering the original checksum file to be able to do the comparison...{Color.reset}")
     original_file_path = os.path.join(path_kit_c11, ORIGINAL_FILE)
     with open(original_file_path, 'r') as og_file:
         lines = og_file.readlines()
@@ -75,7 +75,7 @@ def order_original_checksum(path_kit_c11):
 
 
 def order_regen_checksum(path_kit_c11):
-    print(f"\n{Color.blue}Reordering the regenerated checksum file to be able to do the comparison{Color.reset}")
+    print(f"\n{Color.blue}Reordering the regenerated checksum file to be able to do the comparison...{Color.reset}")
     regen_file_path = os.path.join(path_kit_c11, REGEN_FILE)
     with open(regen_file_path, 'r') as og_file:
         lines = og_file.readlines()
@@ -90,23 +90,23 @@ def order_regen_checksum(path_kit_c11):
 
 def launch_beyond_compare(ordered_original, ordered_regen):
     if BEYOND_COMPARE_PATH is None:
-        print(f"\n{Color.red}Beyond Compare 4 is not installed{Color.reset}")
+        print_error(f"\nBeyond Compare 4 is not installed.")
         return
     print(f"\n{Color.blue}Launching Beyond Compare 4...{Color.reset}")
     subprocess.Popen(f"{BCOMP_EXE} \"{ordered_original}\" \"{ordered_regen}\"", cwd=BEYOND_COMPARE_PATH, shell=True)
 
 
 def compare_checksums(path_kit_c11):
-    print(f"{Color.dark_cyan}{Color.underline}"
+    print(f"{Color.vivid_blue}{Color.underline}"
           f"Regenerating the MD5 checksum file to compare it to the original checksum file "
-          f"to create Appendix C of the OnBoard DPSR{Color.reset}")
+          f"to create Appendix C of the OnBoard DPSR{Color.reset}\n")
     regen_checksum(path_kit_c11)
     ordered_original = order_original_checksum(path_kit_c11)
     if not os.path.exists(os.path.join(path_kit_c11, REGEN_FILE)):
-        print(f"\n{Color.red}Cannot find the regenerated file{Color.reset}")
+        print_error(f"\nCannot find the regenerated file.")
         return
     ordered_regen = order_regen_checksum(path_kit_c11)
     print(f"\nThe files to compare are located:\n"
-          f"\tfor the original file: {Color.green}{ordered_original}{Color.reset}\n"
-          f"\tand for the regenerated file: {Color.green}{ordered_regen}{Color.reset}")
+          f"\tfor the original file: {Color.light_green}{ordered_original}{Color.reset}\n"
+          f"\tand for the regenerated file: {Color.light_green}{ordered_regen}{Color.reset}")
     launch_beyond_compare(ordered_original, ordered_regen)

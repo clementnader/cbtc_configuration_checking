@@ -1,10 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...xl_pkg import *
+from ...utils import *
 from .sheet_cols_name import get_cols_name_from_ref, get_lim_cols_name_from_ref
 
 START_LINE = 3
+
+
+def read_cell(sh: xlrd.sheet, i: int, j: int):
+    value = sh.cell_value(i, j)
+    if value in ("", None):
+        return None
+    if isinstance(value, str):
+        try:
+            value = float(value.replace(",", "."))
+        except ValueError:
+            pass
+    return value
 
 
 def get_dict_fixed_col(sh: xlrd.sheet, cols_ref: list[str], generic_obj_name: bool) -> dict:
@@ -15,14 +27,14 @@ def get_dict_fixed_col(sh: xlrd.sheet, cols_ref: list[str], generic_obj_name: bo
 
     sh_dict = dict()
     for i in range(xlrd_line_ref, sh.nrows):
-        obj_name = sh.cell_value(i, xlrd_name_col)
-        if obj_name != "":
+        obj_name = read_cell(sh, i, xlrd_name_col)
+        if obj_name is not None:
             if generic_obj_name:
                 obj_name = f"{sh.name}_line_{i+1}"
             sh_dict[obj_name] = dict()
             for n, j in enumerate(xlrd_cols_ref):
-                value = sh.cell_value(i, j)
-                if value != "":
+                value = read_cell(sh, i, j)
+                if value is not None:
                     sh_dict[obj_name][list_cols_name[n]] = value
     return sh_dict
 
@@ -34,15 +46,15 @@ def get_limits_dict(sh: xlrd.sheet, col_ref: str, nb_max_limits: int, delta_betw
 
     limits_dict = dict()
     for i in range(xlrd_line_ref, sh.nrows):
-        obj_name = sh.cell_value(i, 0)
+        obj_name = read_cell(sh, i, 0)
         limits_dict[obj_name] = {"limits": list()}
         for j in range(xlrd_col_ref, xlrd_col_ref + nb_max_limits * delta_between_limits, delta_between_limits):
-            seg = sh.cell_value(i, j)
-            if seg == "":
+            seg = read_cell(sh, i, j)
+            if seg is None:
                 break
             current_limit = dict()
             for n in range(0, delta_between_limits):
-                current_limit[list_attr[n]] = sh.cell_value(i, j + n)
+                current_limit[list_attr[n]] = read_cell(sh, i, j + n)
             limits_dict[obj_name]["limits"].append(current_limit)
     return limits_dict
 

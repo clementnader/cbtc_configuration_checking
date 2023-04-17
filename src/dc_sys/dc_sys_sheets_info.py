@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils.common_utils import columns_from_to
+
+
 SHEETS_INFO = {
+    "line": {"sh_name": "Ligne", "cols": columns_from_to('G', 'N')},
+    "track": {"sh_name": "Voie", "cols": ['E', 'G', 'H']},
+    "ls": {"sh_name": "Troncon", "cols": ['B', 'E', 'F', 'G', 'H'], "lim_start_col": 'I',
+           "nb_max_limits": 20, "delta_between_limits": 3},
     "seg": {"sh_name": "Seg", "cols": ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']},
     "sw": {"sh_name": "Aig", "cols": ['B', 'C', 'D']},
     "tag": {"sh_name": "Bal", "cols": ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']},
@@ -14,16 +21,20 @@ SHEETS_INFO = {
     "ivb": {"sh_name": "IVB", "lim_start_col": 'I', "nb_max_limits": 15, "delta_between_limits": 2},
     "vb": {"sh_name": "CV", "lim_start_col": 'B', "nb_max_limits": 3, "delta_between_limits": 2},
     "sig": {"sh_name": "Sig", "cols": ['B', 'C', 'D', 'E', 'I', 'S', 'Z']},
-    "route": {"sh_name": "Iti", "cols": ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-                                         'R', 'S', 'T', 'U', 'V', 'W', 'X']},
+    "route": {"sh_name": "Iti", "cols": ['B', 'C'] + columns_from_to('D', 'W') + ['X'] + columns_from_to('Z', 'BC')},
+    "overlap": {"sh_name": "IXL_Overlap", "cols": ['B', 'C', 'D', 'N'] + columns_from_to('O', 'V')},
     "slope": {"sh_name": "Profil", "cols": ['A', 'B', 'C', 'D', 'E'], "generic_obj_name": True},
     "cbtc_ter": {"sh_name": "CBTC_TER", "cols": ['B'],
                  "lim_start_col": 'I', "nb_max_limits": 15, "delta_between_limits": 3},
     "zc_area": {"sh_name": "PAS", "lim_start_col": 'D', "nb_max_limits": 30, "delta_between_limits": 6},
     "zsm": {"sh_name": "ZSM_CBTC", "cols": ['D', 'E', 'H', 'I']},
+    "maz": {"sh_name": "Zaum", "lim_start_col": 'L', "nb_max_limits": 15, "delta_between_limits": 3},
     "hf_data": {"sh_name": "Flux_Variant_HF", "cols": ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']},
     "lf_data": {"sh_name": "Flux_Variant_BF", "cols": ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']},
     "tag_gr": {"sh_name": "StaticTag_Group", "lim_start_col": 'C', "nb_max_limits": 10, "delta_between_limits": 1},
+    "train_types": {"sh_name": "Train_Types", "cols": ['D', 'G', 'H', 'L']},
+    "train_consist": {"sh_name": "Train_Consist", "cols": ['D', 'E', 'F', 'G', 'M', 'N']},
+    "traction": {"sh_name": "Traction_Profiles", "cols": ['A', 'B', 'E'], "generic_obj_name": True},
 }
 
 

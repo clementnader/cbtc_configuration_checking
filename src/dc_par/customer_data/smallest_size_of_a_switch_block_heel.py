@@ -43,6 +43,6 @@ def smallest_size_of_a_switch_block_heel(in_cbtc: bool = True):
     text = '\nand '.join(' -> '.join(heel) for heel in min_heels)
     print(f"The minimum heel (VB) length is, {print_in_cbtc(in_cbtc)}:"
           f"\n{min_heel=}"
-          f"\n{text}")
+          f"\n{text}\n")
 
     return dict_min_heel
