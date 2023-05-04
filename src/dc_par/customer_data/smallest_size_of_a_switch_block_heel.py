@@ -1,20 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ...dc_sys import *
 
 
-def smallest_size_of_a_switch_block_heel(in_cbtc: bool = True):
+def smallest_size_of_a_switch_block_heel(in_cbtc: bool = False):
     if in_cbtc:
         sw_dict = get_sws_in_cbtc_ter()
     else:
         sw_dict = load_sheet("sw")
     sw_cols_name = get_cols_name("sw")
+    nb_sw = len(sw_dict)
     vb_dict = load_sheet("vb")
     vb_lim_cols_name = get_lim_cols_name("vb")
 
     dict_min_heel = dict()
+    progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (sw, sw_values) in enumerate(sw_dict.items()):
+        print_log(f"\r{progress_bar(i, nb_sw)} processing size of switch {sw} block heel...", end="")
         point_vb = get_vb_associated_to_sw(sw_values, vb_dict, sw_cols_name)
         point_seg = give_point_seg_vb(vb_dict[point_vb]["limits"])[vb_lim_cols_name[0]]
         point_other_limits = [point_lim for point_lim in vb_dict[point_vb]["limits"]
@@ -29,6 +33,7 @@ def smallest_size_of_a_switch_block_heel(in_cbtc: bool = True):
                     for point_lim in point_other_limits:
                         if seg == point_lim[vb_lim_cols_name[0]] and x == float(point_lim[vb_lim_cols_name[1]]):
                             dict_min_heel[sw]["heels"][vb] = dict()
+    print_log(f"\r{progress_bar(nb_sw, nb_sw, end=True)} processing sizes of switch block heels finished.\n")
 
     for sw, sw_values in dict_min_heel.items():
         for heel_vb in sw_values["heels"]:

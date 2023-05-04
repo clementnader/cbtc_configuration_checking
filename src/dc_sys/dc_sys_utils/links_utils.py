@@ -7,6 +7,10 @@ from .segments_utils import *
 SEGMENTS_LINKED = dict()
 
 
+def are_segs_linked(seg1, seg2, x1: float = None, x2: float = None) -> (float, list[str]):
+    return is_seg_downstream(seg1, seg2, x1, x2) or is_seg_downstream(seg2, seg1, x2, x1)
+
+
 def is_seg_downstream(start_seg, end_seg, start_x: float = None, end_x: float = None) -> (float, list[str]):
     if start_x is not None:
         start_x = float(start_x)

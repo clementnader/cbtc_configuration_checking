@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import csv
-from ...database_loc import KIT_C11_DIR
+from ...database_loc import DATABASE_LOC
 from ..cc_param_utils import *
 from .get_cc_param_location import get_cc_param_location
 
@@ -30,7 +30,7 @@ def open_cc_param_file(path):
 
 
 def open_all_cc_param_files():
-    dict_train_units = get_cc_param_location(KIT_C11_DIR)
+    dict_train_units = get_cc_param_location(DATABASE_LOC.kit_c11_dir)
     for train_cab in dict_train_units.values():
         for path in train_cab.values():
             CC_PARAMS[path] = open_cc_param_file(path)

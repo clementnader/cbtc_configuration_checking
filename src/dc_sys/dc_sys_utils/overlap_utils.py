@@ -26,5 +26,5 @@ def _get_overlap_switch(ovl_value: dict[str, str], overlap_cols_name: dict[str, 
         sw_pos = ovl_value.get(overlap_cols_name[sw_pos_col])
         if sw_name:
             sw_pos = convert_switch_pos_to_ixl(sw_name, sw_pos)
-            sw_list.append(sw_name + sw_pos)
+            sw_list.append(sw_name.upper() + sw_pos.upper())
     return sw_list

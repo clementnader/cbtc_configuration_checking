@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ...dc_sys import *
 
 
-def min_length_multiple_path(in_cbtc: bool = True):
+def min_length_multiple_path(in_cbtc: bool = False):
     seg_dict = load_sheet("seg")
     if in_cbtc:
         segs_within_cbtc_ter = get_segs_within_cbtc_ter()
@@ -12,12 +13,16 @@ def min_length_multiple_path(in_cbtc: bool = True):
     else:
         segs_within_cbtc_ter = list(seg_dict.keys())
         limits_cbtc_ter = list()
-    segs_upstream_of_a_switch, segs_downstream_of_a_switch = get_all_point_segs(segs_within_cbtc_ter, limits_cbtc_ter)
+    sw_point_segs = get_all_point_segs(segs_within_cbtc_ter, limits_cbtc_ter)
+    nb_sw_point_segs = len(sw_point_segs)
 
     multiple_path_len_dict = dict()
-    for upstream_seg in segs_upstream_of_a_switch:
-        for downstream_seg in segs_downstream_of_a_switch:
-            if is_seg_downstream(upstream_seg, downstream_seg):  # if there is a path between the 2 segs
+    progress_bar(1, 1, end=True)  # reset progress_bar
+    for i, upstream_seg in enumerate(sw_point_segs):
+        print_log(f"\r{progress_bar(i, nb_sw_point_segs)} processing length of multiple path "
+                  f"from point segment {upstream_seg}...", end="")
+        for downstream_seg in sw_point_segs[i+1:]:
+            if are_segs_linked(upstream_seg, downstream_seg):  # if there is a path between the 2 segs
                 dist, list_of_paths = get_min_dist_and_list_of_paths(upstream_seg, downstream_seg, max_nb_paths=2)
                 if len(list_of_paths) == 2:  # if there are two paths
                     dist -= get_len_seg(upstream_seg) + get_len_seg(downstream_seg)
@@ -30,6 +35,8 @@ def min_length_multiple_path(in_cbtc: bool = True):
                         "Long Path": max(list_of_paths),
                         "Long Path Switch": get_switch_on_path(max(list_of_paths)),
                     }
+    print_log(f"\r{progress_bar(nb_sw_point_segs, nb_sw_point_segs, end=True)} processing length of multiple paths "
+              f"(rhombus or trapezoid) finished.\n")
 
     multiple_path_len_dict = {x: multiple_path_len_dict[x]
                               for x in sorted(multiple_path_len_dict,
@@ -40,30 +47,27 @@ def min_length_multiple_path(in_cbtc: bool = True):
           f"\n > for: "
           f"{[path for path, path_len in multiple_path_len_dict.items() if path_len['Minimal Length'] == min_len]}\n")
 
-    print(create_csv_file(multiple_path_len_dict))
+    # print(create_csv_file(multiple_path_len_dict))
     return multiple_path_len_dict
 
 
-def get_all_point_segs(segs_within_cbtc_ter, limits_cbtc_ter):
+def get_all_point_segs(seg_list, limits_cbtc_ter):
     cbtc_ter_lim_cols_name = get_lim_cols_name("cbtc_ter")
-    segs_upstream_of_a_switch = list()
-    segs_downstream_of_a_switch = list()
+    sw_point_segs = list()
 
-    for seg in segs_within_cbtc_ter:
-        if is_seg_upstream_of_a_switch(seg):
-            segs_upstream_of_a_switch.append(seg)
-        if is_seg_downstream_of_a_switch(seg):
-            segs_downstream_of_a_switch.append(seg)
+    for seg in seg_list:
+        if is_seg_upstream_of_a_switch(seg) or is_seg_downstream_of_a_switch(seg):
+            sw_point_segs.append(seg)
 
     for lim in limits_cbtc_ter:
         seg = lim[cbtc_ter_lim_cols_name[0]]
         direction = lim[cbtc_ter_lim_cols_name[2]]
         if direction == "CROISSANT" and is_seg_upstream_of_a_switch(seg):
-            segs_upstream_of_a_switch.append(seg)
+            sw_point_segs.append(seg)
         if direction == "DECROISSANT" and is_seg_downstream_of_a_switch(seg):
-            segs_downstream_of_a_switch.append(seg)
+            sw_point_segs.append(seg)
 
-    return segs_upstream_of_a_switch, segs_downstream_of_a_switch
+    return sw_point_segs
 
 
 def get_switch_on_path(path: list[str]):

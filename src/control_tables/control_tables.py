@@ -2,54 +2,68 @@
 # -*- coding: utf-8 -*-
 
 import os
+from ..database_loc import DATABASE_LOC
 from ..utils import *
 from .pdf_extract_tables import pdf_reader_extract_tables, CONTROL_TABLE_TYPE
 
 
-CONTROL_TABLES_ROUTE = os.path.join(r"C:\Users\naderc\Downloads",
-                                    r"CR-ASTS-045007-10.00 ATC Line Control Tables Routes.pdf")
-CONTROL_TABLES_ROUTE_CMC = os.path.join(r"C:\Users\naderc\Downloads",
-                                        r"CR-ASTS-045017-11.00 ATC CMC Control Tables Routes.pdf")
-# CONTROL_TABLES_ROUTE = os.path.join(r"C:\Users\naderc\Downloads",
-#                                     r"M4-ST00PGRE-55129_00.01_Allegato_1.pdf")
-# CONTROL_TABLES_ROUTE_CMC = ""
+class CONTROL_TABLE_LINE_PART:
+    line = "Main Line"
+    cmc = "Control and Maintenance Center (CMC)"
+    cmc2 = "CMC second part"
 
 
-CONTROL_TABLES_OVERLAP = os.path.join(r"C:\Users\naderc\Downloads",
-                                      r"CR-ASTS-045009-06.00 ATC Line Control Tables Overlap.pdf")
-CONTROL_TABLES_OVERLAP_CMC = os.path.join(r"C:\Users\naderc\Downloads",
-                                          r"CR-ASTS-045019-09.00 ATC CMC Control Tables Overlap.pdf")
+class ControlTableInfo:
+    control_tables_path = str()
+    result_file = str()
+
+    def __init__(self, table_type: str, line_part: str):
+        if table_type == CONTROL_TABLE_TYPE.route:
+            control_tables = DATABASE_LOC.control_tables_route
+        elif table_type == CONTROL_TABLE_TYPE.overlap:
+            control_tables = DATABASE_LOC.control_tables_overlap
+        else:
+            print(f"Unknown table type: {table_type}, it should be \"{CONTROL_TABLE_TYPE.route}\" or "
+                  f"\"{CONTROL_TABLE_TYPE.overlap}\".")
+            return
+
+        if line_part == CONTROL_TABLE_LINE_PART.line:
+            self.control_tables_path = control_tables.line
+        elif line_part == CONTROL_TABLE_LINE_PART.cmc:
+            self.control_tables_path = control_tables.cmc
+        elif line_part == CONTROL_TABLE_LINE_PART.cmc2:
+            self.control_tables_path = control_tables.cmc2
+        else:
+            print(f"Unknown part of the line: {line_part}, it should be \"{CONTROL_TABLE_LINE_PART.line}\", "
+                  f"\"{CONTROL_TABLE_LINE_PART.cmc}\" or \"{CONTROL_TABLE_LINE_PART.cmc2}\".")
+            return
+
+        self.result_file = os.path.splitext(self.control_tables_path)[0] + ".csv"
 
 
-def parse_control_tables(table_type: str, use_csv_file: bool = False) -> dict:
-    if table_type == CONTROL_TABLE_TYPE.route:
-        control_tables_path = CONTROL_TABLES_ROUTE
-        control_tables_cmc_path = CONTROL_TABLES_ROUTE_CMC
-    elif table_type == CONTROL_TABLE_TYPE.overlap:
-        control_tables_path = CONTROL_TABLES_OVERLAP
-        control_tables_cmc_path = CONTROL_TABLES_OVERLAP_CMC
-    else:
-        print(f"Unknown table type: {table_type}, it should be \"{CONTROL_TABLE_TYPE.route}\" or "
-              f"\"{CONTROL_TABLE_TYPE.overlap}\".")
-        return {}
-    result_file = os.path.splitext(control_tables_path)[0] + ".csv"
-    result_file_cmc = os.path.splitext(control_tables_cmc_path)[0] + ".csv"
+def parse_control_tables(table_type: str, use_csv_file: bool = False, verbose: bool = False, specific_page: int = None,
+                         line_parts: tuple = (CONTROL_TABLE_LINE_PART.line, CONTROL_TABLE_LINE_PART.cmc,
+                                              CONTROL_TABLE_LINE_PART.cmc2)) -> dict:
+    res_dict = dict()
 
+    for line_part in line_parts:
+        control_table_info = ControlTableInfo(table_type, line_part)
+        if not control_table_info.control_tables_path:
+            continue
+        res_dict.update(_get_res_dict_control_table(
+            control_table_info.control_tables_path, control_table_info.result_file, table_type, line_part,
+            use_csv_file=use_csv_file, verbose=verbose, specific_page=specific_page))
+    return res_dict
+
+
+def _get_res_dict_control_table(control_tables_path: str, result_file: str, table_type: str, line_part: str,
+                                use_csv_file: bool = False, verbose: bool = False, specific_page: int = None):
     if use_csv_file is False or not os.path.exists(result_file):
-        res_dict = parse_pdf_control_table(table_type)
+        res_dict = pdf_reader_extract_tables(control_tables_path, table_type, line_part, verbose=verbose,
+                                             specific_page=specific_page)
         create_csv_file_control_table(res_dict, result_file)
     else:
         res_dict = analyze_csv_file_control_table(result_file)
-
-    control_tables_cmc = True if control_tables_cmc_path else False  # test_tack and depot are split to another file
-    if control_tables_cmc:
-        if use_csv_file is False or not os.path.exists(result_file_cmc):
-            res_dict_cmc = parse_pdf_control_table(table_type, cmc=True)
-            create_csv_file_control_table(res_dict_cmc, result_file_cmc)
-        else:
-            res_dict_cmc = analyze_csv_file_control_table(result_file_cmc)
-        res_dict.update(res_dict_cmc)
-
     return res_dict
 
 
@@ -75,19 +89,10 @@ def create_csv_file_control_table(res_dict: dict, result_file: str) -> None:
         if not csv:
             csv = ";".join(list(tables_dict.keys())) + "\n"
         csv += ";".join(list(tables_dict.values())) + "\n"
+    if not csv.strip():
+        return
     _create_csv(csv, result_file)
     print_success(f"The result file can be accessed at \"{result_file}\".")
-
-
-def parse_pdf_control_table(table_type: str, cmc: bool = False) -> dict:
-    if table_type == CONTROL_TABLE_TYPE.route:
-        control_tables_path = CONTROL_TABLES_ROUTE if not cmc else CONTROL_TABLES_ROUTE_CMC
-    elif table_type == CONTROL_TABLE_TYPE.overlap:
-        control_tables_path = CONTROL_TABLES_OVERLAP if not cmc else CONTROL_TABLES_OVERLAP_CMC
-    else:
-        return {}
-
-    return pdf_reader_extract_tables(control_tables_path, table_type, cmc)
 
 
 def _create_csv(csv: str, result_file: str):

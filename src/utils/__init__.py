@@ -2,6 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from .colors_pkg import *
-from .html import *
+from .html_pkg import *
 from .xl_pkg import *
 from .common_utils import *

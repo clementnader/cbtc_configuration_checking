@@ -43,7 +43,7 @@ def get_list_of_paths(seg1, seg2, verbose: bool = False):
     return list_paths
 
 
-def get_min_dist_and_list_of_paths(seg1, seg2, verbose: bool = False, max_nb_paths: int = None):
+def get_min_dist_and_list_of_paths(seg1, seg2, max_nb_paths: int = None, verbose: bool = False):
     """ Return the list of paths between seg1 and seg2. """
     if seg2 in get_all_downstream_segs(seg1):  # seg2 is downstream of seg1
         pass

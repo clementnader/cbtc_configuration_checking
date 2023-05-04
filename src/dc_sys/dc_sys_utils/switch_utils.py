@@ -74,3 +74,18 @@ def give_sw_kp_pos(sw, sw_cols_name, seg_dict, seg_cols_name):
     kp_col = 'F' if upstream else 'E'
     kp = float(seg_dict[point_seg][seg_cols_name[kp_col]])
     return track, kp
+
+
+def get_switch_pos():
+    sw_dict = load_sheet("sw")
+    sw_cols_name = get_cols_name("sw")
+
+    seg_dict = load_sheet("seg")
+    seg_cols_name = get_cols_name("seg")
+
+    sw_pos_dict = dict()
+    for sw, sw_info in sw_dict.items():
+        track, kp = give_sw_kp_pos(sw_info, sw_cols_name, seg_dict, seg_cols_name)
+        sw_pos_dict[sw] = {"track": track, "kp": kp}
+
+    return sw_pos_dict

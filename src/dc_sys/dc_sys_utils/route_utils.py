@@ -37,5 +37,5 @@ def _get_route_switch(route_value: dict[str, str], route_cols_name: dict[str, st
         sw_pos = route_value.get(route_cols_name[sw_pos_col])
         if sw_name:
             sw_pos = convert_switch_pos_to_ixl(sw_name, sw_pos)
-            sw_list.append(sw_name + sw_pos)
+            sw_list.append(sw_name.upper() + sw_pos.upper())
     return sw_list

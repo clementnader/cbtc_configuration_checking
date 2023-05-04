@@ -5,7 +5,7 @@ from ...utils import *
 from ...dc_sys import *
 
 
-def min_distance_between_vsp_overlap(in_cbtc: bool = True, same_dir: bool = True, verbose: bool = False):
+def min_distance_between_vsp_overlap(in_cbtc: bool = False, same_dir: bool = True):
     if in_cbtc:
         sig_dict = get_sigs_in_cbtc_ter()
     else:
@@ -17,11 +17,11 @@ def min_distance_between_vsp_overlap(in_cbtc: bool = True, same_dir: bool = True
     dist_vsp_col_name = sig_cols_name['I']
 
     dict_min_dist = dict()
+    progress_bar(1, 1, end=True)  # reset progress_bar
     for i, home_sig_with_overlap in enumerate(home_sigs_with_overlap_list):
         if dist_vsp_col_name in sig_dict[home_sig_with_overlap]:
-            if verbose:
-                print_log(f"\t {i/nb_home_sigs_with_overlap:.2%} processing distances between "
-                          f"{home_sig_with_overlap} VSP and other signals VSPs...")
+            print_log(f"\r{progress_bar(i, nb_home_sigs_with_overlap)} processing distances between "
+                      f"{home_sig_with_overlap} VSP and other signals VSPs...", end="")
             dist_vsp1 = float(sig_dict[home_sig_with_overlap][dist_vsp_col_name])
             vsp1_seg = sig_dict[home_sig_with_overlap][sig_cols_name['C']]
             vsp1_x = float(sig_dict[home_sig_with_overlap][sig_cols_name['D']]) + dist_vsp1
@@ -41,6 +41,8 @@ def min_distance_between_vsp_overlap(in_cbtc: bool = True, same_dir: bool = True
                         d = get_dist(vsp1_seg, vsp1_x, vsp2_seg, vsp2_x)
                         if d is not None:
                             dict_min_dist[f"{home_sig_with_overlap} to {sig}"] = d
+    print_log(f"\r{progress_bar(nb_home_sigs_with_overlap, nb_home_sigs_with_overlap, end=True)} processing distances "
+              f"between VSP in Overlap finished.\n")
 
     min_dist = min(vsps_values for vsps_values in dict_min_dist.values())
     print(f"The minimum distance between two VSPs, one of whom is related to a Home Signal with Overlap is, "

@@ -14,17 +14,17 @@ def get_sig_before_cbtc_exit(sig_dict: dict, sig_cols_name: dict[str, str]) -> l
     return res_list
 
 
-def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool = True, verbose: bool = False):
+def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool = True):
     sig_dict = get_sigs_in_cbtc_ter()
     sig_cols_name = get_cols_name("sig")
     sig_before_cbtc_exit = get_sig_before_cbtc_exit(sig_dict, sig_cols_name)
     nb_sig_before_exit = len(sig_before_cbtc_exit)
 
     dict_min_dist = dict()
+    progress_bar(1, 1, end=True)  # reset progress_bar
     for i, sig1 in enumerate(sig_before_cbtc_exit):
-        if verbose:
-            print_log(f"\t {i/nb_sig_before_exit:.2%} processing distances between {sig1} "
-                      f"and previous last signal before CBTC territory exit...")
+        print_log(f"\r{progress_bar(i, nb_sig_before_exit)} processing distances between {sig1} "
+                  f"and previous last signal before CBTC territory exit...", end="")
         dir1 = sig_dict[sig1][sig_cols_name['E']]
         seg1 = sig_dict[sig1][sig_cols_name['C']]
         x1 = float(sig_dict[sig1][sig_cols_name['D']])
@@ -36,6 +36,8 @@ def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool 
                     d = get_dist(seg1, x1, seg2, x2)
                     if d is not None:
                         dict_min_dist[f"{sig1} to {sig2}"] = {"d": d}
+    print_log(f"\r{progress_bar(nb_sig_before_exit, nb_sig_before_exit, end=True)} processing distances between "
+              f"two last signals before CBTC Territory exit finished.\n")
 
     min_dist = min(min_dist['d'] for min_dist in dict_min_dist.values())
     print(f"The minimum distance between the two last signals before any CBTC territory exit is"

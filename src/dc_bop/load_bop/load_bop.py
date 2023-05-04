@@ -8,8 +8,10 @@ LOADED_SWITCH_DIRS = dict()
 
 START_LINE = 3
 
-SW_NAME = 'A'
+SW_NAME = 'B'
 REVERSE_EQUALS_RIGHT = 'C'
+SW_NAME_2 = 'D'
+REVERSE_EQUALS_RIGHT_2 = 'E'
 
 
 def load_bop() -> dict:
@@ -28,8 +30,14 @@ def get_switch_bop(sw_sh: xlrd.sheet) -> dict:
     bop_dict = dict()
     for line in range(START_LINE, sw_sh.nrows+1):
         sw_name = get_xlrd_value(sw_sh, line, SW_NAME)
-        reverse_equals_right = convert_sw_pos(get_xlrd_value(sw_sh, line, REVERSE_EQUALS_RIGHT))
-        bop_dict[sw_name] = reverse_equals_right
+        if sw_name:
+            reverse_equals_right = convert_sw_pos(get_xlrd_value(sw_sh, line, REVERSE_EQUALS_RIGHT))
+            bop_dict[sw_name] = reverse_equals_right
+
+        sw_name2 = get_xlrd_value(sw_sh, line, SW_NAME_2)
+        if sw_name2:
+            reverse_equals_right2 = convert_sw_pos(get_xlrd_value(sw_sh, line, REVERSE_EQUALS_RIGHT_2))
+            bop_dict[sw_name2] = reverse_equals_right2
     return bop_dict
 
 

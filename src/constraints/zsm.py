@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils import *
 from ..dc_sys import *
 
 
@@ -75,9 +76,9 @@ def manage_zsm_limits_on_different_segs(res_dict):
                 res_dict[seg]["list_limits"].append((0, x))
             else:
                 print_error(f"other_seg not in downstream_segs or upstream_segs"
-                            f"\n{seg=}"
-                            f"\n{res_dict[seg]=}"
-                            f"\n{other_seg=}\n")
+                            f"\n\t{seg=}"
+                            f"\n\t{res_dict[seg]=}"
+                            f"\n\t{other_seg=}\n")
                 continue
             for linked_seg in linked_segs:
                 if linked_seg == other_seg:
@@ -108,7 +109,7 @@ def concatenate_zsm_limits(res_dict):
 
 
 def print_results(res_dict):
-    print(f"{Color.blue}{Color.underline}Results for CF_ZSM_CBTC_10{Color.reset}\n")
+    print(f"\n{Color.bold}{Color.blue}{Color.underline}Results for CF_ZSM_CBTC_10{Color.reset}\n")
     sw_dict = get_sw_dict()
     sw_cols_name = get_cols_name("sw")
     for seg, seg_values in res_dict.items():
@@ -116,8 +117,8 @@ def print_results(res_dict):
         seg_limits = seg_values["seg_limits"]
         if not zsm_coverage_limits:
             print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
-                        f"\nempty zsm_coverage_limits"
-                        f"\nfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
+                        f"\n\tempty zsm_coverage_limits"
+                        f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
             continue
 
         zsm_mini, zsm_maxi = zsm_coverage_limits
@@ -126,22 +127,22 @@ def print_results(res_dict):
             direction = check_seg_in_sw(seg, sw_dict, sw_cols_name)
             if direction in ("BIDIR", "INCREASING") and round(zsm_mini - seg_mini, 3) <= .01:
                 print(f"{Color.green}OK on switch heels{Color.reset}\n"
-                      f"{Color.dark_yellow}{zsm_mini=} not equal to {seg_mini=}"
-                      f"\nfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}{Color.reset}\n")
+                      f"\t{zsm_mini=} not equal to {seg_mini=}"
+                      f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}\n")
             else:
                 print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
-                            f"\n{zsm_mini=} not equal to {seg_mini=}"
-                            f"\nfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
+                            f"\n\t{zsm_mini=} not equal to {seg_mini=}"
+                            f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
         if zsm_maxi < seg_maxi:
             direction = check_seg_in_sw(seg, sw_dict, sw_cols_name)
             if direction in ("BIDIR", "DECREASING") and round(seg_maxi - zsm_maxi, 3) <= .01:
                 print(f"{Color.green}OK on switch heels{Color.reset}\n"
-                      f"{Color.dark_yellow}{zsm_maxi=} not equal to {seg_maxi=}"
-                      f"\nfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}{Color.reset}\n")
+                      f"\t{zsm_maxi=} not equal to {seg_maxi=}"
+                      f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}\n")
             else:
                 print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
-                            f"\n{zsm_maxi=} not equal to {seg_maxi=}"
-                            f"\nfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
+                            f"\n\t{zsm_maxi=} not equal to {seg_maxi=}"
+                            f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
 
 
 def check_seg_in_sw(seg, sw_dict, sw_cols_name):

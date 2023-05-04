@@ -29,7 +29,7 @@ def dc_par_constraints():
 
 
 def dc_par_customer_data():
-    # max_dist_local_tag_group(in_cbtc=True)
+    # max_dist_local_tag_group(in_cbtc=False)
     # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to verify
     # min_distance_between_vsp_overlap(in_cbtc=True)
     # smallest_size_of_a_switch_block_heel(in_cbtc=True)
@@ -52,25 +52,40 @@ def constraints():
 
 def route_and_overlap():
     # Create CSV files
-    # parse_control_tables(CONTROL_TABLE_TYPE.route, use_csv_file=False)
-    # parse_control_tables(CONTROL_TABLE_TYPE.overlap, use_csv_file=False)
+    # parse_control_tables(
+    #     CONTROL_TABLE_TYPE.route, use_csv_file=False,
+    #     # verbose=True,
+    #     # specific_page=10,
+    #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
+    # )
+    # parse_control_tables(
+    #     CONTROL_TABLE_TYPE.overlap, use_csv_file=False,
+    #     # verbose=True,
+    #     # specific_page=2,
+    #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
+    # )
 
     # Analyze DC_SYS with CSV files
-    # check_route_control_tables(use_csv_file=False)
+    # check_route_control_tables(use_csv_file=True)
     # check_overlap_control_tables(use_csv_file=True)
     return
 
 
 def main():
     # print(get_depolarized_segs())
-    min_slope, max_slope = get_max_slope(in_cbtc=False)
-    abs_max_slope = max(abs(min_slope), abs(max_slope))
-    sub_variables = dict()
-    at_rollback_dist = get_at_rollback_dist(abs_max_slope, variables=sub_variables)
-    print_sub_variables(sub_variables)
-    print_final_value({"at_rollback_dist": f"{at_rollback_dist} m"})
+    # print()
+    # for i, val in get_all_segs_linked().items():
+    #     print(i, ":", {key: sorted(val_i) for key, val_i in val.items()})
+    # min_slope, max_slope = get_max_slope(in_cbtc=False)
+    # abs_max_slope = max(abs(min_slope), abs(max_slope))
+    # sub_variables = dict()
+    # at_rollback_dist = get_at_rollback_dist(abs_max_slope, variables=sub_variables)
+    # print_sub_variables(sub_variables)
+    # print_final_value({"at_rollback_dist": f"{at_rollback_dist} m"})
 
+    # print_all_colors()
     # show_colors()
+    # test_rainbow()
 
     # checksum_compare_parser()
     # convert_ccparam()

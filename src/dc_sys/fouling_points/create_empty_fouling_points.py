@@ -24,18 +24,3 @@ def create_fouling_points_file():
         sh[f"{SW_NAME_COL}{line}"] = sw_name
         sh[f"{SW_KP_COL}{line}"] = sw_pos["kp"]
     wb.save(os.path.join(OUTPUT_DIRECTORY, "Fouling Points.xlsx"))
-
-
-def get_switch_pos():
-    sw_dict = load_sheet("sw")
-    sw_cols_name = get_cols_name("sw")
-
-    seg_dict = load_sheet("seg")
-    seg_cols_name = get_cols_name("seg")
-
-    sw_pos_dict = dict()
-    for sw, sw_info in sw_dict.items():
-        track, kp = give_sw_kp_pos(sw_info, sw_cols_name, seg_dict, seg_cols_name)
-        sw_pos_dict[sw] = {"track": track, "kp": kp}
-
-    return sw_pos_dict

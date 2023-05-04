@@ -40,23 +40,28 @@ def verif_correct_offset_seg_x(seg, x, first_cell, line, col, sh_name):
         return
     if seg == "" or x == "":
         print_warning(f"Strange pair (segment/offset) in sheet {Color.blue}{sh_name}{Color.reset}: "
-                      f"{get_xl_column(col-1)}{get_xl_line(line)} and {get_xl_column(col)}{get_xl_line(line)}"
+                      f"{Color.yellow}{get_xl_column(col-1)}{get_xl_line(line)}{Color.reset} and "
+                      f"{Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset}"
                       f"\n{seg=}/{x=}")
         return
     if not (isinstance(x, float) or isinstance(x, int)):
-        print_warning(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                      f"Offset at {get_xl_column(col)}{get_xl_line(line)} is a string"
-                      f"\n{x=}")
-        x = float(x)
+        if "." in x:
+            print_warning(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
+                          f"Offset at {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
+                          f"uses a dot \'.\' as the decimal separator"
+                          f"\n{x=}")
+        x = float(x.replace(',', '.'))
     x = round(x, 3)
     len_seg = get_len_seg(seg)
     if not (0 <= x):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"Offset at cell {get_xl_column(col)}{get_xl_line(line)} should be positive"
+                    f"Offset at cell {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
+                    f"should be positive"
                     f"\n{x=}")
     if not (x <= len_seg):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"Offset at cell {get_xl_column(col)}{get_xl_line(line)} should be lower than "
+                    f"Offset at cell {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
+                    f"should be lower than "
                     f"the segment {seg} length ({len_seg})"
                     f"\n{x=}")
 
@@ -68,25 +73,28 @@ def verif_correct_offset_track_kp(track, kp, first_cell, line, col, sh_name):
         return
     if track == "" or kp == "":
         print_warning(f"Strange pair (track/KP) in sheet {Color.blue}{sh_name}{Color.reset}: "
-                      f"{get_xl_line(line)}{get_xl_column(col-1)} and {get_xl_line(line)}{get_xl_column(col)}"
+                      f"{Color.yellow}{get_xl_column(col-1)}{get_xl_line(line)}{Color.reset} and "
+                      f"{Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset}"
                       f"\n{track=}/{kp=}")
         return
     if not (isinstance(kp, float) or isinstance(kp, int)):
-        print_warning(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                      f"KP at {get_xl_column(col)}{get_xl_line(line)} is a string"
-                      f"\n{kp=}")
-        kp = float(kp)
+        if "." in kp:
+            print_warning(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
+                          f"KP at {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
+                          f"uses a dot \'.\' as the decimal separator"
+                          f"\n{kp=}")
+        kp = float(kp.replace(',', '.'))
     kp = round(kp, 3)
     min_kp, max_kp = get_track_limits(track)
     if not (min_kp <= kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"KP at cell {get_xl_column(col)}{get_xl_line(line)} should be larger than "
-                    f"the start kp of track {track} ({min_kp})"
+                    f"KP at cell {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
+                    f"should be larger than the start kp of track {track} ({min_kp})"
                     f"\n{kp=}")
     if not (kp <= max_kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"KP at cell {get_xl_column(col)}{get_xl_line(line)} should be lower than "
-                    f"the end kp of track {track} ({max_kp})"
+                    f"KP at cell {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
+                    f"should be lower than the end kp of track {track} ({max_kp})"
                     f"\n{kp=}")
 
 

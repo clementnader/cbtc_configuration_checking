@@ -4,8 +4,7 @@
 import os
 import sys
 
-if sys.platform == "win32" and ("SHELL" not in os.environ.keys() and "PYCHARM_HOSTED" not in os.environ.keys()):
-    # For Windows when not using git-bash or pycharm
+if sys.platform == "win32":  # for Windows
     os.system("color")
 
 
@@ -26,12 +25,6 @@ def bg_color(color_seq: str):
     return color_seq.replace("[38", "[48")
 
 
-def show_colors():
-    for name, val in Color.__dict__.items():
-        if not name.startswith("__") and not name.endswith("__") and isinstance(val, str):
-            print(f" - {val}{name}{Color.reset}")
-
-
 class Color:
     """ANSI escape code
 Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
@@ -39,6 +32,7 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     reset = csi_seq(0)
 
     # Colors
+    default = csi_color_seq(250)
     black = csi_color_seq(0)
     dark_grey = csi_color_seq(8)
     light_grey = csi_color_seq(7)
@@ -53,14 +47,24 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     cyan = csi_color_seq(51)
 
     dark_green = csi_color_seq(22)
-    green = csi_color_seq(35)
-    vivid_green = csi_color_seq(40)
-    light_green = csi_color_seq(118)
+    dark_green2 = csi_color_seq(28)
+    forest_green = csi_color_seq(29)
+    green = csi_color_seq(76)
+    green2 = csi_color_seq(40)
+    mint_green = csi_color_seq(35)  # rename green -> mint_green
+    classic_dark_green = csi_color_seq(2)
+    classic_light_green = csi_color_seq(10)
+    vivid_green = csi_color_seq(82)
+    vivid_green2 = csi_color_seq(118)
+    vivid_green3 = csi_color_seq(119)
+    light_green = csi_color_seq(154)
     pale_green = csi_color_seq(120)
 
     dark_red = csi_color_seq(88)
     red = csi_color_seq(160)
     light_red = csi_color_seq(9)
+    standard_red = csi_color_seq(1)
+    vivid_red = csi_color_seq(196)
 
     purple = csi_color_seq(91)
     dark_magenta = csi_color_seq(89)
@@ -68,12 +72,16 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     pink = csi_color_seq(213)
     pale_pink = csi_color_seq(225)
 
-    dark_orange = csi_color_seq(202)
+    orange_red = csi_color_seq(202)  # rename dark_orange -> orange_red
+    dark_orange = csi_color_seq(172)
     orange = csi_color_seq(208)
     light_orange = csi_color_seq(214)
-    brown = csi_color_seq(94)
+    dark_brown = csi_color_seq(94)  # rename brown -> dark_brown
+    brown = csi_color_seq(130)
+    light_brown = csi_color_seq(172)
     dark_yellow = csi_color_seq(3)
     yellow = csi_color_seq(220)
+    yellow2 = csi_color_seq(11)
     light_yellow = csi_color_seq(228)
     beige = csi_color_seq(223)
 
@@ -86,3 +94,85 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     no_italic = csi_seq(23)
     underline = csi_seq(4)
     no_underline = csi_seq(24)
+    reverse = csi_seq(7)
+
+    # Rainbow
+    rainbow = [csi_color_seq(i) for i in (
+        52,   88, 124, 160, 196,
+        202, 208, 214, 220, 226,
+        190, 154, 118,  82,  46,
+        47,   48,  49,  50,  51,
+        45,   39,  33,  27,
+        57,   56,  55,  54,  53
+    )]
+
+
+def move_up(nb_line: int):  # does not work in PyCharm interface
+    return f"{ESCAPE_SEQ}{nb_line}A"
+
+
+def move_down(nb_line: int):
+    return f"{ESCAPE_SEQ}{nb_line}B"
+
+
+def move_right(nb_char: int):
+    return f"{ESCAPE_SEQ}{nb_char}C"
+
+
+def move_left(nb_char: int):
+    return f"{ESCAPE_SEQ}{nb_char}D"
+
+
+def test_rainbow():
+    full_cell_char = '█'
+    for color in Color.rainbow:
+        print(color + full_cell_char + Color.reset, end="")
+    print()
+
+
+def print_all_colors():
+    max_length = 164
+
+    cur_len = 68
+    start_len = (max_length-cur_len) // 2
+    print(" " * start_len + "-"*68)
+    print(" " * start_len + f"{'Standard colors':^32}    {'High-intensity colors':^32}")
+    print(" " * start_len, end="")
+    for i in range(16):
+        print(f"{csi_color_seq(i)}{i:>3}{Color.reset}", end=" ")
+        if i % 8 == -1 % 8:
+            print(end="    ")
+
+    print("\n\n" + "-"*164)
+    print(f"{'216 colors':^164}")
+    for i in range(16, 216+16):
+        print(f"{csi_color_seq(i)}{i:>3}{Color.reset}", end=" ")
+        if (i-16) % 36 == -1 % 36:
+            print()
+        elif (i-16) % 6 == -1 % 6:
+            print(end="    ")
+
+    cur_len = 96
+    start_len = (max_length-cur_len) // 2
+    print("\n\n" + " " * start_len + "-"*96)
+    print(" " * start_len + f"{'Grayscale colors':^96}")
+    print(" " * start_len, end="")
+    for i in range(216+16, 256):
+        print(f"{csi_color_seq(i)}{i:>3}{Color.reset}", end=" ")
+
+    print("\n")
+
+
+def show_colors():
+    for name, val in Color.__dict__.items():
+        if not name.startswith("__") and not name.endswith("__") and isinstance(val, str):
+            print(f" - {val}{name}{Color.reset}")
+
+
+def remove_colors(string: str):
+    res_string = string
+    for name, val in Color.__dict__.items():
+        if not name.startswith("__") and not name.endswith("__") and isinstance(val, str):
+            if val in res_string:
+                res_string = res_string.replace(val, "")
+    return res_string

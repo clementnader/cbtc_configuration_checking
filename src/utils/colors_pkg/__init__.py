@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .colored_output import Color, bg_color, show_colors
-from .print_utils import print_log, print_warning, print_error, print_success, \
-    print_variables, print_sub_variables, print_final_value
+from .colored_output import Color, bg_color, remove_colors, print_all_colors, show_colors, test_rainbow, \
+    move_up, move_down, move_left, move_right
+from .print_utils import *
