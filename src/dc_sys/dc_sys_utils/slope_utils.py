@@ -5,7 +5,7 @@ from ...utils import *
 from ..load_database.load_sheets import load_sheet, get_cols_name
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 from .dist_utils import *
-from .links_utils import is_seg_downstream
+from .path_utils import is_seg_downstream
 
 
 def get_slopes_in_cbtc_ter():

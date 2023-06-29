@@ -12,7 +12,7 @@ def r_cdv_5():
 
     error_counts = [0, 0]
     for sw_name, sw_value in sw_dict.items():
-        is_sw_upstream = is_sw_point_seg_upstream(sw_value, sw_cols_name)
+        is_sw_upstream = is_sw_point_seg_upstream(sw_value)
         sw_block, sw_block_value = get_block_associated_to_sw(sw_value)
         upstream_limits, downstream_limits = find_upstream_n_downstream_limits(sw_block_value)
 
@@ -38,7 +38,7 @@ def r_cdv_5():
 def test_sw_danger_point(sw_name, sw_value, sw_cols_name, sw_block, is_sw_upstream, upstream_limits, downstream_limits):
     block_lim_cols_name = get_lim_cols_name("block")
     relative_limits = upstream_limits if is_sw_upstream else downstream_limits
-    sw_seg, sw_x = give_sw_pos(sw_value, sw_cols_name)
+    sw_seg, sw_x = give_sw_pos(sw_value)
     error_count = 0
     for lim in relative_limits:
         seg = lim[block_lim_cols_name[0]]

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .links_utils import get_all_upstream_segs, get_all_downstream_segs
-from .segments_utils import get_len_seg, get_linked_segs, is_seg_depolarized
+from .path_utils import get_all_upstream_segs, get_all_downstream_segs
+from .segments_utils import get_len_seg, get_linked_segs, is_seg_depolarized, get_associated_depol
 
 
 def get_dist_downstream(seg1, x1, seg2, x2):
@@ -29,17 +29,20 @@ def get_dist(seg1, x1, seg2, x2, verbose: bool = False):
     if seg1 == seg2:
         return round(abs(x1-x2), 3)
 
-    dist, _ = get_min_dist_and_list_of_paths(seg1, seg2, verbose)
+    dist, _, _ = get_min_dist_and_list_of_paths(seg1, seg2, verbose=verbose)
     if dist is None:
         return None
 
-    dist -= x1 + (get_len_seg(seg2) - x2)
+    if seg2 in get_all_downstream_segs(seg1):  # seg2 is downstream of seg1
+        dist -= x1 + (get_len_seg(seg2) - x2)
+    else:
+        dist -= x2 + (get_len_seg(seg1) - x1)
     return round(dist, 3)
 
 
 def get_list_of_paths(seg1, seg2, verbose: bool = False):
     """ Return the list of paths between seg1 and seg2. """
-    _, list_paths = get_min_dist_and_list_of_paths(seg1, seg2, verbose)
+    _, _, list_paths = get_min_dist_and_list_of_paths(seg1, seg2, verbose=verbose)
     return list_paths
 
 
@@ -53,9 +56,9 @@ def get_min_dist_and_list_of_paths(seg1, seg2, max_nb_paths: int = None, verbose
     else:
         if verbose:
             print(f"No path found between {seg1} and {seg2}")
-        return None, []
-    dist, _, list_paths = get_downstream_path(seg1, seg2, max_nb_paths)
-    return dist, list_paths
+        return None, [], []
+    dist, min_path, list_paths = get_downstream_path(seg1, seg2, max_nb_paths)
+    return dist, min_path, list_paths
 
 
 def get_downstream_path(start_seg, end_seg, max_nb_paths: int = None) -> (float, list[str], list[list[str]]):
@@ -71,32 +74,17 @@ def get_downstream_path(start_seg, end_seg, max_nb_paths: int = None) -> (float,
             return
         if seg not in accessible_segs:
             return
-        if max_nb_paths and len(list_paths) > max_nb_paths:
+        if max_nb_paths is not None and len(list_paths) > max_nb_paths:
             return
         for next_seg in get_linked_segs(seg, downstream):
-            if is_seg_depolarized(next_seg) and is_seg_depolarized(seg):
+            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
                 downstream = not downstream
-            if next_seg in path:
-                print(f"PATH FROM {start_seg} TO {end_seg}:")
-                print("next_seg already in path")
-                print(f"{path=}")
-                print(f"{seg=}")
-                print(f"{next_seg=}")
-                print()
-            try:
-                inner_recurs_next_seg(next_seg, path + [next_seg], downstream)
-            except KeyboardInterrupt:
-                print(f"PATH FROM {start_seg} TO {end_seg}:")
-                print(f"{path=}")
-                print(f"{seg=}")
-                print(f"{next_seg=}")
-                print()
-                raise KeyboardInterrupt
+            inner_recurs_next_seg(next_seg, path + [next_seg], downstream)
 
     inner_recurs_next_seg(start_seg, [start_seg])
-    if max_nb_paths and len(list_paths) > max_nb_paths:
-        return None, [], []
     if not list_paths:
+        return None, [], []
+    if max_nb_paths is not None and len(list_paths) > max_nb_paths:
         return None, [], []
     min_len, min_path = get_smallest_path(list_paths)
     return min_len, min_path, list_paths
@@ -117,4 +105,4 @@ def get_smallest_path(list_paths: list[list[str]]) -> (float, list[str]):
 
 def get_path_len(path: list[str]) -> float:
     """ Return the length of a path: the sum of the segments lengths. """
-    return sum(get_len_seg(seg) for seg in path)
+    return sum([get_len_seg(seg) for seg in path])

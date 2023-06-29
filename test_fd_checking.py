@@ -17,35 +17,45 @@ def compare_dc_sys():
     return
 
 
+def zc():
+    # create_if_files()
+    return
+
+
 def additional_verif():
-    # pretty_print_dict(min_dist_between_tags(in_cbtc=True))  # take a while to process for the whole territory
+    # pretty_print_dict(min_dist_between_tags(in_cbtc=False))  # take a while to process for the whole territory
     # get_slope_at_plt(in_cbtc=True)
     return
 
 
 def dc_par_constraints():
-    # min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc=True)
+    # min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc=False)
     return
 
 
 def dc_par_customer_data():
     # max_dist_local_tag_group(in_cbtc=False)
     # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to verify
-    # min_distance_between_vsp_overlap(in_cbtc=True)
-    # smallest_size_of_a_switch_block_heel(in_cbtc=True)
+    # min_distance_between_vsp_overlap(in_cbtc=False)
+    # smallest_size_of_a_switch_block_heel(in_cbtc=False)
+    # smallest_size_of_a_switch_block_heel(in_cbtc=False)
     # min_length_multiple_path(in_cbtc=False)
     return
 
 
 def dc_par_add_on_param():
     # get_max_slope(in_cbtc=False)
-    # get_block_min_length(in_cbtc=True)
+    # get_block_min_length(in_cbtc=False)
+    # dict_switch_area_length = min_switch_area_length(in_cbtc=False)
     return
 
 
 def constraints():
     # check_offset_correctness()
-    # r_cdv_5()  # TODO regarder pour prendre un param plutôt avec le hardware/hardware reference plutôt que faire une diff avec le kit C11
+    # TODO for r_cdv_5:
+    #  regarder pour prendre un param plutôt avec le hardware/hardware reference
+    #  plutôt que faire une diff avec le kit C11
+    # r_cdv_5()
     # cf_zsm_cbtc_10()
     return
 
@@ -71,10 +81,27 @@ def route_and_overlap():
     return
 
 
+# def get_params():
+#     with open(r"C:\Users\naderc\Desktop\params.txt", "r") as f:
+#         lines = f.readlines()
+#     for i, line in enumerate(lines):
+#         param = line.strip()
+#         value, unit = get_param_with_unit(param, keep_km_per_h=True)
+#         color = Color.light_blue if i % 2 == 0 else Color.pale_green
+#         print(f"{color}{param:50} = {value} {unit}{Color.reset}")
+
+
 def main():
+    # for track in get_track_in_cbtc_ter():
+    #     print(track)
+    # pretty_print_dict(load_cctool_oo_info())
+    # di = get_all_accessible_segs()
+    # pretty_print_dict(di)
+    # print(get_all_paths_from("S_09", downstream=False))
+
     # print(get_depolarized_segs())
     # print()
-    # for i, val in get_all_segs_linked().items():
+    # for i, val in get_all_accessible_segs().items():
     #     print(i, ":", {key: sorted(val_i) for key, val_i in val.items()})
     # min_slope, max_slope = get_max_slope(in_cbtc=False)
     # abs_max_slope = max(abs(min_slope), abs(max_slope))
@@ -86,6 +113,7 @@ def main():
     # print_all_colors()
     # show_colors()
     # test_rainbow()
+    # test_moving_progress_bar()
 
     # checksum_compare_parser()
     # convert_ccparam()
@@ -96,7 +124,6 @@ def main():
     # pretty_print_dict(get_sws_in_cbtc_ter(), max_lvl=0)
     # pretty_print_dict(get_plts_in_cbtc_ter(), max_lvl=0)
 
-    # create_cctool_oo_schema_info_file()
     # create_fouling_points_file()
 
     route_and_overlap()
@@ -108,6 +135,8 @@ def main():
     dc_par_add_on_param()
     dc_par_customer_data()
     dc_par_constraints()
+
+    zc()
 
     compare_dc_sys()
     return

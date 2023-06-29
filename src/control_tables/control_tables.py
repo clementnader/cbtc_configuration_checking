@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 from ..database_loc import DATABASE_LOC
 from ..utils import *
 from .pdf_extract_tables import pdf_reader_extract_tables, CONTROL_TABLE_TYPE
@@ -102,7 +101,7 @@ def _create_csv(csv: str, result_file: str):
         with open(result_file, "w") as f:
             f.write(csv)
     except PermissionError:
-        print_error(f"Permission denied to write at {result_file=}."
+        print_error(f"Permission denied to write at {result_file = }."
                     f"\nYou have to close it if you want it to be overwritten.")
         if input(f"Do you want to retry? (Y/N) ").upper() in ["Y", "YES"]:
             with open(result_file, "w") as f:

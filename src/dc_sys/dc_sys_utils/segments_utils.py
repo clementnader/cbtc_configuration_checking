@@ -114,7 +114,7 @@ def get_straight_linked_segs(seg: str, downstream: bool = True, depth: int = 10,
     while linked_seg is not None and cnt < depth:
         if linked_seg2 is not None and verbose:
             print_warning(f"Another segment exists {'downstream' if downstream else 'upstream'}, which is ignored."
-                          f"\n(origin_seg={seg}, seg={previous_seg}, {linked_seg=}, {linked_seg2=})")
+                          f"\n(origin_seg={seg}, seg={previous_seg}, {linked_seg = }, {linked_seg2 = })")
         cnt += 1
         yield linked_seg
         previous_seg = linked_seg

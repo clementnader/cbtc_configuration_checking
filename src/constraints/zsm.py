@@ -76,9 +76,9 @@ def manage_zsm_limits_on_different_segs(res_dict):
                 res_dict[seg]["list_limits"].append((0, x))
             else:
                 print_error(f"other_seg not in downstream_segs or upstream_segs"
-                            f"\n\t{seg=}"
-                            f"\n\t{res_dict[seg]=}"
-                            f"\n\t{other_seg=}\n")
+                            f"\n\t{seg = }"
+                            f"\n\t{res_dict[seg] = }"
+                            f"\n\t{other_seg = }\n")
                 continue
             for linked_seg in linked_segs:
                 if linked_seg == other_seg:
@@ -118,7 +118,7 @@ def print_results(res_dict):
         if not zsm_coverage_limits:
             print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
                         f"\n\tempty zsm_coverage_limits"
-                        f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
+                        f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }")
             continue
 
         zsm_mini, zsm_maxi = zsm_coverage_limits
@@ -127,22 +127,22 @@ def print_results(res_dict):
             direction = check_seg_in_sw(seg, sw_dict, sw_cols_name)
             if direction in ("BIDIR", "INCREASING") and round(zsm_mini - seg_mini, 3) <= .01:
                 print(f"{Color.green}OK on switch heels{Color.reset}\n"
-                      f"\t{zsm_mini=} not equal to {seg_mini=}"
-                      f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}\n")
+                      f"\t{zsm_mini = } not equal to {seg_mini = }"
+                      f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }\n")
             else:
                 print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
-                            f"\n\t{zsm_mini=} not equal to {seg_mini=}"
-                            f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
+                            f"\n\t{zsm_mini = } not equal to {seg_mini = }"
+                            f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }")
         if zsm_maxi < seg_maxi:
             direction = check_seg_in_sw(seg, sw_dict, sw_cols_name)
             if direction in ("BIDIR", "DECREASING") and round(seg_maxi - zsm_maxi, 3) <= .01:
                 print(f"{Color.green}OK on switch heels{Color.reset}\n"
-                      f"\t{zsm_maxi=} not equal to {seg_maxi=}"
-                      f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}\n")
+                      f"\t{zsm_maxi = } not equal to {seg_maxi = }"
+                      f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }\n")
             else:
                 print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
-                            f"\n\t{zsm_maxi=} not equal to {seg_maxi=}"
-                            f"\n\tfor {seg=}, {zsm_coverage_limits=}, {seg_limits=}")
+                            f"\n\t{zsm_maxi = } not equal to {seg_maxi = }"
+                            f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }")
 
 
 def check_seg_in_sw(seg, sw_dict, sw_cols_name):
@@ -174,8 +174,8 @@ def get_sw_dict():
             sw_dict[sw]["Direction"] = "DECREASING"
         else:
             print(f"No direction found"
-                  f"\n{sw=}"
-                  f"\n{sw_dict[sw]=}"
-                  f"\n{downstream_point_segs=}"
-                  f"\n{upstream_point_segs=}")
+                  f"\n{sw = }"
+                  f"\n{sw_dict[sw] = }"
+                  f"\n{downstream_point_segs = }"
+                  f"\n{upstream_point_segs = }")
     return sw_dict

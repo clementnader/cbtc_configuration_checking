@@ -17,7 +17,7 @@ FOULING_POINT_COL = 'C'
 
 
 def create_fouling_points_file():
-    sw_pos_dict = get_switch_pos()
+    sw_pos_dict = get_switch_position_dict()
     wb = load_xlsx_wb(FOULING_POINT_TEMPLATE)
     sh = wb.get_sheet_by_name(FOULING_POINT_SHEET)
     for line, (sw_name, sw_pos) in enumerate(sw_pos_dict.items(), start=FOULING_POINT_START_LINE):

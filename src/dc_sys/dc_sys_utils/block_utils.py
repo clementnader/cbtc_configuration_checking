@@ -5,7 +5,7 @@ from ...utils import *
 from ..load_database.load_sheets import load_sheet, get_cols_name, get_lim_cols_name
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 from .dist_utils import get_dist_downstream, get_downstream_path
-from .links_utils import is_seg_downstream
+from .path_utils import is_seg_downstream
 from .segments_utils import get_linked_segs
 
 
@@ -30,11 +30,6 @@ def get_blocks_in_cbtc_ter():
 
 def get_list_len_block(block):
     block_lim_cols_name = get_lim_cols_name("block")
-    list_dist = get_len_block_list(block, block_lim_cols_name)
-    return list_dist
-
-
-def get_len_block_list(block, block_lim_cols_name):
     list_dist = list()
     upstream_limits, downstream_limits = find_upstream_n_downstream_limits(block)
     for up_lim in upstream_limits:
@@ -73,17 +68,15 @@ def is_block_limit_upstream(start_lim: dict, limits: list[dict], block_lim_cols_
     for lim in other_limits:
         seg = lim[block_lim_cols_name[0]]
         if is_seg_downstream(start_seg, seg):  # seg is downstream of start_seg
-            if does_path_exist_within_block(start_lim, lim, limits, block_lim_cols_name, downstream=True):
+            if does_path_exist_within_block(start_seg, seg, limits, block_lim_cols_name, downstream=True):
                 return True  # start_seg is upstream of another limit within the block
         if is_seg_downstream(seg, start_seg):  # seg is upstream of start_seg
-            if does_path_exist_within_block(start_lim, lim, limits, block_lim_cols_name, downstream=False):
+            if does_path_exist_within_block(start_seg, seg, limits, block_lim_cols_name, downstream=False):
                 return False  # start_seg is downstream of another limit within the block
     return None
 
 
-def does_path_exist_within_block(lim1, lim2, block_limits, block_lim_cols_name, downstream: bool = None):
-    seg1 = lim1[block_lim_cols_name[0]]
-    seg2 = lim2[block_lim_cols_name[0]]
+def does_path_exist_within_block(seg1, seg2, block_limits, block_lim_cols_name, downstream: bool = None):
     seg_limits = [lim[block_lim_cols_name[0]] for lim in block_limits]
 
     if seg1 == seg2:

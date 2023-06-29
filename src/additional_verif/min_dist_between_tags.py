@@ -31,6 +31,6 @@ def min_dist_between_tags(in_cbtc: bool = False):
     tags_dist_dict = {x: tags_dist_dict[x] for x in sorted(tags_dist_dict, key=lambda x: tags_dist_dict[x])[:30]}
     min_dist = min(tags_values for tags_values in tags_dist_dict.values())
     print(f"The minimal distance between two tags is, {print_in_cbtc(in_cbtc)}:"
-          f"\n{min_dist=}"
+          f"\n{min_dist = }"
           f"\n > for {[tags for tags, tags_values in tags_dist_dict.items() if tags_values == min_dist]}\n")
     return tags_dist_dict

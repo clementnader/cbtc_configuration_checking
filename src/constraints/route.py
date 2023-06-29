@@ -38,6 +38,18 @@ def check_route_control_tables(use_csv_file: bool = False):
         print_section_title("Result of Route verification:")
         print_success("Routes in DC_SYS correspond to the Control Tables.")
         return True
+    if not missing_routes_in_dc_sys and missing_routes:
+        print(f"{Color.orange}All routes from the Control Tables are implemented,"
+              f"but extra routes appear in the DC_SYS.{Color.reset}\n")
+    elif missing_routes_in_dc_sys and not missing_routes:
+        print(f"{Color.orange}All routes in the DC_SYS appear in the Control Tables,"
+              f"but extra routes in the Control Tables are missing in the DC_SYS.{Color.reset}\n")
+    elif missing_routes_in_dc_sys and missing_routes:
+        print(f"{Color.orange}Routes are missing between the DC_SYS and the Control Tables.{Color.reset}\n")
+    else:
+        print(f"{Color.vivid_green}All routes have been found between the DC_SYS and the Control Tables."
+              f"{Color.reset}\n")
+
     if missing_routes:
         print_section_title("Missing information for Route:")
         print_warning(f"The following {Color.yellow}{len(missing_routes)}{Color.reset} routes "
@@ -81,20 +93,29 @@ def _find_route_control_table(route_dc_sys: str, route_control_tables: dict[str,
     return {}, ""
 
 
-def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys):
+def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, with_zero: bool = False):
     # print(route_control_table, route_dc_sys, end=" -> ")
-    route_dc_sys = "_".join([sig.removeprefix("0") for sig in route_dc_sys.split("_")][-2:])
-    route_control_table = "_".join([sig.removeprefix("0") for sig in route_control_table.split("-")])
+    route_dc_sys = "_".join([sig for sig in route_dc_sys.split("_")][-2:])
+    route_control_table = "_".join([sig for sig in route_control_table.split("-")])
     # print(route_control_table, route_dc_sys)
     if route_dc_sys == route_control_table:
         return True
-    # in some projects, the route in DC_SYS is named with 'f' in at the end of route name
-    route_dc_sys = "_".join([sig.removesuffix("f") for sig in route_dc_sys.split("_")])
+    # in some projects, the route in DC_SYS is named with 'f' or 'F' in at the end of route name
+    route_dc_sys = "_".join([sig.removesuffix("f").removesuffix("F") for sig in route_dc_sys.split("_")])
     if route_dc_sys == route_control_table:
         return True
     # in some projects, the route in DC_SYS is named with 'S' in front of signals name
     route_control_table = "_".join(['S' + sig for sig in route_control_table.split("_")])
-    return route_dc_sys == route_control_table
+    if route_dc_sys == route_control_table:
+        return True
+
+    # try now removing leading 0 in sig names
+    route_dc_sys = "_".join([sig.removeprefix("0") for sig in route_dc_sys.split("_")])
+    route_control_table = "_".join([sig.removeprefix("0") for sig in route_control_table.split("-")])
+    if not with_zero:
+        return _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, with_zero=True)
+    else:
+        return False
 
 
 def _check_controlled_sig(route: str, route_val: dict[str], control_sig: str, table_name: str):
@@ -147,13 +168,13 @@ def _check_route_sw(route: str, route_val: dict[str], route_sw: str, table_name:
                                       f"{Color.reset}{Color.white}".join(dc_sys_route_sw_str.split(corresponding_sw))
                 print_warning(f"For Route {Color.green}{route}{Color.reset}, the order of the switches does not "
                               f"correspond to the Control Table {Color.green}{table_name}{Color.reset}:\n"
-                              f"{Color.blue}{dc_sys_sw=}{Color.reset} does not correspond to "
-                              f"{Color.blue}{control_table_sw=}{Color.reset}.\n"
+                              f"{Color.blue}{dc_sys_sw = }{Color.reset} does not correspond to "
+                              f"{Color.blue}{control_table_sw = }{Color.reset}.\n"
                               f"DC_SYS Route Switch: {Color.white}{dc_sys_route_sw_str}{Color.reset}\n"
                               f"Control Table Switch Route Path: {Color.white}{route_sw_str}{Color.reset}")
             else:
-                print_error(f"For Route {Color.green}{route}{Color.reset}, switch {Color.blue}{dc_sys_sw=}"
-                            f"{Color.reset} does not correspond to switch {Color.blue}{control_table_sw=}"
+                print_error(f"For Route {Color.green}{route}{Color.reset}, switch {Color.blue}{dc_sys_sw = }"
+                            f"{Color.reset} does not correspond to switch {Color.blue}{control_table_sw = }"
                             f"{Color.reset} in the Control Table {Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Route Switch: {Color.white}{dc_sys_route_sw_str}{Color.reset}\n"
                             f"Control Table Switch Route Path: {Color.white}{route_sw_str}{Color.reset}")
@@ -163,12 +184,13 @@ def _check_route_sw(route: str, route_val: dict[str], route_sw: str, table_name:
 
 
 def _check_route_path(route: str, route_val: dict[str], route_path: str, table_name: str):
+    dc_sys_route_sw: list[str] = route_val['Route Switch']
     dc_sys_route_ivb: list[str] = route_val['Route IVB']
     if route_path == "--":
         route_path_list = []
     else:
         route_path_list = route_path.split(",")
-        route_path_list = [sw.strip().removeprefix("0") for sw in route_path_list]
+        route_path_list = [ivb.strip().removeprefix("0") for ivb in route_path_list]
         route_path_list[0] = route_path_list[0].removeprefix("[").removesuffix("]")
 
     result = True
@@ -178,7 +200,8 @@ def _check_route_path(route: str, route_val: dict[str], route_path: str, table_n
                     f"number of IVBs {Color.yellow}({len(dc_sys_route_ivb)}){Color.reset} as in the Control Table "
                     f"{Color.green}{table_name}{Color.reset} {Color.yellow}({len(route_path_list)}){Color.reset}.\n"
                     f"DC_SYS Route IVB: {Color.white}{', '.join(dc_sys_route_ivb)}{Color.reset}\n"
-                    f"Control Table Route Path: {Color.white}{route_path}{Color.reset}")
+                    f"Control Table Route Path: {Color.white}{route_path}{Color.reset}\n"
+                    f"{Color.default}DC_SYS Route Switch: {Color.white}{', '.join(dc_sys_route_sw)}{Color.reset}")
         result = False
 
     for dc_sys_ivb, control_table_ivb in zip(dc_sys_route_ivb, route_path_list):
@@ -193,13 +216,13 @@ def _check_route_path(route: str, route_val: dict[str], route_path: str, table_n
                                        f"{Color.reset}{Color.white}".join(dc_sys_route_ivb_str.split(corresponding_ivb))
                 print_warning(f"For Route {Color.green}{route}{Color.reset}, the order of the IVBs does not "
                               f"correspond to the Control Table {Color.green}{table_name}{Color.reset}:\n"
-                              f"{Color.blue}{dc_sys_ivb=}{Color.reset} does not correspond to "
-                              f"{Color.blue}{control_table_ivb=}{Color.reset}.\n"
+                              f"{Color.blue}{dc_sys_ivb = }{Color.reset} does not correspond to "
+                              f"{Color.blue}{control_table_ivb = }{Color.reset}.\n"
                               f"DC_SYS Route IVB: {Color.white}{dc_sys_route_ivb_str}{Color.reset}\n"
                               f"Control Table Route Path: {Color.white}{route_path_str}{Color.reset}")
             else:
-                print_error(f"For Route {Color.green}{route}{Color.reset}, {Color.blue}{dc_sys_ivb=}{Color.reset} does "
-                            f"not correspond to {Color.blue}{control_table_ivb=}{Color.reset} in the Control Table "
+                print_error(f"For Route {Color.green}{route}{Color.reset}, {Color.blue}{dc_sys_ivb = }{Color.reset} does "
+                            f"not correspond to {Color.blue}{control_table_ivb = }{Color.reset} in the Control Table "
                             f"{Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Route IVB: {Color.white}{dc_sys_route_ivb_str}{Color.reset}\n"
                             f"Control Table Route Path: {Color.white}{route_path_str}{Color.reset}")

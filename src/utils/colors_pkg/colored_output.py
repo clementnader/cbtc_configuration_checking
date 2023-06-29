@@ -25,6 +25,14 @@ def bg_color(color_seq: str):
     return color_seq.replace("[38", "[48")
 
 
+def duplicate_each_elem(i_list, nb_duplicates: int = 2):
+    dup_list = list()
+    for elem in i_list:
+        for _ in range(nb_duplicates):
+            dup_list.append(elem)
+    return dup_list
+
+
 class Color:
     """ANSI escape code
 Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
@@ -98,13 +106,19 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
 
     # Rainbow
     rainbow = [csi_color_seq(i) for i in (
-        52,   88, 124, 160, 196,
-        202, 208, 214, 220, 226,
-        190, 154, 118,  82,  46,
-        47,   48,  49,  50,  51,
-        45,   39,  33,  27,
-        57,   56,  55,  54,  53
+        52,   88, 124, 160, 196,  # red
+        202, 208, 214, 220, 226,  # orange to yellow
+        190, 154, 118,  82,  46,  # yellow to green
+        47,   48,  49,  50,  51,  # green to blue
+        45,   39,  33,  27,       # blue
+        57,   56,  55,  54,  53,  # blue to purple
     )]
+    progress_pride = duplicate_each_elem([csi_color_seq(i) for i in (
+        15,  213,  51,  95,   0,
+        # white, pink, cyan, brown, black
+        196, 208, 220,  46,  27,  90,
+        # red, orange, yellow, green, blue, purple
+    )], 3)
 
 
 def move_up(nb_line: int):  # does not work in PyCharm interface
@@ -125,7 +139,8 @@ def move_left(nb_char: int):
 
 def test_rainbow():
     full_cell_char = '█'
-    for color in Color.rainbow:
+    # for color in Color.rainbow:
+    for color in Color.progress_pride:
         print(color + full_cell_char + Color.reset, end="")
     print()
 

@@ -5,12 +5,13 @@ from ..utils.common_utils import columns_from_to
 
 
 SHEETS_INFO = {
+    "!": {"sh_name": "!"},
     "line": {"sh_name": "Ligne", "cols": columns_from_to('G', 'N')},
     "track": {"sh_name": "Voie", "cols": ['E', 'G', 'H']},
     "ls": {"sh_name": "Troncon", "cols": ['B', 'E', 'F', 'G', 'H'], "lim_start_col": 'I',
            "nb_max_limits": 20, "delta_between_limits": 3},
     "seg": {"sh_name": "Seg", "cols": ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']},
-    "sw": {"sh_name": "Aig", "cols": ['B', 'C', 'D']},
+    "sw": {"sh_name": "Aig", "cols": ['B', 'C', 'D'] + columns_from_to('AB', 'AU') + columns_from_to('AV', 'BO')},
     "tag": {"sh_name": "Bal", "cols": ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']},
     "calib": {"sh_name": "Calib", "cols": ['A', 'B', 'C', 'D'], "generic_obj_name": True},
     "zlpv": {"sh_name": "ZLPV", "cols": ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'],
@@ -18,11 +19,12 @@ SHEETS_INFO = {
     "plt": {"sh_name": "Quai", "cols": ['I', 'J', 'Q', 'R', 'Y', 'AA', 'AB', 'AD', 'AI', 'AK', 'AL', 'AN',
                                         'AS', 'AU', 'AV', 'AX']},
     "block": {"sh_name": "CDV", "lim_start_col": 'N', "nb_max_limits": 15, "delta_between_limits": 2},
-    "ivb": {"sh_name": "IVB", "lim_start_col": 'I', "nb_max_limits": 15, "delta_between_limits": 2},
+    # "ivb": {"sh_name": "IVB", "lim_start_col": 'I', "nb_max_limits": 15, "delta_between_limits": 2},
+    "ivb": {"sh_name": "IVB", "lim_start_col": 'J', "nb_max_limits": 15, "delta_between_limits": 2},
     "vb": {"sh_name": "CV", "lim_start_col": 'B', "nb_max_limits": 3, "delta_between_limits": 2},
     "sig": {"sh_name": "Sig", "cols": ['B', 'C', 'D', 'E', 'I', 'S', 'Z']},
     "route": {"sh_name": "Iti", "cols": ['B', 'C'] + columns_from_to('D', 'W') + ['X'] + columns_from_to('Z', 'BC')},
-    "overlap": {"sh_name": "IXL_Overlap", "cols": ['B', 'C', 'D', 'N'] + columns_from_to('O', 'V')},
+    "overlap": {"sh_name": "IXL_Overlap", "cols": ['B', 'C', 'D', 'E', 'F', 'G', 'N'] + columns_from_to('O', 'V')},
     "slope": {"sh_name": "Profil", "cols": ['A', 'B', 'C', 'D', 'E'], "generic_obj_name": True},
     "cbtc_ter": {"sh_name": "CBTC_TER", "cols": ['B'],
                  "lim_start_col": 'I', "nb_max_limits": 15, "delta_between_limits": 3},
@@ -39,4 +41,4 @@ SHEETS_INFO = {
 
 
 # TODO get these infos from CCTOOL-OO Schema
-# et changer l'utilisation des numéros de colonnes par les objets de la FDS en repassant par le CCTOOL-OO Schema
+#  et changer l'utilisation des numéros de colonnes par les objets de la FDS en repassant par le CCTOOL-OO Schema

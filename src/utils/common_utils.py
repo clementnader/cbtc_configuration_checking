@@ -5,12 +5,15 @@ from string import ascii_uppercase
 from .colors_pkg import *
 
 
-def columns_from_to(first: str, last:str):
+def columns_from_to(first: str, last: str):
     assert len(first) <= 2 and len(last) <= 2
     if len(first) == 1:
         first = " " + first
     if len(last) == 1:
         last = " " + last
+
+    if first > last:
+        return []
 
     within_range = False
     list_cols = list()

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .dist_utils import get_dist, get_list_of_paths
-from .links_utils import is_seg_downstream
+from .path_utils import is_seg_downstream
 
 
 def give_point_seg_vb(vb_limits):
@@ -55,7 +55,7 @@ def get_vb_associated_to_sw(sw, vb_dict: dict, sw_cols_name: dict[str, str]):
     for vb, vb_values in vb_dict.items():
         vb_limits = vb_values["limits"]
         if len(vb_limits) == 3:
-            if sorted([vb_lim["Seg"] for vb_lim in vb_limits]) == sorted(sw):
+            if sorted([vb_lim["Seg"] for vb_lim in vb_limits]) == sorted(sw.values()):
                 return vb
             if all(is_seg_in_vb(vb_limits, sw[sw_cols_name[j]]) for j in ['B', 'C', 'D']):
                 return vb

@@ -4,7 +4,7 @@
 from ...utils import *
 from ..load_database.load_sheets import load_sheet, get_cols_name
 from .cbtc_territory_utils import is_point_in_cbtc_ter  # , is_seg_in_cbtc_ter_limits
-from .links_utils import is_seg_downstream
+from .path_utils import is_seg_downstream
 from .segments_utils import *
 
 
@@ -14,7 +14,7 @@ def get_sws_in_cbtc_ter():
 
     within_cbtc_sw_dict = dict()
     for sw_name, sw_values in sw_dict.items():
-        seg, x = give_sw_pos(sw_values, sw_cols_name)
+        seg, x = give_sw_pos(sw_values)
         if is_point_in_cbtc_ter(seg, x) is not False:
             within_cbtc_sw_dict[sw_name] = sw_values
         if is_point_in_cbtc_ter(seg, x) is None:
@@ -26,10 +26,16 @@ def get_sws_in_cbtc_ter():
     return within_cbtc_sw_dict
 
 
-def is_sw_point_seg_upstream(sw, sw_cols_name):
+def get_point_seg(sw):
+    sw_cols_name = get_cols_name("sw")
+    return sw[sw_cols_name['B']]
+
+
+def is_sw_point_seg_upstream(sw):
     """Returns True if the point segment of the switch is upstream of the two heels segments,
     returns False if it is downstream,
     raises an error if it is neither the first nor the second."""
+    sw_cols_name = get_cols_name("sw")
     point_seg = sw[sw_cols_name['B']]
     right_heel = sw[sw_cols_name['C']]
     left_heel = sw[sw_cols_name['D']]
@@ -57,35 +63,32 @@ def get_heel_position(point_seg, heel) -> (str, str):
     return None, ""
 
 
-def give_sw_pos(sw, sw_cols_name):
+def give_sw_pos(sw):
     """Returns the position of the switch with the seg and offset. """
-    point_seg = sw[sw_cols_name['B']]
-    upstream = is_sw_point_seg_upstream(sw, sw_cols_name)
+    point_seg = get_point_seg(sw)
+    upstream = is_sw_point_seg_upstream(sw)
     len_seg = get_len_seg(point_seg)
     x = len_seg if upstream else 0
     return point_seg, x
 
 
-def give_sw_kp_pos(sw, sw_cols_name, seg_dict, seg_cols_name):
+def give_sw_kp_pos(sw):
     """Returns the position of the switch with the track and the KP value. """
-    point_seg = sw[sw_cols_name['B']]
-    upstream = is_sw_point_seg_upstream(sw, sw_cols_name)
+    seg_dict = load_sheet("seg")
+    seg_cols_name = get_cols_name("seg")
+    point_seg = get_point_seg(sw)
+    upstream = is_sw_point_seg_upstream(sw)
     track = seg_dict[point_seg][seg_cols_name['D']]
     kp_col = 'F' if upstream else 'E'
     kp = float(seg_dict[point_seg][seg_cols_name[kp_col]])
     return track, kp
 
 
-def get_switch_pos():
+def get_switch_position_dict():
     sw_dict = load_sheet("sw")
-    sw_cols_name = get_cols_name("sw")
-
-    seg_dict = load_sheet("seg")
-    seg_cols_name = get_cols_name("seg")
-
     sw_pos_dict = dict()
     for sw, sw_info in sw_dict.items():
-        track, kp = give_sw_kp_pos(sw_info, sw_cols_name, seg_dict, seg_cols_name)
+        track, kp = give_sw_kp_pos(sw_info)
         sw_pos_dict[sw] = {"track": track, "kp": kp}
 
     return sw_pos_dict

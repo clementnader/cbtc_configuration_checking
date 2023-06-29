@@ -30,7 +30,7 @@ def get_train_unit_files() -> dict[int, dict[str, str]]:
             if type_of_train is not None:
                 dict_train_units[train_num] = {"type": type_of_train, "main_dir": train_dir}
             else:
-                print(f"{train_num=} is not identified as a possible train number in {LIST_TRAIN_NUM_LIMITS=}.")
+                print(f"{train_num = } is not identified as a possible train number in {LIST_TRAIN_NUM_LIMITS = }.")
     return sort_dict(dict_train_units)
 
 
@@ -48,7 +48,7 @@ def get_cc_param():
         else:
             if len(list_cab_dir) != 1:  # TODO take multiple cabs into account
                 print_warning(f"Multiple Cabs in {os.path.join(MAIN_DIRECTORY, train_dir)}:"
-                              f"\n\t{list_cab_dir=}.")
+                              f"\n\t{list_cab_dir = }.")
             dict_train_units[train_num]["file_path"] = get_cc_param_from_cabdir(train_dir, list_cab_dir[0])
     return dict_train_units
 
@@ -111,7 +111,7 @@ def check_diff_cc_param():
                                 dict_diff[i][train_unit_dir] = values[VALUE_COLUMN]
                             else:
                                 print_warning(f"Difference on something else than the {titles[VALUE_COLUMN]}:"
-                                              f"\n{line=}\n{ref_line=}")
+                                              f"\n{line = }\n{ref_line = }")
         dict_diff_results[train_type] = dict_diff
     create_html_file(dict_diff_results)
     return dict_diff_results

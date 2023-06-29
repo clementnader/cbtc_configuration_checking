@@ -7,18 +7,6 @@ from .sheet_cols_name import get_cols_name_from_ref, get_lim_cols_name_from_ref
 START_LINE = 3
 
 
-def read_cell(sh: xlrd.sheet, i: int, j: int):
-    value = sh.cell_value(i, j)
-    if value in ("", None):
-        return None
-    if isinstance(value, str):
-        try:
-            value = float(value.replace(",", "."))
-        except ValueError:
-            pass
-    return value
-
-
 def get_dict_fixed_col(sh: xlrd.sheet, cols_ref: list[str], generic_obj_name: bool) -> dict:
     xlrd_line_ref = get_xlrd_line(START_LINE)
     xlrd_cols_ref = [get_xlrd_column(col_ref) for col_ref in cols_ref]

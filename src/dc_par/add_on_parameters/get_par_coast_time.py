@@ -5,7 +5,7 @@ from ...dc_sys import *
 
 
 def par_coast_time(variables: dict = None):
-    test = True
+    test = True  # TODO: manage this using the version get_version()
     if test:
         train_types_dict = load_sheet("train_types")
         train_types_cols_name = get_cols_name("train_types")

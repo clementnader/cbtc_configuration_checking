@@ -26,6 +26,7 @@ class Projects:
 # PROJECT_NAME = Projects.Riyadh
 PROJECT_NAME = Projects.Thessaloniki
 
+# PROJECT_NAME = Projects.Baltimore
 # PROJECT_NAME = Projects.BART
 # PROJECT_NAME = Projects.Mock_up
 
@@ -36,11 +37,19 @@ class ProjectDatabaseLoc:
         cmc = r""   # CMC: Control and Maintenance Center
         cmc2 = r""  # if CMC is split in two parts
 
+    class RamsIfAnalysisLoc:
+        scade = r""
+        appli = r""
+        archi = r""
+
     dc_sys_addr = r""
     dc_sys_addr_old = r""
     dc_par_addr = r""
     dc_bop_addr = r""
+    d932_addr = r""
     kit_c11_dir = r""
+    kit_c121_d470_dir = r""
+    rams_if_analysis = RamsIfAnalysisLoc()
     control_tables_route = ControlTablesLoc()
     control_tables_overlap = ControlTablesLoc()
 
@@ -56,23 +65,45 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Brussels -------------------------------#
         elif project_name == Projects.Brussels:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\DC_SYS_old.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\C64_D413\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B"
+            old_version = False
+            if old_version:
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\DC_SYS_old.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\C64_D413\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B"
+            else:
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\C64_D413\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R2"
+                self.d932_addr = r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey.xlsx"
 
-            self.control_tables_route.line = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
-                                             r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_" \
-                                             r"rev00.01_ERASME-ANTENNA LINE.pdf"
-            self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
-                                            r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_" \
-                                            r"rev00.05_ERASME DEPOT.pdf"
-            self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
-                                               r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_" \
-                                               r"rev00.02_ERASME-ANTENNA LINE.pdf"
-            self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
-                                              r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_" \
-                                              r"rev00.05_ERASME DEPOT-6-91.pdf"
+            if old_version:
+                self.control_tables_route.line = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
+                                                 r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_" \
+                                                 r"rev00.01_ERASME-ANTENNA LINE.pdf"
+                self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
+                                                r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_" \
+                                                r"rev00.05_ERASME DEPOT.pdf"
+                self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
+                                                   r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_" \
+                                                   r"rev00.02_ERASME-ANTENNA LINE.pdf"
+                self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
+                                                  r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_" \
+                                                  r"rev00.05_ERASME DEPOT-6-91.pdf"
+            else:
+                self.control_tables_route.line = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
+                                                 r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_" \
+                                                 r"rev00.02_ERASME-ANTENNA LINE.pdf"
+                self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
+                                                r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_" \
+                                                r"rev01.00_ERASME DEPOT.pdf"
+                self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
+                                                   r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_" \
+                                                   r"rev00.02_ERASME-ANTENNA LINE.pdf"
+                self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
+                                                  r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_" \
+                                                  r"rev01.00_ERASME DEPOT.pdf"
 
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
@@ -111,35 +142,53 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Milan -------------------------------#
         elif project_name == Projects.Milan:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\ML4_TF3_C_D470_01_02_RC2\ML4_DC_SYS.xls"
-            # self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\ML4\ML4_DC_SYS_01_rc3.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\ML4_TF3_C_D470_01_02_RC2\ML4_DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\ML4_TF3_C_D470_01_02_RC2\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\ML4_TF3_C11_D470_06_05_05_V04"
-
-            # ?????
-            # self.control_tables_route.line = r"C:\Users\naderc\Desktop\ML4\Control Tables" \
-            #                                  r"\M4-ST00PGRE-55129_00.01_Allegato_1_Routes.pdf"
-            # self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\ML4\Control Tables" \
-            #                                    r"\M4-ST00PGRE-55129_00.01_Allegato_1_Overlap.pdf"
-            # TF3
-            self.control_tables_route.line = r"C:\Users\naderc\Desktop\ML4\Control Tables" \
-                                             r"\M4-ST00PGRE-55634_01.00_Allegato_1-TF3-5-144 - Routes.pdf"
-            self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\ML4\Control Tables" \
-                                               r"\M4-ST00PGRE-55634_01.00_Allegato_1-TF3-285-328 - Overlap.pdf"
+            # ver = "TF3"
+            ver = "DEPOT + LN01"
+            # use_old_ver = True
+            use_old_ver = False
+            if ver == "TF3":
+                # TF3
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C_D470_01_02_RC2\ML4_DC_SYS.xls"
+                # self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_DC_SYS_01_01_RC3.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C_D470_01_02_RC2\ML4_DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C_D470_01_02_RC2\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C11_D470_06_05_05_V04"
+                self.control_tables_route.line = r"C:\Users\naderc\Desktop\ML4\2. TF3\Control Tables" \
+                                                 r"\M4-ST00PGRE-55634_01.00_Allegato_1-TF3-5-144 - Routes.pdf"
+                self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\ML4\2. TF3\Control Tables" \
+                                                   r"\M4-ST00PGRE-55634_01.00_Allegato_1-TF3-285-328 - Overlap.pdf"
             # DEPOT + LN01
-            # self.control_tables_route.line = r"C:\Users\naderc\Desktop\ML4\Control Tables" \
-            #                                  r"\M4-ST00PGRE-55047_00.03_Allegato_1-DEPOT LN01-" \
-            #                                  r"4-111 - LINE - Routes.pdf"
-            # self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\ML4\Control Tables" \
-            #                                 r"\M4-ST00PGRE-55047_00.03_Allegato_1-DEPOT LN01-" \
-            #                                 r"300-484 - CMC - Routes.pdf"
-            # self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\ML4\Control Tables" \
-            #                                    r"\M4-ST00PGRE-55047_00.03_Allegato_1-DEPOT LN01-" \
-            #                                    r"220-256 - LINE - Overlap.pdf"
-            # self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\ML4\Control Tables" \
-            #                                   r"\M4-ST00PGRE-55047_00.03_Allegato_1-DEPOT LN01-" \
-            #                                   r"670-684 - CMC - Overlap.pdf"
+            elif ver == "DEPOT + LN01" and use_old_ver:
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_01_02_RC4" \
+                                   r"\ML4_DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_01_02_RC4" \
+                                   r"\ML4_DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_01_02_RC4" \
+                                   r"\DC_BOP.xls"
+                self.control_tables_route.line = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
+                                                 r"\M4-ST00PGRE-55047_00.02_Allegato_1-4-111 - LINE - Routes.pdf"
+                self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
+                                                r"\M4-ST00PGRE-55047_00.02_Allegato_1-300-484 - DEPOT - Routes.pdf"
+                self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
+                                                   r"\M4-ST00PGRE-55047_00.02_Allegato_1-220-256 - LINE - Overlap.pdf"
+                self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
+                                                  r"\M4-ST00PGRE-55047_00.02_Allegato_1-670-684 - DEPOT - Overlap.pdf"
+            elif ver == "DEPOT + LN01" and not use_old_ver:
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_02_00_RC4" \
+                                   r"\ML4_DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_02_00_RC4" \
+                                   r"\ML4_DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_02_00_RC4" \
+                                   r"\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C11_D470_06_06_02_V01"
+                self.control_tables_route.line = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
+                                                 r"\M4-ST00PGRE-55047_00.04_Allegato_1-5-168 - LINE - Routes.pdf"
+                self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
+                                                r"\M4-ST00PGRE-55047_00.04_Allegato_1-461-646 - DEPOT - Routes.pdf"
+                self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
+                                                   r"\M4-ST00PGRE-55047_00.04_Allegato_1-341-397 - LINE - Overlap.pdf"
+                self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
+                                                  r"\M4-ST00PGRE-55047_00.04_Allegato_1-833-847 - DEPOT - Overlap.pdf"
 
         # ------------------------------- Thessaloniki -------------------------------#
         elif project_name == Projects.Riyadh:
@@ -147,6 +196,14 @@ class ProjectDatabaseLoc:
             self.dc_par_addr = r"C:\Users\naderc\Desktop\Riyadh\RL3_C_D470_09_01_RC1\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\Riyadh\RL3_C_D470_09_01_RC1\DC_BOP_old.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\Riyadh\RL3_C11_D470_06_06_00_V07"
+            self.kit_c121_d470_dir = r"C:\Users\naderc\Desktop\Riyadh\RL3_C121_D470_06_06_00_V04_20230327_165125"
+
+            self.rams_if_analysis.scade = r"C:\Users\naderc\Documents\Documents GA\RAMS 6.6.0\IF Analysis\work_SCADE" \
+                                          r"\IF_SCADE_6_6_0.xls"
+            self.rams_if_analysis.appli = r"C:\Users\naderc\Documents\Documents GA\RAMS 6.6.0\IF Analysis\work_APPLI" \
+                                          r"\IF_APPLI_6_6_0.xls"
+            self.rams_if_analysis.archi = r"C:\Users\naderc\Documents\Documents GA\RAMS 6.6.0\IF Analysis\work_ARCHI" \
+                                          r"\ZC PFDHA IF ARCHI 06-05-05.xls"
 
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\Riyadh\Control Tables" \
                                              r"\MAIN LINE - CONTROL TABLES" \
@@ -169,19 +226,28 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Thessaloniki -------------------------------#
         elif project_name == Projects.Thessaloniki:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V01_RC3\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V01_RC3\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V01_RC3\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V02"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_SYS.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V01_RC3\DC_SYS_old.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V03"
 
-            self.control_tables_route.line = r"C:\Users\naderc\Desktop\TSK\Control Tables" \
-                                             r"\1G00LV601R721C_EN_ANNEX_B.pdf"
-            self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\TSK\Control Tables" \
-                                            r"\1G00LV601R722C_EN_ANNEX_B.pdf"
-            self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\TSK\Control Tables" \
-                                               r"\1G00LV601R721C_EN_ANNEX_D.pdf"
-            self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\TSK\Control Tables" \
-                                              r"\1G00LV601R722C_EN_ANNEX_D.pdf"
+            self.control_tables_route.line = r"C:\Users\naderc\Desktop\TSK" \
+                                             r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3" \
+                                             r"\1G00LV601R721B_EN_ANNEX_B - IXL MAIN LINE CONTROL TABLES - " \
+                                             r"Routes.pdf"
+            self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\TSK" \
+                                            r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3" \
+                                            r"\1G00LV601R722B_EN_ANNEX_B - IXL PYLEA DEPOT CONTROL TABLES - " \
+                                            r"Routes.pdf"
+            self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\TSK" \
+                                               r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3" \
+                                               r"\1G00LV601R721B_EN_ANNEX_D - IXL MAIN LINE CONTROL TABLES - " \
+                                               r"Overlaps.pdf"
+            self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\TSK" \
+                                              r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3" \
+                                              r"\1G00LV601R722B_EN_ANNEX_D - IXL PYLEA DEPOT CONTROL TABLES - " \
+                                              r"Overlaps.pdf"
 
         # ------------------------------- Baltimore -------------------------------#
         elif project_name == Projects.Baltimore:

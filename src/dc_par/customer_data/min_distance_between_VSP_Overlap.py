@@ -47,7 +47,7 @@ def min_distance_between_vsp_overlap(in_cbtc: bool = False, same_dir: bool = Tru
     min_dist = min(vsps_values for vsps_values in dict_min_dist.values())
     print(f"The minimum distance between two VSPs, one of whom is related to a Home Signal with Overlap is, "
           f"{print_in_cbtc(in_cbtc)}:"
-          f"\n{min_dist=}"
+          f"\n{min_dist = }"
           f"\n > for: {[vsps for vsps, vsps_values in dict_min_dist.items() if vsps_values == min_dist]}\n")
     return dict_min_dist
 

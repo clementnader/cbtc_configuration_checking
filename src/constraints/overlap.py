@@ -39,6 +39,17 @@ def check_overlap_control_tables(use_csv_file: bool = False):
         print_section_title("Result of Overlap verification:")
         print_success("Overlaps in DC_SYS correspond to the Control Tables.")
         return True
+    if not list_missing_ovl_in_dc_sys and list_missing_ovl:
+        print(f"{Color.orange}All overlaps from the Control Tables are implemented,"
+              f"but extra overlaps appear in the DC_SYS.{Color.reset}\n")
+    elif list_missing_ovl_in_dc_sys and not list_missing_ovl:
+        print(f"{Color.orange}All overlaps in the DC_SYS appear in the Control Tables,"
+              f"but extra overlaps in the Control Tables are missing in the DC_SYS.{Color.reset}\n")
+    elif list_missing_ovl_in_dc_sys and list_missing_ovl:
+        print(f"{Color.orange}Overlaps are missing between the DC_SYS and the Control Tables.{Color.reset}\n")
+    else:
+        print(f"{Color.vivid_green}All overlaps have been found between the DC_SYS and the Control Tables."
+              f"{Color.reset}\n")
     if list_missing_ovl:
         print_section_title("Missing information for Overlap:")
         print_warning(f"The following {Color.yellow}{len(list_missing_ovl)}{Color.reset} overlaps "
@@ -69,6 +80,8 @@ def _check_ovl(ovl: str, ovl_val: dict[str, str], ovl_control_tables: dict[str, 
     if _check_ovl_destination_point(ovl, ovl_val, destination_point, table_name) is False:
         result = False
     if _check_ovl_sw(ovl, ovl_val, ovl_sw, table_name) is False:
+        result = False
+    if _check_ovl_path(ovl, ovl_val, ovl_path, table_name) is False:
         result = False
     return result, None
 
@@ -169,13 +182,13 @@ def _check_ovl_sw(ovl: str, ovl_val: dict[str], ovl_sw: str, table_name: str):
             if any(sw.endswith(control_table_sw) for sw in dc_sys_ovl_sw):
                 print_warning(f"For Overlap {Color.green}{ovl}{Color.reset}, the order of the switches does not "
                               f"correspond to the Control Table {Color.green}{table_name}{Color.reset}:\n"
-                              f"{Color.blue}{dc_sys_sw=}{Color.reset} does not correspond to "
-                              f"{Color.blue}{control_table_sw=}{Color.reset}.\n"
+                              f"{Color.blue}{dc_sys_sw = }{Color.reset} does not correspond to "
+                              f"{Color.blue}{control_table_sw = }{Color.reset}.\n"
                               f"DC_SYS Overlap Switch: {Color.white}{dc_sys_ovl_sw_str}{Color.reset}\n"
                               f"Control Table Switch Overlap Path: {Color.white}{ovl_sw_str}{Color.reset}")
             else:
-                print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, switch {Color.blue}{dc_sys_sw=}"
-                            f"{Color.reset} does not correspond to switch {Color.blue}{control_table_sw=}"
+                print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, switch {Color.blue}{dc_sys_sw = }"
+                            f"{Color.reset} does not correspond to switch {Color.blue}{control_table_sw = }"
                             f"{Color.reset} in the Control Table {Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Overlap Switch: {Color.white}{dc_sys_ovl_sw_str}{Color.reset}\n"
                             f"Control Table Switch Overlap Path: {Color.white}{ovl_sw_str}{Color.reset}")
@@ -184,20 +197,75 @@ def _check_ovl_sw(ovl: str, ovl_val: dict[str], ovl_sw: str, table_name: str):
     return result
 
 
+def _check_ovl_path(ovl: str, ovl_val: dict[str], ovl_path: str, table_name: str):
+    # dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]
+    overlap_cols_name = get_cols_name("overlap")
+    vsp_seg = ovl_val[overlap_cols_name['E']]
+    vsp_x = ovl_val[overlap_cols_name['F']]
+    vsp_direction = ovl_val[overlap_cols_name['G']]
+
+    ovl_path_list = ovl_path.split(",")
+    ovl_path_list = [ivb.strip() for ivb in ovl_path_list]  # .removeprefix("0")
+    last_ivb = ovl_path_list[-1]
+    dc_sys_last_ivb, ivb_limits = _get_ivb_limits(last_ivb)
+    if dc_sys_last_ivb == "":
+        print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, corresponding to Control Table "
+                    f"{Color.green}{table_name}{Color.reset}, last IVB of the path {Color.blue}{ovl_path = }"
+                    f"{Color.reset}: {Color.yellow}{dc_sys_last_ivb = }{Color.reset} is not found in the DC_SYS.")
+        return False
+
+    result = _check_ivb_corresponds_to_vsp(ivb_limits, vsp_seg, vsp_x, vsp_direction)
+
+    if result is False:
+        print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, VSP {Color.blue}({vsp_seg}, {vsp_x})"
+                    f"{Color.reset} does not correspond to the last IVB of the path {Color.blue}{ovl_path = }"
+                    f"{Color.reset}: {Color.yellow}{dc_sys_last_ivb = }{Color.reset} "
+                    f"in the Control Table {Color.green}{table_name}{Color.reset}.\n"
+                    f"IVB limits: {Color.white}{ivb_limits}{Color.reset}")
+    return result
+
+
+def _check_ivb_corresponds_to_vsp(ivb_limits: list[dict[str]], vsp_seg: str, vsp_x: float, vsp_direction: str):
+    ivb_lim_cols_name = get_lim_cols_name("ivb")
+    for lim in ivb_limits:
+        seg = lim[ivb_lim_cols_name[0]]
+        x = lim[ivb_lim_cols_name[1]]
+        if seg == vsp_seg and x == vsp_x:
+            return True
+    return False
+
+
+def _get_ivb_limits(control_table_ivb: str) -> (str, list[dict[str]]):
+    ivb_dict = load_sheet("ivb")
+    for ivb_name, ivb_val in ivb_dict.items():
+        ivb_test_name = ivb_name.split("_")[-1]
+        if ivb_test_name.upper() == control_table_ivb.upper():  # .removeprefix("0")
+            return ivb_name, ivb_val["limits"]
+    return "", []
+
+
 def _check_ovl_exist_in_dc_sys(ovl_dict: dict[str], ovl_control_tables: dict[str]):
     missing_ovl_in_dc_sys = list()
+    found_ovl = list()
     for ovl_control_table, ovl_val in ovl_control_tables.items():
-        if not _is_ovl_in_dc_sys(ovl_control_table, ovl_val, ovl_dict):
+        result = _is_ovl_in_dc_sys(ovl_control_table, ovl_val, ovl_dict)
+        if result is False:
             missing_ovl_in_dc_sys.append(ovl_control_table)
+        else:
+            if result is not None:
+                found_ovl.append(result)
+    found_ovl.sort()
+    # for text in found_ovl:
+    #     print(text)
     return missing_ovl_in_dc_sys
 
 
 def _is_ovl_in_dc_sys(ovl_control_table: str, ovl_val: dict[str], ovl_dict: dict[str]):
     for ovl_dc_sys in ovl_dict.keys():
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys):
-            return True
+            return None
     for ovl_dc_sys in ovl_dict.keys():
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys,
                                                     test_with_ovl_pos=True, ovl_val=ovl_val):
-            return True
+            return f"{ovl_dc_sys} -> {ovl_control_table}"
     return False

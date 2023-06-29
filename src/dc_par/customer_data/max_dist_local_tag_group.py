@@ -15,6 +15,12 @@ def max_dist_local_tag_group(in_cbtc: bool = False):
     nb_tag_gr = len(tag_gr_dict)
     tag_cols_name = get_cols_name("tag")
 
+    if nb_tag_gr == 0:
+        max_dist = 0
+        print(f"The maximum distance between two tags inside local tag groups is, {print_in_cbtc(in_cbtc)}:"
+              f"\n{max_dist = }"
+              f"\n > There is no tag group.\n")
+        return {}
     dict_max_dist = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
     for n, (tag_gr, tag_gr_values) in enumerate(tag_gr_dict.items()):
@@ -38,6 +44,6 @@ def max_dist_local_tag_group(in_cbtc: bool = False):
     dict_max_dist = {x: dict_max_dist[x] for x in sorted(dict_max_dist, key=lambda x: dict_max_dist[x])}
     max_dist = max(tags_values for tags_values in dict_max_dist.values())
     print(f"The maximum distance between two tags inside local tag groups is, {print_in_cbtc(in_cbtc)}:"
-          f"\n{max_dist=}"
+          f"\n{max_dist = }"
           f"\n > for: {[tags for tags, tags_values in dict_max_dist.items() if tags_values == max_dist]}\n")
     return dict_max_dist

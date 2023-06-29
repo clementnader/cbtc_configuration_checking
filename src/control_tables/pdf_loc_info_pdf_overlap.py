@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from ..database_loc import PROJECT_NAME, Projects
+# import json
+# with open(r"C:\Users\naderc\Desktop\test.json", "w") as f:
+#     f.write(json.dumps(LOC_DICT, indent=2))
+
 
 if PROJECT_NAME == Projects.Brussels:
     LOC_DICT = {
@@ -60,7 +64,7 @@ elif PROJECT_NAME == Projects.Milan:
         "[3] Incompatibilities":        {"x": 310, "y": 675, "y_tol": 40},
         "[4] Work Zones not activated": {"x": 413, "y": 700},
         "[5] Overlap path":             {"x": 234, "y": 587},
-        "[6] Flank protections":        {"x": 344, "y": 587},
+        "[6] Flank protections":        {"x": 344, "y": 560, "y_tol": 40},
         "[7]  External Conditions":     {"x": 468, "y": 607},
         "[8]  Overlap path":            {"x": 237, "y": 471},
         "[9]  Flank protections":       {"x": 398, "y": 471},

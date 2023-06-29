@@ -41,6 +41,6 @@ def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool 
 
     min_dist = min(min_dist['d'] for min_dist in dict_min_dist.values())
     print(f"The minimum distance between the two last signals before any CBTC territory exit is"
-          f"\n{min_dist=}"
+          f"\n{min_dist = }"
           f"\n > for: {[sigs for sigs, sigs_values in dict_min_dist.items() if sigs_values['d'] == min_dist]}\n")
     return dict_min_dist

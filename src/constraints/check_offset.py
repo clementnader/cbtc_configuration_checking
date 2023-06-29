@@ -42,14 +42,14 @@ def verif_correct_offset_seg_x(seg, x, first_cell, line, col, sh_name):
         print_warning(f"Strange pair (segment/offset) in sheet {Color.blue}{sh_name}{Color.reset}: "
                       f"{Color.yellow}{get_xl_column(col-1)}{get_xl_line(line)}{Color.reset} and "
                       f"{Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset}"
-                      f"\n{seg=}/{x=}")
+                      f"\n{seg = }/{x = }")
         return
     if not (isinstance(x, float) or isinstance(x, int)):
         if "." in x:
             print_warning(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                           f"Offset at {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
                           f"uses a dot \'.\' as the decimal separator"
-                          f"\n{x=}")
+                          f"\n{x = }")
         x = float(x.replace(',', '.'))
     x = round(x, 3)
     len_seg = get_len_seg(seg)
@@ -57,13 +57,13 @@ def verif_correct_offset_seg_x(seg, x, first_cell, line, col, sh_name):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"Offset at cell {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
                     f"should be positive"
-                    f"\n{x=}")
+                    f"\n{x = }")
     if not (x <= len_seg):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"Offset at cell {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
                     f"should be lower than "
                     f"the segment {seg} length ({len_seg})"
-                    f"\n{x=}")
+                    f"\n{x = }")
 
 
 def verif_correct_offset_track_kp(track, kp, first_cell, line, col, sh_name):
@@ -75,14 +75,14 @@ def verif_correct_offset_track_kp(track, kp, first_cell, line, col, sh_name):
         print_warning(f"Strange pair (track/KP) in sheet {Color.blue}{sh_name}{Color.reset}: "
                       f"{Color.yellow}{get_xl_column(col-1)}{get_xl_line(line)}{Color.reset} and "
                       f"{Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset}"
-                      f"\n{track=}/{kp=}")
+                      f"\n{track = }/{kp = }")
         return
     if not (isinstance(kp, float) or isinstance(kp, int)):
         if "." in kp:
             print_warning(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                           f"KP at {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
                           f"uses a dot \'.\' as the decimal separator"
-                          f"\n{kp=}")
+                          f"\n{kp = }")
         kp = float(kp.replace(',', '.'))
     kp = round(kp, 3)
     min_kp, max_kp = get_track_limits(track)
@@ -90,12 +90,12 @@ def verif_correct_offset_track_kp(track, kp, first_cell, line, col, sh_name):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"KP at cell {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
                     f"should be larger than the start kp of track {track} ({min_kp})"
-                    f"\n{kp=}")
+                    f"\n{kp = }")
     if not (kp <= max_kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"KP at cell {Color.yellow}{get_xl_column(col)}{get_xl_line(line)}{Color.reset} "
                     f"should be lower than the end kp of track {track} ({max_kp})"
-                    f"\n{kp=}")
+                    f"\n{kp = }")
 
 
 def find_seg_x_cols(sh: xlrd.sheet) -> tuple[list[tuple], list[tuple]]:

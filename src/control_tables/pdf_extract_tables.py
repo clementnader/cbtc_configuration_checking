@@ -3,6 +3,7 @@
 
 import pdfreader
 import logging
+import re
 from ..utils import *
 from .pdf_loc_info_pdf_overlap import loc_info_pdf_overlap
 from .pdf_loc_info_pdf_route import loc_info_pdf_route
@@ -26,7 +27,7 @@ def pdf_reader_extract_tables(pdf_file: str, table_type: str, line_part: str, ve
         for num_page in range(1, nbpages + 1):
             if specific_page is not None and num_page != specific_page:
                 continue
-            print_log(f"\r{progress_bar(num_page-1, nbpages)} "
+            print_log(f"\r{progress_bar(num_page - 1, nbpages)} "
                       f"{Color.blue}{Color.underline}{table_type.title()}{Color.no_underline} "
                       f"Control Tables{Color.reset} conversion "
                       f"for {Color.blue}{line_part}{Color.reset} in-going...", end="")
@@ -113,11 +114,27 @@ def _extract_info(list_info: list[dict[str]], table_type: str, num_page: int, ve
                 loc = val["loc"]
                 text = val["text"]
                 color = Color.light_blue if i % 2 == 0 else Color.pale_green
-                print(f"{key=}, loc={color}{loc}{Color.reset}, text={Color.yellow}{text}{Color.reset}")
+                print(f"{key = }, loc={color}{loc}{Color.reset}, text={Color.yellow}{text}{Color.reset}")
             else:
-                print(f"{Color.orange}{key=}{Color.reset} information not found")
+                print(f"{Color.orange}{key = }{Color.reset} information not found")
         print()
     _check_correct_res_dict(res_dict, num_page, list_info)
+    return _clean_res_dict(res_dict)
+
+
+def _clean_res_dict(res_dict: dict[str, str]) -> dict[str, str]:
+    for key, val in res_dict.items():
+        val = re.sub("( )+", " ", val)  # removing multiple spaces
+        val = re.sub("( )*-( )*", "-", val)  # removing spaces around hyphen character
+        val = re.sub("[(]( )*", "(", val)  # removing space inside parentheses
+        val = re.sub("( )*[)]", ")", val)  # removing space inside parentheses
+        val = re.sub("( )*,( )*", ", ", val)  # correctly format comma
+        val = val.strip()
+        if val.endswith(","):
+            print_warning(f"Key {Color.blue}{key}{Color.reset} is on multiple lines "
+                          f"and it was not completely parsed from the Control Tables:", end="")
+            print(f"{val = }\n")
+        res_dict[key] = val
     return res_dict
 
 
@@ -173,7 +190,6 @@ def _check_useful_page(list_info: list[dict[str]], num_page: int, loc_ref: dict[
             print()
             print_warning(f"Name information does not seem to be at the correct place "
                           f"for page {Color.beige}{num_page}{Color.reset}.")
-            return True, verbose_dict
     return False, verbose_dict
 
 

@@ -40,8 +40,9 @@ def min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc: bool = True)
     min_dist = min(osp_values["d"] for osp_values in dict_min_dist.values())
     res_list = [{osp_n_dir: osp_values} for osp_n_dir, osp_values in dict_min_dist.items()
                 if osp_values['d'] == min_dist]
-    print(f"The minimum distance between a platform OSP and the end of the next platform is, {print_in_cbtc(in_cbtc)}:"
-          f"\n{min_dist=}"
+    print(f"\nThe minimum distance between a platform OSP and the end of the next platform is, "
+          f"{print_in_cbtc(in_cbtc)}:"
+          f"\n{min_dist = }"
           f"\n > for: {res_list}")
     return plt_dict
 
@@ -51,7 +52,7 @@ def get_dist_osp_next_plt(osp_name, osp_seg, osp_x, osp_direction, osp_plt, plt_
 
     closest_plt, d = get_closest_platform(osp_seg, osp_x, osp_plt, plt_dict, plt_cols_name, downstream=downstream)
     if closest_plt is None:
-        print(f"{osp_name}_{direction_str} of {osp_plt} in {osp_direction=} is the last before End of Track")
+        print(f"{osp_name}_{direction_str} of {osp_plt} in {osp_direction = } is the last before End of Track")
         return None, None
 
     return f"{osp_name}_{direction_str}", {"origin_plt": osp_plt, "osp_direction": osp_direction,

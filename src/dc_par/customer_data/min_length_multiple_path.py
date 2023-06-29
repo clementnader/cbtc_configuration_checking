@@ -18,23 +18,34 @@ def min_length_multiple_path(in_cbtc: bool = False):
 
     multiple_path_len_dict = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
-    for i, upstream_seg in enumerate(sw_point_segs):
+    for i, start_seg in enumerate(sw_point_segs):
         print_log(f"\r{progress_bar(i, nb_sw_point_segs)} processing length of multiple path "
-                  f"from point segment {upstream_seg}...", end="")
-        for downstream_seg in sw_point_segs[i+1:]:
-            if are_segs_linked(upstream_seg, downstream_seg):  # if there is a path between the 2 segs
-                dist, list_of_paths = get_min_dist_and_list_of_paths(upstream_seg, downstream_seg, max_nb_paths=2)
+                  f"from point segment {start_seg}...", end="")
+        for end_seg in sw_point_segs[i + 1:]:
+            if are_segs_linked(start_seg, end_seg):  # if there is a path between the 2 segs
+                dist, min_path, list_of_paths = get_min_dist_and_list_of_paths(start_seg, end_seg, max_nb_paths=2)
                 if len(list_of_paths) == 2:  # if there are two paths
-                    dist -= get_len_seg(upstream_seg) + get_len_seg(downstream_seg)
-                    multiple_path_len_dict[f"{upstream_seg} to {downstream_seg}"] = {
-                        "From": upstream_seg,
-                        "To": downstream_seg,
+                    short_path = min_path
+                    dist -= get_len_seg(start_seg) + get_len_seg(end_seg)
+                    long_path = [path for path in list_of_paths if path != short_path][0]
+                    long_path_length = get_path_len(long_path) - (get_len_seg(start_seg) + get_len_seg(end_seg))
+                    if is_seg_downstream(start_seg, end_seg):
+                        from_seg = start_seg
+                        to_seg = end_seg
+                    else:
+                        from_seg = end_seg
+                        to_seg = start_seg
+                    multiple_path_len_dict[f"{from_seg} to {to_seg}"] = {
+                        "From": from_seg,
+                        "To": to_seg,
                         "Minimal Length": round(dist, 3),
-                        "Short Path": min(list_of_paths),
-                        "Short Path Switch": get_switch_on_path(min(list_of_paths)),
-                        "Long Path": max(list_of_paths),
-                        "Long Path Switch": get_switch_on_path(max(list_of_paths)),
+                        "Short Path": short_path,
+                        "Short Path Switch": get_switch_on_path(short_path),
+                        "Long Path Length": round(long_path_length, 3),
+                        "Long Path": long_path,
+                        "Long Path Switch": get_switch_on_path(long_path),
                     }
+
     print_log(f"\r{progress_bar(nb_sw_point_segs, nb_sw_point_segs, end=True)} processing length of multiple paths "
               f"(rhombus or trapezoid) finished.\n")
 
@@ -42,10 +53,16 @@ def min_length_multiple_path(in_cbtc: bool = False):
                               for x in sorted(multiple_path_len_dict,
                                               key=lambda x: multiple_path_len_dict[x]["Minimal Length"])}
     min_len = min(path_len["Minimal Length"] for path_len in multiple_path_len_dict.values())
+    corresponding_paths = [path for path, path_len in multiple_path_len_dict.items()
+                           if path_len['Minimal Length'] == min_len]
     print(f"The minimum length of a multiple path structure (rhombus or trapezoid) is, {print_in_cbtc(in_cbtc)}:"
-          f"\n{min_len=} m"
+          f"\n{min_len = } m"
           f"\n > for: "
-          f"{[path for path, path_len in multiple_path_len_dict.items() if path_len['Minimal Length'] == min_len]}\n")
+          f"{corresponding_paths}\n")
+    for path, path_len in multiple_path_len_dict.items():
+        if path in corresponding_paths:
+            pretty_print_dict(path_len)
+            print()
 
     # print(create_csv_file(multiple_path_len_dict))
     return multiple_path_len_dict
