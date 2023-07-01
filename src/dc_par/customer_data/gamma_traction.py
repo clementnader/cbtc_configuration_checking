@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...cctool_oo_schema import DCSYS
 from ...dc_sys import *
 
 
 def par_gamma_traction_max(variables: dict = None):
-    traction_dict = load_sheet("traction")
-    traction_cols_name = get_cols_name("traction")
+    traction_dict = load_sheet(DCSYS.Traction_Profiles)
 
     traction_list = list()
     for traction_value in traction_dict.values():
-        traction = traction_value[traction_cols_name['E']]
+        traction = get_dc_sys_value(traction_value, DCSYS.Traction_Profiles.Vital)
         traction_list.append(traction)
 
     max_traction = max(traction_list)

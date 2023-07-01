@@ -2,26 +2,24 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ..load_database.load_sheets import load_sheet, get_cols_name
+from ...cctool_oo_schema import DCSYS
+from ..load_database import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
 def get_plts_in_cbtc_ter():
-    plt_dict = load_sheet("plt")
-    plt_cols_name = get_cols_name("plt")
+    plt_dict = load_sheet(DCSYS.Quai)
     within_cbtc_plt_dict = dict()
-    for plt_name, plt_values in plt_dict.items():
-        left_limit_seg = plt_values[plt_cols_name['I']]
-        left_limit_x = plt_values[plt_cols_name['J']]
-        right_limit_seg = plt_values[plt_cols_name['Q']]
-        right_limit_x = plt_values[plt_cols_name['R']]
+    for plt_name, plt_value in plt_dict.items():
+        limit_in_cbtc = list()
+        for limit_seg, limit_x in get_dc_sys_zip_values(plt_value, DCSYS.Quai.ExtremiteDuQuai.Seg,
+                                                        DCSYS.Quai.ExtremiteDuQuai.X):
+            limit_in_cbtc.append(is_point_in_cbtc_ter(limit_seg, limit_x))
 
-        left_in_cbtc = is_point_in_cbtc_ter(left_limit_seg, left_limit_x)
-        right_in_cbtc = is_point_in_cbtc_ter(right_limit_seg, right_limit_x)
-        if all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in (left_in_cbtc, right_in_cbtc)):
-            within_cbtc_plt_dict[plt_name] = plt_values
-        elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in (left_in_cbtc, right_in_cbtc)):
+        if all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limit_in_cbtc):
+            within_cbtc_plt_dict[plt_name] = plt_value
+        elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limit_in_cbtc):
             print_warning(f"Platform {plt_name} is both inside and outside CBTC Territory. "
                           f"It is still taken into account.")
-            within_cbtc_plt_dict[plt_name] = plt_values
+            within_cbtc_plt_dict[plt_name] = plt_value
     return within_cbtc_plt_dict

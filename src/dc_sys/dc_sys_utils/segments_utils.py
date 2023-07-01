@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ..load_database.load_sheets import load_sheet, get_cols_name
+from ...cctool_oo_schema import DCSYS
+from ..load_database import *
 
-DEPOLARIZED_SEGMENTS = list()
+
 __all__ = ["is_seg_upstream_of_a_switch", "is_seg_downstream_of_a_switch",
            "get_len_seg", "get_seg_track", "is_seg_depolarized", "get_depolarized_segs", "get_associated_depol",
            "get_linked_segs", "get_straight_linked_segs", "get_correct_seg_offset"]
+
+DEPOLARIZED_SEGMENTS = list()
 
 
 def is_seg_upstream_of_a_switch(seg: str) -> bool:
@@ -23,15 +26,13 @@ def is_seg_downstream_of_a_switch(seg: str) -> bool:
 
 
 def get_len_seg(seg: str) -> float:
-    seg_dict = load_sheet("seg")
-    seg_cols_name = get_cols_name("seg")
-    return float(seg_dict[seg][seg_cols_name['G']])
+    seg_dict = load_sheet(DCSYS.Seg)
+    return float(get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Longueur))
 
 
 def get_seg_track(seg: str) -> str:
-    seg_dict = load_sheet("seg")
-    seg_cols_name = get_cols_name("seg")
-    return seg_dict[seg][seg_cols_name['D']]
+    seg_dict = load_sheet(DCSYS.Seg)
+    return get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
 
 
 def is_seg_depolarized(seg):
@@ -59,11 +60,9 @@ def get_depolarized_segs() -> list[list[str]]:
 
 def _update_depol_segs():
     global DEPOLARIZED_SEGMENTS
-    line_dict = load_sheet("line")
-    line_cols_name = get_cols_name("line")
+    line_dict = load_sheet(DCSYS.Ligne)
     for line_info in line_dict.values():
-        for col in columns_from_to('G', 'N'):  # all depolarized segments
-            depol_seg = line_info.get(line_cols_name[col])
+        for depol_seg, in get_dc_sys_zip_values(line_info, DCSYS.Ligne.SegmentsDepolarises.Cell):
             if depol_seg is not None:
                 DEPOLARIZED_SEGMENTS.append(_get_second_depol_seg(depol_seg))
 
@@ -84,32 +83,22 @@ def _get_second_depol_seg(depol_seg: str):
 
 
 def get_linked_segs(seg: str, downstream: bool = True) -> list[str]:
-    seg_dict = load_sheet("seg")
-    seg_cols_name = get_cols_name("seg")
-
-    ref_col_1 = 'J' if downstream else 'H'
-    ref_col_2 = 'K' if downstream else 'I'
+    seg_dict = load_sheet(DCSYS.Seg)
+    attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     linked_segs = list()
-
-    linked_seg_1 = seg_dict[seg].get(seg_cols_name[ref_col_1])
-    linked_seg_2 = seg_dict[seg].get(seg_cols_name[ref_col_2])
-    if linked_seg_1 is not None:
-        linked_segs.append(linked_seg_1)
-    if linked_seg_2 is not None:
-        linked_segs.append(linked_seg_2)
-
+    for linked_seg, in get_dc_sys_zip_values(seg_dict[seg], attr):
+        if linked_seg is not None:
+            linked_segs.append(linked_seg)
     return linked_segs
 
 
 def get_straight_linked_segs(seg: str, downstream: bool = True, depth: int = 10, verbose: bool = False):
-    seg_dict = load_sheet("seg")
-    seg_cols_name = get_cols_name("seg")
-
-    ref_col = 'J' if downstream else 'H'
-    ref_col2 = 'K' if downstream else 'I'
+    seg_dict = load_sheet(DCSYS.Seg)
+    attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     previous_seg = seg
-    linked_seg = seg_dict[previous_seg].get(seg_cols_name[ref_col])
-    linked_seg2 = seg_dict[previous_seg].get(seg_cols_name[ref_col2])
+    linked_segs = get_dc_sys_value(seg_dict[previous_seg], attr)
+    linked_seg = linked_segs[0] if len(linked_segs) > 0 else None
+    linked_seg2 = linked_segs[1] if len(linked_segs) > 1 else None
     cnt = 0
     while linked_seg is not None and cnt < depth:
         if linked_seg2 is not None and verbose:
@@ -118,8 +107,9 @@ def get_straight_linked_segs(seg: str, downstream: bool = True, depth: int = 10,
         cnt += 1
         yield linked_seg
         previous_seg = linked_seg
-        linked_seg = seg_dict[previous_seg].get(seg_cols_name[ref_col])
-        linked_seg2 = seg_dict[previous_seg].get(seg_cols_name[ref_col2])
+        linked_segs = get_dc_sys_value(seg_dict[previous_seg], attr)
+        linked_seg = linked_segs[0] if len(linked_segs) > 0 else None
+        linked_seg2 = linked_segs[1] if len(linked_segs) > 1 else None
 
 
 def get_correct_seg_offset(seg, x):

@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ..load_database.load_sheets import load_sheet, get_cols_name, get_lim_cols_name
+from ...cctool_oo_schema import DCSYS
+from ..load_database import *
 from .segments_utils import *
+
 
 CBTC_TER_SEGMENTS = list()
 CBTC_TER_LIMITS = list()
@@ -27,8 +29,7 @@ def get_all_segs_in_cbtc_ter():
     global CBTC_TER_SEGMENTS, CBTC_TER_LIMITS
     if not CBTC_TER_SEGMENTS or not CBTC_TER_LIMITS:
         update_segs_within_cbtc_ter()
-    cbtc_ter_lim_cols_name = get_lim_cols_name("cbtc_ter")
-    return CBTC_TER_SEGMENTS + [lim[cbtc_ter_lim_cols_name[0]] for lim in CBTC_TER_LIMITS]
+    return CBTC_TER_SEGMENTS + [seg for seg, _, _ in CBTC_TER_LIMITS]
 
 
 def get_limits_cbtc_ter():
@@ -43,52 +44,48 @@ def update_segs_within_cbtc_ter():
     if CBTC_TER_SEGMENTS:
         return
 
-    start_cbtc_limits, end_cbtc_limits = get_start_and_en_limits_cbtc_terr()
+    start_cbtc_limits, end_cbtc_limits = get_start_and_end_limits_cbtc_ter()
 
-    cbtc_ter_lim_cols_name = get_lim_cols_name("cbtc_ter")
     for start_lim in start_cbtc_limits:
-        start_seg = start_lim[cbtc_ter_lim_cols_name[0]]
-        get_next_segments(start_seg, end_cbtc_limits, CBTC_TER_SEGMENTS, cbtc_ter_lim_cols_name)
+        start_seg, _, _ = start_lim
+        get_next_segments(start_seg, end_cbtc_limits, CBTC_TER_SEGMENTS)
 
     update_list_seg_lim(start_cbtc_limits)
     update_list_seg_lim(end_cbtc_limits)
 
 
-def get_start_and_en_limits_cbtc_terr():
-    cbtc_ter_dict = load_sheet("cbtc_ter")
-    cbtc_ter_cols_name = get_cols_name("cbtc_ter")
-    cbtc_ter_lim_cols_name = get_lim_cols_name("cbtc_ter")
-
+def get_start_and_end_limits_cbtc_ter():
+    cbtc_ter_dict = load_sheet(DCSYS.CBTC_TER)
     start_cbtc_limits = list()
     end_cbtc_limits = list()
 
-    for cbtc_ter_values in cbtc_ter_dict.values():
-        cbtc_type = cbtc_ter_values[cbtc_ter_cols_name['B']]
+    for cbtc_ter_value in cbtc_ter_dict.values():
+        cbtc_type = get_dc_sys_value(cbtc_ter_value, DCSYS.CBTC_TER.TypeTerritoireCbtc)
         if cbtc_type == "EN_CBTC":
-            start_cbtc_limits.extend([lim for lim in cbtc_ter_values["limits"]
-                                      if lim[cbtc_ter_lim_cols_name[2]] == "CROISSANT"])
-            end_cbtc_limits.extend([lim for lim in cbtc_ter_values["limits"]
-                                    if lim[cbtc_ter_lim_cols_name[2]] == "DECROISSANT"])
+            for seg, x, direction in get_dc_sys_zip_values(cbtc_ter_value, DCSYS.CBTC_TER.Extremite.Seg,
+                                                           DCSYS.CBTC_TER.Extremite.X, DCSYS.CBTC_TER.Extremite.Sens):
+                if direction == "CROISSANT":
+                    start_cbtc_limits.append((seg, x, direction))
+                else:
+                    end_cbtc_limits.append((seg, x, direction))
 
     for start_lim in start_cbtc_limits[:]:
-        start_lim_seg = start_lim[cbtc_ter_lim_cols_name[0]]
-        start_lim_x = start_lim[cbtc_ter_lim_cols_name[1]]
+        start_lim_seg, start_lim_x, _ = start_lim
         for end_lim in end_cbtc_limits[:]:
-            end_lim_seg = end_lim[cbtc_ter_lim_cols_name[0]]
-            end_lim_x = end_lim[cbtc_ter_lim_cols_name[1]]
-            if (start_lim_seg, start_lim_x) == (end_lim_seg, end_lim_x):  # a limit between two in CBTC Territory
+            end_lim_seg, end_lim_x, _ = end_lim
+            if (start_lim_seg, start_lim_x) == (end_lim_seg, end_lim_x):  # a limit between two in-CBTC Territories
                 start_cbtc_limits.remove(start_lim)
                 end_cbtc_limits.remove(end_lim)
 
     return start_cbtc_limits, end_cbtc_limits
 
 
-def get_next_segments(start_seg, end_cbtc_limits, cbtc_ter_segments, cbtc_ter_lim_cols_name):
+def get_next_segments(start_seg, end_cbtc_limits, cbtc_ter_segments):
     # check downstream segments
 
     def inner_recurs_next_seg(seg):
         nonlocal cbtc_ter_segments
-        if is_seg_end_limit(seg, end_cbtc_limits, cbtc_ter_lim_cols_name):
+        if is_seg_end_limit(seg, end_cbtc_limits):
             return cbtc_ter_segments
         cbtc_ter_segments.append(seg)
         for next_seg in get_linked_segs(seg):
@@ -98,8 +95,8 @@ def get_next_segments(start_seg, end_cbtc_limits, cbtc_ter_segments, cbtc_ter_li
     inner_recurs_next_seg(start_seg)
 
 
-def is_seg_end_limit(seg, end_cbtc_limits, cbtc_ter_lim_cols_name):
-    return seg in (end_lim[cbtc_ter_lim_cols_name[0]] for end_lim in end_cbtc_limits)
+def is_seg_end_limit(seg, end_cbtc_limits):
+    return seg in (end_seg for end_seg, _, _ in end_cbtc_limits)
 
 
 def update_list_seg_lim(cbtc_limits):
@@ -110,10 +107,9 @@ def update_list_seg_lim(cbtc_limits):
 
 def is_seg_in_cbtc_ter_limits(seg):
     global CBTC_TER_LIMITS
-    cbtc_ter_lim_cols_name = get_lim_cols_name("cbtc_ter")
     if not CBTC_TER_LIMITS:
         update_segs_within_cbtc_ter()
-    if seg in (lim[cbtc_ter_lim_cols_name[0]] for lim in CBTC_TER_LIMITS):
+    if seg in (lim_seg for lim_seg, _, _ in CBTC_TER_LIMITS):
         return True
     return False
 
@@ -134,11 +130,8 @@ def is_point_in_cbtc_ter(seg, x: float):
         update_segs_within_cbtc_ter()
     if seg in CBTC_TER_SEGMENTS:
         return True
-    cbtc_ter_lim_cols_name = get_lim_cols_name("cbtc_ter")
     for lim in CBTC_TER_LIMITS:
-        lim_seg = lim[cbtc_ter_lim_cols_name[0]]
-        lim_x = float(lim[cbtc_ter_lim_cols_name[1]])
-        lim_direction = lim[cbtc_ter_lim_cols_name[2]]
+        lim_seg, lim_x, lim_direction = lim
         if seg == lim_seg:
             if x == lim_x:  # limit point
                 return None

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import xlrd
 
+import os
 from ..utils import *
 from ..database_loc import DATABASE_LOC
+
 
 IF_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "templates", "template_if_results.xlsx")
 FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -145,8 +146,5 @@ def analyze_rams_sheet_archi(wb: xlrd.Book, res_dict: dict[str, list]) -> dict[s
         print(f"{extra_names_in_rams = }"
               f"\n{extra_names_in_eng = }")
     for key, val in res_dict.items():
-        ...
+        ...  # TODO
     return res_dict
-
-
-

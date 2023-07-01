@@ -4,16 +4,17 @@
 from ...utils import *
 from .load_xl import load_survey_wb
 
+
 LOADED_SURVEY = dict()
 
 D932_SHEET = "AFS_DEP_ML_AGG_REV_1_12.04.23"
 
 START_LINE = 13
 
-REF_COL = 'A'
-TYPE_COL = 'B'
-TRACK_COL = 'C'
-KP_COL = 'D'
+REF_COL = 1
+TYPE_COL = 2
+TRACK_COL = 3
+KP_COL = 4
 
 LIST_OF_TYPES = ["PLATFORM", "SIGNAL", "SIGNAL_BUFFER", "SWP", "TAG", "TC"]
 

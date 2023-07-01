@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import math
 import numpy.random as rd
 from .colored_output import *
 from ..time_utils import *
 
-__ALL__ = ["print_bar", "print_title", "print_section_title", "print_error", "print_warning", "print_success",
+
+__all__ = ["print_bar", "print_title", "print_section_title", "print_error", "print_warning", "print_success",
            "print_log", "progress_bar", "print_sub_variables", "print_variables", "print_final_value",
            "test_moving_progress_bar"]
 
@@ -17,13 +17,19 @@ def print_bar(length: int = 100):
 
 def print_title(title: str):
     main_color = f"{Color.bold}{Color.underline}{Color.turquoise}"
-    len_title = len(remove_colors(title))
-    whole_len = max(100, len_title + 10)
     title = title.replace(Color.reset, f"{Color.reset}{main_color}")
-    empty_len = whole_len - len_title
+
+    whole_len = 100
+    for line in title.splitlines():
+        len_line = len(remove_colors(line))
+        whole_len = max(whole_len, len_line + 10)
 
     print_bar(whole_len)
-    print(" " * (empty_len//2) + main_color + title + Color.reset + " " * (empty_len - empty_len//2) + "\n")
+    for line in title.splitlines():
+        len_line = len(remove_colors(line))
+        empty_len = whole_len - len_line
+        print(" " * (empty_len//2) + main_color + line + Color.reset + " " * (empty_len - empty_len//2))
+    print()
     print_bar(whole_len)
 
 
@@ -66,15 +72,16 @@ def print_log(*args, end="\n"):
     print(Color.reset, end=end)
 
 
-g_last_color_index = 0
-g_start_time = 0
-g_coin_flip = rd.random() < .05
+G_LAST_COLOR_INDEX = 0
+G_START_TIME = 0
+C_PROBA = .2
+G_COIN_FLIP = rd.random() < C_PROBA
 
 
 def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
                  sliding_rainbow: bool = True, static_rainbow: bool = False):
-    global g_last_color_index, g_start_time, g_coin_flip
-    colors = Color.rainbow if not g_coin_flip else Color.progress_pride
+    global G_LAST_COLOR_INDEX, G_START_TIME, G_COIN_FLIP
+    colors = Color.rainbow if not G_COIN_FLIP else Color.progress_pride
     full_cell_char = '█'
     full_len = len(colors)
     percent = i / max_nb
@@ -83,27 +90,27 @@ def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
     if sliding_rainbow and not static_rainbow:
         s = '|'
         for num_color_index in range(nb_char):
-            color = colors[(g_last_color_index + num_color_index) % full_len] if not end else Color.reset
+            color = colors[(G_LAST_COLOR_INDEX + num_color_index) % full_len] if not end else Color.reset
             s += color + full_cell_char
         s += Color.reset + ' '*(full_len-nb_char) + '|'
-        g_last_color_index = (g_last_color_index - 1) % full_len if not end else 0
+        G_LAST_COLOR_INDEX = (G_LAST_COLOR_INDEX - 1) % full_len if not end else 0
     else:
         if static_rainbow:
             color = colors[int(percent*(full_len-1))]
         else:
-            color = colors[g_last_color_index] if not end else Color.reset
-        g_last_color_index = (g_last_color_index + 1) % full_len if not end else 0
+            color = colors[G_LAST_COLOR_INDEX] if not end else Color.reset
+        G_LAST_COLOR_INDEX = (G_LAST_COLOR_INDEX + 1) % full_len if not end else 0
         s = '|' + color + full_cell_char*nb_char + ' '*(full_len-nb_char) + Color.reset + '|'
     if not only_bar:
         s += f" {Color.default}{percent:>7.2%}{Color.reset} " + " "*(len(str(max_nb))-len(str(i))) + f"({i}/{max_nb})"
 
     # Timer
     current_time = time.perf_counter()
-    elapsed_time = format_timespan(current_time - g_start_time)
+    elapsed_time = format_timespan(current_time - G_START_TIME)
     if end:
         s += f" (total elapsed time: {elapsed_time})"
-        g_start_time = time.perf_counter()
-        g_coin_flip = rd.random() < .05
+        G_START_TIME = time.perf_counter()
+        G_COIN_FLIP = rd.random() < C_PROBA
     else:
         s += f" (elapsed time: {elapsed_time})"
     return s
@@ -111,7 +118,7 @@ def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
 
 def test_moving_progress_bar():
     progress_bar(1, 1, end=True)  # init progress bar
-    len_colors = len(Color.rainbow) if not g_coin_flip else len(Color.progress_pride)
+    len_colors = len(Color.rainbow) if not G_COIN_FLIP else len(Color.progress_pride)
     initial_time = 1000 * time.perf_counter()
     delay = 80  # every 80 ms
     next_exec_time = initial_time
@@ -122,7 +129,7 @@ def test_moving_progress_bar():
             nb_ite += 1
             next_exec_time += delay
             print_log(f"\r{progress_bar(1, 1, only_bar=True)}", end="")
-            if nb_ite > 20 and nb_ite % len_colors == 1:  # around 1.6 s and wait until a whole loop haas passed
+            if nb_ite > 30 and nb_ite % len_colors == 1:  # around 2.4 s and wait until a whole loop haas passed
                 break
     print("\n")
 

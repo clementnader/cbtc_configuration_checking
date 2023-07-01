@@ -3,6 +3,7 @@
 
 from ..database_loc import PROJECT_NAME, Projects
 
+
 if PROJECT_NAME == Projects.Brussels:
     LOC_DICT = {
         "Name_Title":                             {"x":  42, "y": 814, "x_tol": 30, "y_tol": 30},

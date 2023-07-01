@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from ..utils import *
+from ..cctool_oo_schema import DCSYS
 from ..dc_sys import *
 from ..control_tables import *
 from ..database_loc import PROJECT_NAME, Projects
+
 
 DESTINATION_POINT_CONTROL_TABLE = "[1]"
 OVL_PATH_CONTROL_TABLE = "[5]"
@@ -136,8 +138,7 @@ def _update_ovl_control_tables(ovl_control_tables: dict[str, dict[str]]):
 
 
 def _check_ovl_destination_point(ovl: str, ovl_val: dict[str], destination_point: str, table_name: str):
-    ovl_cols_name = get_cols_name("overlap")
-    dc_sys_destination_signal: str = ovl_val[ovl_cols_name['B']]
+    dc_sys_destination_signal: str = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.DestinationSignal)
     if dc_sys_destination_signal.endswith(destination_point.removeprefix("0")):
         return True
     print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, DC_SYS Destination Signal {Color.yellow}"
@@ -198,14 +199,14 @@ def _check_ovl_sw(ovl: str, ovl_val: dict[str], ovl_sw: str, table_name: str):
 
 
 def _check_ovl_path(ovl: str, ovl_val: dict[str], ovl_path: str, table_name: str):
-    # dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]
-    overlap_cols_name = get_cols_name("overlap")
-    vsp_seg = ovl_val[overlap_cols_name['E']]
-    vsp_x = ovl_val[overlap_cols_name['F']]
-    vsp_direction = ovl_val[overlap_cols_name['G']]
+    # dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]  # TODO use the switch to determine
+    #                                                               which IVB limit is the correct one
+    vsp_seg = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg)[0]
+    vsp_x = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.X)[0]
+    vsp_direction = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)[0]
 
     ovl_path_list = ovl_path.split(",")
-    ovl_path_list = [ivb.strip() for ivb in ovl_path_list]  # .removeprefix("0")
+    ovl_path_list = [ivb.strip() for ivb in ovl_path_list]
     last_ivb = ovl_path_list[-1]
     dc_sys_last_ivb, ivb_limits = _get_ivb_limits(last_ivb)
     if dc_sys_last_ivb == "":
@@ -226,21 +227,21 @@ def _check_ovl_path(ovl: str, ovl_val: dict[str], ovl_path: str, table_name: str
 
 
 def _check_ivb_corresponds_to_vsp(ivb_limits: list[dict[str]], vsp_seg: str, vsp_x: float, vsp_direction: str):
-    ivb_lim_cols_name = get_lim_cols_name("ivb")
+    # TODO use vsp_direction to determine which ivb limit is the right one
     for lim in ivb_limits:
-        seg = lim[ivb_lim_cols_name[0]]
-        x = lim[ivb_lim_cols_name[1]]
+        seg, x = lim
         if seg == vsp_seg and x == vsp_x:
             return True
     return False
 
 
 def _get_ivb_limits(control_table_ivb: str) -> (str, list[dict[str]]):
-    ivb_dict = load_sheet("ivb")
+    ivb_dict = load_sheet(DCSYS.IVB)
     for ivb_name, ivb_val in ivb_dict.items():
+        ivb_limits = list(get_dc_sys_zip_values(ivb_val, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X))
         ivb_test_name = ivb_name.split("_")[-1]
-        if ivb_test_name.upper() == control_table_ivb.upper():  # .removeprefix("0")
-            return ivb_name, ivb_val["limits"]
+        if ivb_test_name.upper() == control_table_ivb.upper():
+            return ivb_name, ivb_limits
     return "", []
 
 
@@ -255,8 +256,6 @@ def _check_ovl_exist_in_dc_sys(ovl_dict: dict[str], ovl_control_tables: dict[str
             if result is not None:
                 found_ovl.append(result)
     found_ovl.sort()
-    # for text in found_ovl:
-    #     print(text)
     return missing_ovl_in_dc_sys
 
 

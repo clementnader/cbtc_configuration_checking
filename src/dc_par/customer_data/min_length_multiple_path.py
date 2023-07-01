@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
+from ...cctool_oo_schema import DCSYS
 from ...dc_sys import *
 
 
 def min_length_multiple_path(in_cbtc: bool = False):
-    seg_dict = load_sheet("seg")
+    seg_dict = load_sheet(DCSYS.Seg)
     if in_cbtc:
         segs_within_cbtc_ter = get_segs_within_cbtc_ter()
         limits_cbtc_ter = get_limits_cbtc_ter()
@@ -23,9 +24,8 @@ def min_length_multiple_path(in_cbtc: bool = False):
                   f"from point segment {start_seg}...", end="")
         for end_seg in sw_point_segs[i + 1:]:
             if are_segs_linked(start_seg, end_seg):  # if there is a path between the 2 segs
-                dist, min_path, list_of_paths = get_min_dist_and_list_of_paths(start_seg, end_seg, max_nb_paths=2)
+                dist, short_path, list_of_paths = get_min_dist_and_list_of_paths(start_seg, end_seg, max_nb_paths=2)
                 if len(list_of_paths) == 2:  # if there are two paths
-                    short_path = min_path
                     dist -= get_len_seg(start_seg) + get_len_seg(end_seg)
                     long_path = [path for path in list_of_paths if path != short_path][0]
                     long_path_length = get_path_len(long_path) - (get_len_seg(start_seg) + get_len_seg(end_seg))
@@ -69,16 +69,13 @@ def min_length_multiple_path(in_cbtc: bool = False):
 
 
 def get_all_point_segs(seg_list, limits_cbtc_ter):
-    cbtc_ter_lim_cols_name = get_lim_cols_name("cbtc_ter")
     sw_point_segs = list()
-
     for seg in seg_list:
         if is_seg_upstream_of_a_switch(seg) or is_seg_downstream_of_a_switch(seg):
             sw_point_segs.append(seg)
 
     for lim in limits_cbtc_ter:
-        seg = lim[cbtc_ter_lim_cols_name[0]]
-        direction = lim[cbtc_ter_lim_cols_name[2]]
+        seg, _, direction = lim
         if direction == "CROISSANT" and is_seg_upstream_of_a_switch(seg):
             sw_point_segs.append(seg)
         if direction == "DECROISSANT" and is_seg_downstream_of_a_switch(seg):

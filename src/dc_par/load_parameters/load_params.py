@@ -5,15 +5,16 @@ import unidecode
 from ...utils import *
 from .load_xl import load_dc_par_wb
 
+
 LOADED_PARAMETERS = dict()
 
 START_LINE = 3
 
-FR_NAME_COL = 'A'
-S_NS_COL = 'B'
-VALUE_COL = 'C'
-UNIT_COL = 'D'
-PARAM_NAME_COL = 'F'
+FR_NAME_COL = 1
+S_NS_COL = 2
+VALUE_COL = 3
+UNIT_COL = 4
+PARAM_NAME_COL = 6
 
 PARAM_NAME_TITLE = "C_D413-12"
 
@@ -49,7 +50,7 @@ def get_sheet_param(wb: xlrd.Book, sh_name: str) -> dict:
     return param_dict
 
 
-def get_and_decode_xlrd_value(sh: xlrd.sheet, line: int, col: str) -> str:
+def get_and_decode_xlrd_value(sh: xlrd.sheet, line: int, col: int) -> str:
     xlrd_line = get_xlrd_line(line)
     xlrd_col = get_xlrd_column(col)
     try:

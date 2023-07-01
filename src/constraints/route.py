@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from ..utils import *
+from ..cctool_oo_schema import DCSYS
 from ..dc_sys import *
 from ..control_tables import *
 from ..database_loc import PROJECT_NAME, Projects
+
 
 CONTROL_SIG_CONTROL_TABLE = ("[1]", "[1a]")
 ROUTE_SW_CONTROL_TABLE = "[9]"
@@ -94,10 +96,8 @@ def _find_route_control_table(route_dc_sys: str, route_control_tables: dict[str,
 
 
 def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, with_zero: bool = False):
-    # print(route_control_table, route_dc_sys, end=" -> ")
     route_dc_sys = "_".join([sig for sig in route_dc_sys.split("_")][-2:])
     route_control_table = "_".join([sig for sig in route_control_table.split("-")])
-    # print(route_control_table, route_dc_sys)
     if route_dc_sys == route_control_table:
         return True
     # in some projects, the route in DC_SYS is named with 'f' or 'F' in at the end of route name
@@ -112,15 +112,14 @@ def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys
     # try now removing leading 0 in sig names
     route_dc_sys = "_".join([sig.removeprefix("0") for sig in route_dc_sys.split("_")])
     route_control_table = "_".join([sig.removeprefix("0") for sig in route_control_table.split("-")])
-    if not with_zero:
+    if with_zero is False:
         return _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, with_zero=True)
     else:
         return False
 
 
 def _check_controlled_sig(route: str, route_val: dict[str], control_sig: str, table_name: str):
-    route_cols_name = get_cols_name("route")
-    dc_sys_origin_signal: str = route_val[route_cols_name['B']]
+    dc_sys_origin_signal: str = get_dc_sys_value(route_val, DCSYS.Iti.SignalOrig)
     if dc_sys_origin_signal.endswith(control_sig.removeprefix("0")):
         return True
     print_error(f"For Route {Color.green}{route}{Color.reset}, DC_SYS Origin Signal {Color.yellow}"
@@ -184,8 +183,8 @@ def _check_route_sw(route: str, route_val: dict[str], route_sw: str, table_name:
 
 
 def _check_route_path(route: str, route_val: dict[str], route_path: str, table_name: str):
-    dc_sys_route_sw: list[str] = route_val['Route Switch']
-    dc_sys_route_ivb: list[str] = route_val['Route IVB']
+    dc_sys_route_sw: list[str] = route_val["Route Switch"]
+    dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_val["Route IVB"]]
     if route_path == "--":
         route_path_list = []
     else:
@@ -221,9 +220,9 @@ def _check_route_path(route: str, route_val: dict[str], route_path: str, table_n
                               f"DC_SYS Route IVB: {Color.white}{dc_sys_route_ivb_str}{Color.reset}\n"
                               f"Control Table Route Path: {Color.white}{route_path_str}{Color.reset}")
             else:
-                print_error(f"For Route {Color.green}{route}{Color.reset}, {Color.blue}{dc_sys_ivb = }{Color.reset} does "
-                            f"not correspond to {Color.blue}{control_table_ivb = }{Color.reset} in the Control Table "
-                            f"{Color.green}{table_name}{Color.reset}.\n"
+                print_error(f"For Route {Color.green}{route}{Color.reset}, {Color.blue}{dc_sys_ivb = }{Color.reset} "
+                            f"does not correspond to {Color.blue}{control_table_ivb = }{Color.reset} "
+                            f"in the Control Table {Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Route IVB: {Color.white}{dc_sys_route_ivb_str}{Color.reset}\n"
                             f"Control Table Route Path: {Color.white}{route_path_str}{Color.reset}")
             result = False

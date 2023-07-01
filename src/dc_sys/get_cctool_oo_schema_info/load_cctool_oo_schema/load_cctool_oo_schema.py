@@ -6,14 +6,13 @@ import unidecode
 from ....utils import *
 from .load_xl import load_cctool_oo_schema_wb
 
+
 SHEET_NAME = r"CCTool-OO Schema"
 START_LINE = 2
 
-SHEET_COL = "B"
-TITLE_COL = "C"
-COLUMN_COL = "D"
-# FDS_OBJ_COL = "F"
-# FDS_ATTR_COL = "G"
+SHEET_COL = 2
+TITLE_COL = 3
+COLUMN_COL = 4
 
 LOADED_CCTOOL_OO_SCHEMA = dict()
 
@@ -29,12 +28,9 @@ def load_cctool_oo_schema(addr) -> dict:
 
 def get_cctool_oo_schema(sh: xlrd.sheet) -> dict:
     info_dict = dict()
-    line = START_LINE
-    # while line <= sh.nrows:
     for line in range(START_LINE, sh.nrows + 1):
         sheet_name = get_xlrd_value(sh, line, SHEET_COL)
         if not sheet_name:
-            # line += 1
             continue
         if sheet_name not in info_dict:
             info_dict[sheet_name] = dict()
@@ -46,7 +42,6 @@ def get_cctool_oo_schema(sh: xlrd.sheet) -> dict:
                             f" for Spreadsheet {Color.blue}{sheet_name}{Color.reset}.")
             else:
                 info_dict[sheet_name][title] = column
-            # line += 1
         else:
             list_attr_name, sub_attr_name = get_list_attr_names(title)
             if list_attr_name not in info_dict[sheet_name]:
@@ -54,31 +49,6 @@ def get_cctool_oo_schema(sh: xlrd.sheet) -> dict:
             if sub_attr_name not in info_dict[sheet_name][list_attr_name]:
                 info_dict[sheet_name][list_attr_name][sub_attr_name] = list()
             info_dict[sheet_name][list_attr_name][sub_attr_name].append(column)
-            # line += 1
-            # list_max_nb = 1
-            # list_delta = 0
-            # new_sheet_name = sheet_name
-            # new_list_attr_name = list_attr_name
-            # new_sub_attr_name = first_sub_attr_name
-            # while line <= sh.nrows and sheet_name == new_sheet_name and new_list_attr_name == list_attr_name:
-            #     if new_sub_attr_name in info_dict[sheet_name][list_attr_name]:
-            #         if new_sub_attr_name == first_sub_attr_name:
-            #             list_max_nb += 1
-            #     else:
-            #         info_dict[sheet_name][list_attr_name][new_sub_attr_name] = column
-            #         list_delta += 1
-            #     line += 1
-            #     new_sheet_name = get_xlrd_value(sh, line, SHEET_COL)
-            #     if new_sheet_name is None:
-            #         break
-            #     title = get_clean_cell(sh, line, TITLE_COL)
-            #     column = int(get_xlrd_value(sh, line, COLUMN_COL))
-            #     if "::" not in title:
-            #         break
-            #     new_list_attr_name, new_sub_attr_name = get_list_attr_names(title)
-            # info_dict[sheet_name][list_attr_name]["list_max_nb"] = list_max_nb
-            # info_dict[sheet_name][list_attr_name]["list_delta"] = list_delta
-
     return info_dict
 
 
@@ -90,9 +60,10 @@ def get_list_attr_names(title: str):
     return list_attr_name, sub_attr_name
 
 
-def get_clean_cell(sh: xlrd.sheet, line, col):
+def get_clean_cell(sh: xlrd.sheet, line: int, col: int):
     cell_str = unidecode.unidecode(f"{get_xlrd_value(sh, line, col)}").strip()  # translate non-ASCII characters
-    cell_str = cell_str.replace("'", ' ').replace('.', ' ').replace('#', '').replace('/', '')  # remove special chars
-    cell_str = cell_str.replace("1st", "First").replace("2nd", "Second")
-    cell_str = cell_str.title().replace(' ', '')  # camelcase
+    cell_str = cell_str.replace("'", ' ').replace('.', ' ').replace('-', ' ')  # remove special chars
+    cell_str = cell_str.replace('#', '').replace('/', '')  # remove special chars
+    cell_str = cell_str.replace("1st", "First").replace("2nd", "Second")  # remove leading numbers
+    cell_str = cell_str.title().replace(' ', '')  # CamelCase
     return cell_str

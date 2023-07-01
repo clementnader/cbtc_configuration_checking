@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from ...utils import *
-from .get_version import get_version
+from .get_version import get_cctool_oo_version
 from .load_cctool_oo_schema import *
+
 
 CCTOOL_OO_SCHEMA_DIR = r"C:\Users\naderc\Documents\Documents GA\CCTool-OO Schema"
 
@@ -17,7 +19,7 @@ def load_cctool_oo_info():
 
 
 def get_corresponding_cctool_oo_schema():
-    version = get_version()
+    version = get_cctool_oo_version()
     for file in os.listdir(CCTOOL_OO_SCHEMA_DIR):
         full_path = os.path.join(CCTOOL_OO_SCHEMA_DIR, file)
         file, ext = os.path.splitext(file)

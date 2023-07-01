@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ..load_database.load_sheets import load_sheet, get_cols_name, get_lim_cols_name
+from ...cctool_oo_schema import DCSYS
+from ..load_database import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 from .dist_utils import get_dist_downstream, get_downstream_path
 from .path_utils import is_seg_downstream
@@ -10,34 +11,28 @@ from .segments_utils import get_linked_segs
 
 
 def get_blocks_in_cbtc_ter():
-    block_dict = load_sheet("block")
-    block_lim_cols_name = get_lim_cols_name("block")
+    block_dict = load_sheet(DCSYS.CDV)
     within_cbtc_block_dict = dict()
-    for block, block_values in block_dict.items():
+    for block, block_value in block_dict.items():
         limits_in_cbtc_ter = list()
-        for lim in block_values["limits"]:
-            seg = lim[block_lim_cols_name[0]]
-            x = lim[block_lim_cols_name[1]]
+        for seg, x in get_dc_sys_zip_values(block_value, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X):
             limits_in_cbtc_ter.append(is_point_in_cbtc_ter(seg, x))
         if all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            within_cbtc_block_dict[block] = block_values
+            within_cbtc_block_dict[block] = block_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
             print_warning(f"Block {block} is both inside and outside CBTC Territory. "
                           f"It is still taken into account.")
-            within_cbtc_block_dict[block] = block_values
+            within_cbtc_block_dict[block] = block_value
     return within_cbtc_block_dict
 
 
 def get_list_len_block(block):
-    block_lim_cols_name = get_lim_cols_name("block")
     list_dist = list()
     upstream_limits, downstream_limits = find_upstream_n_downstream_limits(block)
     for up_lim in upstream_limits:
-        seg1 = up_lim[block_lim_cols_name[0]]
-        x1 = float(up_lim[block_lim_cols_name[1]])
+        seg1, x1 = up_lim
         for down_lim in downstream_limits:
-            seg2 = down_lim[block_lim_cols_name[0]]
-            x2 = float(down_lim[block_lim_cols_name[1]])
+            seg2, x2 = down_lim
             d = get_dist_downstream(seg1, x1, seg2, x2)
             if d is not None:
                 list_dist.append(d)
@@ -45,39 +40,39 @@ def get_list_len_block(block):
 
 
 def find_upstream_n_downstream_limits(block):
-    block_lim_cols_name = get_lim_cols_name("block")
     upstream_limits = list()
     downstream_limits = list()
-    for lim1 in block["limits"]:
-        if is_block_limit_upstream(lim1, block["limits"], block_lim_cols_name):
-            upstream_limits.append(lim1)
+    for seg1, x1 in get_dc_sys_zip_values(block, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X):
+        if is_block_limit_upstream((seg1, x1), block):
+            upstream_limits.append((seg1, x1))
         else:
-            downstream_limits.append(lim1)
+            downstream_limits.append((seg1, x1))
     return upstream_limits, downstream_limits
 
 
-def is_block_limit_upstream(start_lim: dict, limits: list[dict], block_lim_cols_name):
-    start_seg = start_lim[block_lim_cols_name[0]]
-    start_x = float(start_lim[block_lim_cols_name[1]])
-    other_limits = [lim for lim in limits if lim != start_lim]
+def is_block_limit_upstream(start_lim: tuple, block):
+    start_seg, start_x = start_lim
+    other_limits = [(seg, x) for seg, x in get_dc_sys_zip_values(block, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)
+                    if (seg, x) != (start_seg, start_x)]
 
     for lim in other_limits:
-        if lim[block_lim_cols_name[0]] == start_seg:  # two limits of the block are on the same segment
-            return start_x <= float(lim[block_lim_cols_name[1]])
+        seg, x = lim
+        if seg == start_seg:  # two limits of the block are on the same segment
+            return float(start_x) <= float(x)
 
     for lim in other_limits:
-        seg = lim[block_lim_cols_name[0]]
+        seg, _ = lim
         if is_seg_downstream(start_seg, seg):  # seg is downstream of start_seg
-            if does_path_exist_within_block(start_seg, seg, limits, block_lim_cols_name, downstream=True):
+            if does_path_exist_within_block(start_seg, seg, block, downstream=True):
                 return True  # start_seg is upstream of another limit within the block
         if is_seg_downstream(seg, start_seg):  # seg is upstream of start_seg
-            if does_path_exist_within_block(start_seg, seg, limits, block_lim_cols_name, downstream=False):
+            if does_path_exist_within_block(start_seg, seg, block, downstream=False):
                 return False  # start_seg is downstream of another limit within the block
     return None
 
 
-def does_path_exist_within_block(seg1, seg2, block_limits, block_lim_cols_name, downstream: bool = None):
-    seg_limits = [lim[block_lim_cols_name[0]] for lim in block_limits]
+def does_path_exist_within_block(seg1, seg2, block, downstream: bool = None):
+    seg_limits = [seg for seg, x in get_dc_sys_zip_values(block, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)]
 
     if seg1 == seg2:
         return True
@@ -107,12 +102,11 @@ def does_path_exist_within_block(seg1, seg2, block_limits, block_lim_cols_name, 
 def get_segs_in_blocks(block):
     """ Return the list of segments in a block. """
     set_segs = set()
-    block_lim_cols_name = get_lim_cols_name("block")
     upstream_limits, downstream_limits = find_upstream_n_downstream_limits(block)
     for up_lim in upstream_limits:
-        up_seg = up_lim[block_lim_cols_name[0]]
+        up_seg, _ = up_lim
         for down_lim in downstream_limits:
-            down_seg = down_lim[block_lim_cols_name[0]]
+            down_seg, _ = down_lim
             _, _, list_paths = get_downstream_path(up_seg, down_seg)
             for path in list_paths:
                 for seg in path:
@@ -127,9 +121,9 @@ def is_seg_in_block(block, seg: str):
 
 def get_block_associated_to_sw(sw):
     """ Get the block associated to a switch. """
-    sw_cols_name = get_cols_name("sw")
-    block_dict = load_sheet("block")
+    block_dict = load_sheet(DCSYS.CDV)
     for block_name, block_value in block_dict.items():
-        if all(is_seg_in_block(block_value, sw[sw_cols_name[j]]) for j in ['B', 'C', 'D']):
+        if all(is_seg_in_block(block_value, seg)
+               for seg in get_dc_sys_values(sw, DCSYS.Aig.SegmentPointe, DCSYS.Aig.SegmentTd, DCSYS.Aig.SegmentTg)):
             return block_name, block_value
     print(f"Unable to find block associated to SW: {sw}")

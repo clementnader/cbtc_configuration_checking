@@ -7,6 +7,7 @@ import subprocess
 import argparse
 from ..utils import *
 
+
 ORIGINAL_FILE = "md5sum.txt"
 REGEN_FILE = "Appendix C_MD5 Checksum of the files analysed.txt"
 

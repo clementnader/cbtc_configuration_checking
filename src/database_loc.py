@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .utils.colors_pkg import *
-
 
 class Projects:
     Ankara = "Ankara"
@@ -54,7 +52,6 @@ class ProjectDatabaseLoc:
     control_tables_overlap = ControlTablesLoc()
 
     def __init__(self, project_name: str):
-        print_title(f"The working project is {Color.vivid_green}{project_name}{Color.reset}.")
 
         # ------------------------------- Ankara -------------------------------#
         if project_name == Projects.Ankara:

@@ -4,6 +4,7 @@
 import os
 import sys
 
+
 if sys.platform == "win32":  # for Windows
     os.system("color")
 
@@ -116,6 +117,7 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     progress_pride = duplicate_each_elem([csi_color_seq(i) for i in (
         15,  213,  51,  95,   0,
         # white, pink, cyan, brown, black
+    )], 2) + duplicate_each_elem([csi_color_seq(i) for i in (
         196, 208, 220,  46,  27,  90,
         # red, orange, yellow, green, blue, purple
     )], 3)
@@ -137,10 +139,9 @@ def move_left(nb_char: int):
     return f"{ESCAPE_SEQ}{nb_char}D"
 
 
-def test_rainbow():
+def test_rainbow(progress_pride: bool = False):
     full_cell_char = '█'
-    # for color in Color.rainbow:
-    for color in Color.progress_pride:
+    for color in (Color.progress_pride if progress_pride else Color.rainbow):
         print(color + full_cell_char + Color.reset, end="")
     print()
 

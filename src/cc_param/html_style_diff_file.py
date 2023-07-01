@@ -11,8 +11,4 @@ def additional_css_style():
     html_code += "th:hover, td:hover {background: #CCCCFF;}\n"
     html_code += "th:not(.sticky):hover::after, td:hover::after {background: #EEEEFF; " \
                  "content: ''; position: absolute; left: 0; top: -5000px; width: 100%; height: 10000px; z-index: -1;}\n"
-    # html_code += "th.sticky {position: sticky; background-color: white !important;}\n"
-    # html_code += "th.first-col {width: 50px; min-width: 50px; max-width: 50px; left: 0px;}\n"
-    # html_code += "th.second-col {width: 150px; min-width: 150px; max-width: 150px; left: 50px;}\n"
     return html_code
-

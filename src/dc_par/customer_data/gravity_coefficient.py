@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 def g(variables: dict = None):
     value = 9.81
     if variables is not None:

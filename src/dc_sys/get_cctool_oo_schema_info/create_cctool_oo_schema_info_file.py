@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from .get_cctool_oo_schema_info import load_cctool_oo_info, get_corresponding_cctool_oo_schema
+from .get_cctool_oo_schema_info import load_cctool_oo_info
 
 
 def create_cctool_oo_schema_info_file():
@@ -21,7 +21,8 @@ def create_cctool_oo_schema_info_file():
 def add_list_attrs(obj_name, attr_title, attr_val):
     text = f"\n\nclass {obj_name}__{attr_title}:\n"
     for key, list_val in attr_val.items():
-        text += f"\t{key} = {list_val}\n"
+        sub_dict = {"sh_name": obj_name, "attr_name": attr_title, "sub_attr_name": key, "cols": list_val}
+        text += f"\t{key} = {sub_dict}\n"
     return text
 
 
@@ -34,7 +35,8 @@ def add_obj_attrs(info_dict: dict[str, dict]):
                 text += add_list_attrs(obj_name, attr_title, attr_val)
                 sub_definition += f"\t{attr_title} = {obj_name}__{attr_title}()\n"
             else:
-                sub_definition += f"\t{attr_title} = {attr_val}\n"
+                sub_dict = {"sh_name": obj_name, "attr_name": attr_title, "col": attr_val}
+                sub_definition += f"\t{attr_title} = {sub_dict}\n"
         text += f"\n\nclass {obj_name}:\n" + sub_definition
     return text
 

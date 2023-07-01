@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..utils import *
+from ..cctool_oo_schema import DCSYS
 from ..dc_sys import *
 
 
@@ -16,7 +17,6 @@ def cf_zsm_cbtc_10():
 def initialize_res_dict():
     seg_dict = get_segs_within_cbtc_ter()
     limits_seg_dict = get_limits_cbtc_ter()
-    cbtc_ter_lim_cols_name = get_lim_cols_name("cbtc_ter")
 
     res_dict = {seg: {
         "seg_limits": (0.0, get_len_seg(seg)),
@@ -24,10 +24,7 @@ def initialize_res_dict():
         "list_limits_diff": list()
     } for seg in seg_dict if seg is not None}
 
-    for lim in limits_seg_dict:
-        seg = lim[cbtc_ter_lim_cols_name[0]]
-        x = lim[cbtc_ter_lim_cols_name[1]]
-        direction = lim[cbtc_ter_lim_cols_name[2]]
+    for seg, x, direction in limits_seg_dict:
         if direction == "CROISSANT":
             res_dict[seg] = {
                 "seg_limits": (x, get_len_seg(seg)),
@@ -47,14 +44,10 @@ def initialize_res_dict():
 def get_zsm_limits():
     res_dict = initialize_res_dict()
     zsm_dict = get_zsm_in_cbtc_ter()
-    zsm_cols_name = get_cols_name("zsm")
 
     for zsm_value in zsm_dict.values():
-        seg1 = zsm_value[zsm_cols_name['D']]
-        x1 = float(zsm_value[zsm_cols_name['E']])
-        seg2 = zsm_value[zsm_cols_name['H']]
-        x2 = float(zsm_value[zsm_cols_name['I']])
-
+        seg1, seg2 = get_dc_sys_value(zsm_value, DCSYS.ZSM_CBTC.ExtZsm.Seg)
+        x1, x2 = get_dc_sys_value(zsm_value, DCSYS.ZSM_CBTC.ExtZsm.X)
         if seg1 != seg2:  # limits are on different segments
             res_dict[seg1]["list_limits_diff"].append((x1, seg2))
             res_dict[seg2]["list_limits_diff"].append((x2, seg1))
@@ -89,8 +82,8 @@ def manage_zsm_limits_on_different_segs(res_dict):
 
 
 def concatenate_zsm_limits(res_dict):
-    for seg, seg_values in res_dict.items():
-        if seg_values["list_limits"]:
+    for seg, seg_value in res_dict.items():
+        if seg_value["list_limits"]:
             res_dict[seg]["list_limits"].sort()
             list_limits = list()
             old_mini = res_dict[seg]["list_limits"][0][0]
@@ -111,10 +104,9 @@ def concatenate_zsm_limits(res_dict):
 def print_results(res_dict):
     print(f"\n{Color.bold}{Color.blue}{Color.underline}Results for CF_ZSM_CBTC_10{Color.reset}\n")
     sw_dict = get_sw_dict()
-    sw_cols_name = get_cols_name("sw")
-    for seg, seg_values in res_dict.items():
-        zsm_coverage_limits = seg_values["list_limits"][0] if seg_values["list_limits"] else []
-        seg_limits = seg_values["seg_limits"]
+    for seg, seg_value in res_dict.items():
+        zsm_coverage_limits = seg_value["list_limits"][0] if seg_value["list_limits"] else []
+        seg_limits = seg_value["seg_limits"]
         if not zsm_coverage_limits:
             print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
                         f"\n\tempty zsm_coverage_limits"
@@ -124,7 +116,7 @@ def print_results(res_dict):
         zsm_mini, zsm_maxi = zsm_coverage_limits
         seg_mini, seg_maxi = seg_limits
         if zsm_mini > seg_mini:
-            direction = check_seg_in_sw(seg, sw_dict, sw_cols_name)
+            direction = check_seg_in_sw(seg, sw_dict)
             if direction in ("BIDIR", "INCREASING") and round(zsm_mini - seg_mini, 3) <= .01:
                 print(f"{Color.green}OK on switch heels{Color.reset}\n"
                       f"\t{zsm_mini = } not equal to {seg_mini = }"
@@ -134,7 +126,7 @@ def print_results(res_dict):
                             f"\n\t{zsm_mini = } not equal to {seg_mini = }"
                             f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }")
         if zsm_maxi < seg_maxi:
-            direction = check_seg_in_sw(seg, sw_dict, sw_cols_name)
+            direction = check_seg_in_sw(seg, sw_dict)
             if direction in ("BIDIR", "DECREASING") and round(seg_maxi - zsm_maxi, 3) <= .01:
                 print(f"{Color.green}OK on switch heels{Color.reset}\n"
                       f"\t{zsm_maxi = } not equal to {seg_maxi = }"
@@ -145,27 +137,26 @@ def print_results(res_dict):
                             f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }")
 
 
-def check_seg_in_sw(seg, sw_dict, sw_cols_name):
+def check_seg_in_sw(seg, sw_dict):
     direction = False
-    for sw_values in sw_dict.values():
-        right_seg = sw_values[sw_cols_name['C']]
-        left_seg = sw_values[sw_cols_name['D']]
+    for sw_value in sw_dict.values():
+        right_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTd)
+        left_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTg)
         if seg in (left_seg, right_seg):
-            if direction and direction != sw_values["Direction"]:
+            if direction and direction != sw_value["Direction"]:
                 direction = "BIDIR"
             else:
-                direction = sw_values["Direction"]
+                direction = sw_value["Direction"]
     return direction
 
 
 def get_sw_dict():
-    sw_dict = load_sheet("sw")
-    sw_cols_name = get_cols_name("sw")
+    sw_dict = load_sheet(DCSYS.Aig)
 
-    for sw, sw_values in sw_dict.items():
-        point_seg = sw_values[sw_cols_name['B']]
-        left_heel_seg = sw_values[sw_cols_name['D']]
-        right_heel_seg = sw_values[sw_cols_name['C']]
+    for sw, sw_value in sw_dict.items():
+        point_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentPointe)
+        right_heel_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTd)
+        left_heel_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTg)
         downstream_point_segs = get_linked_segs(point_seg, downstream=True)
         upstream_point_segs = get_linked_segs(point_seg, downstream=False)
         if left_heel_seg in downstream_point_segs and right_heel_seg in downstream_point_segs:

@@ -20,5 +20,5 @@ from .switch_utils import get_sws_in_cbtc_ter, is_sw_point_seg_upstream, give_sw
     get_heel_position, get_switch_position_dict, get_point_seg
 from .tag_utils import get_tags_in_cbtc_ter, get_tag_gr_in_cbtc_ter
 from .track_utils import get_track_limits, get_track_in_cbtc_ter
-from .virtual_block_utils import *
+from .virtual_block_utils import give_point_seg_vb, get_len_vb, get_segs_in_vb, is_seg_in_vb, get_vb_associated_to_sw
 from .zsm_utils import get_zsm_in_cbtc_ter

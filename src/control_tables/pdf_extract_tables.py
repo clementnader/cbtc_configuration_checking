@@ -28,8 +28,8 @@ def pdf_reader_extract_tables(pdf_file: str, table_type: str, line_part: str, ve
             if specific_page is not None and num_page != specific_page:
                 continue
             print_log(f"\r{progress_bar(num_page - 1, nbpages)} "
-                      f"{Color.blue}{Color.underline}{table_type.title()}{Color.no_underline} "
-                      f"Control Tables{Color.reset} conversion "
+                      f"{Color.black}{bg_color(Color.blue)}{table_type.title()}{Color.reset} "
+                      f"{Color.blue}Control Tables{Color.reset} conversion "
                       f"for {Color.blue}{line_part}{Color.reset} in-going...", end="")
             viewer.navigate(num_page)
             logging.disable(logging.WARNING)  # deactivate temporarily the warning logs

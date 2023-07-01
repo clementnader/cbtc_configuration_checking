@@ -6,6 +6,7 @@ from ..utils import *
 from .cc_param_utils import *
 from .html_style_diff_file import additional_css_style
 
+
 # MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\Ankara\ANK_L2_C11_D470_06_05_03_V06\ANK_L2_C11_D470_06_05_03_V06"
 MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\ML4_TF3_C11_D470_06_05_05_V03\ML4_TF3_C11_D470_06_05_05_V03"
 RESULT_FOLDER = r"C:\Users\naderc\Desktop"
@@ -36,8 +37,8 @@ def get_train_unit_files() -> dict[int, dict[str, str]]:
 
 def get_cc_param():
     dict_train_units = get_train_unit_files()
-    for train_num, train_values in dict_train_units.items():
-        train_dir = train_values["main_dir"]
+    for train_num, train_value in dict_train_units.items():
+        train_dir = train_value["main_dir"]
         list_cab_dir = list()
         for cab_dir in os.listdir(os.path.join(MAIN_DIRECTORY, train_dir)):
             cab_full_path = os.path.join(MAIN_DIRECTORY, train_dir, cab_dir)
@@ -73,9 +74,9 @@ def get_cc_param_from_cabdir(train_dir, cab_dir):
 
 def split_type_trains(dict_train_units):
     dict_split_type_trains = {train_type: dict() for train_type in TYPES_OF_TRAIN}
-    for train_num, train_values in dict_train_units.items():
-        train_type = train_values["type"]
-        dict_split_type_trains[train_type][train_num] = train_values
+    for train_num, train_value in dict_train_units.items():
+        train_type = train_value["type"]
+        dict_split_type_trains[train_type][train_num] = train_value
     return dict_split_type_trains
 
 
@@ -91,23 +92,23 @@ def check_diff_cc_param():
             ref_lines = ref_f.readlines()
             titles = read_csv(ref_lines[0])
             dict_diff = dict()
-            for train_values in type_dict.values():
-                train_unit_dir = train_values["main_dir"]
-                cc_param_path = train_values["file_path"]
+            for train_value in type_dict.values():
+                train_unit_dir = train_value["main_dir"]
+                cc_param_path = train_value["file_path"]
                 other_file = os.path.join(MAIN_DIRECTORY, train_unit_dir, cc_param_path)
                 with open(os.path.join(MAIN_DIRECTORY, other_file), 'r') as f:
                     lines = f.readlines()
                     for i, (ref_line, line) in enumerate(zip(ref_lines, lines)):
-                        ref_values = read_csv(ref_line)
-                        ref_values[INFO_COLUMN] = ref_values[INFO_COLUMN].replace(",", ",<br />")
+                        ref_value = read_csv(ref_line)
+                        ref_value[INFO_COLUMN] = ref_value[INFO_COLUMN].replace(",", ",<br />")
                         values = read_csv(line)
                         values[INFO_COLUMN] = values[INFO_COLUMN].replace(",", ",<br />")
                         if line != ref_line:
-                            if values[VALUE_COLUMN] != ref_values[VALUE_COLUMN]:
+                            if values[VALUE_COLUMN] != ref_value[VALUE_COLUMN]:
                                 if i not in dict_diff:
-                                    dict_diff[i] = {title: ref_values[j] for j, title in enumerate(titles)
+                                    dict_diff[i] = {title: ref_value[j] for j, title in enumerate(titles)
                                                     if j != VALUE_COLUMN}
-                                    dict_diff[i][ref_train_unit_dir] = ref_values[VALUE_COLUMN]
+                                    dict_diff[i][ref_train_unit_dir] = ref_value[VALUE_COLUMN]
                                 dict_diff[i][train_unit_dir] = values[VALUE_COLUMN]
                             else:
                                 print_warning(f"Difference on something else than the {titles[VALUE_COLUMN]}:"
@@ -165,11 +166,9 @@ def html_result_table(dict_diff):
     html_code += "\t\t<tr class=\"headline\">\n"
     for i, sub_key in enumerate(list_sub_keys):
         if i == RANK_COLUMN:
-            # html_code += f"\t\t\t<th class=\"sticky first-col\">" \
             html_code += f"\t\t\t<th>" \
                          f"{sub_key}</th>\n"
         elif i == ID_COLUMN:
-            # html_code += f"\t\t\t<th class=\"sticky second-col\">" \
             html_code += f"\t\t\t<th>" \
                          f"{sub_key}</th>\n"
         else:
@@ -181,11 +180,9 @@ def html_result_table(dict_diff):
             html_code += "\t\t<tr>\n"
             for i, value in enumerate(values):
                 if i == RANK_COLUMN:
-                    # html_code += f"\t\t\t<th class=\"sticky first-col\">" \
                     html_code += f"\t\t\t<th>" \
                                  f"{values.get(value, '-')}</th>\n"
                 elif i == ID_COLUMN:
-                    # html_code += f"\t\t\t<th class=\"sticky second-col\">" \
                     html_code += f"\t\t\t<th>" \
                                  f"{values.get(value, '-')}</th>\n"
                 else:

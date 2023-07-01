@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..load_database.load_sheets import load_sheet, get_cols_name
+from ...cctool_oo_schema import DCSYS
+from ..load_database import *
 from .segments_utils import *
-from ...utils import *
 
-SEGMENTS_LINKED = dict()
+
+DOWNSTREAM_ACCESSIBLE_SEGS = dict()
+UPSTREAM_ACCESSIBLE_SEGS = dict()
 
 
 def are_segs_linked(seg1, seg2, x1: float = None, x2: float = None) -> (float, list[str]):
@@ -37,10 +39,6 @@ def get_all_downstream_segs(seg):
     return all_accessible_segs["downstream"][seg]
 
 
-DOWNSTREAM_ACCESSIBLE_SEGS = dict()
-UPSTREAM_ACCESSIBLE_SEGS = dict()
-
-
 def get_all_accessible_segs():
     global DOWNSTREAM_ACCESSIBLE_SEGS, UPSTREAM_ACCESSIBLE_SEGS
     if not DOWNSTREAM_ACCESSIBLE_SEGS or not UPSTREAM_ACCESSIBLE_SEGS:
@@ -53,7 +51,7 @@ def _update_all_accessible_segs():
     global DOWNSTREAM_ACCESSIBLE_SEGS, UPSTREAM_ACCESSIBLE_SEGS
     if DOWNSTREAM_ACCESSIBLE_SEGS and UPSTREAM_ACCESSIBLE_SEGS:
         return
-    seg_dict = load_sheet("seg")
+    seg_dict = load_sheet(DCSYS.Seg)
     for seg in seg_dict.keys():
         DOWNSTREAM_ACCESSIBLE_SEGS[seg] = get_all_accessible_segs_from(seg, downstream=True)
         UPSTREAM_ACCESSIBLE_SEGS[seg] = get_all_accessible_segs_from(seg, downstream=False)

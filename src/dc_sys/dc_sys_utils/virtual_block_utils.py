@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...cctool_oo_schema import DCSYS
+from ..load_database import *
 from .dist_utils import get_dist, get_list_of_paths
 from .path_utils import is_seg_downstream
 
@@ -8,9 +10,9 @@ from .path_utils import is_seg_downstream
 def give_point_seg_vb(vb_limits):
     """ Give the point segment corresponding to the switch associated to the VB. """
     for lim1 in vb_limits:
-        seg1 = lim1["Seg"]
-        other_segs_are_downstream = [is_seg_downstream(seg1, lim2["Seg"]) for lim2 in vb_limits if lim2 != lim1]
-        other_segs_are_upstream = [is_seg_downstream(lim2["Seg"], seg1) for lim2 in vb_limits if lim2 != lim1]
+        seg1, _ = lim1
+        other_segs_are_downstream = [is_seg_downstream(seg1, seg2) for seg2, x2 in vb_limits if (seg2, x2) != lim1]
+        other_segs_are_upstream = [is_seg_downstream(seg2, seg1) for seg2, x2 in vb_limits if (seg2, x2) != lim1]
         if all(other_segs_are_downstream) or all(other_segs_are_upstream):
             return lim1
     print(f"Unable to find point segment for VB: {vb_limits}")
@@ -23,8 +25,8 @@ def get_len_vb(vb_limits):
         lim1 = give_point_seg_vb(vb_limits)
     else:
         lim1 = vb_limits[0]
-    return max(get_dist(lim1["Seg"], lim1["x"], lim["Seg"], lim["x"])
-               for lim in vb_limits if lim != lim1)
+    seg1, x1 = lim1
+    return max(get_dist(seg1, x1, seg, x) for seg, x in vb_limits if (seg, x) != lim1)
 
 
 def get_segs_in_vb(vb_limits):
@@ -34,8 +36,8 @@ def get_segs_in_vb(vb_limits):
         lim1 = give_point_seg_vb(vb_limits)
     else:
         lim1 = vb_limits[0]
-    seg1 = lim1["Seg"]
-    other_limits = [lim["Seg"] for lim in vb_limits if lim != lim1]
+    seg1, _ = lim1
+    other_limits = [seg for seg, x in vb_limits if (seg, x) != lim1]
     for seg2 in other_limits:
         list_paths = get_list_of_paths(seg1, seg2)
         for path in list_paths:
@@ -50,13 +52,15 @@ def is_seg_in_vb(vb_limits, seg: str):
     return seg in get_segs_in_vb(vb_limits)
 
 
-def get_vb_associated_to_sw(sw, vb_dict: dict, sw_cols_name: dict[str, str]):
+def get_vb_associated_to_sw(sw):
     """ Get the VB associated to a switch. """
-    for vb, vb_values in vb_dict.items():
-        vb_limits = vb_values["limits"]
+    vb_dict = load_sheet(DCSYS.CV)
+    sw_segs = sorted(get_dc_sys_values(sw, DCSYS.Aig.SegmentPointe, DCSYS.Aig.SegmentTd, DCSYS.Aig.SegmentTg))
+    for vb, vb_value in vb_dict.items():
+        vb_limits = list(get_dc_sys_zip_values(vb_value, DCSYS.CV.Extremite.Seg, DCSYS.CV.Extremite.X))
         if len(vb_limits) == 3:
-            if sorted([vb_lim["Seg"] for vb_lim in vb_limits]) == sorted(sw.values()):
+            if sorted([seg for seg, _ in vb_limits]) == sw_segs:
                 return vb
-            if all(is_seg_in_vb(vb_limits, sw[sw_cols_name[j]]) for j in ['B', 'C', 'D']):
+            if all(is_seg_in_vb(vb_limits, seg) for seg in sw_segs):
                 return vb
     print(f"Unable to find VB associated to SW: {sw}")

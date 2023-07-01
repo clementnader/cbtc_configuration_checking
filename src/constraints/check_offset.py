@@ -3,7 +3,8 @@
 
 from ..utils import *
 from ..dc_sys.load_database.load_xl import load_wb
-from ..dc_sys.dc_sys_utils import get_len_seg, get_track_limits
+from ..dc_sys import get_len_seg, get_track_limits
+
 
 START_LINE = 3
 

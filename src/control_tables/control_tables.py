@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from ..database_loc import DATABASE_LOC
 from ..utils import *
 from .pdf_extract_tables import pdf_reader_extract_tables, CONTROL_TABLE_TYPE

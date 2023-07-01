@@ -6,8 +6,8 @@ import openpyxl.utils as xl_ut
 import xlrd
 
 
-def get_xlrd_column(col: str) -> int:
-    return xl_ut.column_index_from_string(col) - 1
+def get_xlrd_column(col_nb: int) -> int:
+    return col_nb - 1
 
 
 def get_xlrd_line(line: int) -> int:
@@ -38,7 +38,7 @@ def read_cell(sh: xlrd.sheet, i: int, j: int):
     return value
 
 
-def get_xlrd_value(sh: xlrd.sheet, line: int, col: str) -> str:
+def get_xlrd_value(sh: xlrd.sheet, line: int, col: int) -> str:
     xlrd_line = get_xlrd_line(line)
     xlrd_col = get_xlrd_column(col)
     try:

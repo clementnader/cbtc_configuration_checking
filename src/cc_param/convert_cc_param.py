@@ -7,6 +7,7 @@ import argparse
 from ..utils import *
 from .cc_param_utils import *
 
+
 DEFAULT_RES_DIRECTORY = os.path.join(os.getenv("UserProfile"), r"Desktop")
 
 

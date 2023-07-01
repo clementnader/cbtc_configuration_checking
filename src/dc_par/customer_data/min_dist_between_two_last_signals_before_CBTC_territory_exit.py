@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...cctool_oo_schema import DCSYS
 from ...utils import *
 from ...dc_sys import *
 
 
-def get_sig_before_cbtc_exit(sig_dict: dict, sig_cols_name: dict[str, str]) -> list[str]:
+def get_sig_before_cbtc_exit(sig_dict: dict) -> list[str]:
     res_list = list()
-    for sig, sig_values in sig_dict.items():
-        if sig_values[sig_cols_name['B']] == "PERMANENT_ARRET":  # \
-            #     or sig_values[sig_cols_name['Z']] == "O":
+    for sig, sig_value in sig_dict.items():
+        if get_dc_sys_value(sig_value, DCSYS.Sig.Type) == "PERMANENT_ARRET":
+            #     or get_dc_sys_value(sig_value, DCSYS.Sig.SortieTerritoireCbtc) == "O":
             res_list.append(sig)
     return res_list
 
 
 def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool = True):
     sig_dict = get_sigs_in_cbtc_ter()
-    sig_cols_name = get_cols_name("sig")
-    sig_before_cbtc_exit = get_sig_before_cbtc_exit(sig_dict, sig_cols_name)
+    sig_before_cbtc_exit = get_sig_before_cbtc_exit(sig_dict)
     nb_sig_before_exit = len(sig_before_cbtc_exit)
 
     dict_min_dist = dict()
@@ -25,22 +25,20 @@ def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool 
     for i, sig1 in enumerate(sig_before_cbtc_exit):
         print_log(f"\r{progress_bar(i, nb_sig_before_exit)} processing distances between {sig1} "
                   f"and previous last signal before CBTC territory exit...", end="")
-        dir1 = sig_dict[sig1][sig_cols_name['E']]
-        seg1 = sig_dict[sig1][sig_cols_name['C']]
-        x1 = float(sig_dict[sig1][sig_cols_name['D']])
-        for sig2, sig2_values in sig_dict.items():
-            if sig2 != sig1 and sig2_values[sig_cols_name['B']] != "HEURTOIR":
-                if not same_dir or sig2_values[sig_cols_name['E']] == dir1:
-                    seg2 = sig2_values[sig_cols_name['C']]
-                    x2 = float(sig2_values[sig_cols_name['D']])
+        seg1, x1, dir1 = get_dc_sys_values(sig_dict[sig1], DCSYS.Sig.Seg, DCSYS.Sig.X, DCSYS.Sig.Sens)
+        for sig2, sig2_value in sig_dict.items():
+            seg2, x2, dir2, sig_type2 = get_dc_sys_values(sig_dict[sig2], DCSYS.Sig.Seg, DCSYS.Sig.X, DCSYS.Sig.Sens,
+                                                          DCSYS.Sig.Type)
+            if sig2 != sig1 and sig_type2 != "HEURTOIR":
+                if not same_dir or dir2 == dir1:
                     d = get_dist(seg1, x1, seg2, x2)
                     if d is not None:
                         dict_min_dist[f"{sig1} to {sig2}"] = {"d": d}
     print_log(f"\r{progress_bar(nb_sig_before_exit, nb_sig_before_exit, end=True)} processing distances between "
               f"two last signals before CBTC Territory exit finished.\n")
 
-    min_dist = min(min_dist['d'] for min_dist in dict_min_dist.values())
+    min_dist = min(min_dist["d"] for min_dist in dict_min_dist.values())
     print(f"The minimum distance between the two last signals before any CBTC territory exit is"
           f"\n{min_dist = }"
-          f"\n > for: {[sigs for sigs, sigs_values in dict_min_dist.items() if sigs_values['d'] == min_dist]}\n")
+          f"\n > for: {[sigs for sigs, sigs_value in dict_min_dist.items() if sigs_value['d'] == min_dist]}\n")
     return dict_min_dist

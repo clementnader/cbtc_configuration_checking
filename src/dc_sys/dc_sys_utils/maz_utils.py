@@ -2,19 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ..load_database.load_sheets import load_sheet, get_lim_cols_name
+from ...cctool_oo_schema import DCSYS
+from ..load_database import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
 def get_maz_in_cbtc_ter():
-    maz_dict = load_sheet("maz")
-    maz_lim_cols_name = get_lim_cols_name("maz")
+    maz_dict = load_sheet(DCSYS.Zaum)
     within_cbtc_maz_dict = dict()
     for maz_name, maz_value in maz_dict.items():
         limits_in_cbtc_ter: list[bool] = list()
-        for lim in maz_value["limits"]:
-            seg = lim[maz_lim_cols_name[0]]
-            x = lim[maz_lim_cols_name[1]]
+        for seg, x in get_dc_sys_zip_value(maz_value, DCSYS.Zaum.Extremite.Seg, DCSYS.Zaum.Extremite.X):
             limits_in_cbtc_ter.append(is_point_in_cbtc_ter(seg, x))
         if all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter):
             within_cbtc_maz_dict[maz_name] = maz_value
