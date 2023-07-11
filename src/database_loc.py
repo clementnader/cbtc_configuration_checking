@@ -35,6 +35,16 @@ class ProjectDatabaseLoc:
         cmc = r""   # CMC: Control and Maintenance Center
         cmc2 = r""  # if CMC is split in two parts
 
+    class SurveyD932Loc:
+        d932_addr = None
+        d932_sheet = None
+        start_line = None
+        ref_col = None
+        type_col = None
+        track_col = None
+        design_kp_col = None
+        survey_kp_col = None
+
     class RamsIfAnalysisLoc:
         scade = r""
         appli = r""
@@ -44,7 +54,7 @@ class ProjectDatabaseLoc:
     dc_sys_addr_old = r""
     dc_par_addr = r""
     dc_bop_addr = r""
-    d932_addr = r""
+    survey_d932 = SurveyD932Loc()
     kit_c11_dir = r""
     kit_c121_d470_dir = r""
     rams_if_analysis = RamsIfAnalysisLoc()
@@ -73,8 +83,16 @@ class ProjectDatabaseLoc:
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R2"
-                self.d932_addr = r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey.xlsx"
-
+                # -- Survey -- #
+                self.survey_d932.d932_addr = r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey.xlsx"
+                self.survey_d932.d932_sheet = r"AFS_DEP_ML_AGG_REV_1_12.04.23"
+                self.survey_d932.start_line = 13
+                self.survey_d932.ref_col = 1
+                self.survey_d932.type_col = 2
+                self.survey_d932.track_col = 3
+                self.survey_d932.design_kp_col = 4
+                self.survey_d932.survey_kp_col = 11
+            # -- Control Tables -- #
             if old_version:
                 self.control_tables_route.line = r"C:\Users\naderc\Desktop\BXL\Control Tables" \
                                                  r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_" \
@@ -105,7 +123,18 @@ class ProjectDatabaseLoc:
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_BOP.xls"
+            # -- Survey -- #
+            self.survey_d932.d932_addr = r"C:\Users\naderc\Desktop\KCR" \
+                                         r"\CR-ASTS-042189 - 15.00_ATT002 - ATC- KCR C_D932 - Field Survey report.xlsm"
+            self.survey_d932.d932_sheet = r"Result Final"
+            self.survey_d932.start_line = 2
+            self.survey_d932.ref_col = 1
+            self.survey_d932.type_col = 4
+            self.survey_d932.track_col = 2
+            self.survey_d932.design_kp_col = 6
+            self.survey_d932.survey_kp_col = 3
 
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES" \
                                              r"\CR-ASTS-045007-10.00 ATC Line Control Tables Routes.pdf"
@@ -118,11 +147,11 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Glasgow -------------------------------#
         elif project_name == Projects.Glasgow:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V03\DC_SYS.xls"
-            self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\Glasgow\old glagow\DC_SYS_.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V03\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V03\C64_D413\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V03"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V04\DC_SYS_new.xls"
+            self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V03\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V04\DC_PAR_newx.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V04\C64_D413\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V04"
 
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\Glasgow\Control Tables" \
                                              r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_" \
@@ -187,7 +216,7 @@ class ProjectDatabaseLoc:
                 self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
                                                   r"\M4-ST00PGRE-55047_00.04_Allegato_1-833-847 - DEPOT - Overlap.pdf"
 
-        # ------------------------------- Thessaloniki -------------------------------#
+        # ------------------------------- Riyadh -------------------------------#
         elif project_name == Projects.Riyadh:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\Riyadh\RL3_C_D470_09_01_RC1\DC_SYS.xls"
             self.dc_par_addr = r"C:\Users\naderc\Desktop\Riyadh\RL3_C_D470_09_01_RC1\DC_PAR.xls"
@@ -228,6 +257,17 @@ class ProjectDatabaseLoc:
             self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_BOP.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V03"
+            # -- Survey -- #
+            self.survey_d932.d932_addr = [r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_A.xlsx",
+                                          r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_B.xls",
+                                          r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_C.xlsx"]
+            self.survey_d932.d932_sheet = [r"TSK_Object_list_310720_ro", r"TSK_Object_list_REV.3", r"Φύλλο1"]
+            self.survey_d932.start_line = [2, 2, 3]
+            self.survey_d932.ref_col = [1, 1, 13]
+            self.survey_d932.type_col = [2, 2, 14]
+            self.survey_d932.track_col = [3, 3, 15]
+            self.survey_d932.design_kp_col = [4, 4, 16]
+            self.survey_d932.survey_kp_col = [7, 7, 17]
 
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\TSK" \
                                              r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3" \

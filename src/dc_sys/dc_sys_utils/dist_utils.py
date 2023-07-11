@@ -77,6 +77,8 @@ def get_downstream_path(start_seg, end_seg, max_nb_paths: int = None) -> (float,
         if max_nb_paths is not None and len(list_paths) > max_nb_paths:
             return
         for next_seg in get_linked_segs(seg, downstream):
+            if next_seg in path:  # for ring
+                return
             if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
                 downstream = not downstream
             inner_recurs_next_seg(next_seg, path + [next_seg], downstream)

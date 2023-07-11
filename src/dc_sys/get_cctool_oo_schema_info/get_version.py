@@ -8,6 +8,9 @@ from ...utils import *
 CCTOOL_OO_VERSION_LINE = 4
 CCTOOL_OO_VERSION_COLUMN = 1
 
+C_D470_VERSION_LINE = 6
+C_D470_VERSION_COLUMN = 2
+
 
 def get_major_and_middle_version() -> float:
     version = get_version()
@@ -24,6 +27,14 @@ def get_version() -> str:
 def get_cctool_oo_version() -> str:
     xlrd_line = get_xlrd_line(CCTOOL_OO_VERSION_LINE)
     xlrd_col = get_xlrd_column(CCTOOL_OO_VERSION_COLUMN)
+    sh = open_menu_sheet()
+    version = sh.cell_value(xlrd_line, xlrd_col)
+    return version
+
+
+def get_c_d470_version() -> str:
+    xlrd_line = get_xlrd_line(C_D470_VERSION_LINE)
+    xlrd_col = get_xlrd_column(C_D470_VERSION_COLUMN)
     sh = open_menu_sheet()
     version = sh.cell_value(xlrd_line, xlrd_col)
     return version

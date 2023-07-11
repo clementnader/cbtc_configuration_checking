@@ -54,6 +54,7 @@ def constraints():
     # r_cdv_5(print_ok=False)  # TODO for r_cdv_5:
     #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
     #                             plutôt que faire une diff avec le kit C11
+    # r_dyntag_3()
     # cf_zsm_cbtc_10()
     return
 
@@ -79,6 +80,11 @@ def route_and_overlap():
     return
 
 
+def survey():
+    # check_survey()
+    return
+
+
 # def get_params():
 #     with open(r"C:\Users\naderc\Desktop\params.txt", "r") as f:
 #         lines = f.readlines()
@@ -96,6 +102,7 @@ def main():
     # test_rainbow()
     # test_moving_progress_bar()
 
+    # patch_cc_mtor_ccte()
     # checksum_compare_parser()
     # convert_ccparam()
 
@@ -106,6 +113,8 @@ def main():
     # pretty_print_dict(get_plts_in_cbtc_ter(), max_lvl=0)
 
     # create_fouling_points_file()
+
+    survey()
 
     route_and_overlap()
 

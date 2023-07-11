@@ -117,7 +117,7 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     progress_pride = duplicate_each_elem([csi_color_seq(i) for i in (
         15,  213,  51,  95,   0,
         # white, pink, cyan, brown, black
-    )], 2) + duplicate_each_elem([csi_color_seq(i) for i in (
+    )], 3) + duplicate_each_elem([csi_color_seq(i) for i in (
         196, 208, 220,  46,  27,  90,
         # red, orange, yellow, green, blue, purple
     )], 3)

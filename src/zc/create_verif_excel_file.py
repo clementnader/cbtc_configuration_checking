@@ -37,7 +37,11 @@ def create_if_files():
             continue
         dir_name = val["dir_name"]
         header_line = val["header_line"]
-        _create_if_layer_file(layer, dir_name, header_line)
+        try:
+            _create_if_layer_file(layer, dir_name, header_line)
+        except KeyboardInterrupt:
+            _create_if_layer_file(layer, dir_name, header_line)
+            raise KeyboardInterrupt
 
 
 def _create_if_layer_file(layer: str, dir_name: str, header_line: int):
@@ -103,9 +107,8 @@ def _get_info_in_file(list_zc_export: list[list[str]], layer: str, header_line: 
 
 def _get_info_in_sheet(sh: xlrd.sheet.Sheet, header_line: int) -> dict[str, list]:
     if_list = list()
-    i = get_xlrd_line(header_line)
-    for j in range(sh.ncols):
-        cell = read_cell(sh, i, j)
+    for column in range(1, sh.ncols + 1):
+        cell = get_xlrd_float_value(sh, header_line, column)
         if cell:
             cell = cell.replace("Ã©", "e")
             if_list.append(cell)

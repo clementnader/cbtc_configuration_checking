@@ -45,7 +45,7 @@ def print_error(*args, end="\n"):
     print(f"\n{bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
     print(*args, end="")
-    print(f"{Color.reset}\n", end=end)
+    print(f"{Color.reset}", end=end)
 
 
 def print_warning(*args, end="\n"):
@@ -53,7 +53,7 @@ def print_warning(*args, end="\n"):
     print(f"\n{bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
     print(*args, end="")
-    print(f"{Color.reset}\n", end=end)
+    print(f"{Color.reset}", end=end)
 
 
 def print_success(*args, end="\n"):

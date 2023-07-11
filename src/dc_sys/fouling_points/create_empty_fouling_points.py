@@ -19,6 +19,14 @@ FOULING_POINT_COL = 'C'
 
 def create_fouling_points_file():
     sw_pos_dict = get_switch_position_dict()
+    try:
+        _make_file(sw_pos_dict)
+    except KeyboardInterrupt:
+        _make_file(sw_pos_dict)
+        raise KeyboardInterrupt
+
+
+def _make_file(sw_pos_dict):
     wb = load_xlsx_wb(FOULING_POINT_TEMPLATE)
     sh = wb.get_sheet_by_name(FOULING_POINT_SHEET)
     for line, (sw_name, sw_pos) in enumerate(sw_pos_dict.items(), start=FOULING_POINT_START_LINE):

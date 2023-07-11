@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...database_loc import DATABASE_LOC
 
 
-SURVEY_WB = None
+SURVEY_WB = dict()
 
 
-def load_survey_wb():
+def load_survey_wb(d932_addr):
     global SURVEY_WB
-    if SURVEY_WB is None:
-        SURVEY_WB = xlrd.open_workbook(DATABASE_LOC.d932_addr)
-    return SURVEY_WB
+    if d932_addr not in SURVEY_WB:
+        SURVEY_WB[d932_addr] = load_xl_file(d932_addr)
+    return SURVEY_WB[d932_addr]

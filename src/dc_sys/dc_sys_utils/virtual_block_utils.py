@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ...cctool_oo_schema import DCSYS
 from ..load_database import *
 from .dist_utils import get_dist, get_list_of_paths
@@ -63,4 +64,17 @@ def get_vb_associated_to_sw(sw):
                 return vb
             if all(is_seg_in_vb(vb_limits, seg) for seg in sw_segs):
                 return vb
-    print(f"Unable to find VB associated to SW: {sw}")
+    print_error(f"Unable to find VB associated to SW: {sw}")
+
+
+def get_sw_associated_to_vb(vb_limits):
+    assert len(vb_limits) == 3
+    sw_dict = load_sheet(DCSYS.Aig)
+    lim_segs = sorted([seg for seg, _ in vb_limits])
+    for sw_name, sw_val in sw_dict.items():
+        sw_segs = sorted(get_dc_sys_values(sw_val, DCSYS.Aig.SegmentPointe, DCSYS.Aig.SegmentTd, DCSYS.Aig.SegmentTg))
+        if lim_segs == sw_segs:
+            return sw_name
+        if all(is_seg_in_vb(vb_limits, seg) for seg in sw_segs):
+            return sw_name
+    print_error(f"Unable to find switch associated to VB limits: {vb_limits}")
