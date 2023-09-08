@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ..load_database import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
+
+
+__all__ = ["get_tags_in_cbtc_ter", "get_tag_gr_in_cbtc_ter"]
 
 
 def get_tags_in_cbtc_ter():

@@ -5,6 +5,10 @@ import os
 import sys
 
 
+__all__ = ["Color", "bg_color", "remove_colors", "print_all_colors", "show_colors", "test_rainbow",
+           "move_up", "move_down", "move_left", "move_right"]
+
+
 if sys.platform == "win32":  # for Windows
     os.system("color")
 
@@ -106,21 +110,21 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     reverse = csi_seq(7)
 
     # Rainbow
-    rainbow = [csi_color_seq(i) for i in (
+    rainbow = [csi_color_seq(i) for i in [
         52,   88, 124, 160, 196,  # red
         202, 208, 214, 220, 226,  # orange to yellow
         190, 154, 118,  82,  46,  # yellow to green
         47,   48,  49,  50,  51,  # green to blue
         45,   39,  33,  27,       # blue
         57,   56,  55,  54,  53,  # blue to purple
-    )]
-    progress_pride = duplicate_each_elem([csi_color_seq(i) for i in (
+    ]]
+    progress_pride = duplicate_each_elem([csi_color_seq(i) for i in [
         15,  213,  51,  95,   0,
         # white, pink, cyan, brown, black
-    )], 3) + duplicate_each_elem([csi_color_seq(i) for i in (
+    ]], 3) + duplicate_each_elem([csi_color_seq(i) for i in [
         196, 208, 220,  46,  27,  90,
         # red, orange, yellow, green, blue, purple
-    )], 3)
+    ]], 3)
 
 
 def move_up(nb_line: int):  # does not work in PyCharm interface

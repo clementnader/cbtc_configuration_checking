@@ -4,6 +4,9 @@
 import time
 
 
+__all__ = ["time", "format_timespan", "format_timespan_simple"]
+
+
 def format_timespan(seconds):
     hr, mn, s, ms = split_time(seconds)
     list_time_str = list()

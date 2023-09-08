@@ -4,7 +4,10 @@
 import re
 import unidecode
 from ....utils import *
-from .load_xl import load_cctool_oo_schema_wb
+from .load_xl import *
+
+
+__all__ = ["load_cctool_oo_schema"]
 
 
 SHEET_NAME = r"CCTool-OO Schema"
@@ -15,6 +18,12 @@ TITLE_COL = 3
 COLUMN_COL = 4
 
 LOADED_CCTOOL_OO_SCHEMA = dict()
+
+
+DC_SYS_SHEET_NAMES_TO_FIX = {
+    "Coupling_area": "Coupling_Area",
+    "Odometric_Zones": "Odometric_Zone",
+}
 
 
 def load_cctool_oo_schema(addr) -> dict:
@@ -32,6 +41,8 @@ def get_cctool_oo_schema(sh: xlrd.sheet) -> dict:
         sheet_name = get_xlrd_value(sh, line, SHEET_COL)
         if not sheet_name:
             continue
+        if sheet_name in DC_SYS_SHEET_NAMES_TO_FIX:
+            sheet_name = DC_SYS_SHEET_NAMES_TO_FIX[sheet_name]
         if sheet_name not in info_dict:
             info_dict[sheet_name] = dict()
         title = get_clean_cell(sh, line, TITLE_COL)
@@ -62,8 +73,8 @@ def get_list_attr_names(title: str):
 
 def get_clean_cell(sh: xlrd.sheet, line: int, col: int):
     cell_str = unidecode.unidecode(f"{get_xlrd_value(sh, line, col)}").strip()  # translate non-ASCII characters
-    cell_str = cell_str.replace("'", ' ').replace('.', ' ').replace('-', ' ')  # remove special chars
-    cell_str = cell_str.replace('#', '').replace('/', '')  # remove special chars
+    cell_str = cell_str.replace("'", ' ').replace('.', ' ').replace('-', ' ').replace('/', ' ')  # remove special chars
+    cell_str = cell_str.replace('#', "Number")  # remove special char
     cell_str = cell_str.replace("1st", "First").replace("2nd", "Second")  # remove leading numbers
     cell_str = cell_str.title().replace(' ', '')  # CamelCase
     return cell_str

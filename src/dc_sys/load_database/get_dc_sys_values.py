@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+__all__ = ["get_dc_sys_value", "get_dc_sys_values", "get_dc_sys_zip_values"]
+
+
 def get_dc_sys_value(obj: dict[str], attr: dict[str]):
     if "col" in attr:
         return obj[attr["attr_name"]]

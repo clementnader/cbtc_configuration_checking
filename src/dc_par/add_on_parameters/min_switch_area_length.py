@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
@@ -49,16 +49,11 @@ def min_switch_area_length(in_cbtc: bool = False):
 def get_len_point_side(sw_block, sw_value):
     """ Return the part of the switch block on the point side only """
     point_seg, point_x = give_sw_pos(sw_value)
-    sw_upstream = is_sw_point_seg_upstream(sw_value)
 
     list_upstream_limits = list()
     for seg, x in get_dc_sys_zip_values(sw_block, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X):
-        if sw_upstream and is_seg_downstream(seg, point_seg):  # seg is upstream of point_seg
-            if does_path_exist_within_block(seg, point_seg, sw_block, downstream=True):
-                list_upstream_limits.append((seg, x))
-        if (not sw_upstream) and is_seg_downstream(point_seg, seg):  # seg is downstream of point_seg
-            if does_path_exist_within_block(point_seg, seg, sw_block, downstream=True):
-                list_upstream_limits.append((seg, x))
+        if does_path_exist_within_block(seg, point_seg, sw_block, downstream=True):
+            list_upstream_limits.append((seg, x))
 
     dict_len_point_side = dict()
     for seg, x in list_upstream_limits:

@@ -5,7 +5,7 @@ from .cctool_oo_schema import DCSYS
 
 
 __all__ = ["get_all_sheet_names", "get_class_attr_dict", "get_sh_name", "get_sheet_attributes_columns_dict",
-           "get_sheet_class_from_name"]
+           "get_sheet_class_from_name", "get_dc_sys_attr_name"]
 
 
 def get_all_sheet_names():
@@ -27,9 +27,15 @@ def get_sh_name(sh):
     return sh.__class__.__name__
 
 
+def get_dc_sys_attr_name(attr):
+    attr = get_sh_name(attr)
+    if "__" in attr:
+        return attr.split("__")[-1]
+    return attr
+
+
 def get_sheet_attributes_columns_dict(sh):
-    if isinstance(sh, str):
-        sh = get_sheet_class_from_name(sh)
+    sh = get_sheet_class_from_name(sh)
     class_attr_dict = get_class_attr_dict(sh)
     res_dict = dict()
     for key, val in class_attr_dict.items():
@@ -42,4 +48,6 @@ def get_sheet_attributes_columns_dict(sh):
 
 
 def get_sheet_class_from_name(sh_name: str):
-    return get_class_attr_dict(DCSYS)[sh_name]
+    if isinstance(sh_name, str):
+        return get_class_attr_dict(DCSYS)[sh_name]
+    return sh_name

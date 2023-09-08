@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..database_loc import PROJECT_NAME, Projects
+from ..database_location import *
 
 
 if PROJECT_NAME == Projects.Brussels:

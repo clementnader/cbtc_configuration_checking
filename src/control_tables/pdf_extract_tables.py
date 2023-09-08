@@ -9,12 +9,15 @@ from .pdf_loc_info_pdf_overlap import loc_info_pdf_overlap
 from .pdf_loc_info_pdf_route import loc_info_pdf_route
 
 
+__all__ = ["CONTROL_TABLE_TYPE", "pdf_reader_extract_tables"]
+
+
 class CONTROL_TABLE_TYPE:
     route = "route"
     overlap = "overlap"
 
 
-NAME_TITLES = ("Name", "Name [0]", "Name[0]")
+NAME_TITLES = ["Name", "Name [0]", "Name[0]"]
 
 
 def pdf_reader_extract_tables(pdf_file: str, table_type: str, line_part: str, verbose: bool = False,
@@ -222,6 +225,6 @@ def _check_correct_res_dict(res_dict, num_page: int, list_info):
             info = {key: {sub_key: round(val[sub_key]) for sub_key in val} if key == "loc" else val
                     for key, val in info.items()}
             color = Color.light_blue if i % 2 == 0 else Color.pale_green
-            print("{" + ", ".join([f"{key}: {color if key in ('text', 'loc') else ''}{val}{Color.reset}"
+            print("{" + ", ".join([f"{key}: {color if key in ['text', 'loc'] else ''}{val}{Color.reset}"
                                    for key, val in info.items()]) + "}")
         print("\n")

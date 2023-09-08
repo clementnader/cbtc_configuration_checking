@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ..load_database import *
-from .cbtc_territory_utils import is_point_in_cbtc_ter  # , is_seg_in_cbtc_ter_limits
-from .path_utils import is_seg_downstream
+from .cbtc_territory_utils import is_point_in_cbtc_ter
 from .segments_utils import *
+
+
+__all__ = ["get_sws_in_cbtc_ter", "is_sw_point_seg_upstream", "give_sw_pos", "give_sw_kp_pos", "get_heel_position",
+           "get_switch_position_dict", "get_point_seg"]
 
 
 def get_sws_in_cbtc_ter():
@@ -33,8 +36,12 @@ def is_sw_point_seg_upstream(sw):
     point_seg = get_dc_sys_value(sw, DCSYS.Aig.SegmentPointe)
     right_heel = get_dc_sys_value(sw, DCSYS.Aig.SegmentTd)
     left_heel = get_dc_sys_value(sw, DCSYS.Aig.SegmentTg)
-    other_segs_are_downstream = (is_seg_downstream(point_seg, other_seg) for other_seg in (right_heel, left_heel))
-    other_segs_are_upstream = (is_seg_downstream(other_seg, point_seg) for other_seg in (right_heel, left_heel))
+
+    downstream_segs = get_linked_segs(point_seg, downstream=True)
+    upstream_segs = get_linked_segs(point_seg, downstream=False)
+    other_segs_are_downstream = [other_seg in downstream_segs for other_seg in [right_heel, left_heel]]
+    other_segs_are_upstream = [other_seg in upstream_segs for other_seg in [right_heel, left_heel]]
+
     if all(other_segs_are_downstream):
         return True
     if all(other_segs_are_upstream):

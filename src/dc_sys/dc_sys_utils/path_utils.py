@@ -1,102 +1,67 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...cctool_oo_schema import DCSYS
+from ...utils import *
+from ...cctool_oo_schema import *
 from ..load_database import *
 from .segments_utils import *
 
 
-DOWNSTREAM_ACCESSIBLE_SEGS = dict()
-UPSTREAM_ACCESSIBLE_SEGS = dict()
+__all__ = ["get_all_accessible_segments_from", "get_all_upstream_segments", "get_all_downstream_segments",
+           "update_all_accessible_segments"]
 
 
-def are_segs_linked(seg1, seg2, x1: float = None, x2: float = None) -> (float, list[str]):
-    return is_seg_downstream(seg1, seg2, x1, x2) or is_seg_downstream(seg2, seg1, x2, x1)
+DOWNSTREAM_ACCESSIBLE_SEGMENTS = dict()
+UPSTREAM_ACCESSIBLE_SEGMENTS = dict()
 
 
-def is_seg_downstream(start_seg, end_seg, start_x: float = None, end_x: float = None) -> (float, list[str]):
-    if start_x is not None:
-        start_x = float(start_x)
-    if end_x is not None:
-        end_x = float(end_x)
-
-    if start_seg == end_seg:
-        if (start_x is None or end_x is None) or start_x <= end_x:
-            return True
-        else:
-            return False
-
-    return end_seg in get_all_downstream_segs(start_seg)
+def get_all_upstream_segments(seg: str) -> set[tuple[str, bool]]:
+    global UPSTREAM_ACCESSIBLE_SEGMENTS
+    if not UPSTREAM_ACCESSIBLE_SEGMENTS:
+        update_all_accessible_segments()
+    return UPSTREAM_ACCESSIBLE_SEGMENTS[seg]
 
 
-def get_all_upstream_segs(seg):
-    all_accessible_segs = get_all_accessible_segs()
-    return all_accessible_segs["upstream"][seg]
+def get_all_downstream_segments(seg: str) -> set[tuple[str, bool]]:
+    global DOWNSTREAM_ACCESSIBLE_SEGMENTS
+    if not DOWNSTREAM_ACCESSIBLE_SEGMENTS:
+        update_all_accessible_segments()
+    return DOWNSTREAM_ACCESSIBLE_SEGMENTS[seg]
 
 
-def get_all_downstream_segs(seg):
-    all_accessible_segs = get_all_accessible_segs()
-    return all_accessible_segs["downstream"][seg]
-
-
-def get_all_accessible_segs():
-    global DOWNSTREAM_ACCESSIBLE_SEGS, UPSTREAM_ACCESSIBLE_SEGS
-    if not DOWNSTREAM_ACCESSIBLE_SEGS or not UPSTREAM_ACCESSIBLE_SEGS:
-        _update_all_accessible_segs()
-    return {"upstream": UPSTREAM_ACCESSIBLE_SEGS,
-            "downstream": DOWNSTREAM_ACCESSIBLE_SEGS}
-
-
-def _update_all_accessible_segs():
-    global DOWNSTREAM_ACCESSIBLE_SEGS, UPSTREAM_ACCESSIBLE_SEGS
-    if DOWNSTREAM_ACCESSIBLE_SEGS and UPSTREAM_ACCESSIBLE_SEGS:
+def update_all_accessible_segments() -> None:
+    global DOWNSTREAM_ACCESSIBLE_SEGMENTS, UPSTREAM_ACCESSIBLE_SEGMENTS
+    if DOWNSTREAM_ACCESSIBLE_SEGMENTS and UPSTREAM_ACCESSIBLE_SEGMENTS:
         return
+    print_title(f"Tracing all paths...", color=Color.mint_green)
     seg_dict = load_sheet(DCSYS.Seg)
-    for seg in seg_dict.keys():
-        DOWNSTREAM_ACCESSIBLE_SEGS[seg] = get_all_accessible_segs_from(seg, downstream=True)
-        UPSTREAM_ACCESSIBLE_SEGS[seg] = get_all_accessible_segs_from(seg, downstream=False)
+    nb_segs = len(seg_dict)
+    progress_bar(1, 1, end=True)  # reset progress bar
+    for i, seg in enumerate(seg_dict.keys()):
+        print_log(f"\r{progress_bar(i, nb_segs)} getting all accessible segments from {seg}...", end="")
+        DOWNSTREAM_ACCESSIBLE_SEGMENTS[seg] = get_all_accessible_segments_from(seg, downstream=True)
+        UPSTREAM_ACCESSIBLE_SEGMENTS[seg] = get_all_accessible_segments_from(seg, downstream=False)
+    print_log(f"\r{progress_bar(nb_segs, nb_segs, end=True)} all paths have been traced.\n")
 
 
-def get_all_accessible_segs_from(start_seg, downstream: bool):
-    list_segs = list()
+def get_all_accessible_segments_from(start_seg: str, downstream: bool) -> set[tuple[str, bool]]:
+    list_segs = set()
 
-    def inner_recurs_next_seg(seg, inner_downstream):
+    def inner_recurs_next_seg(seg: str, seg_path: list[str], direction_path: list[bool], inner_downstream: bool):
         nonlocal list_segs
         linked_segs = get_linked_segs(seg, inner_downstream)
         if not linked_segs:
-            return
+            list_segs.update(zip(seg_path, direction_path))
         for next_seg in linked_segs:
-            if next_seg in list_segs:
-                return
-            list_segs.append(next_seg)
+            if next_seg in seg_path:
+                list_segs.update(zip(seg_path, direction_path))
+                continue
             if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
-            inner_recurs_next_seg(next_seg, next_inner_downstream)
+            inner_recurs_next_seg(next_seg, seg_path + [next_seg], direction_path + [next_inner_downstream],
+                                  next_inner_downstream)
 
-    inner_recurs_next_seg(start_seg, downstream)
+    inner_recurs_next_seg(start_seg, [start_seg], [downstream], downstream)
     return list_segs
-
-
-def get_all_paths_from(start_seg, downstream: bool, max_iter: int = None):
-    list_paths = list()
-
-    def inner_recurs_next_seg(seg, path, inner_downstream, nb_iter: int = 0):
-        nonlocal list_paths
-        linked_segs = get_linked_segs(seg, inner_downstream)
-        if not linked_segs or (max_iter is not None and nb_iter >= max_iter):
-            list_paths.append(path)
-            return
-        for next_seg in linked_segs:
-            if next_seg in path:  # for ring
-                list_paths.append(path)
-                return
-            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
-                next_inner_downstream = not inner_downstream
-            else:
-                next_inner_downstream = inner_downstream
-            inner_recurs_next_seg(next_seg, path + [next_seg], next_inner_downstream, nb_iter=nb_iter + 1)
-
-    inner_recurs_next_seg(start_seg, [start_seg], downstream)
-    return list_paths

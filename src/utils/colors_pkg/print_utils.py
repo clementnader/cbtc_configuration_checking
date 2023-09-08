@@ -15,8 +15,8 @@ def print_bar(length: int = 100):
     print("-" * length + "\n")
 
 
-def print_title(title: str):
-    main_color = f"{Color.bold}{Color.underline}{Color.turquoise}"
+def print_title(title: str, color: str = Color.blue):
+    main_color = f"{Color.bold}{Color.underline}{color}"
     title = title.replace(Color.reset, f"{Color.reset}{main_color}")
 
     whole_len = 100
@@ -24,6 +24,7 @@ def print_title(title: str):
         len_line = len(remove_colors(line))
         whole_len = max(whole_len, len_line + 10)
 
+    print("\r", end="")
     print_bar(whole_len)
     for line in title.splitlines():
         len_line = len(remove_colors(line))

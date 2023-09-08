@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ...fouling_points import fouling_points
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ..load_database import *
 from ..dc_sys_utils import *
 

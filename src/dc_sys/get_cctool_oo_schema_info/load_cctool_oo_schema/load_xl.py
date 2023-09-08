@@ -4,6 +4,9 @@
 from ....utils import *
 
 
+__all__ = ["load_cctool_oo_schema_wb"]
+
+
 CCTOOL_OO_SCHEMA_WB = None
 
 

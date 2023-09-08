@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import csv
-from ...database_loc import DATABASE_LOC
+from ...database_location import *
 from ..cc_param_utils import *
-from .get_cc_param_location import get_cc_param_location
+from .get_cc_param_location import *
 
 
 CC_PARAMS = dict()

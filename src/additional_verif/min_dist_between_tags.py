@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..utils import *
-from ..cctool_oo_schema import DCSYS
+from ..cctool_oo_schema import *
 from ..dc_sys import *
 
 

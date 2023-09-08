@@ -2,17 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-def html_head(title: str, author: str, description: str, additional_style: str) -> str:
-    html_text = f"<head>\n\n"
-    html_text += f"\t<meta charset=\"UTF-8\">\n"
-    html_text += f"\t<title>{title}</title>\n"
-    if description is not None:
-        html_text += f"\t<meta name=\"description\" content=\"{description}\"\n>"
-    if author is not None:
-        html_text += f"<\tmeta name=\"description\" content=\"{author}\"\n>"
-    html_text += html_style(additional_style)
-    html_text += "\n</head>\n\n"
-    return html_text
+__all__ = ["html_start", "html_end", "html_h1", "html_h2"]
 
 
 def html_start(title: str, author: str = None, description: str = None, additional_style: str = "") -> str:
@@ -29,12 +19,25 @@ def html_end() -> str:
     return html_code
 
 
-def html_h1(header) -> str:
+def html_h1(header: str) -> str:
     return f"<h1>{header}</h1>\n"
 
 
-def html_h2(sub_header) -> str:
+def html_h2(sub_header: str) -> str:
     return f"<h2>{sub_header}</h2>\n"
+
+
+def html_head(title: str, author: str, description: str, additional_style: str) -> str:
+    html_text = f"<head>\n\n"
+    html_text += f"\t<meta charset=\"UTF-8\">\n"
+    html_text += f"\t<title>{title}</title>\n"
+    if description is not None:
+        html_text += f"\t<meta name=\"description\" content=\"{description}\"\n>"
+    if author is not None:
+        html_text += f"<\tmeta name=\"description\" content=\"{author}\"\n>"
+    html_text += html_style(additional_style)
+    html_text += "\n</head>\n\n"
+    return html_text
 
 
 def html_style(additional_style: str) -> str:

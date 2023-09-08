@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..cctool_oo_schema import DCSYS
+from ..cctool_oo_schema import *
 from ..dc_sys import *
 
 
@@ -23,6 +23,9 @@ def get_slope_at_plt(in_cbtc: bool = True):
           f"\n > for {[plt for plt, plt_value in dict_plt_slopes.items() if plt_value['min_slope'] == min_slope]}"
           f"\n{max_slope=:.4%}"
           f"\n > for {[plt for plt, plt_value in dict_plt_slopes.items() if plt_value['max_slope'] == max_slope]}\n")
+    dict_plt_slopes = {key: dict_plt_slopes[key] for key in sorted(dict_plt_slopes.keys(),
+                       key=lambda x: max(abs(dict_plt_slopes[x]["min_slope"]), dict_plt_slopes[x]["max_slope"]),
+                       reverse=True)}
     return dict_plt_slopes
 
 

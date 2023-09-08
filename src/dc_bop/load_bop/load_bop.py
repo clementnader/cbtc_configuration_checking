@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from .load_xl import load_dc_bop_wb
+from .load_xl import *
+
+
+__all__ = ["load_bop"]
 
 
 LOADED_SWITCH_DIRS = dict()

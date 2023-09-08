@@ -830,7 +830,7 @@ class Flux_Variant_HF:
 	ClasseObjet = {'sh_name': 'Flux_Variant_HF', 'attr_name': 'ClasseObjet', 'col': 2}
 	NomObjet = {'sh_name': 'Flux_Variant_HF', 'attr_name': 'NomObjet', 'col': 3}
 	NomLogiqueInfo = {'sh_name': 'Flux_Variant_HF', 'attr_name': 'NomLogiqueInfo', 'col': 4}
-	TypeFoncsecu = {'sh_name': 'Flux_Variant_HF', 'attr_name': 'TypeFoncsecu', 'col': 5}
+	TypeFoncSecu = {'sh_name': 'Flux_Variant_HF', 'attr_name': 'TypeFoncSecu', 'col': 5}
 	Troncon = {'sh_name': 'Flux_Variant_HF', 'attr_name': 'Troncon', 'col': 6}
 	Message = {'sh_name': 'Flux_Variant_HF', 'attr_name': 'Message', 'col': 7}
 	RgInfo = {'sh_name': 'Flux_Variant_HF', 'attr_name': 'RgInfo', 'col': 8}
@@ -842,7 +842,7 @@ class Flux_Variant_BF:
 	ClasseObjet = {'sh_name': 'Flux_Variant_BF', 'attr_name': 'ClasseObjet', 'col': 2}
 	NomObjet = {'sh_name': 'Flux_Variant_BF', 'attr_name': 'NomObjet', 'col': 3}
 	NomLogiqueInfo = {'sh_name': 'Flux_Variant_BF', 'attr_name': 'NomLogiqueInfo', 'col': 4}
-	TypeFoncsecu = {'sh_name': 'Flux_Variant_BF', 'attr_name': 'TypeFoncsecu', 'col': 5}
+	TypeFoncSecu = {'sh_name': 'Flux_Variant_BF', 'attr_name': 'TypeFoncSecu', 'col': 5}
 	Troncon = {'sh_name': 'Flux_Variant_BF', 'attr_name': 'Troncon', 'col': 6}
 	Message = {'sh_name': 'Flux_Variant_BF', 'attr_name': 'Message', 'col': 7}
 	RgInfo = {'sh_name': 'Flux_Variant_BF', 'attr_name': 'RgInfo', 'col': 8}
@@ -957,7 +957,7 @@ class OnBoard_Eqpt__Function:
 	IsTod = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsTod', 'cols': [5]}
 	IsPis = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsPis', 'cols': [6]}
 	IsTar = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsTar', 'cols': [7]}
-	IsTmsmvbBox = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsTmsmvbBox', 'cols': [8]}
+	IsTmsMvbBox = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsTmsMvbBox', 'cols': [8]}
 	IsPwmBox = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsPwmBox', 'cols': [9]}
 
 
@@ -1352,7 +1352,7 @@ class Train:
 	Cab2TodName = {'sh_name': 'Train', 'attr_name': 'Cab2TodName', 'col': 10}
 	PisName = {'sh_name': 'Train', 'attr_name': 'PisName', 'col': 11}
 	TarName = {'sh_name': 'Train', 'attr_name': 'TarName', 'col': 12}
-	TmsmvbBoxName = {'sh_name': 'Train', 'attr_name': 'TmsmvbBoxName', 'col': 13}
+	TmsMvbBoxName = {'sh_name': 'Train', 'attr_name': 'TmsMvbBoxName', 'col': 13}
 	PwmBoxName = {'sh_name': 'Train', 'attr_name': 'PwmBoxName', 'col': 14}
 
 
@@ -1396,18 +1396,18 @@ class Flood_Gate:
 	Blocks = Flood_Gate__Blocks()
 
 
-class Coupling_area:
-	Name = {'sh_name': 'Coupling_area', 'attr_name': 'Name', 'col': 1}
-	Block1 = {'sh_name': 'Coupling_area', 'attr_name': 'Block1', 'col': 2}
-	Block2 = {'sh_name': 'Coupling_area', 'attr_name': 'Block2', 'col': 3}
-	Block3 = {'sh_name': 'Coupling_area', 'attr_name': 'Block3', 'col': 4}
-	Block4 = {'sh_name': 'Coupling_area', 'attr_name': 'Block4', 'col': 5}
-	Block5 = {'sh_name': 'Coupling_area', 'attr_name': 'Block5', 'col': 6}
-	Block6 = {'sh_name': 'Coupling_area', 'attr_name': 'Block6', 'col': 7}
-	Block7 = {'sh_name': 'Coupling_area', 'attr_name': 'Block7', 'col': 8}
-	Block8 = {'sh_name': 'Coupling_area', 'attr_name': 'Block8', 'col': 9}
-	Block9 = {'sh_name': 'Coupling_area', 'attr_name': 'Block9', 'col': 10}
-	Block10 = {'sh_name': 'Coupling_area', 'attr_name': 'Block10', 'col': 11}
+class Coupling_Area:
+	Name = {'sh_name': 'Coupling_Area', 'attr_name': 'Name', 'col': 1}
+	Block1 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block1', 'col': 2}
+	Block2 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block2', 'col': 3}
+	Block3 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block3', 'col': 4}
+	Block4 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block4', 'col': 5}
+	Block5 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block5', 'col': 6}
+	Block6 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block6', 'col': 7}
+	Block7 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block7', 'col': 8}
+	Block8 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block8', 'col': 9}
+	Block9 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block9', 'col': 10}
+	Block10 = {'sh_name': 'Coupling_Area', 'attr_name': 'Block10', 'col': 11}
 
 
 class Floor_Levels__Limit:
@@ -1619,15 +1619,15 @@ class ASR:
 	Limit = ASR__Limit()
 
 
-class PSD_Subsets__Psd:
-	Cell = {'sh_name': 'PSD_Subsets', 'attr_name': 'Psd', 'sub_attr_name': 'Cell', 'cols': [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]}
+class PSD_Subsets__PsdNumber:
+	Cell = {'sh_name': 'PSD_Subsets', 'attr_name': 'PsdNumber', 'sub_attr_name': 'Cell', 'cols': [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]}
 
 
 class PSD_Subsets:
 	Name = {'sh_name': 'PSD_Subsets', 'attr_name': 'Name', 'col': 1}
 	Id = {'sh_name': 'PSD_Subsets', 'attr_name': 'Id', 'col': 2}
 	PlatformName = {'sh_name': 'PSD_Subsets', 'attr_name': 'PlatformName', 'col': 3}
-	Psd = PSD_Subsets__Psd()
+	PsdNumber = PSD_Subsets__PsdNumber()
 
 
 class DCM_Transition_Zones__Limit:
@@ -1667,7 +1667,7 @@ class Frontam_General_Data:
 	ObjectType = {'sh_name': 'Frontam_General_Data', 'attr_name': 'ObjectType', 'col': 2}
 	ObjectName = {'sh_name': 'Frontam_General_Data', 'attr_name': 'ObjectName', 'col': 3}
 	GeneralDataName = {'sh_name': 'Frontam_General_Data', 'attr_name': 'GeneralDataName', 'col': 4}
-	TypeBitbyte = {'sh_name': 'Frontam_General_Data', 'attr_name': 'TypeBitbyte', 'col': 5}
+	TypeBitByte = {'sh_name': 'Frontam_General_Data', 'attr_name': 'TypeBitByte', 'col': 5}
 	LineSectionName = {'sh_name': 'Frontam_General_Data', 'attr_name': 'LineSectionName', 'col': 6}
 	Index = {'sh_name': 'Frontam_General_Data', 'attr_name': 'Index', 'col': 7}
 
@@ -1725,15 +1725,15 @@ class TSR_Possible_Speeds:
 	Speed = {'sh_name': 'TSR_Possible_Speeds', 'attr_name': 'Speed', 'col': 2}
 
 
-class TD_Subsets__Td:
-	Cell = {'sh_name': 'TD_Subsets', 'attr_name': 'Td', 'sub_attr_name': 'Cell', 'cols': [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]}
+class TD_Subsets__TdNumber:
+	Cell = {'sh_name': 'TD_Subsets', 'attr_name': 'TdNumber', 'sub_attr_name': 'Cell', 'cols': [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]}
 
 
 class TD_Subsets:
 	Name = {'sh_name': 'TD_Subsets', 'attr_name': 'Name', 'col': 1}
 	Id = {'sh_name': 'TD_Subsets', 'attr_name': 'Id', 'col': 2}
 	PassengerTrainTypeName = {'sh_name': 'TD_Subsets', 'attr_name': 'PassengerTrainTypeName', 'col': 3}
-	Td = TD_Subsets__Td()
+	TdNumber = TD_Subsets__TdNumber()
 
 
 class Unwanted_Coupling_Area__Limit:
@@ -1791,18 +1791,18 @@ class StaticTag_Group:
 	TagList = StaticTag_Group__TagList()
 
 
-class Odometric_Zones__OdometricZone:
-	Seg = {'sh_name': 'Odometric_Zones', 'attr_name': 'OdometricZone', 'sub_attr_name': 'Seg', 'cols': [5, 8, 11, 14, 17, 20, 23, 26, 29, 32]}
-	X = {'sh_name': 'Odometric_Zones', 'attr_name': 'OdometricZone', 'sub_attr_name': 'X', 'cols': [6, 9, 12, 15, 18, 21, 24, 27, 30, 33]}
-	Direction = {'sh_name': 'Odometric_Zones', 'attr_name': 'OdometricZone', 'sub_attr_name': 'Direction', 'cols': [7, 10, 13, 16, 19, 22, 25, 28, 31, 34]}
+class Odometric_Zone__OdometricZone:
+	Seg = {'sh_name': 'Odometric_Zone', 'attr_name': 'OdometricZone', 'sub_attr_name': 'Seg', 'cols': [5, 8, 11, 14, 17, 20, 23, 26, 29, 32]}
+	X = {'sh_name': 'Odometric_Zone', 'attr_name': 'OdometricZone', 'sub_attr_name': 'X', 'cols': [6, 9, 12, 15, 18, 21, 24, 27, 30, 33]}
+	Direction = {'sh_name': 'Odometric_Zone', 'attr_name': 'OdometricZone', 'sub_attr_name': 'Direction', 'cols': [7, 10, 13, 16, 19, 22, 25, 28, 31, 34]}
 
 
-class Odometric_Zones:
-	Name = {'sh_name': 'Odometric_Zones', 'attr_name': 'Name', 'col': 1}
-	Level = {'sh_name': 'Odometric_Zones', 'attr_name': 'Level', 'col': 2}
-	CurvatureRadius = {'sh_name': 'Odometric_Zones', 'attr_name': 'CurvatureRadius', 'col': 3}
-	Banking = {'sh_name': 'Odometric_Zones', 'attr_name': 'Banking', 'col': 4}
-	OdometricZone = Odometric_Zones__OdometricZone()
+class Odometric_Zone:
+	Name = {'sh_name': 'Odometric_Zone', 'attr_name': 'Name', 'col': 1}
+	Level = {'sh_name': 'Odometric_Zone', 'attr_name': 'Level', 'col': 2}
+	CurvatureRadius = {'sh_name': 'Odometric_Zone', 'attr_name': 'CurvatureRadius', 'col': 3}
+	Banking = {'sh_name': 'Odometric_Zone', 'attr_name': 'Banking', 'col': 4}
+	OdometricZone = Odometric_Zone__OdometricZone()
 
 
 class DCSYS:
@@ -1879,7 +1879,7 @@ class DCSYS:
 	Auxiliary_Vehicle = Auxiliary_Vehicle()
 	Traction_Profiles = Traction_Profiles()
 	Flood_Gate = Flood_Gate()
-	Coupling_area = Coupling_area()
+	Coupling_Area = Coupling_Area()
 	Floor_Levels = Floor_Levels()
 	EB_Rate_Area = EB_Rate_Area()
 	Unwanted_Stop_Area = Unwanted_Stop_Area()
@@ -1910,4 +1910,4 @@ class DCSYS:
 	Passage_Detector = Passage_Detector()
 	Parking_Place = Parking_Place()
 	StaticTag_Group = StaticTag_Group()
-	Odometric_Zones = Odometric_Zones()
+	Odometric_Zone = Odometric_Zone()

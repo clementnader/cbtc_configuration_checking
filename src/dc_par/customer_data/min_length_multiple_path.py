@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
@@ -23,28 +23,30 @@ def min_length_multiple_path(in_cbtc: bool = False):
         print_log(f"\r{progress_bar(i, nb_sw_point_segs)} processing length of multiple path "
                   f"from point segment {start_seg}...", end="")
         for end_seg in sw_point_segs[i + 1:]:
-            if are_segs_linked(start_seg, end_seg):  # if there is a path between the 2 segs
-                dist, short_path, list_of_paths = get_min_dist_and_list_of_paths(start_seg, end_seg, max_nb_paths=2)
-                if len(list_of_paths) == 2:  # if there are two paths
-                    dist -= get_len_seg(start_seg) + get_len_seg(end_seg)
-                    long_path = [path for path in list_of_paths if path != short_path][0]
-                    long_path_length = get_path_len(long_path) - (get_len_seg(start_seg) + get_len_seg(end_seg))
-                    if is_seg_downstream(start_seg, end_seg):
-                        from_seg = start_seg
-                        to_seg = end_seg
-                    else:
-                        from_seg = end_seg
-                        to_seg = start_seg
-                    multiple_path_len_dict[f"{from_seg} to {to_seg}"] = {
-                        "From": from_seg,
-                        "To": to_seg,
-                        "Minimal Length": round(dist, 3),
-                        "Short Path": short_path,
-                        "Short Path Switch": get_switch_on_path(short_path),
-                        "Long Path Length": round(long_path_length, 3),
-                        "Long Path": long_path,
-                        "Long Path Switch": get_switch_on_path(long_path),
-                    }
+            # TODO: check if max_nb_paths really useful with the new process
+            dist, short_path, list_of_paths, downstream, upstream = \
+                get_min_dist_and_list_of_paths(start_seg, end_seg, max_nb_paths=2)
+            if dist is None:
+                continue
+            if len(list_of_paths) == 2:  # if there are two paths
+                dist -= (get_len_seg(start_seg) + get_len_seg(end_seg))
+                long_path = [path for direction, path in list_of_paths
+                             if (direction, path) != (upstream, short_path)][0]
+                long_path_length = get_path_len(long_path) - (get_len_seg(start_seg) + get_len_seg(end_seg))
+                if downstream:
+                    downstream_str = "downstream"
+                else:
+                    downstream_str = "upstream"
+                multiple_path_len_dict[f"{start_seg} to {end_seg} {downstream_str}"] = {
+                    "From": start_seg,
+                    "To": end_seg,
+                    "Minimal Length": round(dist, 3),
+                    "Short Path": short_path,
+                    "Short Path Switch": get_switch_on_path(short_path),
+                    "Long Path Length": round(long_path_length, 3),
+                    "Long Path": long_path,
+                    "Long Path Switch": get_switch_on_path(long_path),
+                }
 
     print_log(f"\r{progress_bar(nb_sw_point_segs, nb_sw_point_segs, end=True)} processing length of multiple paths "
               f"(rhombus or trapezoid) finished.\n")

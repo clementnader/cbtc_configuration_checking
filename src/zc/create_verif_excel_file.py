@@ -3,7 +3,7 @@
 
 import os
 from ..utils import *
-from ..database_loc import DATABASE_LOC
+from ..database_location import *
 
 
 IF_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "templates", "template_if_results.xlsx")

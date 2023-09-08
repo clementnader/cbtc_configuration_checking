@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ..load_database import *
+from .segments_utils import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
-from .dist_utils import *
-from .path_utils import is_seg_downstream
+from .dist_utils import get_downstream_path, get_virtual_seg_ordered_extremities
+
+
+__all__ = ["get_slopes_in_cbtc_ter", "get_min_and_max_slopes_at_point", "get_min_and_max_slopes_on_virtual_seg"]
 
 
 def get_slopes_in_cbtc_ter():
@@ -75,10 +78,8 @@ def is_slope_defined(seg, slope_dict: dict, downstream: bool = True, x: float = 
 
 def get_min_and_max_slopes_on_virtual_seg(seg1, x1, seg2, x2):
     slope_dict = load_sheet(DCSYS.Profil)
-
-    if not is_seg_downstream(seg1, seg2, x1, x2):  # assert seg1 is upstream of seg2
-        seg1, seg2 = seg2, seg1
-        x1, x2 = x2, x1
+    # TODO: manage depolarization
+    seg1, x1, seg2, x2 = get_virtual_seg_ordered_extremities(seg1, x1, seg2, x2)  # assert seg1 is upstream of seg2
 
     slopes = get_next_slopes(seg2, x2, slope_dict, downstream=True)
     slopes.extend(get_next_slopes(seg1, x1, slope_dict, downstream=False))
@@ -91,10 +92,10 @@ def get_slopes_between(start_seg, start_x, end_seg, end_x, slope_dict: dict):
     start_x = float(start_x)
     end_x = float(end_x)
 
-    _, _, list_paths = get_downstream_path(start_seg, end_seg)
+    _, _, list_paths, _ = get_downstream_path(start_seg, end_seg, downstream=True)
 
     slopes = list()
-    for path in list_paths:
+    for _, path in list_paths:
         for seg in path:
             for slope in slope_dict.values():
                 slope_seg = get_dc_sys_value(slope, DCSYS.Profil.Seg)

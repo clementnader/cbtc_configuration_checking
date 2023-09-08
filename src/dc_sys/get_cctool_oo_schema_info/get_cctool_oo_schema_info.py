@@ -3,8 +3,11 @@
 
 import os
 from ...utils import *
-from .get_version import get_cctool_oo_version
+from .get_version import *
 from .load_cctool_oo_schema import *
+
+
+__all__ = ["load_cctool_oo_info"]
 
 
 CCTOOL_OO_SCHEMA_DIR = r"C:\Users\naderc\Documents\Documents GA\CCTool-OO Schema"

@@ -2,18 +2,23 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ..load_database import *
-from .dist_utils import get_dist, get_list_of_paths
-from .path_utils import is_seg_downstream
+from .dist_utils import get_dist, get_list_of_paths, is_seg_downstream
+
+
+__all__ = ["give_point_seg_vb", "get_len_vb", "get_segs_in_vb", "is_seg_in_vb", "get_vb_associated_to_sw",
+           "get_sw_associated_to_vb"]
 
 
 def give_point_seg_vb(vb_limits):
     """ Give the point segment corresponding to the switch associated to the VB. """
     for lim1 in vb_limits:
         seg1, _ = lim1
-        other_segs_are_downstream = [is_seg_downstream(seg1, seg2) for seg2, x2 in vb_limits if (seg2, x2) != lim1]
-        other_segs_are_upstream = [is_seg_downstream(seg2, seg1) for seg2, x2 in vb_limits if (seg2, x2) != lim1]
+        other_segs_are_downstream = [is_seg_downstream(seg1, seg2, downstream=True)
+                                     for seg2, x2 in vb_limits if (seg2, x2) != lim1]
+        other_segs_are_upstream = [is_seg_downstream(seg1, seg2, downstream=False)
+                                   for seg2, x2 in vb_limits if (seg2, x2) != lim1]
         if all(other_segs_are_downstream) or all(other_segs_are_upstream):
             return lim1
     print(f"Unable to find point segment for VB: {vb_limits}")
@@ -41,7 +46,7 @@ def get_segs_in_vb(vb_limits):
     other_limits = [seg for seg, x in vb_limits if (seg, x) != lim1]
     for seg2 in other_limits:
         list_paths = get_list_of_paths(seg1, seg2)
-        for path in list_paths:
+        for _, path in list_paths:
             for seg in path:
                 if seg not in list_segs:
                     list_segs.append(seg)

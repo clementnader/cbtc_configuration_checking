@@ -3,7 +3,10 @@
 
 import unidecode
 from ...utils import *
-from .load_xl import load_dc_par_wb
+from .load_xl import *
+
+
+__all__ = ["load_params"]
 
 
 LOADED_PARAMETERS = dict()
@@ -40,23 +43,18 @@ def get_sheet_param(wb: xlrd.Book, sh_name: str) -> dict:
 
     param_dict = dict()
     for line in range(START_LINE, sh.nrows+1):
-        param_name = get_and_decode_xlrd_value(sh, line, PARAM_NAME_COL).lower()
-        if param_name.upper() not in ("", "RESERVED"):
+        param_name = get_and_decode_xlrd_value(sh, line, PARAM_NAME_COL)
+        if param_name is not None and param_name.upper() not in ["", "RESERVED"]:
             fr_name = get_and_decode_xlrd_value(sh, line, FR_NAME_COL)
             s_ns = get_and_decode_xlrd_value(sh, line, S_NS_COL)
             value = get_and_decode_xlrd_value(sh, line, VALUE_COL)
             unit = get_and_decode_xlrd_value(sh, line, UNIT_COL)
-            param_dict[param_name] = {"fr_name": fr_name, "s_ns": s_ns, "value": value, "unit": unit}
+            param_dict[param_name.lower()] = {"fr_name": fr_name, "s_ns": s_ns, "value": value, "unit": unit}
     return param_dict
 
 
 def get_and_decode_xlrd_value(sh: xlrd.sheet, line: int, col: int) -> str:
-    xlrd_line = get_xlrd_line(line)
-    xlrd_col = get_xlrd_column(col)
-    try:
-        cell_value = sh.cell_value(xlrd_line, xlrd_col)
-    except IndexError:
-        cell_value = None
+    cell_value = get_xlrd_value(sh, line, col)
     if isinstance(cell_value, str):
         cell_value = unidecode.unidecode(cell_value).strip()
     return cell_value

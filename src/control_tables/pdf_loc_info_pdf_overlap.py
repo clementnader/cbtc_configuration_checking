@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..database_loc import PROJECT_NAME, Projects
+from ..database_location import *
 # import json
 # with open(r"C:\Users\naderc\Desktop\test.json", "w") as f:
 #     f.write(json.dumps(LOC_DICT, indent=2))

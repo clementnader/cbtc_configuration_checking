@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 # ------------------------------- XXX -------------------------------#
 fouling_points = {
     "SWP_S13_D11": {"left_heel": 0, "right_heel": 0},
@@ -62,4 +63,3 @@ fouling_points = {
 #     "SWP_VEE_869AW305": {"left_heel": 0, "right_heel": 13225.20},
 #     "SWP_VEE_869AW310": {"left_heel": 13035.82, "right_heel": 0},
 # }
-

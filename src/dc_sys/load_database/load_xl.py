@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...database_loc import DATABASE_LOC
+from ...database_location import *
+
+
+__all__ = ["load_wb"]
 
 
 WB = None

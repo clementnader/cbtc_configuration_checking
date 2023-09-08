@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ..load_database import *
 from .segments_utils import *
+
+
+__all__ = ["get_segs_within_cbtc_ter", "is_point_in_cbtc_ter", "get_limits_cbtc_ter",
+           "is_seg_in_cbtc_ter_limits", "print_in_cbtc", "get_all_segs_in_cbtc_ter"]
 
 
 CBTC_TER_SEGMENTS = list()
@@ -96,7 +100,7 @@ def get_next_segments(start_seg, end_cbtc_limits, cbtc_ter_segments):
 
 
 def is_seg_end_limit(seg, end_cbtc_limits):
-    return seg in (end_seg for end_seg, _, _ in end_cbtc_limits)
+    return seg in [end_seg for end_seg, _, _ in end_cbtc_limits]
 
 
 def update_list_seg_lim(cbtc_limits):
@@ -109,7 +113,7 @@ def is_seg_in_cbtc_ter_limits(seg):
     global CBTC_TER_LIMITS
     if not CBTC_TER_LIMITS:
         update_segs_within_cbtc_ter()
-    if seg in (lim_seg for lim_seg, _, _ in CBTC_TER_LIMITS):
+    if seg in [lim_seg for lim_seg, _, _ in CBTC_TER_LIMITS]:
         return True
     return False
 

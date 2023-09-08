@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ..load_database import *
 
 
 __all__ = ["is_seg_upstream_of_a_switch", "is_seg_downstream_of_a_switch",
-           "get_len_seg", "get_seg_track", "is_seg_depolarized", "get_depolarized_segs", "get_associated_depol",
+           "get_len_seg", "are_points_matching", "get_seg_track",
+           "is_seg_depolarized", "get_depolarized_segs", "get_associated_depol",
            "get_linked_segs", "get_straight_linked_segs", "get_correct_seg_offset"]
+
 
 DEPOLARIZED_SEGMENTS = list()
 
@@ -25,9 +27,27 @@ def is_seg_downstream_of_a_switch(seg: str) -> bool:
     return False
 
 
-def get_len_seg(seg: str) -> float:
+def get_len_seg(seg_name: str) -> float:
     seg_dict = load_sheet(DCSYS.Seg)
-    return float(get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Longueur))
+    return round(float(get_dc_sys_value(seg_dict[seg_name], DCSYS.Seg.Longueur)), 3)
+
+
+def are_points_matching(seg1, x1, seg2, x2, tolerance: float = .00):
+    if seg1 == seg2 and round(abs(x1 - x2), 2) <= tolerance:
+        return True
+    len_seg1 = get_len_seg(seg1)
+    len_seg2 = get_len_seg(seg2)
+    if x1 == len_seg1 and x2 == 0:
+        next_segs = get_linked_segs(seg1, downstream=True)
+        if seg2 in next_segs:
+            return True
+        return False
+    if x2 == len_seg2 and x1 == 0:
+        next_segs = get_linked_segs(seg2, downstream=True)
+        if seg1 in next_segs:
+            return True
+        return False
+    return False
 
 
 def get_seg_track(seg: str) -> str:

@@ -2,9 +2,25 @@
 # -*- coding: utf-8 -*-
 
 import os
-from ..database_loc import DATABASE_LOC
+from ..database_location import *
 from ..utils import *
-from .pdf_extract_tables import pdf_reader_extract_tables, CONTROL_TABLE_TYPE
+from .pdf_extract_tables import *
+
+
+__all__ = ["CONTROL_TABLE_TYPE", "CONTROL_TABLE_LINE_PART", "parse_control_tables",
+           "ROUTE_CONTROL_SIG_CONTROL_TABLE", "ROUTE_SW_CONTROL_TABLE", "ROUTE_PATH_CONTROL_TABLE",
+           "ROUTE_APPROACH_AREA_CLEARANCE_CONTROL_TABLE",
+           "OVL_DESTINATION_POINT_CONTROL_TABLE", "OVL_PATH_CONTROL_TABLE", "OVL_SW_CONTROL_TABLE"]
+
+
+ROUTE_CONTROL_SIG_CONTROL_TABLE = ["[1]", "[1a]"]
+ROUTE_SW_CONTROL_TABLE = "[9]"
+ROUTE_PATH_CONTROL_TABLE = "[10]"
+ROUTE_APPROACH_AREA_CLEARANCE_CONTROL_TABLE = "[14]"
+
+OVL_DESTINATION_POINT_CONTROL_TABLE = "[1]"
+OVL_PATH_CONTROL_TABLE = "[5]"
+OVL_SW_CONTROL_TABLE = "[8]"
 
 
 class CONTROL_TABLE_LINE_PART:
@@ -53,6 +69,8 @@ def parse_control_tables(table_type: str, use_csv_file: bool = False, verbose: b
         res_dict.update(_get_res_dict_control_table(
             control_table_info.control_tables_path, control_table_info.result_file, table_type, line_part,
             use_csv_file=use_csv_file, verbose=verbose, specific_page=specific_page))
+    res_dict = {obj_name.strip(): {key.strip(): val.strip() for key, val in obj_val.items()}
+                for obj_name, obj_val in res_dict.items()}
     return res_dict
 
 

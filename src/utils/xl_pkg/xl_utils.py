@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import typing
 import openpyxl
 import openpyxl.utils as xl_ut
 import openpyxl.comments as xl_comments
 import xlrd
+from ..common_utils import *
+
+
+__all__ = ["openpyxl", "xlrd", "xl_ut", "get_xlrd_column", "get_xlrd_line", "load_xlsx_wb", "get_xl_column",
+           "get_xlrd_float_value", "get_xlrd_value", "get_xlsx_value", "get_cell_line_col", "get_line_col_cell",
+           "add_cell_comment"]
 
 
 def get_xlrd_column(col_nb: int) -> int:
@@ -21,11 +26,7 @@ def load_xlsx_wb(path: str) -> openpyxl.workbook.Workbook:
 
 
 def get_xl_column(col: int) -> str:
-    return xl_ut.get_column_letter(col + 1)
-
-
-def get_xl_line(line: int) -> int:
-    return line + 1
+    return xl_ut.get_column_letter(col)
 
 
 def get_xlrd_float_value(sh: xlrd.sheet, line: int, col: int):
@@ -57,7 +58,7 @@ def get_xlsx_value(sh, line: int, col: int) -> str:
     return cell_value
 
 
-def get_cell_line_col(cell: str = None, line: int = None, col: typing.Union[str, int] = None):
+def get_cell_line_col(cell: str = None, line: int = None, col: Union[str, int] = None):
     if cell is not None:
         line = int(cell[1])
         col = cell[0]
@@ -66,7 +67,7 @@ def get_cell_line_col(cell: str = None, line: int = None, col: typing.Union[str,
     return line, col
 
 
-def get_line_col_cell(cell: str = None, line: int = None, col: typing.Union[str, int] = None):
+def get_line_col_cell(cell: str = None, line: int = None, col: Union[str, int] = None):
     if cell is None:
         if isinstance(col, int):
             col = xl_ut.get_column_letter(col)
@@ -74,7 +75,7 @@ def get_line_col_cell(cell: str = None, line: int = None, col: typing.Union[str,
     return cell
 
 
-def add_cell_comment(sh, comment: str, cell: str = None, line: int = None, col: typing.Union[str, int] = None):
+def add_cell_comment(sh, comment: str, cell: str = None, line: int = None, col: Union[str, int] = None):
     cell = get_line_col_cell(cell, line, col)
     comment = xl_comments.Comment(comment, None)
     sh[cell].comment = comment

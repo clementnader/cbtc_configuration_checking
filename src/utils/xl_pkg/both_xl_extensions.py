@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-import typing
+from ..common_utils import *
 from ..colors_pkg import *
 from .xl_utils import *
+
+
+__all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_cell_value", "get_xl_sh_nb_rows", "get_xl_sheets",
+           "get_xl_float_value"]
 
 
 def load_xl_file(addr):
@@ -20,14 +24,14 @@ def load_xl_file(addr):
         return None
 
 
-def get_sheets(wb):
+def get_xl_sheets(wb):
     if isinstance(wb, xlrd.book.Book):
         return wb.sheet_names()
     elif isinstance(wb, openpyxl.workbook.workbook.Workbook):
         return wb.sheetnames
 
 
-def get_xl_sheet(wb, sheet_name: str):
+def get_xl_sheet_by_name(wb, sheet_name: str):
     if isinstance(wb, xlrd.book.Book):
         sh = wb.sheet_by_name(sheet_name)
         return sh
@@ -36,7 +40,7 @@ def get_xl_sheet(wb, sheet_name: str):
         return sh
 
 
-def get_xl_cell_value(sh, cell: str = None, line: int = None, col: typing.Union[str, int] = None):
+def get_xl_cell_value(sh, cell: str = None, line: int = None, col: Union[str, int] = None):
     line, col = get_cell_line_col(cell, line, col)
     if isinstance(sh, xlrd.sheet.Sheet):
         return get_xlrd_value(sh, line, col)
@@ -44,7 +48,7 @@ def get_xl_cell_value(sh, cell: str = None, line: int = None, col: typing.Union[
         return get_xlsx_value(sh, line, col)
 
 
-def get_xl_float_value(sh, cell: str = None, line: int = None, col: typing.Union[str, int] = None):
+def get_xl_float_value(sh, cell: str = None, line: int = None, col: Union[str, int] = None):
     value = get_xl_cell_value(sh, cell, line, col)
     if isinstance(value, str):
         try:
@@ -54,7 +58,7 @@ def get_xl_float_value(sh, cell: str = None, line: int = None, col: typing.Union
     return value
 
 
-def get_sh_nb_rows(sh):
+def get_xl_sh_nb_rows(sh):
     if isinstance(sh, xlrd.sheet.Sheet):
         return sh.nrows
     elif isinstance(sh, openpyxl.worksheet.worksheet.Worksheet):

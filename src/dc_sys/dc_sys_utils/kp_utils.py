@@ -1,15 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...cctool_oo_schema import DCSYS
+from ...cctool_oo_schema import *
 from ..load_database import *
+
+
+__all__ = ["from_seg_offset_to_kp", "from_kp_to_seg_offset"]
 
 
 def from_seg_offset_to_kp(seg, x):
     seg_dict = load_sheet(DCSYS.Seg)
     track = get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
     orig_kp = float(get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Origine))
-    kp = round(orig_kp + float(x), 2)
+    end_kp = float(get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Fin))
+    if orig_kp <= end_kp:
+        kp = round(orig_kp + float(x), 2)
+    else:
+        kp = round(orig_kp - float(x), 2)
     return track, kp
 
 
@@ -19,6 +26,13 @@ def from_kp_to_seg_offset(track, kp):
         seg_track = get_dc_sys_value(seg_value, DCSYS.Seg.Voie)
         seg_orig_kp = float(get_dc_sys_value(seg_value, DCSYS.Seg.Origine))
         seg_end_kp = float(get_dc_sys_value(seg_value, DCSYS.Seg.Fin))
-        if seg_track == track and seg_orig_kp <= kp <= seg_end_kp:
-            x = kp - seg_orig_kp
-            return seg_name, x
+        if seg_orig_kp <= seg_end_kp:
+            if seg_track == track and seg_orig_kp <= kp <= seg_end_kp:
+                x = kp - seg_orig_kp
+                return seg_name, x
+        else:
+            if seg_track == track and seg_end_kp <= kp <= seg_orig_kp:
+                x = seg_orig_kp - kp
+                return seg_name, x
+    print(f"Unable to find seg, offset for {(track, kp)}")
+    return None, None
