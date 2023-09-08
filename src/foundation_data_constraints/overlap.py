@@ -228,14 +228,14 @@ def _check_ivb_corresponds_to_vsp(ivb_limits: list[dict[str]], vsp_seg: str, vsp
     return False
 
 
-def _get_ivb_limits(control_table_ivb: str) -> (str, list[dict[str]]):
+def _get_ivb_limits(control_table_ivb: str) -> tuple[Optional[str], list[dict[str]]]:
     ivb_dict = load_sheet(DCSYS.IVB)
     for ivb_name, ivb_val in ivb_dict.items():
         ivb_limits = list(get_dc_sys_zip_values(ivb_val, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X))
         ivb_test_name = ivb_name.split("_")[-1]
         if ivb_test_name.upper() == control_table_ivb.upper():
             return ivb_name, ivb_limits
-    return None, None
+    return None, []
 
 
 def _check_ovl_exist_in_dc_sys(ovl_dict: dict[str], ovl_control_tables: dict[str]):

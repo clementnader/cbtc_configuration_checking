@@ -122,6 +122,7 @@ def constraints():
 
 
 def main():
+
     # get_walkways_track_kp_pos()
 
     # print_all_colors()

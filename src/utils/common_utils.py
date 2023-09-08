@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Optional, Union
+from typing import Optional, Union, Generator
 from string import ascii_uppercase
 
 
-__all__ = ["Optional", "Union", "ascii_uppercase", "columns_from_to", "sort_dict", "pretty_print_dict"]
+__all__ = ["Optional", "Union", "Generator",
+           "ascii_uppercase", "columns_from_to", "sort_dict", "pretty_print_dict"]
 
 
 def columns_from_to(first: str, last: str):

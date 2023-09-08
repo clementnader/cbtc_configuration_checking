@@ -11,12 +11,12 @@ START_LINE = 3
 DEFAULT_NAME_COLUMN = 1
 
 
-def get_sh_dict(sh: xlrd.sheet, columns_dict: dict[str], generic_obj_name: dict) -> dict:
+def get_sh_dict(sh: xlrd.sheet, columns_dict: dict[str], generic_obj_name: dict) -> dict[str, dict]:
     sh_dict = dict()
     if generic_obj_name is not None:
         return get_generic_sh_dict(sh, columns_dict, generic_obj_name)
     for line in range(START_LINE, sh.nrows + 1):
-        obj_name = get_xlrd_float_value(sh, line, DEFAULT_NAME_COLUMN)
+        obj_name = get_xlrd_value(sh, line, DEFAULT_NAME_COLUMN)
         if obj_name is None:
             continue
         if obj_name in sh_dict:
@@ -26,11 +26,11 @@ def get_sh_dict(sh: xlrd.sheet, columns_dict: dict[str], generic_obj_name: dict)
     return sh_dict
 
 
-def get_generic_sh_dict(sh: xlrd.sheet, columns_dict: dict[str], generic_obj_name: dict) -> dict:
+def get_generic_sh_dict(sh: xlrd.sheet, columns_dict: dict[str], generic_obj_name: dict) -> dict[str, dict]:
     temp_dict = dict()
     cols: list = generic_obj_name["cols"]
     for line in range(START_LINE, sh.nrows + 1):
-        obj_name = get_xlrd_float_value(sh, line, DEFAULT_NAME_COLUMN)
+        obj_name = get_xlrd_value(sh, line, DEFAULT_NAME_COLUMN)
         if obj_name is not None:
             info_for_object = get_info_for_object(sh, line, columns_dict)
             key = get_generic_sh_object_key(cols, info_for_object)

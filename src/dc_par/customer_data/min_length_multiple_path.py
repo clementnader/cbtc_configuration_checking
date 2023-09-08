@@ -14,7 +14,7 @@ def min_length_multiple_path(in_cbtc: bool = False):
     else:
         segs_within_cbtc_ter = list(seg_dict.keys())
         limits_cbtc_ter = list()
-    sw_point_segs = get_all_point_segs(segs_within_cbtc_ter, limits_cbtc_ter)
+    sw_point_segs = get_all_sw_point_segs(segs_within_cbtc_ter, limits_cbtc_ter)
     nb_sw_point_segs = len(sw_point_segs)
 
     multiple_path_len_dict = dict()
@@ -70,17 +70,18 @@ def min_length_multiple_path(in_cbtc: bool = False):
     return multiple_path_len_dict
 
 
-def get_all_point_segs(seg_list, limits_cbtc_ter):
+def get_all_sw_point_segs(seg_list: Union[set[str], list[str]], limits_cbtc_ter: list[tuple[str, float, bool]]
+                          ) -> list[str]:
     sw_point_segs = list()
     for seg in seg_list:
         if is_seg_upstream_of_a_switch(seg) or is_seg_downstream_of_a_switch(seg):
             sw_point_segs.append(seg)
 
     for lim in limits_cbtc_ter:
-        seg, _, direction = lim
-        if direction == "CROISSANT" and is_seg_upstream_of_a_switch(seg):
+        seg, _, downstream = lim
+        if downstream and is_seg_upstream_of_a_switch(seg):
             sw_point_segs.append(seg)
-        if direction == "DECROISSANT" and is_seg_downstream_of_a_switch(seg):
+        if not downstream and is_seg_downstream_of_a_switch(seg):
             sw_point_segs.append(seg)
 
     return sw_point_segs

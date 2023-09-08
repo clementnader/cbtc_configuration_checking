@@ -253,7 +253,7 @@ def is_point_between(seg: str, x: float, limit_seg_1: str, limit_x_1: float, lim
         return None
 
     def inner_recurs_seg(current_seg: str, end_seg: str):
-        next_segs = get_linked_segs(current_seg)
+        next_segs = get_linked_segs(current_seg, downstream=True)
         for next_seg in next_segs:
             if next_seg == end_seg:
                 return True

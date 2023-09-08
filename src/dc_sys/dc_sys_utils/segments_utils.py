@@ -32,7 +32,7 @@ def get_len_seg(seg_name: str) -> float:
     return round(float(get_dc_sys_value(seg_dict[seg_name], DCSYS.Seg.Longueur)), 3)
 
 
-def are_points_matching(seg1, x1, seg2, x2, tolerance: float = .00):
+def are_points_matching(seg1: str, x1: float, seg2: str, x2: float, tolerance: float = .00) -> bool:
     if seg1 == seg2 and round(abs(x1 - x2), 2) <= tolerance:
         return True
     len_seg1 = get_len_seg(seg1)
@@ -55,14 +55,14 @@ def get_seg_track(seg: str) -> str:
     return get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
 
 
-def is_seg_depolarized(seg):
+def is_seg_depolarized(seg: str) -> bool:
     global DEPOLARIZED_SEGMENTS
     if not DEPOLARIZED_SEGMENTS:
         _update_depol_segs()
     return any(seg in sub_list for sub_list in DEPOLARIZED_SEGMENTS)
 
 
-def get_associated_depol(seg):
+def get_associated_depol(seg: str) -> Optional[list[str]]:
     global DEPOLARIZED_SEGMENTS
     if not is_seg_depolarized(seg):
         return None
@@ -78,7 +78,7 @@ def get_depolarized_segs() -> list[list[str]]:
     return DEPOLARIZED_SEGMENTS
 
 
-def _update_depol_segs():
+def _update_depol_segs() -> None:
     global DEPOLARIZED_SEGMENTS
     line_dict = load_sheet(DCSYS.Ligne)
     for line_info in line_dict.values():
@@ -102,7 +102,7 @@ def _get_second_depol_seg(depol_seg: str):
     return list_depols
 
 
-def get_linked_segs(seg: str, downstream: bool = True) -> list[str]:
+def get_linked_segs(seg: str, downstream: bool) -> list[str]:
     seg_dict = load_sheet(DCSYS.Seg)
     attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     linked_segs = list()
@@ -112,7 +112,8 @@ def get_linked_segs(seg: str, downstream: bool = True) -> list[str]:
     return linked_segs
 
 
-def get_straight_linked_segs(seg: str, downstream: bool = True, depth: int = 10, verbose: bool = False):
+def get_straight_linked_segs(seg: str, downstream: bool, depth: int = 10, verbose: bool = False
+                             ) -> Generator[str, None, None]:
     seg_dict = load_sheet(DCSYS.Seg)
     attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     previous_seg = seg
@@ -132,7 +133,7 @@ def get_straight_linked_segs(seg: str, downstream: bool = True, depth: int = 10,
         linked_seg2 = linked_segs[1] if len(linked_segs) > 1 else None
 
 
-def get_correct_seg_offset(seg, x):
+def get_correct_seg_offset(seg: str, x: float) -> tuple[str, float]:
     len_seg = get_len_seg(seg)
     downstream_segs = get_straight_linked_segs(seg, downstream=True, verbose=True)
     upstream_segs = get_straight_linked_segs(seg, downstream=False, verbose=True)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils import *
 from .cctool_oo_schema import DCSYS
 
 
@@ -8,11 +9,11 @@ __all__ = ["get_all_sheet_names", "get_class_attr_dict", "get_sh_name", "get_she
            "get_sheet_class_from_name", "get_dc_sys_attr_name"]
 
 
-def get_all_sheet_names():
+def get_all_sheet_names() -> list[str]:
     return list(get_class_attr_dict(DCSYS).keys())
 
 
-def get_class_attr_dict(cl):
+def get_class_attr_dict(cl) -> dict[str]:
     if isinstance(cl, type):
         return {key: val for key, val in cl.__dict__.items()
                 if not (key.startswith("__") and key.endswith("__"))}
@@ -21,20 +22,20 @@ def get_class_attr_dict(cl):
                 if not (key.startswith("__") and key.endswith("__"))}
 
 
-def get_sh_name(sh):
+def get_sh_name(sh) -> str:
     if isinstance(sh, str):
         return sh
     return sh.__class__.__name__
 
 
-def get_dc_sys_attr_name(attr):
+def get_dc_sys_attr_name(attr) -> str:
     attr = get_sh_name(attr)
     if "__" in attr:
         return attr.split("__")[-1]
     return attr
 
 
-def get_sheet_attributes_columns_dict(sh):
+def get_sheet_attributes_columns_dict(sh) -> dict[str, Union[int, dict[str, int]]]:
     sh = get_sheet_class_from_name(sh)
     class_attr_dict = get_class_attr_dict(sh)
     res_dict = dict()

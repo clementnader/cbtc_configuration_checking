@@ -29,7 +29,7 @@ def get_xl_column(col: int) -> str:
     return xl_ut.get_column_letter(col)
 
 
-def get_xlrd_float_value(sh: xlrd.sheet, line: int, col: int):
+def get_xlrd_float_value(sh: xlrd.sheet, line: int, col: int) -> Union[float, str]:
     value = get_xlrd_value(sh, line, col)
     if isinstance(value, str):
         try:
@@ -58,7 +58,7 @@ def get_xlsx_value(sh, line: int, col: int) -> str:
     return cell_value
 
 
-def get_cell_line_col(cell: str = None, line: int = None, col: Union[str, int] = None):
+def get_cell_line_col(cell: str = None, line: int = None, col: Union[str, int] = None) -> tuple[int, int]:
     if cell is not None:
         line = int(cell[1])
         col = cell[0]
@@ -67,7 +67,7 @@ def get_cell_line_col(cell: str = None, line: int = None, col: Union[str, int] =
     return line, col
 
 
-def get_line_col_cell(cell: str = None, line: int = None, col: Union[str, int] = None):
+def get_line_col_cell(cell: str = None, line: int = None, col: Union[str, int] = None) -> str:
     if cell is None:
         if isinstance(col, int):
             col = xl_ut.get_column_letter(col)
@@ -75,7 +75,7 @@ def get_line_col_cell(cell: str = None, line: int = None, col: Union[str, int] =
     return cell
 
 
-def add_cell_comment(sh, comment: str, cell: str = None, line: int = None, col: Union[str, int] = None):
+def add_cell_comment(sh, comment: str, cell: str = None, line: int = None, col: Union[str, int] = None) -> None:
     cell = get_line_col_cell(cell, line, col)
     comment = xl_comments.Comment(comment, None)
     sh[cell].comment = comment

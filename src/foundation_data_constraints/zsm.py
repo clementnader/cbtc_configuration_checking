@@ -24,14 +24,14 @@ def initialize_res_dict():
         "list_limits_diff": list()
     } for seg in seg_dict if seg is not None}
 
-    for seg, x, direction in limits_seg_dict:
-        if direction == "CROISSANT":
+    for seg, x, downstream in limits_seg_dict:
+        if downstream:
             res_dict[seg] = {
                 "seg_limits": (x, get_len_seg(seg)),
                 "list_limits": list(),
                 "list_limits_diff": list()
             }
-        if direction == "DECROISSANT":
+        else:
             res_dict[seg] = {
                 "seg_limits": (0, x),
                 "list_limits": list(),

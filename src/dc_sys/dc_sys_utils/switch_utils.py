@@ -49,7 +49,7 @@ def is_sw_point_seg_upstream(sw):
     raise Exception("The point segment is not found upstream or downstream of the heels.")
 
 
-def get_heel_position(point_seg, heel) -> (str, str):
+def get_heel_position(point_seg, heel) -> tuple[Optional[str], str]:
     sw_dict = load_sheet(DCSYS.Aig)
     for sw_name, sw_value in sw_dict.items():
         sw_point_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentPointe)

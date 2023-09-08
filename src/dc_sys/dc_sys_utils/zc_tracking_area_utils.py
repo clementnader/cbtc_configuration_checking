@@ -60,7 +60,7 @@ def get_next_segments(start_seg, end_zc_limits, zc_segments):
         if is_seg_end_limit(seg, end_zc_limits):
             return zc_segments
         zc_segments.append(seg)
-        for next_seg in get_linked_segs(seg):
+        for next_seg in get_linked_segs(seg, downstream=True):
             if next_seg not in zc_segments:
                 inner_recurs_next_seg(next_seg)
 
