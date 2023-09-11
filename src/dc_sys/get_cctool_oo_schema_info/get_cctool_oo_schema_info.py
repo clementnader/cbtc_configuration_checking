@@ -7,17 +7,25 @@ from .get_version import *
 from .load_cctool_oo_schema import *
 
 
-__all__ = ["load_cctool_oo_info"]
+__all__ = ["load_cctool_oo_schema_info", "load_cctool_oo_enum_lists_info"]
 
 
 CCTOOL_OO_SCHEMA_DIR = r"C:\Users\naderc\Documents\Documents GA\CCTool-OO Schema"
 
 
-def load_cctool_oo_info():
+def load_cctool_oo_schema_info():
     cctool_oo_file = get_corresponding_cctool_oo_schema()
     if cctool_oo_file is None:
         return dict()
     info_dict = load_cctool_oo_schema(cctool_oo_file)
+    return info_dict
+
+
+def load_cctool_oo_enum_lists_info():
+    cctool_oo_file = get_corresponding_cctool_oo_schema()
+    if cctool_oo_file is None:
+        return dict()
+    info_dict = load_cctool_oo_enum_lists(cctool_oo_file)
     return info_dict
 
 

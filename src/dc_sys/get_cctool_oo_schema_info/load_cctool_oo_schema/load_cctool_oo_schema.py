@@ -12,7 +12,6 @@ __all__ = ["load_cctool_oo_schema"]
 
 SHEET_NAME = r"CCTool-OO Schema"
 START_LINE = 2
-
 SHEET_COL = 2
 TITLE_COL = 3
 COLUMN_COL = 4

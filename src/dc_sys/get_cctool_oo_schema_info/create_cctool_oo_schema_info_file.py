@@ -13,7 +13,7 @@ def create_cctool_oo_schema_info_file():
     py_file_name = "cctool_oo_schema.py"
     res_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..", "cctool_oo_schema")
     res_py_file_full_path = os.path.join(res_directory, py_file_name)
-    cctool_oo_schema_dict = load_cctool_oo_info()
+    cctool_oo_schema_dict = load_cctool_oo_schema_info()
 
     if not cctool_oo_schema_dict:
         print_error(f"The CCTool-OO Schema file has not been parsed, "

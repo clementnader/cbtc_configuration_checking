@@ -111,20 +111,7 @@ def constraints():
     return
 
 
-# def get_params():
-#     with open(r"C:\Users\naderc\Desktop\params.txt", "r") as f:
-#         lines = f.readlines()
-#     for i, line in enumerate(lines):
-#         param = line.strip()
-#         value, unit = get_param_with_unit(param, keep_km_per_h=True)
-#         color = Color.light_blue if i % 2 == 0 else Color.pale_green
-#         print(f"{color}{param:50} = {value} {unit}{Color.reset}")
-
-
 def main():
-
-    # get_walkways_track_kp_pos()
-
     # print_all_colors()
     # show_colors()
     # test_rainbow()
@@ -135,6 +122,7 @@ def main():
     # checksum_compare_parser()
     # convert_ccparam()
 
+    # get_walkways_track_kp_pos()
     # pretty_print_dict(get_track_in_cbtc_ter(), max_lvl=0)
     # pretty_print_dict(get_sigs_in_cbtc_ter(), max_lvl=0)
     # pretty_print_dict(get_maz_in_cbtc_ter(), max_lvl=0)

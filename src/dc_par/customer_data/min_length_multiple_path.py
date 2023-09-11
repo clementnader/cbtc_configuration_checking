@@ -10,7 +10,7 @@ def min_length_multiple_path(in_cbtc: bool = False):
     seg_dict = load_sheet(DCSYS.Seg)
     if in_cbtc:
         segs_within_cbtc_ter = get_segs_within_cbtc_ter()
-        limits_cbtc_ter = get_limits_cbtc_ter()
+        limits_cbtc_ter = get_cbtc_ter_limits()
     else:
         segs_within_cbtc_ter = list(seg_dict.keys())
         limits_cbtc_ter = list()
@@ -33,11 +33,9 @@ def min_length_multiple_path(in_cbtc: bool = False):
                 long_path = [path for direction, path in list_of_paths
                              if (direction, path) != (upstream, short_path)][0]
                 long_path_length = get_path_len(long_path) - (get_len_seg(start_seg) + get_len_seg(end_seg))
-                if downstream:
-                    downstream_str = "downstream"
-                else:
-                    downstream_str = "upstream"
-                multiple_path_len_dict[f"{start_seg} to {end_seg} {downstream_str}"] = {
+                downstream_str = {True: "downstream", False: "upstream"}[downstream]
+                upstream_str = {True: "downstream", False: "upstream"}[not upstream]
+                multiple_path_len_dict[f"{start_seg} {downstream_str} to {end_seg} {upstream_str}"] = {
                     "From": start_seg,
                     "To": end_seg,
                     "Minimal Length": round(dist, 3),

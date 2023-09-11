@@ -7,8 +7,8 @@ from ..load_database import *
 from .segments_utils import *
 
 
-__all__ = ["get_segs_within_cbtc_ter", "is_point_in_cbtc_ter", "get_limits_cbtc_ter",
-           "is_seg_in_cbtc_ter_limits", "print_in_cbtc", "get_all_segs_in_cbtc_ter"]
+__all__ = ["get_segs_within_cbtc_ter", "get_cbtc_ter_limits", "get_all_segs_in_cbtc_ter",
+           "is_point_in_cbtc_ter", "print_in_cbtc"]
 
 
 CBTC_TER_SEGMENTS: list[(str, bool)] = list()
@@ -31,11 +31,11 @@ def get_segs_within_cbtc_ter() -> set[str]:
 
 def get_all_segs_in_cbtc_ter() -> set[str]:
     cbtc_ter_segments = get_segs_within_cbtc_ter()
-    cbtc_ter_limits = get_limits_cbtc_ter()
+    cbtc_ter_limits = get_cbtc_ter_limits()
     return cbtc_ter_segments.union([seg for seg, _, _ in cbtc_ter_limits])
 
 
-def get_limits_cbtc_ter() -> list[tuple[str, float, bool]]:
+def get_cbtc_ter_limits() -> list[tuple[str, float, bool]]:
     global CBTC_TER_LIMITS
     if not CBTC_TER_LIMITS:
         update_segs_within_cbtc_ter()
@@ -94,7 +94,7 @@ def is_seg_end_limit(seg: str, downstream: bool, cbtc_limits: list[tuple[str, fl
     if (seg, not downstream) in [(limit_seg, limit_downstream) for limit_seg, _, limit_downstream in cbtc_limits]:
         return True
     if seg in [limit_seg for limit_seg, _, _ in cbtc_limits]:
-        print_warning("Reach a CBTC Territory limit in the same direction as the start limit.")
+        print_warning("Reach a CBTC Territory limit but with a different direction.")
         print(f"{seg = }, {downstream = }")
         print([limit_seg for limit_seg, _, _ in cbtc_limits if seg == limit_seg])
         return True
@@ -120,32 +120,13 @@ def update_list_seg_lim(cbtc_limits: list[tuple[str, float, bool]]) -> None:
             CBTC_TER_LIMITS.append((seg, x, downstream))
 
 
-def is_seg_in_cbtc_ter_limits(seg: str) -> bool:
-    global CBTC_TER_LIMITS
-    if not CBTC_TER_LIMITS:
-        update_segs_within_cbtc_ter()
-    if seg in [lim_seg for lim_seg, _, _ in CBTC_TER_LIMITS]:
-        return True
-    return False
-
-
-def is_seg_strictly_in_cbtc_ter(seg: str) -> bool:
-    global CBTC_TER_SEGMENTS
-    if not CBTC_TER_SEGMENTS:
-        update_segs_within_cbtc_ter()
-    if seg in CBTC_TER_SEGMENTS:
-        return True
-    return False
-
-
 def is_point_in_cbtc_ter(seg: str, x: float) -> Optional[bool]:
-    global CBTC_TER_SEGMENTS, CBTC_TER_LIMITS
     x = float(x)
-    if not CBTC_TER_SEGMENTS:
-        update_segs_within_cbtc_ter()
-    if seg in CBTC_TER_SEGMENTS:
+    cbtc_ter_segments = get_segs_within_cbtc_ter()
+    cbtc_ter_limits = get_cbtc_ter_limits()
+    if seg in cbtc_ter_segments:
         return True
-    for lim in CBTC_TER_LIMITS:
+    for lim in cbtc_ter_limits:
         lim_seg, lim_x, lim_downstream = lim
         if seg == lim_seg:
             if x == lim_x:  # limit point

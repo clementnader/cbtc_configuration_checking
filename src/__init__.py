@@ -22,3 +22,4 @@ print_title(f"The working project is {Color.green2}{PROJECT_NAME}{Color.reset}\n
             f"{Color.cyan}{get_c_d470_version()}{Color.reset}\n"
             f"with CCTool-OO Core CBTC version {Color.pale_green}{get_ga_version()}{Color.reset}.")
 create_cctool_oo_schema_info_file()  # regenerate the CCTOOL-OO Schema Info file to match the current version
+create_cctool_oo_enum_lists_info_file()  # regenerate the CCTOOL-OO Enum Lists Info file to match the current version

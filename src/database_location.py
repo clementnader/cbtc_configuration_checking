@@ -132,7 +132,7 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_SYS.xls"
             # self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_01_RC3\DC_SYS.xls"
             # self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_01_RC4_M\DC_SYS.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03_RC3\DC_SYS_06_06_01_V03_RC3.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\DC_SYS.xls"
             self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_01_RC3\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_01_RC3\DC_BOP.xls"
             # -- Survey -- #

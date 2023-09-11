@@ -16,7 +16,7 @@ def cf_zsm_cbtc_10():
 
 def initialize_res_dict():
     seg_dict = get_segs_within_cbtc_ter()
-    limits_seg_dict = get_limits_cbtc_ter()
+    limits_seg_dict = get_cbtc_ter_limits()
 
     res_dict = {seg: {
         "seg_limits": (0.0, get_len_seg(seg)),

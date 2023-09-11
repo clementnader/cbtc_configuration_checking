@@ -33,35 +33,32 @@ def update_all_accessible_segments() -> None:
     global DOWNSTREAM_ACCESSIBLE_SEGMENTS, UPSTREAM_ACCESSIBLE_SEGMENTS
     if DOWNSTREAM_ACCESSIBLE_SEGMENTS and UPSTREAM_ACCESSIBLE_SEGMENTS:
         return
-    print_title(f"Tracing all paths...", color=Color.mint_green)
     seg_dict = load_sheet(DCSYS.Seg)
-    nb_segs = len(seg_dict)
-    progress_bar(1, 1, end=True)  # reset progress bar
-    for i, seg in enumerate(seg_dict.keys()):
-        print_log(f"\r{progress_bar(i, nb_segs)} getting all accessible segments from {seg}...", end="")
+    for seg in seg_dict.keys():
         DOWNSTREAM_ACCESSIBLE_SEGMENTS[seg] = get_all_accessible_segments_from(seg, downstream=True)
         UPSTREAM_ACCESSIBLE_SEGMENTS[seg] = get_all_accessible_segments_from(seg, downstream=False)
-    print_log(f"\r{progress_bar(nb_segs, nb_segs, end=True)} all paths have been traced.\n")
 
 
 def get_all_accessible_segments_from(start_seg: str, downstream: bool) -> set[tuple[str, bool]]:
     list_segs = set()
 
-    def inner_recurs_next_seg(seg: str, seg_path: list[str], direction_path: list[bool], inner_downstream: bool):
+    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str]):
         nonlocal list_segs
+        list_segs.add((seg, inner_downstream))
         linked_segs = get_linked_segs(seg, inner_downstream)
         if not linked_segs:
-            list_segs.update(zip(seg_path, direction_path))
+            return
         for next_seg in linked_segs:
-            if next_seg in seg_path:
-                list_segs.update(zip(seg_path, direction_path))
-                continue
             if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
-            inner_recurs_next_seg(next_seg, seg_path + [next_seg], direction_path + [next_inner_downstream],
-                                  next_inner_downstream)
+            if next_seg in path or (next_seg, next_inner_downstream) in list_segs:
+                # We check if we have made a full turn and reach a segment that we have already run through
+                # in the current path,
+                # and we check if we have not already made the work for this segment and direction
+                continue
+            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg])
 
-    inner_recurs_next_seg(start_seg, [start_seg], [downstream], downstream)
+    inner_recurs_next_seg(start_seg, downstream, [start_seg])
     return list_segs

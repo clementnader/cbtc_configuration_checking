@@ -141,7 +141,7 @@ def get_downstream_path(start_seg: str, end_seg: str, downstream: bool, max_nb_p
             (not downstream and end_seg not in [seg for seg, _ in get_all_upstream_segments(start_seg)]):
         return None, [], [], None
 
-    def inner_recurs_next_seg(seg: str, path: list[str], inner_downstream: bool):
+    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str]):
         nonlocal list_paths
         if seg == end_seg:
             list_paths.append((upstream, path))
@@ -159,10 +159,10 @@ def get_downstream_path(start_seg: str, end_seg: str, downstream: bool, max_nb_p
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
-            inner_recurs_next_seg(next_seg, path + [next_seg], next_inner_downstream)
+            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg])
 
     for upstream, accessible_segs_from_end in get_upstream_segs_according_to_direction(end_seg, start_seg, downstream):
-        inner_recurs_next_seg(start_seg, [start_seg], downstream)
+        inner_recurs_next_seg(start_seg, downstream, [start_seg])
 
     if not list_paths:
         print_warning(f"{end_seg=} is in the accessible segments of {start_seg=} in direction "
