@@ -7,7 +7,8 @@ from .segments_utils import get_len_seg, get_linked_segs, is_seg_depolarized, ge
 
 
 __all__ = ["get_dist", "get_dist_downstream", "get_list_of_paths", "get_min_dist_and_list_of_paths",
-           "get_smallest_path", "get_path_len", "get_downstream_path", "get_virtual_seg_ordered_extremities",
+           "get_smallest_path", "get_path_len", "get_downstream_path", "get_min_path_downstream",
+           "get_virtual_seg_ordered_extremities",
            "is_point_between", "is_seg_downstream", "are_segs_linked"]
 
 
@@ -41,8 +42,8 @@ def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x
                       f"and upstream {start_seg=}.")
         return True
     # We need to find which path is the smallest
-    dist1, _, _, _ = get_downstream_path(start_seg, end_seg, downstream=True)
-    dist2, _, _, _ = get_downstream_path(start_seg, end_seg, downstream=False)
+    dist1, _, _, _ = get_downstream_path(start_seg, end_seg, start_downstream=True)
+    dist2, _, _, _ = get_downstream_path(start_seg, end_seg, start_downstream=False)
     if dist1 is None and dist2 is None:
         print_error(f"Ring configuration: {end_seg=} is at the same time downstream "
                     f"and upstream {start_seg=}."
@@ -85,7 +86,8 @@ def get_dist_downstream(seg1: str, x1: float, seg2: str, x2: float, downstream: 
         else:
             return None
 
-    dist, _, _, upstream = get_downstream_path(seg1, seg2, downstream=downstream)
+    # dist, _, _, upstream = get_downstream_path(seg1, seg2, downstream=downstream)
+    dist, _, upstream = get_min_path_downstream(seg1, seg2, downstream=downstream)
 
     if dist is None:
         return None
@@ -101,26 +103,70 @@ def get_dist_downstream(seg1: str, x1: float, seg2: str, x2: float, downstream: 
     return round(dist, 3)
 
 
+def get_min_path_downstream(start_seg: str, end_seg: str, downstream: bool
+                            ) -> tuple[Optional[float], list[str], Optional[bool]]:
+    min_len = -1
+    min_path = []
+    associated_upstream = None
+    if (downstream and end_seg not in [seg for seg, _ in get_all_downstream_segments(start_seg)]) or \
+            (not downstream and end_seg not in [seg for seg, _ in get_all_upstream_segments(start_seg)]):
+        return None, [], None
+
+    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str], path_len: float):
+        nonlocal min_len, min_path, associated_upstream
+        if min_len != -1 and path_len >= min_len:  # we reach a larger distance, we can stop
+            return
+        if seg == end_seg:
+            min_len = path_len
+            min_path = path
+            associated_upstream = upstream
+            return
+        if (seg, not inner_downstream) not in accessible_segs_from_end:  # to optimize:
+            # if we reach a segment not accessible from the end segment in the other direction, we can stop,
+            # this path will not lead to the end segment
+            return
+        for next_seg in get_linked_segs(seg, inner_downstream):
+            if next_seg in path:  # for ring
+                continue
+            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
+                next_inner_downstream = not inner_downstream
+            else:
+                next_inner_downstream = inner_downstream
+            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg],
+                                  round(path_len + get_len_seg(next_seg), 3))
+
+    for upstream, accessible_segs_from_end in get_upstream_segs_according_to_direction(end_seg, start_seg, downstream):
+        inner_recurs_next_seg(start_seg, downstream, [start_seg], get_len_seg(start_seg))
+
+    if min_len is None:
+        print_warning(f"{end_seg=} is in the accessible segments of {start_seg=} in direction "
+                      f"{'downstream' if downstream else 'upstream'}, but no path was found.")
+        return None, [], None
+    return min_len, min_path, associated_upstream
+
+
 def get_list_of_paths(seg1: str, seg2: str, verbose: bool = False):
     """ Return the list of paths between seg1 and seg2. """
     _, _, list_paths, _, _ = get_min_dist_and_list_of_paths(seg1, seg2, verbose=verbose)
     return list_paths
 
 
-def get_min_dist_and_list_of_paths(seg1: str, seg2: str, max_nb_paths: int = None, verbose: bool = False
-                                   ) -> tuple[Optional[float],
-                                              list[str],
-                                              list[tuple[bool, list[str]]],
-                                              Optional[bool],
-                                              Optional[bool]]:
+def get_min_dist_and_list_of_paths(seg1: str, seg2: str, max_nb_paths: int = None, verbose: bool = False,
+                                   end_upstream: bool = None) -> tuple[Optional[float],
+                                                                       list[str],
+                                                                       list[tuple[bool, list[str]]],
+                                                                       Optional[bool],
+                                                                       Optional[bool]]:
     """ Return the list of paths between seg1 and seg2. """
     if is_seg_downstream(seg1, seg2, downstream=True):  # seg2 is downstream of seg1
         dist, min_path, list_paths, upstream = \
-            get_downstream_path(seg1, seg2, downstream=True, max_nb_paths=max_nb_paths)
+            get_downstream_path(seg1, seg2, start_downstream=True,
+                                max_nb_paths=max_nb_paths, end_upstream=end_upstream)
         downstream = True
     elif is_seg_downstream(seg1, seg2, downstream=False):  # seg2 is upstream of seg1
         dist, min_path, list_paths, upstream = \
-            get_downstream_path(seg1, seg2, downstream=False, max_nb_paths=max_nb_paths)
+            get_downstream_path(seg1, seg2, start_downstream=False,
+                                max_nb_paths=max_nb_paths, end_upstream=end_upstream)
         downstream = False
     else:
         if verbose:
@@ -129,16 +175,16 @@ def get_min_dist_and_list_of_paths(seg1: str, seg2: str, max_nb_paths: int = Non
     return dist, min_path, list_paths, downstream, upstream
 
 
-def get_downstream_path(start_seg: str, end_seg: str, downstream: bool, max_nb_paths: int = None
-                        ) -> tuple[Optional[float],
-                                   list[str],
-                                   list[tuple[bool, list[str]]],
-                                   Optional[bool]]:
+def get_downstream_path(start_seg: str, end_seg: str, start_downstream: bool, max_nb_paths: int = None,
+                        end_upstream: bool = None) -> tuple[Optional[float],
+                                                            list[str],
+                                                            list[tuple[bool, list[str]]],
+                                                            Optional[bool]]:
     """ Look for the paths between start_seg and end_seg, if end_seg is downstream of start_seg.
     Return the smallest path alongside its length, and the list of paths. """
-    list_paths: list[(bool, list[str])] = list()
-    if (downstream and end_seg not in [seg for seg, _ in get_all_downstream_segments(start_seg)]) or \
-            (not downstream and end_seg not in [seg for seg, _ in get_all_upstream_segments(start_seg)]):
+    list_paths: list[tuple[bool, list[str]]] = list()
+    if (start_downstream and end_seg not in [seg for seg, _ in get_all_downstream_segments(start_seg)]) or \
+            (not start_downstream and end_seg not in [seg for seg, _ in get_all_upstream_segments(start_seg)]):
         return None, [], [], None
 
     def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str]):
@@ -161,12 +207,16 @@ def get_downstream_path(start_seg: str, end_seg: str, downstream: bool, max_nb_p
                 next_inner_downstream = inner_downstream
             inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg])
 
-    for upstream, accessible_segs_from_end in get_upstream_segs_according_to_direction(end_seg, start_seg, downstream):
-        inner_recurs_next_seg(start_seg, downstream, [start_seg])
+    for upstream, accessible_segs_from_end in get_upstream_segs_according_to_direction(end_seg, start_seg,
+                                                                                       start_downstream):
+        if end_upstream is not None and upstream != end_upstream:
+            continue
+        inner_recurs_next_seg(start_seg, start_downstream, [start_seg])
 
     if not list_paths:
-        print_warning(f"{end_seg=} is in the accessible segments of {start_seg=} in direction "
-                      f"{'downstream' if downstream else 'upstream'}, but no path was found.")
+        if end_upstream is None:  # if we specify a direction to arrive to the end segment, we may have no path found
+            print_warning(f"{end_seg=} is in the accessible segments of {start_seg=} in direction "
+                          f"{'downstream' if start_downstream else 'upstream'}, but no path was found.")
         return None, [], [], None
     if max_nb_paths is not None and len(list_paths) > max_nb_paths:
         return None, [], [], None
@@ -209,7 +259,7 @@ def get_smallest_path(list_paths: list[tuple[bool, list[str]]]) -> tuple[float, 
 
 def get_path_len(path: list[str]) -> float:
     """ Return the length of a path: the sum of the segments lengths. """
-    return sum([get_len_seg(seg) for seg in path])
+    return round(sum([get_len_seg(seg) for seg in path]), 3)
 
 
 def get_virtual_seg_ordered_extremities(seg1: str, x1: float, seg2: str, x2: float):

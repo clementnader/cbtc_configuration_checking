@@ -4,8 +4,8 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
+from .global_utils import *
 from .segments_utils import *
-from .switch_utils import give_sw_pos
 
 
 __all__ = ["get_all_zc", "get_segs_within_zc", "get_all_segs_in_zc", "get_zc_limits",
@@ -143,70 +143,21 @@ def get_zc_of_extremities(limits: list[tuple[str, float]]) -> list[str]:
     return list_zc
 
 
-def _get_zc_of_sw(obj_val: dict[str]) -> list[str]:
-    seg, x = give_sw_pos(obj_val)
-    return get_zc_of_point(seg, x)
-
-
-def _get_zc_of_ovl(obj_val: dict[str]) -> list[str]:
-    vsp_seg, vsp_x = list(get_dc_sys_zip_values(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg,
-                                                DCSYS.IXL_Overlap.VitalStoppingPoint.X))[0]
-    rp_seg, rp_x = list(get_dc_sys_zip_values(obj_val, DCSYS.IXL_Overlap.ReleasePoint.Seg,
-                                              DCSYS.IXL_Overlap.ReleasePoint.X))[0]
-    return get_zc_of_extremities([(vsp_seg, vsp_x), (rp_seg, rp_x)])
-
-
-def _get_zc_of_plt(obj_val: dict[str]) -> list[str]:
-    limits = get_dc_sys_zip_values(obj_val, DCSYS.Quai.ExtremiteDuQuai.Seg, DCSYS.Quai.ExtremiteDuQuai.X)
-    return get_zc_of_extremities(limits)
-
-
-def _get_zc_of_traffic_stop(obj_val: dict[str]) -> list[str]:
-    list_zc = list()
-    plt_dict = load_sheet(DCSYS.Quai)
-    for plt_name in get_dc_sys_value(obj_val, DCSYS.Traffic_Stop.PlatformList.Name):
-        plt_val = plt_dict[plt_name]
-        list_zc.extend([zc for zc in _get_zc_of_plt(plt_val) if zc not in list_zc])
-    return list_zc
-
-
-def _get_zc_of_calib(obj_val: dict[str]) -> list[str]:
-    start_tag, end_tag = get_dc_sys_values(obj_val, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
-    list_zc = get_zc_of_obj(DCSYS.Bal, start_tag)
-    list_zc.extend([zc for zc in get_zc_of_obj(DCSYS.Bal, end_tag) if zc not in list_zc])
-    return list_zc
-
-
-def get_zc_of_obj(obj_type, obj_name: str) -> list[str]:
-    obj_dict = load_sheet(obj_type)
+def _get_zc_of_traffic_stop(obj_name: str) -> list[str]:
+    obj_dict = load_sheet(DCSYS.Traffic_Stop)
     obj_val = obj_dict[obj_name]
-    obj_sh = get_sheet_class_from_name(obj_type)
-    sh_attrs = get_sheet_attributes_columns_dict(obj_sh).keys()
+    list_zc = list()
+    for plt_name in get_dc_sys_value(obj_val, DCSYS.Traffic_Stop.PlatformList.Name):
+        list_zc.extend([zc for zc in get_zc_of_obj(DCSYS.Quai, plt_name) if zc not in list_zc])
+    return list_zc
 
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.Aig):  # a dedicated function for switches
-        return _get_zc_of_sw(obj_val)
-    elif get_sh_name(obj_type) == get_sh_name(DCSYS.IXL_Overlap):  # a dedicated function for overlaps
-        return _get_zc_of_ovl(obj_val)
-    elif get_sh_name(obj_type) == get_sh_name(DCSYS.Quai):  # a dedicated function for platforms
-        return _get_zc_of_plt(obj_val)
-    elif get_sh_name(obj_type) == get_sh_name(DCSYS.Traffic_Stop):  # a dedicated function for traffic stops
-        return _get_zc_of_traffic_stop(obj_val)
-    elif get_sh_name(obj_type) == get_sh_name(DCSYS.Calib):  # a dedicated function for calibration bases
-        return _get_zc_of_calib(obj_val)
-    elif "Seg" in sh_attrs and "X" in sh_attrs:
-        seg, x = get_dc_sys_values(obj_val, obj_sh.Seg, obj_sh.X)
-        return get_zc_of_point(seg, x)
-    elif "Limit" in sh_attrs:
-        limits = get_dc_sys_zip_values(obj_val, obj_sh.Limit.Seg, obj_sh.Limit.X)
-        return get_zc_of_extremities(limits)
-    elif "Extremite" in sh_attrs:
-        limits = get_dc_sys_zip_values(obj_val, obj_sh.Extremite.Seg, obj_sh.Extremite.X)
-        return get_zc_of_extremities(limits)
-    elif "From" in sh_attrs and "To" in sh_attrs:
-        lim1 = get_dc_sys_values(obj_val, obj_sh.From.Seg, obj_sh.To.X)
-        lim2 = get_dc_sys_values(obj_val, obj_sh.To.Seg, obj_sh.To.X)
-        return get_zc_of_extremities([lim1, lim2])
-    elif "De" in sh_attrs and "A" in sh_attrs:
-        lim1 = get_dc_sys_values(obj_val, obj_sh.De.Seg, obj_sh.De.X)
-        lim2 = get_dc_sys_values(obj_val, obj_sh.A.Seg, obj_sh.A.X)
-        return get_zc_of_extremities([lim1, lim2])
+
+def get_zc_of_obj(obj_type, obj_name: str) -> Optional[list[str]]:
+    if get_sh_name(obj_type) == get_sh_name(DCSYS.Traffic_Stop):  # a dedicated function for traffic stops
+        return _get_zc_of_traffic_stop(obj_name)
+    position = get_obj_position(obj_type, obj_name)
+    if isinstance(position, tuple):
+        return get_zc_of_point(*position)
+    if isinstance(position, list):
+        return get_zc_of_extremities(position)
+    return None

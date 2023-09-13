@@ -49,10 +49,11 @@ def parameters_constraints():
 
 
 def dc_par_customer_data():
-    # max_dist_local_tag_group(in_cbtc=False)
-    # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to verify
-    # min_distance_between_vsp_overlap(in_cbtc=False)
     # min_length_multiple_path(in_cbtc=False)
+    # min_distance_between_vsp_overlap(in_cbtc=False)
+    # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
+    #                                                                    with a buffer just down the line
+    # max_dist_local_tag_group(in_cbtc=False)
     # smallest_size_of_a_switch_block_heel(in_cbtc=False)
     return
 
@@ -98,7 +99,7 @@ def constraints():
     #                             plutôt que faire une diff avec le kit C11
     #                               plus: retourner un CSV pour pouvoir montrer les données;
     #                               vérifier l'histoire de tag_accurate_laying_uncertainty:
-    #                                   n'est pas du tout marquer dans la contrainte donc peut-être à désactiver;
+    #                                   ce n'est pas du tout marqué dans la contrainte donc peut-être à désactiver;
     #                               faire R_IVB_1 aussi.
     # r_dyntag_3()
     # cf_zsm_cbtc_10()

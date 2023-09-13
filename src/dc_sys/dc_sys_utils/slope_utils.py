@@ -92,7 +92,7 @@ def get_slopes_between(start_seg, start_x, end_seg, end_x, slope_dict: dict):
     start_x = float(start_x)
     end_x = float(end_x)
 
-    _, _, list_paths, _ = get_downstream_path(start_seg, end_seg, downstream=True)
+    _, _, list_paths, _ = get_downstream_path(start_seg, end_seg, start_downstream=True)
 
     slopes = list()
     for _, path in list_paths:

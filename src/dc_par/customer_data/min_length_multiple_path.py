@@ -19,25 +19,28 @@ def min_length_multiple_path(in_cbtc: bool = False):
 
     multiple_path_len_dict = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
-    for i, start_seg in enumerate(sw_point_segs):
+    for i, (start_seg, start_downstream) in enumerate(sw_point_segs):
         print_log(f"\r{progress_bar(i, nb_sw_point_segs)} processing length of multiple path "
                   f"from point segment {start_seg}...", end="")
-        for end_seg in sw_point_segs[i + 1:]:
-            # TODO: check if max_nb_paths really useful with the new process
-            dist, short_path, list_of_paths, downstream, upstream = \
-                get_min_dist_and_list_of_paths(start_seg, end_seg, max_nb_paths=2)
+        for end_seg, end_downstream in sw_point_segs[i + 1:]:
+            end_upstream = not end_downstream
+            dist, short_path, list_of_paths, _ = get_downstream_path(start_seg, end_seg,
+                                                                     start_downstream=start_downstream,
+                                                                     max_nb_paths=2, end_upstream=end_upstream)
             if dist is None:
                 continue
             if len(list_of_paths) == 2:  # if there are two paths
                 dist -= (get_len_seg(start_seg) + get_len_seg(end_seg))
                 long_path = [path for direction, path in list_of_paths
-                             if (direction, path) != (upstream, short_path)][0]
+                             if (direction, path) != (end_upstream, short_path)][0]
                 long_path_length = get_path_len(long_path) - (get_len_seg(start_seg) + get_len_seg(end_seg))
-                downstream_str = {True: "downstream", False: "upstream"}[downstream]
-                upstream_str = {True: "downstream", False: "upstream"}[not upstream]
+                downstream_str = {True: "downstream", False: "upstream"}[start_downstream]
+                upstream_str = {True: "downstream", False: "upstream"}[not end_upstream]
                 multiple_path_len_dict[f"{start_seg} {downstream_str} to {end_seg} {upstream_str}"] = {
                     "From": start_seg,
+                    "From Direction": downstream_str,
                     "To": end_seg,
+                    "End Direction": upstream_str,
                     "Minimal Length": round(dist, 3),
                     "Short Path": short_path,
                     "Short Path Switch": get_switch_on_path(short_path),
@@ -64,23 +67,25 @@ def min_length_multiple_path(in_cbtc: bool = False):
             pretty_print_dict(path_len)
             print()
 
-    # print(create_csv_file(multiple_path_len_dict))
+    print(create_csv_file(multiple_path_len_dict))
     return multiple_path_len_dict
 
 
 def get_all_sw_point_segs(seg_list: Union[set[str], list[str]], limits_cbtc_ter: list[tuple[str, float, bool]]
-                          ) -> list[str]:
+                          ) -> list[tuple[str, bool]]:
     sw_point_segs = list()
     for seg in seg_list:
-        if is_seg_upstream_of_a_switch(seg) or is_seg_downstream_of_a_switch(seg):
-            sw_point_segs.append(seg)
+        if is_seg_upstream_of_a_switch(seg):
+            sw_point_segs.append((seg, True))
+        if is_seg_downstream_of_a_switch(seg):
+            sw_point_segs.append((seg, False))
 
     for lim in limits_cbtc_ter:
         seg, _, downstream = lim
         if downstream and is_seg_upstream_of_a_switch(seg):
-            sw_point_segs.append(seg)
+            sw_point_segs.append((seg, True))
         if not downstream and is_seg_downstream_of_a_switch(seg):
-            sw_point_segs.append(seg)
+            sw_point_segs.append((seg, False))
 
     return sw_point_segs
 
@@ -88,12 +93,14 @@ def get_all_sw_point_segs(seg_list: Union[set[str], list[str]], limits_cbtc_ter:
 def get_switch_on_path(path: list[str]):
     list_sw = list()
     for seg, next_seg in zip(path[:-1], path[1:]):
-        if is_seg_upstream_of_a_switch(seg):
+        if is_seg_upstream_of_a_switch(seg) or is_seg_downstream_of_a_switch(seg):
             sw_name, sw_pos = get_heel_position(seg, next_seg)
-            list_sw.append([sw_name, sw_pos])
-        if is_seg_downstream_of_a_switch(next_seg):
+            if sw_name is not None:
+                list_sw.append([sw_name, sw_pos])
+        if is_seg_upstream_of_a_switch(next_seg) or is_seg_downstream_of_a_switch(next_seg):
             sw_name, sw_pos = get_heel_position(next_seg, seg)
-            list_sw.append([sw_name, sw_pos])
+            if sw_name is not None:
+                list_sw.append([sw_name, sw_pos])
     return list_sw
 
 

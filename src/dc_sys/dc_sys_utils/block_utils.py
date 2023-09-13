@@ -110,7 +110,7 @@ def get_segs_in_blocks(block):
         up_seg, _ = up_lim
         for down_lim in downstream_limits:
             down_seg, _ = down_lim
-            _, _, list_paths, _ = get_downstream_path(up_seg, down_seg, downstream=True)
+            _, _, list_paths, _ = get_downstream_path(up_seg, down_seg, start_downstream=True)
             for _, path in list_paths:
                 for seg in path:
                     set_segs.add(seg)
