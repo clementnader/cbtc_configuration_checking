@@ -130,11 +130,9 @@ class ProjectDatabaseLoc:
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
             self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_SYS.xls"
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_01_RC3\DC_SYS.xls"
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_01_RC4_M\DC_SYS.xls"
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_01_RC3\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_01_RC3\DC_BOP.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\C64_D413\DC_BOP.xls"
             # -- Survey -- #
             self.survey_d932.d932_addr = [r"C:\Users\naderc\Desktop\KCR"
                                           r"\CR-ASTS-042189 - 15.00_ATT002 - ATC- KCR C_D932 - "
@@ -150,11 +148,11 @@ class ProjectDatabaseLoc:
             self.survey_d932.survey_kp_col = [3, 5]
 
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES" \
-                                             r"\CR-ASTS-045007-10.00 ATC Line Control Tables Routes.pdf"
+                                             r"\CR-ASTS-045007-11.00-ATT001- Line CT Routes.pdf"
             self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES" \
-                                            r"\CR-ASTS-045017-11.00 ATC CMC Control Tables Routes.pdf"
+                                            r"\CR-ASTS-045017-11.00-ATT001- CMC CT Routes.pdf"
             self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES" \
-                                               r"\CR-ASTS-045009-06.00 ATC Line Control Tables Overlap.pdf"
+                                               r"\CR-ASTS-045009-07.00-ATT001- Line CT Overlap.pdf"
             self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES" \
                                               r"\CR-ASTS-045019-09.00 ATC CMC Control Tables Overlap.pdf"
 

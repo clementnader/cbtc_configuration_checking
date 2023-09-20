@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import numpy.random as rd
+import numpy.random
 from .colored_output import *
 from ..time_utils import *
 
@@ -76,7 +76,7 @@ def print_log(*args, end="\n"):
 G_LAST_COLOR_INDEX = 0
 G_START_TIME = 0
 C_PROBA = .2
-G_COIN_FLIP = rd.random() < C_PROBA
+G_COIN_FLIP = numpy.random.random() < C_PROBA
 
 
 def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
@@ -111,7 +111,7 @@ def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
     if end:
         s += f" (total elapsed time: {elapsed_time})"
         G_START_TIME = time.perf_counter()
-        G_COIN_FLIP = rd.random() < C_PROBA
+        G_COIN_FLIP = numpy.random.random() < C_PROBA
     else:
         s += f" (elapsed time: {elapsed_time})"
     return s

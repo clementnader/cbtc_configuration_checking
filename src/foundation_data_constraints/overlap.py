@@ -13,7 +13,7 @@ def check_overlap_control_tables(use_csv_file: bool = False):
     ovl_control_tables = parse_control_tables(CONTROL_TABLE_TYPE.overlap, use_csv_file)
     ovl_control_tables = _update_ovl_control_tables(ovl_control_tables)
 
-    print_section_title("Overlap verification...\n")
+    print_title("Overlap verification...", color=Color.mint_green)
     list_missing_ovl = list()
     result = True
     for ovl, ovl_val in ovl_dict.items():
@@ -26,13 +26,14 @@ def check_overlap_control_tables(use_csv_file: bool = False):
     if list_missing_ovl_in_dc_sys:
         result = False
 
+    print()
     print_bar()
     print(f"Total number of Overlaps in DC_SYS: {Color.yellow}{len(ovl_dict)}{Color.reset}\n"
           f"Total number of Overlaps in Control Tables: {Color.yellow}{len(ovl_control_tables)}{Color.reset}\n")
     print_bar()
     if result is True and not (list_missing_ovl or list_missing_ovl_in_dc_sys):
         print_section_title("Result of Overlap verification:")
-        print_success("Overlaps in DC_SYS correspond to the Control Tables.")
+        print_success("Overlaps in DC_SYS correspond to the Control Tables.\n")
         return True
     if not list_missing_ovl_in_dc_sys and list_missing_ovl:
         print(f"{Color.orange}All overlaps from the Control Tables are implemented,"
@@ -55,8 +56,8 @@ def check_overlap_control_tables(use_csv_file: bool = False):
         print_warning(f"The following {Color.yellow}{len(list_missing_ovl_in_dc_sys)}{Color.reset} overlaps "
                       f"in the Control Tables are missing in the DC_SYS:\n"
                       f"\t{Color.yellow}" + "\n\t".join(list_missing_ovl_in_dc_sys) + f"{Color.reset}")
-    print_section_title("\nResult of Overlap verification:")
-    print_error("Overlaps in DC_SYS do not correspond to the Control Tables.")
+    print_section_title("Result of Overlap verification:")
+    print_error("Overlaps in DC_SYS do not correspond to the Control Tables.\n")
     return False
 
 
@@ -195,7 +196,7 @@ def _check_ovl_path(ovl: str, ovl_val: dict[str], ovl_path: str, table_name: str
     # dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]  # TODO use the switch to determine
     #                                                               which IVB limit is the correct one
     vsp_seg = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg)[0]
-    vsp_x = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.X)[0]
+    vsp_x = round(get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.X)[0], 3)
     vsp_direction = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)[0]
 
     ovl_path_list = ovl_path.split(",")

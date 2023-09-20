@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import numpy as np
+import numpy
 from ..load_parameters import *
 from ..customer_data import *
 from .get_gamma_slope import get_par_gamma_slope
@@ -56,7 +56,7 @@ def get_par_v1_at_rollback_dist_v(local_slope, mtc: bool = False, variables: dic
     else:
         at_max_rollback_dist_authorized = get_param_value("mt_max_rollback_dist_authorized", variables)
     par_eb_trigger_speed_in_rollback_val = par_eb_trigger_speed_in_rollback(variables)
-    value = min(np.sqrt(2 * (par_gamma_traction_max(variables) + par_gamma_slope) * at_max_rollback_dist_authorized),
+    value = min(numpy.sqrt(2 * (par_gamma_traction_max(variables) + par_gamma_slope) * at_max_rollback_dist_authorized),
                 par_eb_trigger_speed_in_rollback_val)
     if variables is not None:
         variables.update({"par_gamma_slope": f"{par_gamma_slope} m/s^2"})

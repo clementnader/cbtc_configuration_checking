@@ -99,7 +99,7 @@ def _add_line_calculations(sh, line: int, tolerance: str):
     sh[f"{DIFFERENCE_COL}{line}"] = f'= IF(ISBLANK(A{line}), "", ' \
                                     f'IF(ISBLANK(C{line}), "Not in DC_SYS", ' \
                                     f'IF(ISBLANK(E{line}), "Not Surveyed", ' \
-                                    f'E{line} - C{line})))'
+                                    f'C{line} - E{line})))'
     sh[f"{STATUS_COL}{line}"] = f'= IF(G{line} = "", "", ' \
                                 f'IF(G{line} = "Not in DC_SYS", "Not in DC_SYS", ' \
                                 f'IF(G{line} = "Not Surveyed", "Not Surveyed", ' \

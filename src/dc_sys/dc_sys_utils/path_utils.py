@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
 from .segments_utils import *

@@ -68,13 +68,13 @@ def dc_par_add_on_param():
 def route_and_overlap():
     # Create CSV files
     # parse_control_tables(
-    #     CONTROL_TABLE_TYPE.route, use_csv_file=False,
+    #     CONTROL_TABLE_TYPE.route, use_csv_file=True,
     #     # verbose=True,
     #     # specific_page=10,
     #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
     # )
     # parse_control_tables(
-    #     CONTROL_TABLE_TYPE.overlap, use_csv_file=False,
+    #     CONTROL_TABLE_TYPE.overlap, use_csv_file=True,
     #     # verbose=True,
     #     # specific_page=2,
     #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
@@ -113,8 +113,9 @@ def constraints():
 
 
 def main():
-    # print_all_colors()
+    
     # show_colors()
+    # print_all_colors()
     # test_rainbow()
     # test_moving_progress_bar()
 

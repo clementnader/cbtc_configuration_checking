@@ -6,6 +6,7 @@ from ...cctool_oo_schema import *
 from ..load_database import *
 from .switch_utils import give_sw_pos
 
+
 __all__ = ["get_obj_position"]
 
 
