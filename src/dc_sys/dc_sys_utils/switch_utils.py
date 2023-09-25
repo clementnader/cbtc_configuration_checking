@@ -57,9 +57,9 @@ def get_heel_position(point_seg, heel) -> tuple[Optional[str], str]:
         sw_left_heel = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTg)
         if point_seg == sw_point_seg:
             if heel == sw_right_heel:
-                return sw_name, "DROITE"
+                return sw_name, Switch_Position.DROITE
             if heel == sw_left_heel:
-                return sw_name, "GAUCHE"
+                return sw_name, Switch_Position.GAUCHE
     return None, ""
 
 

@@ -31,7 +31,7 @@ def cf_signal_12():
         sig_type = get_dc_sys_value(sig, DCSYS.Sig.Type)
         sig_direction = get_dc_sys_value(sig, DCSYS.Sig.Sens)
         csv += f"{sig_name};{sig_type};{sig_direction};"
-        if sig_type in ["HEURTOIR", "PERMANENT_ARRET"]:
+        if sig_type in [SignalType.HEURTOIR, SignalType.PERMANENT_ARRET]:
             csv += f";;;;;;;;;;;;{'NA'}\n"
             continue
 

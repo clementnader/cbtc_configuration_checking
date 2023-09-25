@@ -9,8 +9,8 @@ from ...dc_sys import *
 def get_sig_before_cbtc_exit(sig_dict: dict) -> list[str]:
     res_list = list()
     for sig, sig_value in sig_dict.items():
-        if get_dc_sys_value(sig_value, DCSYS.Sig.Type) == "PERMANENT_ARRET":
-            #     or get_dc_sys_value(sig_value, DCSYS.Sig.SortieTerritoireCbtc) == "O":
+        if get_dc_sys_value(sig_value, DCSYS.Sig.Type) == SignalType.PERMANENT_ARRET:
+            #     or get_dc_sys_value(sig_value, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O:
             res_list.append(sig)
     return res_list
 
@@ -29,7 +29,7 @@ def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool 
         for sig2, sig2_value in sig_dict.items():
             seg2, x2, dir2, sig_type2 = get_dc_sys_values(sig_dict[sig2], DCSYS.Sig.Seg, DCSYS.Sig.X, DCSYS.Sig.Sens,
                                                           DCSYS.Sig.Type)
-            if sig2 != sig1 and sig_type2 != "HEURTOIR":
+            if sig2 != sig1 and sig_type2 != SignalType.HEURTOIR:
                 if not same_dir or dir2 == dir1:
                     d = get_dist(seg1, x1, seg2, x2)
                     if d is not None:

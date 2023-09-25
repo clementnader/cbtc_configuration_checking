@@ -86,7 +86,7 @@ def get_dist_downstream(seg1: str, x1: float, seg2: str, x2: float, downstream: 
         else:
             return None
 
-    # dist, _, _, upstream = get_downstream_path(seg1, seg2, downstream=downstream)
+    # dist, _, _, upstream = get_downstream_path(seg1, seg2, start_downstream=downstream)
     dist, _, upstream = get_min_path_downstream(seg1, seg2, downstream=downstream)
 
     if dist is None:
@@ -116,7 +116,7 @@ def get_min_path_downstream(start_seg: str, end_seg: str, downstream: bool
         nonlocal min_len, min_path, associated_upstream
         if min_len != -1 and path_len >= min_len:  # we reach a larger distance, we can stop
             return
-        if seg == end_seg:
+        if seg == end_seg:  # path_len will be inferior to min_len
             min_len = path_len
             min_path = path
             associated_upstream = upstream
@@ -138,9 +138,7 @@ def get_min_path_downstream(start_seg: str, end_seg: str, downstream: bool
     for upstream, accessible_segs_from_end in get_upstream_segs_according_to_direction(end_seg, start_seg, downstream):
         inner_recurs_next_seg(start_seg, downstream, [start_seg], get_len_seg(start_seg))
 
-    if min_len is None:
-        print_warning(f"{end_seg=} is in the accessible segments of {start_seg=} in direction "
-                      f"{'downstream' if downstream else 'upstream'}, but no path was found.")
+    if min_len == -1:
         return None, [], None
     return min_len, min_path, associated_upstream
 
@@ -214,9 +212,6 @@ def get_downstream_path(start_seg: str, end_seg: str, start_downstream: bool, ma
         inner_recurs_next_seg(start_seg, start_downstream, [start_seg])
 
     if not list_paths:
-        if end_upstream is None:  # if we specify a direction to arrive to the end segment, we may have no path found
-            print_warning(f"{end_seg=} is in the accessible segments of {start_seg=} in direction "
-                          f"{'downstream' if start_downstream else 'upstream'}, but no path was found.")
         return None, [], [], None
     if max_nb_paths is not None and len(list_paths) > max_nb_paths:
         return None, [], [], None

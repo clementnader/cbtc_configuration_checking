@@ -57,7 +57,7 @@ def _rule_1_check_plt(plt_msg_dict: dict):
 
         ws_eqpt_dict = load_sheet(DCSYS.Wayside_Eqpt)
         related_ws_eqpt = get_dc_sys_value(plt, DCSYS.Quai.RelatedWaysideEquip)
-        with_ess = get_dc_sys_value(plt, DCSYS.Quai.WithEss) == 'O' and \
+        with_ess = get_dc_sys_value(plt, DCSYS.Quai.WithEss) == YesOrNo.O and \
             get_dc_sys_value(ws_eqpt_dict[related_ws_eqpt], DCSYS.Wayside_Eqpt.Function.Zc[0])
         if _check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_ess,
                            f"flag [With ESS] set to 'Y' "
@@ -67,7 +67,7 @@ def _rule_1_check_plt(plt_msg_dict: dict):
                            is_flux_pas_mes=False) is False:
             success = False
 
-        with_th = get_dc_sys_value(plt, DCSYS.Quai.WithTh) == 'O'
+        with_th = get_dc_sys_value(plt, DCSYS.Quai.WithTh) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_th,
                            f"flag [With TH] set to 'Y'",
                            TypeNomLogiqueInfoMESPAS.B_TH,
@@ -75,7 +75,7 @@ def _rule_1_check_plt(plt_msg_dict: dict):
                            is_flux_pas_mes=False) is False:
             success = False
 
-        with_tad = get_dc_sys_value(plt, DCSYS.Quai.WithTad) == 'O'
+        with_tad = get_dc_sys_value(plt, DCSYS.Quai.WithTad) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_tad,
                            f"flag [With TAD] set to 'Y'",
                            TypeNomLogiqueInfoMESPAS.B_TAD,
@@ -83,7 +83,7 @@ def _rule_1_check_plt(plt_msg_dict: dict):
                            is_flux_pas_mes=False) is False:
             success = False
 
-        psd_msg_routed = get_dc_sys_value(plt, DCSYS.Quai.PsdMessagesRouted) == 'O'
+        psd_msg_routed = get_dc_sys_value(plt, DCSYS.Quai.PsdMessagesRouted) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, psd_msg_routed,
                            f"flag [PSD Messages Routed] set to 'Y'",
                            TypeNomLogiqueInfoMESPAS.DEPARTURE_AUTH,
@@ -99,10 +99,11 @@ def _rule_1_check_signal(sig_msg_dict: dict):
     sig_dict = load_sheet(DCSYS.Sig)
     success = True
     for sig_name, sig in sig_dict.items():
-        is_not_buffer_or_pr = get_dc_sys_value(sig, DCSYS.Sig.Type) not in ["HEURTOIR", "PERMANENT_ARRET"]
+        is_not_buffer_or_pr = get_dc_sys_value(sig, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
+                                                                            SignalType.PERMANENT_ARRET]
 
-        cbtc_terr_exit_or_with_iatp = get_dc_sys_value(sig, DCSYS.Sig.SortieTerritoireCbtc) == 'O' or \
-            get_dc_sys_value(sig, DCSYS.Sig.WithIatpDepCheck) == 'O'
+        cbtc_terr_exit_or_with_iatp = get_dc_sys_value(sig, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O or \
+            get_dc_sys_value(sig, DCSYS.Sig.WithIatpDepCheck) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, is_not_buffer_or_pr,
                            "should exist for all Signals (excluding buffers and permanent reds)",
                            TypeNomLogiqueInfoMESPAS.PR_ASPECT,
@@ -113,7 +114,7 @@ def _rule_1_check_signal(sig_msg_dict: dict):
                                                "or flag [With IATP dep check] set to 'Y'") is False:
             success = False
 
-        with_sa = is_not_buffer_or_pr and (get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == 'O')
+        with_sa = is_not_buffer_or_pr and (get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == YesOrNo.O)
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_sa,
                            "flag [With SA] set to 'Y'",
                            TypeNomLogiqueInfoMESPAS.AP_CAN_RQ,
@@ -121,7 +122,7 @@ def _rule_1_check_signal(sig_msg_dict: dict):
                            is_flux_pas_mes=False) is False:
             success = False
 
-        is_home_signal = get_dc_sys_value(sig, DCSYS.Sig.Type) == "MANOEUVRE"
+        is_home_signal = get_dc_sys_value(sig, DCSYS.Sig.Type) == SignalType.MANOEUVRE
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, is_home_signal,
                            "should exist for all Home Signals",
                            TypeNomLogiqueInfoMESPAS.IL_SET,
@@ -129,7 +130,7 @@ def _rule_1_check_signal(sig_msg_dict: dict):
                            is_flux_pas_mes=False) is False:
             success = False
 
-        func_stop = is_not_buffer_or_pr and (get_dc_sys_value(sig, DCSYS.Sig.WithFunc_Stop) == 'O')
+        func_stop = is_not_buffer_or_pr and (get_dc_sys_value(sig, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O)
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, func_stop,
                            "flag [With Func Stop] set to 'Y'",
                            TypeNomLogiqueInfoMESPAS.FUNC_STOP_RQ,
@@ -168,7 +169,7 @@ def _rule_1_check_block(block_msg_dict: dict):
                            is_flux_pas_mes=False) is False:
             success = False
 
-        block_not_held = get_dc_sys_value(block, DCSYS.CDV.IxlGivesNotHeldStatus) == 'O'
+        block_not_held = get_dc_sys_value(block, DCSYS.CDV.IxlGivesNotHeldStatus) == YesOrNo.O
         if _check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, block_not_held,
                            "flag [Block Not Held] set to 'Y'",
                            TypeNomLogiqueInfoMESPAS.BLOCK_NOT_HELD,
@@ -176,7 +177,7 @@ def _rule_1_check_block(block_msg_dict: dict):
                            is_flux_pas_mes=False) is False:
             success = False
 
-        block_init_status = get_dc_sys_value(block, DCSYS.CDV.IxlGivesBlockInitStatus) == 'O'
+        block_init_status = get_dc_sys_value(block, DCSYS.CDV.IxlGivesBlockInitStatus) == YesOrNo.O
         if _check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, block_init_status,
                            "flag [With Block Init Status Exchanged] set to 'Y'",
                            TypeNomLogiqueInfoMESPAS.BLOCK_INIT_STATUS,
@@ -192,7 +193,7 @@ def _rule_1_check_ivb(ivb_msg_dict: dict):
     ivb_dict = load_sheet(DCSYS.IVB)
     success = True
     for ivb_name, ivb in ivb_dict.items():
-        direction_locking_block = get_dc_sys_value(ivb, DCSYS.IVB.DirectionLockingBlock) == 'O'
+        direction_locking_block = get_dc_sys_value(ivb, DCSYS.IVB.DirectionLockingBlock) == YesOrNo.O
         if _check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, direction_locking_block,
                            "flag [Direction Locking Block] set to 'Y'",
                            [TypeNomLogiqueInfoMESPAS.BLOCK_NORMAL_DIRECTION_L,
@@ -259,8 +260,8 @@ def _rule_1_check_ovl(ovl_msg_dict: dict):
     success = True
     for ovl_name, ovl in ovl_dict.items():
         related_sig = get_dc_sys_value(ovl, DCSYS.IXL_Overlap.DestinationSignal)
-        with_overlap = get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.Enc_Dep) == 'O' and \
-            get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.OverlapType) == "NO_CBTC_REQUEST"
+        with_overlap = get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.Enc_Dep) == YesOrNo.O and \
+            get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST
         if _check_obj_msgs(DCSYS.IXL_Overlap, ovl_msg_dict, ovl_name, with_overlap,
                            f"signal upstream the overlap ({related_sig}) has flag [With overlap] set to 'Y' "
                            f"and [Overlap Type] = 'NO_CBTC_REQUEST'",
@@ -349,7 +350,8 @@ def _rule_1_check_tsr_area(tsr_area_msg_dict: dict):
         for tsr_speed in tsr_speed_dict.keys():
             tsr_area_speed_name = tsr_area_name + "_" + tsr_speed
             for zc_name in get_all_zc():
-                is_zc_zcr = get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr)[0] == 'O'
+                is_zc_zcr = get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr)[0] \
+                                == YesOrNo.O
                 zcr_and_interfaced_with_hmi = is_zc_zcr and tsr_interfaced_with_vhmi
 
                 if _check_obj_msgs(DCSYS.TSR_Area, tsr_area_msg_dict, tsr_area_speed_name,
@@ -398,7 +400,7 @@ def _rule_3_check_plt(plt_msg_dict: dict):
     plt_dict = load_sheet(DCSYS.Quai)
     success = True
     for plt_name, plt in plt_dict.items():
-        is_psd_msg_routed = get_dc_sys_value(plt, DCSYS.Quai.PsdMessagesRouted) == 'O'
+        is_psd_msg_routed = get_dc_sys_value(plt, DCSYS.Quai.PsdMessagesRouted) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, is_psd_msg_routed,
                            "flag [PSD Messages Routed] set to 'Y'",
                            [TypeNomLogiqueInfoPASMES.TRAIN_AT_PLATFORM,
@@ -417,33 +419,35 @@ def _rule_3_check_signal(sig_msg_dict: dict):
     sig_dict = load_sheet(DCSYS.Sig)
     success = True
     for sig_name, sig in sig_dict.items():
-        is_not_buffer_or_pr = get_dc_sys_value(sig, DCSYS.Sig.Type) not in ["HEURTOIR", "PERMANENT_ARRET"]
+        is_not_buffer_or_pr = get_dc_sys_value(sig, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
+                                                                            SignalType.PERMANENT_ARRET]
 
-        with_overlap = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Enc_Dep) == 'O' and \
-            get_dc_sys_value(sig, DCSYS.Sig.OverlapType) == "NO_CBTC_REQUEST"
+        with_overlap = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Enc_Dep) == YesOrNo.O and \
+            get_dc_sys_value(sig, DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_overlap,
                            "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
                            TypeNomLogiqueInfoPASMES.CBTC_OLZ, should_be_vital=True) is False:
             success = False
 
-        concealable = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Annulable) == 'O'
+        concealable = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Annulable) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, concealable, "flag [Concealable] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.X_RQ, should_be_vital=True) is False:
             success = False
 
-        sa_or_overlap = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == 'O' or with_overlap
+        sa_or_overlap = (is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == YesOrNo.O) \
+            or with_overlap
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, sa_or_overlap, "flag [With SA] set to 'Y' or "
                            "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
                            TypeNomLogiqueInfoPASMES.STOP_ASSURE, should_be_vital=True) is False:
             success = False
 
-        with_imc = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.D_Libre) == 'O'
+        with_imc = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.D_Libre) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_imc, "flag [With IMC] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.CBTC_APZ, should_be_vital=True) is False:
             success = False
 
-        with_arc = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Da_Passage) == 'O' and \
-            get_dc_sys_value(sig, DCSYS.Sig.TypeDa) in ["SECTIONAL_RELEASE", "TRAIN_PASSAGE_PROVING"]
+        with_arc = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Da_Passage) == YesOrNo.O and \
+            get_dc_sys_value(sig, DCSYS.Sig.TypeDa) in [TypeDA.SECTIONAL_RELEASE, TypeDA.TRAIN_PASSAGE_PROVING]
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_arc, "flag [With ARC] set to 'Y' and "
                            "[ARC Type] = 'SECTIONAL_RELEASE' or 'TRAIN_PASSAGE_PROVING'",
                            TypeNomLogiqueInfoPASMES.TRAIN_PASS_HS, should_be_vital=True) is False:
@@ -451,7 +455,7 @@ def _rule_3_check_signal(sig_msg_dict: dict):
 
         related_ovl_list = get_related_overlaps(sig_name)
         ovl_names = [ovl[0] for ovl in related_ovl_list]
-        tpp = [get_dc_sys_value(related_ovl[1], DCSYS.IXL_Overlap.WithTpp) == 'O' for related_ovl in related_ovl_list]
+        tpp = [get_dc_sys_value(related_ovl[1], DCSYS.IXL_Overlap.WithTpp) == YesOrNo.O for related_ovl in related_ovl_list]
         if any(tpp) and not all(tpp):
             print_error(f"All the overlaps related to signal {Color.blue}{sig_name}{Color.reset} "
                         f"do not have the same flag [With TPP]:")
@@ -464,14 +468,14 @@ def _rule_3_check_signal(sig_msg_dict: dict):
                            should_be_vital=True) is False:
             success = False
 
-        func_stop = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.WithFunc_Stop) == 'O'
+        func_stop = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, func_stop, "flag [With Func Stop] set to 'Y'",
                            [TypeNomLogiqueInfoPASMES.FUNC_STOP_ACCEPT,
                             TypeNomLogiqueInfoPASMES.FUNC_STOP_REJECT], should_be_vital=False) is False:
             success = False
 
-        is_home_signal = get_dc_sys_value(sig, DCSYS.Sig.Type) == "MANOEUVRE"
-        train_app_provided = is_home_signal and get_dc_sys_value(sig, DCSYS.Sig.CbtcTrainAppProvided) == 'O'
+        is_home_signal = get_dc_sys_value(sig, DCSYS.Sig.Type) == SignalType.MANOEUVRE
+        train_app_provided = is_home_signal and get_dc_sys_value(sig, DCSYS.Sig.CbtcTrainAppProvided) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, train_app_provided,
                            "Home Signal with flag [CBTC Train App provided] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.CBTC_TRAIN_IN_APPROACH, should_be_vital=True) is False:
@@ -486,7 +490,7 @@ def _rule_3_check_block(block_msg_dict: dict):
     block_dict = load_sheet(DCSYS.CDV)
     success = True
     for block_name, block in block_dict.items():
-        overriden = get_dc_sys_value(block, DCSYS.CDV.AFiabiliser) == 'O'
+        overriden = get_dc_sys_value(block, DCSYS.CDV.AFiabiliser) == YesOrNo.O
         if _check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, overriden, "flag [Overriden] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.ZC_BLOCK, should_be_vital=True) is False:
             success = False
@@ -499,12 +503,12 @@ def _rule_3_check_ivb(ivb_msg_dict: dict):
     ivb_dict = load_sheet(DCSYS.IVB)
     success = True
     for ivb_name, ivb in ivb_dict.items():
-        sent_ixl = get_dc_sys_value(ivb, DCSYS.IVB.SentToIxl) == 'O'
+        sent_ixl = get_dc_sys_value(ivb, DCSYS.IVB.SentToIxl) == YesOrNo.O
         if _check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, sent_ixl, "flag [Sent To IXL] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.IXL_VIRTUAL_BLOCK, should_be_vital=True) is False:
             success = False
 
-        block_freed = get_dc_sys_value(ivb, DCSYS.IVB.BlockFreed) == 'O'
+        block_freed = get_dc_sys_value(ivb, DCSYS.IVB.BlockFreed) == YesOrNo.O
         if _check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, block_freed, "flag [Block Freed] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.BLOCK_FREED, should_be_vital=True) is False:
             success = False
@@ -514,12 +518,12 @@ def _rule_3_check_ivb(ivb_msg_dict: dict):
                             TypeNomLogiqueInfoPASMES.AUTHORIZED_REVERSE], should_be_vital=True) is False:
             success = False
 
-        unlock_normal = get_dc_sys_value(ivb, DCSYS.IVB.UnlockNormal) == 'O'
+        unlock_normal = get_dc_sys_value(ivb, DCSYS.IVB.UnlockNormal) == YesOrNo.O
         if _check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, unlock_normal, "flag [Unlock Normal] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.UNLOCK_DL_NORMAL, should_be_vital=True) is False:
             success = False
 
-        unlock_reverse = get_dc_sys_value(ivb, DCSYS.IVB.UnlockReverse) == 'O'
+        unlock_reverse = get_dc_sys_value(ivb, DCSYS.IVB.UnlockReverse) == YesOrNo.O
         if _check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, unlock_reverse, "flag [Unlock Reverse] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.UNLOCK_DL_REVERSE, should_be_vital=True) is False:
             success = False
@@ -533,7 +537,7 @@ def _rule_3_check_switch(sw_msg_dict: dict):
     sw_dict = load_sheet(DCSYS.Aig)
     success = True
     for sw_name, sw in sw_dict.items():
-        free_to_move = get_dc_sys_value(sw, DCSYS.Aig.FreeToMove) == 'O'
+        free_to_move = get_dc_sys_value(sw, DCSYS.Aig.FreeToMove) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Aig, sw_msg_dict, sw_name, free_to_move, "flag [Free To Move] set to 'Y'",
                            TypeNomLogiqueInfoPASMES.CBTC_FREE_TO_MOVE, should_be_vital=True) is False:
             success = False
@@ -546,7 +550,7 @@ def _rule_3_check_protection_zone(pz_msg_dict: dict):
     pz_dict = load_sheet(DCSYS.Protection_Zone)
     success = True
     for pz_name, pz in pz_dict.items():
-        cbtc_controlled = get_dc_sys_value(pz, DCSYS.Protection_Zone.CbtcControlledFlag) == 'O'
+        cbtc_controlled = get_dc_sys_value(pz, DCSYS.Protection_Zone.CbtcControlledFlag) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Protection_Zone, pz_msg_dict, pz_name, cbtc_controlled,
                            "flag [CBTC Controlled] set to 'Y'", TypeNomLogiqueInfoPASMES.MOVEMENT_AUTHORIZED,
                            should_be_vital=True) is False:
@@ -597,7 +601,8 @@ def _rule_3_check_tsr_area_speed(tsr_area_speed_msg_dict: dict):
         for tsr_speed in tsr_speed_dict.keys():
             tsr_area_speed_name = tsr_area_name + "_" + tsr_speed
             for zc_name in get_all_zc():
-                is_zc_zcr = get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr)[0] == 'O'
+                is_zc_zcr = get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr)[0] \
+                                == YesOrNo.O
                 zcr_and_interfaced_with_hmi = is_zc_zcr and tsr_interfaced_with_vhmi
                 if _check_obj_msgs(DCSYS.TSR_Area, tsr_area_speed_msg_dict, tsr_area_speed_name,
                                    zcr_and_interfaced_with_hmi, f"message transmitter {zc_name} is a ZCR "

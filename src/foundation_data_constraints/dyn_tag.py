@@ -56,7 +56,7 @@ def get_dist_dyn_tag_to_joint(dyn_tag, ivb):
     ivb_dict = load_sheet(DCSYS.IVB)
     associated_sig = get_dc_sys_value(dyn_tag, DCSYS.IATPM_tags.Signal)
     sig_direction = get_dc_sys_value(sig_dict[associated_sig], DCSYS.Sig.Sens)
-    downstream = True if sig_direction == "CROISSANT" else False
+    downstream = True if sig_direction == Direction.CROISSANT else False
 
     dyn_tag_seg = get_dc_sys_value(dyn_tag, DCSYS.IATPM_tags.Seg)
     dyn_tag_x = get_dc_sys_value(dyn_tag, DCSYS.IATPM_tags.X)

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
+from ...cctool_oo_schema import *
 from .load_xl import *
 
 
@@ -9,6 +10,8 @@ __all__ = ["load_bop"]
 
 
 LOADED_SWITCH_DIRS = dict()
+
+SWITCH_SHEET = "SWITCH"
 
 START_LINE = 3
 
@@ -22,7 +25,7 @@ def load_bop() -> dict:
     global LOADED_SWITCH_DIRS
     if not LOADED_SWITCH_DIRS:
         wb = load_dc_bop_wb()
-        sw_sh = wb.sheet_by_name("SWITCH")
+        sw_sh = wb.sheet_by_name(SWITCH_SHEET)
         LOADED_SWITCH_DIRS = get_switch_bop(sw_sh)
     return LOADED_SWITCH_DIRS
 
@@ -46,7 +49,7 @@ def get_switch_bop(sw_sh: xlrd.sheet) -> dict:
 
 
 def convert_sw_pos(reverse_equals_right: str):
-    if reverse_equals_right.upper().strip() == "N":
+    if reverse_equals_right.upper().strip() == YesOrNo.N:
         return False
-    if reverse_equals_right.upper().strip() == "O":
+    if reverse_equals_right.upper().strip() == YesOrNo.O:
         return True

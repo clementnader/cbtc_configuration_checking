@@ -62,10 +62,10 @@ def get_start_and_end_limits_cbtc_ter() -> list[tuple[str, float, bool]]:
 
     for cbtc_ter_value in cbtc_ter_dict.values():
         cbtc_type = get_dc_sys_value(cbtc_ter_value, DCSYS.CBTC_TER.TypeTerritoireCbtc)
-        if cbtc_type == "EN_CBTC":
+        if cbtc_type == CBTCTerrType.EN_CBTC:
             for seg, x, direction in get_dc_sys_zip_values(cbtc_ter_value, DCSYS.CBTC_TER.Extremite.Seg,
                                                            DCSYS.CBTC_TER.Extremite.X, DCSYS.CBTC_TER.Extremite.Sens):
-                cbtc_limits.append((seg, x, (direction == "CROISSANT")))
+                cbtc_limits.append((seg, x, (direction == Direction.CROISSANT)))
 
     return cbtc_limits
 

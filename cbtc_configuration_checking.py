@@ -37,6 +37,7 @@ def cc():
 
 
 def additional_verif():
+    # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=True).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
     # get_slope_at_plt(in_cbtc=False)
@@ -113,7 +114,6 @@ def constraints():
 
 
 def main():
-    
     # show_colors()
     # print_all_colors()
     # test_rainbow()

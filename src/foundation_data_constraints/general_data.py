@@ -47,20 +47,21 @@ def _cf_1_check_signal(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.Sig)
     success = True
     for obj_name, obj in obj_dict.items():
-        is_not_buffer_or_pr = get_dc_sys_value(obj, DCSYS.Sig.Type) not in ["HEURTOIR", "PERMANENT_ARRET"]
+        is_not_buffer_or_pr = get_dc_sys_value(obj, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
+                                                                            SignalType.PERMANENT_ARRET]
 
         if _check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, is_not_buffer_or_pr,
                            "should exist for all Signals",
                            TypeNomLogiqueVariantHF.PR_ASPECT) is False:
             success = False
 
-        is_home_signal = get_dc_sys_value(obj, DCSYS.Sig.Type) == "MANOEUVRE"
+        is_home_signal = get_dc_sys_value(obj, DCSYS.Sig.Type) == SignalType.MANOEUVRE
         if _check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, is_home_signal,
                            "should exist for all Home Signals",
                            TypeNomLogiqueVariantHF.IL_SET) is False:
             success = False
 
-        func_stop = is_not_buffer_or_pr and (get_dc_sys_value(obj, DCSYS.Sig.WithFunc_Stop) == 'O')
+        func_stop = is_not_buffer_or_pr and (get_dc_sys_value(obj, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O)
         if _check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, func_stop,
                            "flag [With Func Stop] set to 'Y'",
                            TypeNomLogiqueVariantHF.FUNC_STOP_RQ) is False:
@@ -124,7 +125,7 @@ def _cf_1_check_block(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.CDV)
     success = True
     for obj_name, obj in obj_dict.items():
-        broken_rail_detection = get_dc_sys_value(obj, DCSYS.CDV.BrokenRailDetection) == 'O'
+        broken_rail_detection = get_dc_sys_value(obj, DCSYS.CDV.BrokenRailDetection) == YesOrNo.O
         if _check_obj_msgs(DCSYS.CDV, msg_dict, obj_name, broken_rail_detection,
                            "flag [Broken Rail Detection] set to 'Y'",
                            TypeNomLogiqueVariantHF.BLOCK_MVT_AUTH) is False:
@@ -152,7 +153,8 @@ def _cf_2_check_signal(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.Sig)
     success = True
     for obj_name, obj in obj_dict.items():
-        is_not_buffer_or_pr = get_dc_sys_value(obj, DCSYS.Sig.Type) not in ["HEURTOIR", "PERMANENT_ARRET"]
+        is_not_buffer_or_pr = get_dc_sys_value(obj, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
+                                                                            SignalType.PERMANENT_ARRET]
         if _check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, is_not_buffer_or_pr,
                            "signal is related at least to a CBTC Equipment -> ? test that it exists for all Signals"
                            "except Permanent Red and Buffer",
@@ -207,7 +209,7 @@ def _cf_2_check_platform(msg_dict: dict):
                             TypeNomLogiqueVariantBF.T_ATB_PROHIB_REVERSE_DIR]) is False:
             success = False
 
-        train_ahead_departure = get_dc_sys_value(obj, DCSYS.Quai.WithTad) == 'O'
+        train_ahead_departure = get_dc_sys_value(obj, DCSYS.Quai.WithTad) == YesOrNo.O
         if _check_obj_msgs(DCSYS.Quai, msg_dict, obj_name, train_ahead_departure,
                            f"flag [With TAD] set to 'Y'",
                            TypeNomLogiqueVariantBF.TRAIN_AHEAD_DEPARTURE) is False:
@@ -221,7 +223,7 @@ def _cf_2_check_nv_psr(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.NV_PSR)
     success = True
     for obj_name, obj in obj_dict.items():
-        can_be_relaxed = get_dc_sys_value(obj, DCSYS.NV_PSR.WithRelaxation) == 'O'
+        can_be_relaxed = get_dc_sys_value(obj, DCSYS.NV_PSR.WithRelaxation) == YesOrNo.O
         if _check_obj_msgs(DCSYS.NV_PSR, msg_dict, obj_name, can_be_relaxed,
                            "flag [With Relaxation] set to 'Y'",
                            TypeNomLogiqueVariantBF.NV_PSR_RELAXATION_CONDITION,

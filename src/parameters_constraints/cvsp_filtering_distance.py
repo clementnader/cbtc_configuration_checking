@@ -18,13 +18,13 @@ def min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc: bool = True)
                                          DCSYS.Quai.PointDArret.X, DCSYS.Quai.PointDArret.SensApproche):
             osp_name, osp_seg, osp_x, osp_direction = osp
             if osp_name is not None:  # if OSP exists
-                if osp_direction in ["CROISSANT", "DOUBLE_SENS"]:
+                if osp_direction in [StoppingPointApproachType.CROISSANT, StoppingPointApproachType.DOUBLE_SENS]:
                     key, value = get_dist_osp_next_plt(osp_name, osp_seg, osp_x, osp_direction, plt, plt_dict,
                                                        downstream=True)
                     if key is not None:
                         dict_min_dist[key] = value
 
-                if osp_direction in ["DECROISSANT", "DOUBLE_SENS"]:
+                if osp_direction in [StoppingPointApproachType.DECROISSANT, StoppingPointApproachType.DOUBLE_SENS]:
                     key, value = get_dist_osp_next_plt(osp_name, osp_seg, osp_x, osp_direction, plt, plt_dict,
                                                        downstream=False)
                     if key is not None:

@@ -62,7 +62,7 @@ def get_routes_starting_from_signal(sig_name: str):
 def get_ivb_limit_of_a_signal(sig_name: str, sig) -> tuple[tuple[str, float], str]:
     sig_seg, sig_x = get_dc_sys_values(sig, DCSYS.Sig.Seg, DCSYS.Sig.X)
     sig_direction = get_dc_sys_value(sig, DCSYS.Sig.Sens)
-    next_ivb_limits = get_next_ivb_limits_from_point(sig_seg, sig_x, downstream=sig_direction == "CROISSANT")
+    next_ivb_limits = get_next_ivb_limits_from_point(sig_seg, sig_x, downstream=sig_direction == Direction.CROISSANT)
     if len(next_ivb_limits) != 1:
         print_error(f"There is not a direct IVB limit after the signal {sig_name}")
         print(f"{next_ivb_limits = }")

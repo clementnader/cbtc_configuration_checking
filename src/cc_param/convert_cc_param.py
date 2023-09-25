@@ -60,7 +60,7 @@ def create_result_dir(full_res_dir):
         print_warning(f"The result folder already exists"
                       f"\n at {full_res_dir}.")
         if input(f"{Color.beige}Are you sure you want to overwrite it?{Color.reset} "
-                 f"{Color.yellow}[y/n]{Color.reset} ").capitalize() not in ["Y", "YES"]:
+                 f"{Color.yellow}[y/n]{Color.reset} ").upper() not in ["Y", "YES"]:
             return False
         shutil.rmtree(full_res_dir)
     os.makedirs(full_res_dir)

@@ -64,7 +64,7 @@ def get_start_and_end_limits_zc(zc_info: dict[str]) -> list[tuple[str, float, bo
 
     for seg, x, direction in get_dc_sys_zip_values(zc_info, DCSYS.PAS.ExtremiteSuivi.Seg,
                                                    DCSYS.PAS.ExtremiteSuivi.X, DCSYS.PAS.ExtremiteSuivi.Sens):
-        zc_limits.append((seg, x, (direction == "CROISSANT")))
+        zc_limits.append((seg, x, (direction == Direction.CROISSANT)))
 
     return zc_limits
 

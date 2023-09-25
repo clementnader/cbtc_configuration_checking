@@ -42,7 +42,7 @@ def obj_condition(res_sheet, obj_val):
     else:
         return True
     sig_type = get_dc_sys_value(obj_val, DCSYS.Sig.Type)
-    is_sig_buffer = sig_type == "HEURTOIR"
+    is_sig_buffer = sig_type == SignalType.HEURTOIR
     return is_sig_buffer == buffer
 
 

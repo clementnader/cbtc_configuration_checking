@@ -28,7 +28,7 @@ def min_distance_between_vsp_overlap(in_cbtc: bool = False, same_dir: bool = Tru
                 sig2_seg, sig2_x, sig2_dir, dist_vsp2 = get_dc_sys_values(sig_value, DCSYS.Sig.Seg, DCSYS.Sig.X,
                                                                           DCSYS.Sig.Sens, DCSYS.Sig.DistPap)
                 sig2_type = get_dc_sys_value(sig_value, DCSYS.Sig.Type)
-                if sig_name != home_sig_with_overlap_name and sig2_type != "HEURTOIR":
+                if sig_name != home_sig_with_overlap_name and sig2_type != SignalType.HEURTOIR:
                     if dist_vsp2 is not None and (not same_dir or sig2_dir == sig1_dir):
                         vsp2_seg, vsp2_x = get_correct_seg_offset(sig2_seg, sig2_x + dist_vsp2)
                         d = get_dist(vsp1_seg, vsp1_x, vsp2_seg, vsp2_x)
@@ -50,6 +50,6 @@ def get_home_signals_with_overlap(sig_dict: dict) -> list[str]:
     for sig, sig_value in sig_dict.items():
         sig_type = get_dc_sys_value(sig_value, DCSYS.Sig.Type)
         sig_with_ovl = get_dc_sys_value(sig_value, DCSYS.Sig.Enc_Dep)
-        if sig_with_ovl == "O" and sig_type == "MANOEUVRE":
+        if sig_with_ovl == YesOrNo.O and sig_type == SignalType.MANOEUVRE:
             res_list.append(sig)
     return res_list
