@@ -25,18 +25,12 @@ def get_ga_version() -> str:
 
 
 def get_cctool_oo_version() -> str:
-    sh = open_menu_sheet()
-    version = get_xl_cell_value(sh, cell=CCTOOL_OO_VERSION_CELL)
-    return version
-
-
-def get_c_d470_version() -> str:
-    sh = open_menu_sheet()
-    version = get_xl_cell_value(sh, cell=C_D470_VERSION_CELL)
+    ws = open_menu_sheet()
+    version = get_xl_cell_value(ws, cell=CCTOOL_OO_VERSION_CELL)
     return version
 
 
 def open_menu_sheet():
     wb = load_wb()
-    sh = wb.sheet_by_name("!")
-    return sh
+    ws = wb.sheet_by_name("!")
+    return ws

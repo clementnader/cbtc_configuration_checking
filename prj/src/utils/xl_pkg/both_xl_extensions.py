@@ -7,59 +7,64 @@ from ..colors_pkg import *
 from .xl_utils import *
 
 
-__all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_cell_value", "get_xl_sh_nb_rows", "get_xl_sheets",
-           "get_xl_float_value"]
+__all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_ws_number_of_rows", "get_xl_sheet_names",
+           "get_xl_cell_value", "get_xl_float_value"]
 
 
-def load_xl_file(addr):
-    ext = os.path.splitext(addr)[1]
+def load_xl_file(xl_file_address: str) -> Optional[Union[xlrd.book.Book, openpyxl.workbook.Workbook]]:
+    ext = os.path.splitext(xl_file_address)[1]
     if ext == ".xls":
-        wb = xlrd.open_workbook(addr)
+        wb = xlrd.open_workbook(xl_file_address)
         return wb
-    elif ext == ".xlsx" or ext == ".xlsm":
-        wb = openpyxl.load_workbook(addr, data_only=True)
+    elif ext == ".xlsx" or ext == ".xlsm" or ext == ".xlsb":
+        wb = openpyxl.load_workbook(xl_file_address, data_only=True)
         return wb
     else:
-        print_error(f"{addr} is not an Excel file: extension is {ext=}.")
+        print_error(f"{xl_file_address} is not an Excel file: extension is {ext=}.")
         return None
 
 
-def get_xl_sheets(wb):
+def get_xl_sheet_names(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook]) -> list[str]:
     if isinstance(wb, xlrd.book.Book):
         return wb.sheet_names()
-    elif isinstance(wb, openpyxl.workbook.workbook.Workbook):
+    elif isinstance(wb, openpyxl.workbook.Workbook):
         return wb.sheetnames
 
 
-def get_xl_sheet_by_name(wb, sheet_name: str):
+def get_xl_sheet_by_name(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook], sheet_name: str
+                         ) -> Union[xlrd.sheet.Sheet, xl_ws.Worksheet]:
     if isinstance(wb, xlrd.book.Book):
-        sh = wb.sheet_by_name(sheet_name)
-        return sh
-    elif isinstance(wb, openpyxl.workbook.workbook.Workbook):
-        sh = wb.get_sheet_by_name(sheet_name)
-        return sh
+        ws = wb.sheet_by_name(sheet_name)
+        return ws
+    elif isinstance(wb, openpyxl.workbook.Workbook):
+        ws = wb.get_sheet_by_name(sheet_name)
+        return ws
 
 
-def get_xl_cell_value(sh, cell: str = None, line: int = None, col: Union[str, int] = None):
-    line, col = get_cell_line_col(cell, line, col)
-    if isinstance(sh, xlrd.sheet.Sheet):
-        return get_xlrd_value(sh, line, col)
-    elif isinstance(sh, openpyxl.worksheet.worksheet.Worksheet):
-        return get_xlsx_value(sh, line, col)
+def get_xl_ws_number_of_rows(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> int:
+    if isinstance(ws, xlrd.sheet.Sheet):
+        return ws.nrows
+    elif isinstance(ws, xl_ws.Worksheet):
+        return ws.max_row
 
 
-def get_xl_float_value(sh, cell: str = None, line: int = None, col: Union[str, int] = None):
-    value = get_xl_cell_value(sh, cell, line, col)
+def get_xl_cell_value(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],
+                      cell: str = None, row: int = None, column: Union[str, int] = None
+                      ) -> Optional[str]:
+    row, column = get_row_and_column_from_cell(cell, row, column)
+    if isinstance(ws, xlrd.sheet.Sheet):
+        return get_xlrd_value(ws, row, column)
+    elif isinstance(ws, xl_ws.Worksheet):
+        return get_xlsx_value(ws, row, column)
+
+
+def get_xl_float_value(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],
+                       cell: str = None, row: int = None, column: Union[str, int] = None
+                       ) -> Optional[Union[float, str]]:
+    value = get_xl_cell_value(ws, cell, row, column)
     if isinstance(value, str):
         try:
             value = float(value.replace(",", "."))
         except ValueError:
             pass
     return value
-
-
-def get_xl_sh_nb_rows(sh):
-    if isinstance(sh, xlrd.sheet.Sheet):
-        return sh.nrows
-    elif isinstance(sh, openpyxl.worksheet.worksheet.Worksheet):
-        return sh.max_row

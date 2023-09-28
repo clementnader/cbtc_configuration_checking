@@ -31,7 +31,7 @@ def pdf_reader_extract_tables(pdf_file: str, table_type: str, line_part: str, ve
             if specific_page is not None and num_page != specific_page:
                 continue
             print_log(f"\r{progress_bar(num_page - 1, nbpages)} "
-                      f"{Color.black}{bg_color(Color.mint_green)}{table_type.title()}{Color.reset} "
+                      f"{Color.black}{csi_bg_color(Color.mint_green)}{table_type.title()}{Color.reset} "
                       f"{Color.mint_green}Control Tables{Color.reset} conversion "
                       f"for {Color.yellow}{line_part}{Color.reset} in-going...", end="")
             viewer.navigate(num_page)

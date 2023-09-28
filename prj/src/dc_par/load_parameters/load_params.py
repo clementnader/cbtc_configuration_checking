@@ -33,28 +33,28 @@ def load_params() -> dict:
 
 
 def get_sheet_param(wb: xlrd.Book, sh_name: str) -> dict:
-    sh = wb.sheet_by_name(sh_name)
-    if sh.nrows == 0:
+    ws = wb.sheet_by_name(sh_name)
+    if ws.nrows == 0:
         return {}
 
-    param_name_col_title = get_and_decode_xlrd_value(sh, 1, PARAM_NAME_COL)
+    param_name_col_title = get_and_decode_xlrd_value(ws, 1, PARAM_NAME_COL)
     if param_name_col_title is None or param_name_col_title.upper() != PARAM_NAME_TITLE:
         return {}
 
     param_dict = dict()
-    for line in range(START_LINE, sh.nrows+1):
-        param_name = get_and_decode_xlrd_value(sh, line, PARAM_NAME_COL)
+    for line in range(START_LINE, ws.nrows+1):
+        param_name = get_and_decode_xlrd_value(ws, line, PARAM_NAME_COL)
         if param_name is not None and param_name.upper() not in ["", "RESERVED"]:
-            fr_name = get_and_decode_xlrd_value(sh, line, FR_NAME_COL)
-            s_ns = get_and_decode_xlrd_value(sh, line, S_NS_COL)
-            value = get_and_decode_xlrd_value(sh, line, VALUE_COL)
-            unit = get_and_decode_xlrd_value(sh, line, UNIT_COL)
+            fr_name = get_and_decode_xlrd_value(ws, line, FR_NAME_COL)
+            s_ns = get_and_decode_xlrd_value(ws, line, S_NS_COL)
+            value = get_and_decode_xlrd_value(ws, line, VALUE_COL)
+            unit = get_and_decode_xlrd_value(ws, line, UNIT_COL)
             param_dict[param_name.lower()] = {"fr_name": fr_name, "s_ns": s_ns, "value": value, "unit": unit}
     return param_dict
 
 
-def get_and_decode_xlrd_value(sh: xlrd.sheet, line: int, col: int) -> str:
-    cell_value = get_xlrd_value(sh, line, col)
+def get_and_decode_xlrd_value(ws: xlrd.sheet, line: int, col: int) -> str:
+    cell_value = get_xlrd_value(ws, line, col)
     if isinstance(cell_value, str):
         cell_value = unidecode.unidecode(cell_value).strip()
     return cell_value

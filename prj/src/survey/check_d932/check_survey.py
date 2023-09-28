@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from .create_check_survey_dict import create_check_survey_dict
-from .create_survey_verif_file import create_survey_verif_file
+from .create_check_survey_dict import *
+from .create_survey_verif_file import *
 
 
 __all__ = ["check_survey"]

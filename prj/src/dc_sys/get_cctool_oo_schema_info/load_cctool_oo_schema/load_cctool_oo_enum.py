@@ -25,15 +25,15 @@ def load_cctool_oo_enum_lists(addr) -> dict:
     return LOADED_CCTOOL_OO_ENUM_LISTS
 
 
-def get_cctool_oo_enums(sh: xlrd.sheet) -> dict:
+def get_cctool_oo_enums(ws: xlrd.sheet) -> dict:
     info_dict = dict()
-    for line in range(START_LINE, sh.nrows + 1):
-        sheet_name = get_xlrd_value(sh, line, ENUM_NAME_COL)
+    for line in range(START_LINE, ws.nrows + 1):
+        sheet_name = get_xlrd_value(ws, line, ENUM_NAME_COL)
         if not sheet_name:
             continue
         list_available_values = list()
-        for col in range(AVAILABLE_VALUES_START_COL, sh.ncols + 1):
-            value = get_xlrd_value(sh, line, col)
+        for col in range(AVAILABLE_VALUES_START_COL, ws.ncols + 1):
+            value = get_xlrd_value(ws, line, col)
             if not value:
                 break
             list_available_values.append(f"{value}")

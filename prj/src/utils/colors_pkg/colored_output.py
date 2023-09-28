@@ -5,7 +5,7 @@ import os
 import sys
 
 
-__all__ = ["Color", "bg_color", "remove_colors", "print_all_colors", "show_colors", "test_rainbow",
+__all__ = ["Color", "csi_bg_color", "remove_colors", "print_all_colors", "show_colors", "test_rainbow",
            "move_up", "move_down", "move_left", "move_right"]
 
 
@@ -26,7 +26,7 @@ def csi_color_seq(color_int):
     return f"{ESCAPE_SEQ}38;5;{color_int}m"
 
 
-def bg_color(color_seq: str):
+def csi_bg_color(color_seq: str):
     return color_seq.replace("[38", "[48")
 
 
@@ -58,7 +58,7 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     dark_turquoise = csi_color_seq(23)
     turquoise = csi_color_seq(30)
     cyan = csi_color_seq(51)
-    grey_blue = csi_color_seq(60)
+    grey_blue = csi_color_seq(67)
 
     dark_green = csi_color_seq(22)
     dark_green2 = csi_color_seq(28)

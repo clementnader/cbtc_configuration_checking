@@ -3,39 +3,38 @@
 
 import openpyxl
 import openpyxl.utils as xl_ut
-import openpyxl.comments as xl_comments
-import openpyxl.styles as xl_styles
+import openpyxl.worksheet.worksheet as xl_ws
 import xlrd
 from ..common_utils import *
 
 
-__all__ = ["openpyxl", "xlrd", "xl_ut", "get_xlrd_column", "get_xlrd_line", "load_xlsx_wb", "get_xl_column",
-           "get_xlrd_float_value", "get_xlrd_value", "get_xlsx_value", "get_cell_line_col", "get_line_col_cell",
-           "get_xl_col_nb", "add_cell_comment", "set_bg_color"]
-
-
-def get_xlrd_column(col_nb: int) -> int:
-    return col_nb - 1
-
-
-def get_xlrd_line(line: int) -> int:
-    return line - 1
+__all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws", "load_xlsx_wb", "get_xlrd_column", "get_xlrd_row",
+           "get_xl_column_letter", "get_xl_column_number", "get_xlrd_float_value", "get_xlrd_value", "get_xlsx_value",
+           "get_row_and_column_from_cell", "get_cell_from_row_and_column", "get_cell_range"]
 
 
 def load_xlsx_wb(path: str) -> openpyxl.workbook.Workbook:
     return openpyxl.load_workbook(path)
 
 
-def get_xl_column(col: int) -> str:
-    return xl_ut.get_column_letter(col)
+def get_xlrd_column(column_number: int) -> int:
+    return column_number - 1
 
 
-def get_xl_col_nb(col: str) -> int:
-    return xl_ut.column_index_from_string(col)
+def get_xlrd_row(row: int) -> int:
+    return row - 1
 
 
-def get_xlrd_float_value(sh: xlrd.sheet, line: int, col: int) -> Union[float, str]:
-    value = get_xlrd_value(sh, line, col)
+def get_xl_column_letter(column_number: int) -> str:
+    return xl_ut.get_column_letter(column_number)
+
+
+def get_xl_column_number(column_letter: str) -> int:
+    return xl_ut.column_index_from_string(column_letter)
+
+
+def get_xlrd_float_value(ws: xlrd.sheet, row: int, column: int) -> Optional[Union[float, str]]:
+    value = get_xlrd_value(ws, row, column)
     if isinstance(value, str):
         try:
             value = float(value.replace(",", "."))
@@ -44,11 +43,11 @@ def get_xlrd_float_value(sh: xlrd.sheet, line: int, col: int) -> Union[float, st
     return value
 
 
-def get_xlrd_value(sh: xlrd.sheet, line: int, col: int) -> str:
-    xlrd_line = get_xlrd_line(line)
-    xlrd_col = get_xlrd_column(col)
+def get_xlrd_value(ws: xlrd.sheet, row: int, column: int) -> Optional[str]:
+    xlrd_line = get_xlrd_row(row)
+    xlrd_col = get_xlrd_column(column)
     try:
-        cell_value = sh.cell_value(xlrd_line, xlrd_col)
+        cell_value = ws.cell_value(xlrd_line, xlrd_col)
     except IndexError:
         cell_value = None
     if cell_value == "":
@@ -56,38 +55,34 @@ def get_xlrd_value(sh: xlrd.sheet, line: int, col: int) -> str:
     return cell_value
 
 
-def get_xlsx_value(sh, line: int, col: int) -> str:
-    cell_value = sh.cell(row=line, column=col).value
+def get_xlsx_value(ws, row: int, column: int) -> Optional[str]:
+    cell_value = ws.cell(row=row, column=column).value
     if cell_value == "":
         cell_value = None
     return cell_value
 
 
-def get_cell_line_col(cell: str = None, line: int = None, col: Union[str, int] = None) -> tuple[int, int]:
+def get_row_and_column_from_cell(cell: str = None, row: int = None, column: Union[str, int] = None) -> tuple[int, int]:
     if cell is not None:
-        line = int(cell[1])
-        col = cell[0]
-    if isinstance(col, str):
-        col = xl_ut.column_index_from_string(col)
-    return line, col
+        row = int(cell[1])
+        column = cell[0]
+    if isinstance(column, str):
+        column = xl_ut.column_index_from_string(column)
+    return row, column
 
 
-def get_line_col_cell(cell: str = None, line: int = None, col: Union[str, int] = None) -> str:
+def get_cell_from_row_and_column(cell: str = None, row: int = None, column: Union[str, int] = None) -> str:
     if cell is None:
-        if isinstance(col, int):
-            col = xl_ut.get_column_letter(col)
-        cell = f"{col}{line}"
+        if isinstance(column, int):
+            column = xl_ut.get_column_letter(column)
+        cell = f"{column}{row}"
     return cell
 
 
-def add_cell_comment(sh, comment: str, cell: str = None, line: int = None, col: Union[str, int] = None) -> None:
-    cell = get_line_col_cell(cell, line, col)
-    comment = xl_comments.Comment(comment, None)
-    sh[cell].comment = comment
-
-
-def set_bg_color(sh, hex_color, cell: str = None, line: int = None, col: Union[str, int] = None):
-    cell = get_line_col_cell(cell, line, col)
-    # style = xl_styles.PatternFill(bgColor=hex_color, fill_type="solid")
-    style = xl_styles.PatternFill(start_color=hex_color, end_color=hex_color, fill_type="solid")
-    sh[cell].fill = style
+def get_cell_range(cell_range: str = None, start_row: int = None, end_row: int = None,
+                   start_column: Union[int, str] = None, end_column: Union[int, str] = None) -> str:
+    if cell_range is None:
+        start_cell = get_cell_from_row_and_column(row=start_row, column=start_column)
+        end_cell = get_cell_from_row_and_column(row=end_row, column=end_column)
+        cell_range = f"{start_cell}:{end_cell}"
+    return cell_range

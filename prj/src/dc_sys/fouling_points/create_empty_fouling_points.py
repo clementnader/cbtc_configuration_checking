@@ -30,9 +30,9 @@ def create_fouling_points_file():
 
 def _make_file(sw_pos_dict):
     wb = load_xlsx_wb(FOULING_POINT_TEMPLATE)
-    sh = wb.get_sheet_by_name(FOULING_POINT_SHEET)
+    ws = wb.get_sheet_by_name(FOULING_POINT_SHEET)
     for line, (sw_name, sw_pos) in enumerate(sw_pos_dict.items(), start=FOULING_POINT_START_LINE):
-        sh[f"{SW_NAME_COL}{line}"] = sw_name
-        sh[f"{SW_KP_COL}{line}"] = sw_pos["kp"]
-        sh[f"{SW_TRACK_COL}{line}"] = sw_pos["track"]
+        ws[f"{SW_NAME_COL}{line}"] = sw_name
+        ws[f"{SW_KP_COL}{line}"] = sw_pos["kp"]
+        ws[f"{SW_TRACK_COL}{line}"] = sw_pos["track"]
     wb.save(os.path.join(OUTPUT_DIRECTORY, "Fouling Points.xlsx"))

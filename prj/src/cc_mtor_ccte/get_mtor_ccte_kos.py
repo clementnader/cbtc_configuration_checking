@@ -48,27 +48,27 @@ def _analyze_mtor_ccte_file(file):
         os.rename(full_path, full_path + "x")
         full_path += "x"
     wb = load_xl_file(full_path)
-    list_of_sheets = get_xl_sheets(wb)
+    list_of_sheets = get_xl_sheet_names(wb)
     if RES_SHEETS["ccte"] in list_of_sheets:
-        sh = get_xl_sheet_by_name(wb, RES_SHEETS["ccte"])
+        ws = get_xl_sheet_by_name(wb, RES_SHEETS["ccte"])
         mtor = False
     else:
-        sh = get_xl_sheet_by_name(wb, RES_SHEETS["mtor"])
+        ws = get_xl_sheet_by_name(wb, RES_SHEETS["mtor"])
         mtor = True
-    dict_of_kos = _get_kos_res_sheet(sh, mtor=mtor)
+    dict_of_kos = _get_kos_res_sheet(ws, mtor=mtor)
     return dict_of_kos, mtor
 
 
-def _get_kos_res_sheet(sh, mtor: bool):
+def _get_kos_res_sheet(ws, mtor: bool):
     dict_of_kos = dict()
     first_line = 2
     param_id_column = "A"
     verification_column = "J"
-    for line in range(first_line, get_xl_sh_nb_rows(sh) + 1):
-        verif_res = get_xl_cell_value(sh, line=line, col=verification_column)
+    for line in range(first_line, get_xl_ws_number_of_rows(ws) + 1):
+        verif_res = get_xl_cell_value(ws, row=line, column=verification_column)
         if verif_res is None:
             continue
-        param_id_name = get_xl_cell_value(sh, line=line, col=param_id_column)
+        param_id_name = get_xl_cell_value(ws, row=line, column=param_id_column)
         if not _check_if_verif_is_ok(verif_res):
             dict_of_kos[param_id_name] = verif_res
     return dict_of_kos

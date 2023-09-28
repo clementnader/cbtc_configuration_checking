@@ -52,8 +52,8 @@ def get_corresponding_cctool_oo_schema():
 def get_cctool_oo_version_info(cctool_oo_file):
     wb = load_cctool_oo_schema_wb(cctool_oo_file)
     revision_sh = wb.sheet_by_name(REVISION_SHEET)
-    for line in range(get_xl_sh_nb_rows(revision_sh)+1, 0, -1):
-        cell_value = get_xl_cell_value(revision_sh, line=line, col=4)
+    for line in range(get_xl_ws_number_of_rows(revision_sh) + 1, 0, -1):
+        cell_value = get_xl_cell_value(revision_sh, row=line, column=4)
         if cell_value is not None:
             return cell_value
     return ""

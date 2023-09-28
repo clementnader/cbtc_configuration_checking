@@ -22,10 +22,10 @@ def get_class_attr_dict(cl) -> dict[str]:
                 if not (key.startswith("__") and key.endswith("__"))}
 
 
-def get_sh_name(sh) -> str:
-    if isinstance(sh, str):
-        return sh
-    return sh.__class__.__name__
+def get_sh_name(ws) -> str:
+    if isinstance(ws, str):
+        return ws
+    return ws.__class__.__name__
 
 
 def get_dc_sys_attr_name(attr) -> str:
@@ -35,9 +35,9 @@ def get_dc_sys_attr_name(attr) -> str:
     return attr
 
 
-def get_sheet_attributes_columns_dict(sh) -> dict[str, Union[int, dict[str, int]]]:
-    sh = get_sheet_class_from_name(sh)
-    class_attr_dict = get_class_attr_dict(sh)
+def get_sheet_attributes_columns_dict(ws) -> dict[str, Union[int, dict[str, int]]]:
+    ws = get_sheet_class_from_name(ws)
+    class_attr_dict = get_class_attr_dict(ws)
     res_dict = dict()
     for key, val in class_attr_dict.items():
         if isinstance(val, dict):

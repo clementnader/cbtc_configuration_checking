@@ -6,5 +6,7 @@ from .gui_pkg import *
 from .html_pkg import *
 from .xl_pkg import *
 from .common_utils import *
+from .database_location_utils import *
+from .regex_utils import *
 from .subprocess_utils import *
 from .time_utils import *

@@ -53,22 +53,22 @@ def get_survey(loaded_survey, d932_sh, start_line, ref_col, type_col, track_col,
     if not loaded_survey:
         loaded_survey = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
 
-    for line in range(start_line, get_xl_sh_nb_rows(d932_sh) + 1):
-        obj_name = get_xl_cell_value(d932_sh, line=line, col=ref_col)
+    for line in range(start_line, get_xl_ws_number_of_rows(d932_sh) + 1):
+        obj_name = get_xl_cell_value(d932_sh, row=line, column=ref_col)
         if not obj_name:
             continue
 
         obj_comment = f"From {survey_name}"
-        type_name = get_xl_cell_value(d932_sh, line=line, col=type_col)
+        type_name = get_xl_cell_value(d932_sh, row=line, column=type_col)
         survey_type = _get_survey_type(type_name)
         if survey_type is None:
             continue
 
-        track = get_xl_cell_value(d932_sh, line=line, col=track_col)
+        track = get_xl_cell_value(d932_sh, row=line, column=track_col)
         track_comment = f"From {survey_name}" if track is not None else None
-        design_kp = get_xl_float_value(d932_sh, line=line, col=design_kp_col) if design_kp_col is not None else None
+        design_kp = get_xl_float_value(d932_sh, row=line, column=design_kp_col) if design_kp_col is not None else None
         design_kp_comment = f"From {survey_name}" if design_kp is not None else None
-        surveyed_kp = get_xl_float_value(d932_sh, line=line, col=survey_kp_col)
+        surveyed_kp = get_xl_float_value(d932_sh, row=line, column=survey_kp_col)
         surveyed_kp_comment = f"From {survey_name}" if surveyed_kp is not None else None
         if obj_name in loaded_survey[survey_type]:
             old_surveyed_kp = loaded_survey[survey_type][obj_name]["surveyed_kp"]

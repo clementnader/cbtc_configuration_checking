@@ -52,32 +52,32 @@ def _create_if_layer_file(layer: str, dir_name: str, header_line: int):
 
 
 def _update_header_sheet(wb: openpyxl.Workbook, layer: str):
-    sh = wb.get_sheet_by_name(HEADER_SHEET_NAME)
-    sh[HEADER_TITLE_CELL] = f"ZC IF {layer} Verification"
+    ws = wb.get_sheet_by_name(HEADER_SHEET_NAME)
+    ws[HEADER_TITLE_CELL] = f"ZC IF {layer} Verification"
 
 
 def _update_verif_sheet(wb: openpyxl.Workbook, layer: str, dir_name: str, header_line: int):
-    sh = wb.get_sheet_by_name(VERIF_SHEET_NAME)
-    sh.title = f"IF - {layer}"
+    ws = wb.get_sheet_by_name(VERIF_SHEET_NAME)
+    ws.title = f"IF - {layer}"
     list_zc_export, res_dict = _get_info_export(dir_name, layer, header_line)
     res_dict = _update_info_with_rams_analysis(layer, res_dict)
-    _hide_columns(sh, list_zc_export)
-    _add_if(sh, res_dict, layer)
+    _hide_columns(ws, list_zc_export)
+    _add_if(ws, res_dict, layer)
 
 
-def _hide_columns(sh, list_zc_export: list[list[str]]):
+def _hide_columns(ws, list_zc_export: list[list[str]]):
     last_zc = len(list_zc_export)
     first_col_to_hide = xl_ut.get_column_letter(xl_ut.column_index_from_string(ZC_01_COLUMN)
                                                 + DELTA_BETWEEN_ZC * last_zc)
     last_col_to_hide = xl_ut.get_column_letter(xl_ut.column_index_from_string(ZC_01_COLUMN)
                                                + DELTA_BETWEEN_ZC * NB_MAX_ZC - 1)
     for col in columns_from_to(first_col_to_hide, last_col_to_hide):
-        sh.column_dimensions[col].hidden = True
+        ws.column_dimensions[col].hidden = True
 
     # Rename useful columns with the name of the ZC in the export
     for num_zc, zc in enumerate(list_zc_export):
         col = xl_ut.get_column_letter(xl_ut.column_index_from_string(ZC_01_COLUMN) + DELTA_BETWEEN_ZC * num_zc)
-        sh[f"{col}2"] = zc[0]
+        ws[f"{col}2"] = zc[0]
 
 
 def _get_info_export(dir_name: str, layer: str, header_line: int) -> tuple[list[list[str]], dict[str, list]]:
@@ -99,30 +99,30 @@ def _get_info_in_file(list_zc_export: list[list[str]], layer: str, header_line: 
     res_dict = dict()
     excel_file = list_zc_export[0][1]
     wb = xlrd.open_workbook(excel_file)
-    for sh in wb.sheets():
-        if not(layer == "ARCHI" and sh.name.startswith("PARAMETRES_")):
-            res_dict.update(_get_info_in_sheet(sh, header_line))
+    for ws in wb.sheets():
+        if not(layer == "ARCHI" and ws.name.startswith("PARAMETRES_")):
+            res_dict.update(_get_info_in_sheet(ws, header_line))
     return res_dict
 
 
-def _get_info_in_sheet(sh: xlrd.sheet.Sheet, header_line: int) -> dict[str, list]:
+def _get_info_in_sheet(ws: xlrd.sheet.Sheet, header_line: int) -> dict[str, list]:
     if_list = list()
-    for column in range(1, sh.ncols + 1):
-        cell = get_xlrd_float_value(sh, header_line, column)
+    for column in range(1, ws.ncols + 1):
+        cell = get_xlrd_float_value(ws, header_line, column)
         if cell:
             cell = cell.replace("Ã©", "e")
             if_list.append(cell)
-    return {sh.name: if_list}
+    return {ws.name: if_list}
 
 
-def _add_if(sh, res_dict: dict[str, list], layer: str):
+def _add_if(ws, res_dict: dict[str, list], layer: str):
     if layer == "ARCHI":
-        sh["D1"].value = "Manual Check"
+        ws["D1"].value = "Manual Check"
     current_line = START_LINE
     for obj, if_list in res_dict.items():
         for if_name in if_list:
-            sh[f"{OBJECT_COL}{current_line}"].value = str(obj)
-            sh[f"{IF_COL}{current_line}"].value = str(if_name)
+            ws[f"{OBJECT_COL}{current_line}"].value = str(obj)
+            ws[f"{IF_COL}{current_line}"].value = str(if_name)
             current_line += 1
 
 
@@ -141,7 +141,7 @@ RAMS_CONSTRAINT_COL = "M"
 
 
 def analyze_rams_sheet_archi(wb: xlrd.Book, res_dict: dict[str, list]) -> dict[str, list]:
-    sheet_names_list = [sh.name for sh in wb.sheets()]
+    sheet_names_list = [ws.name for ws in wb.sheets()]
     extra_names_in_rams = [key for key in sheet_names_list if key not in res_dict]
     extra_names_in_eng = [key for key in res_dict if key not in sheet_names_list]
     if extra_names_in_rams != ["General"] or extra_names_in_eng != []:

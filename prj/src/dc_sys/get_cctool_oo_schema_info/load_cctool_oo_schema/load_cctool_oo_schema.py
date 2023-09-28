@@ -34,18 +34,18 @@ def load_cctool_oo_schema(addr) -> dict:
     return LOADED_CCTOOL_OO_SCHEMA
 
 
-def get_cctool_oo_schema(sh: xlrd.sheet) -> dict:
+def get_cctool_oo_schema(ws: xlrd.sheet) -> dict:
     info_dict = dict()
-    for line in range(START_LINE, sh.nrows + 1):
-        sheet_name = get_xlrd_value(sh, line, SHEET_COL)
+    for line in range(START_LINE, ws.nrows + 1):
+        sheet_name = get_xlrd_value(ws, line, SHEET_COL)
         if not sheet_name:
             continue
         if sheet_name in DC_SYS_SHEET_NAMES_TO_FIX:
             sheet_name = DC_SYS_SHEET_NAMES_TO_FIX[sheet_name]
         if sheet_name not in info_dict:
             info_dict[sheet_name] = dict()
-        title = get_clean_cell(sh, line, TITLE_COL)
-        column = int(get_xlrd_value(sh, line, COLUMN_COL))
+        title = get_clean_cell(ws, line, TITLE_COL)
+        column = int(get_xlrd_value(ws, line, COLUMN_COL))
         if "::" not in title:
             if title in info_dict[sheet_name]:
                 print_error(f"In CCTOOL-OO Schema, there is multiple times Title {Color.blue}{title}{Color.reset}"
@@ -70,8 +70,8 @@ def get_list_attr_names(title: str):
     return list_attr_name, sub_attr_name
 
 
-def get_clean_cell(sh: xlrd.sheet, line: int, col: int):
-    cell_str = unidecode.unidecode(f"{get_xlrd_value(sh, line, col)}").strip()  # translate non-ASCII characters
+def get_clean_cell(ws: xlrd.sheet, line: int, col: int):
+    cell_str = unidecode.unidecode(f"{get_xlrd_value(ws, line, col)}").strip()  # translate non-ASCII characters
     cell_str = cell_str.replace("'", ' ').replace('.', ' ').replace('-', ' ').replace('/', ' ')  # remove special chars
     cell_str = cell_str.replace('#', "Number")  # remove special char
     cell_str = cell_str.replace("1st", "First").replace("2nd", "Second")  # remove leading numbers

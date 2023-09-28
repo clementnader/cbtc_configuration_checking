@@ -182,10 +182,8 @@ class ProjectDatabaseLoc:
         elif project_name == Projects.Milan:
             # ver = "TF3"
             ver = "DEPOT + LN01"
-            # use_old_ver = True
-            use_old_ver = False
+            # TF3
             if ver == "TF3":
-                # TF3
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C_D470_01_02_RC2\ML4_DC_SYS.xls"
                 # self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_DC_SYS_01_01_RC3.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C_D470_01_02_RC2\ML4_DC_PAR.xls"
@@ -196,29 +194,14 @@ class ProjectDatabaseLoc:
                 self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\ML4\2. TF3\Control Tables" \
                                                    r"\M4-ST00PGRE-55634_01.00_Allegato_1-TF3-285-328 - Overlap.pdf"
             # DEPOT + LN01
-            elif ver == "DEPOT + LN01" and use_old_ver:
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_01_02_RC4" \
-                                   r"\ML4_DC_SYS.xls"
-                self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_01_02_RC4" \
-                                   r"\ML4_DC_PAR.xls"
-                self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_01_02_RC4" \
-                                   r"\DC_BOP.xls"
-                self.control_tables_route.line = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
-                                                 r"\M4-ST00PGRE-55047_00.02_Allegato_1-4-111 - LINE - Routes.pdf"
-                self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
-                                                r"\M4-ST00PGRE-55047_00.02_Allegato_1-300-484 - DEPOT - Routes.pdf"
-                self.control_tables_overlap.line = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
-                                                   r"\M4-ST00PGRE-55047_00.02_Allegato_1-220-256 - LINE - Overlap.pdf"
-                self.control_tables_overlap.cmc = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
-                                                  r"\M4-ST00PGRE-55047_00.02_Allegato_1-670-684 - DEPOT - Overlap.pdf"
-            elif ver == "DEPOT + LN01" and not use_old_ver:
+            elif ver == "DEPOT + LN01":
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_02_00_RC5" \
                                    r"\ML4_DC_SYS.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_02_00_RC5" \
                                    r"\ML4_DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_02_00_RC5" \
                                    r"\DC_BOP.xls"
-                self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C11_D470_06_06_02_V01"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C11_D470_06_06_02_V02"
                 self.control_tables_route.line = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \
                                                  r"\M4-ST00PGRE-55047_00.04_Allegato_1-5-168 - LINE - Routes.pdf"
                 self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES" \

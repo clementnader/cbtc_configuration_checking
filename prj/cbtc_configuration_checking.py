@@ -38,6 +38,7 @@ def cc():
 
 
 def additional_verif():
+    # dc_tu_verification()
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
@@ -156,7 +157,7 @@ def main():
 
 if __name__ == "__main__":
     # Initialization commands
-    print_title(f"Working on {Color.cyan}{os.path.split(os.path.split(DATABASE_LOC.dc_sys_addr)[0])[-1]}{Color.reset}\n"
+    print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}\n"
                 f"with CCTool-OO Schema version {Color.pale_green}{get_ga_version()}{Color.reset}.")
     regenerate_cctool_oo_schema_info()
     main()

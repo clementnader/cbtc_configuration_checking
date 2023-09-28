@@ -43,7 +43,7 @@ def print_section_title(title: str):
 
 def print_error(*args, end="\n"):
     main_color = Color.light_red
-    print(f"\n{bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
+    print(f"\n{csi_bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)
@@ -51,7 +51,7 @@ def print_error(*args, end="\n"):
 
 def print_warning(*args, end="\n"):
     main_color = Color.orange
-    print(f"\n{bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
+    print(f"\n{csi_bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)

@@ -77,7 +77,7 @@ def get_col(val: str):
     try:
         val = int(val)
     except ValueError:
-        val = get_xl_col_nb(val)
+        val = get_xl_column_number(val)
     return val
 
 

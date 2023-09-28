@@ -11,12 +11,12 @@ from .generic_obj_name import *
 __all__ = ["load_sheet"]
 
 
-LOADED_SHEETS: dict[str, dict[str, dict]] = {sh: None for sh in get_all_sheet_names()}
-LOADED_SHEETS_OLD: dict[str, dict[str, dict]] = {sh: None for sh in get_all_sheet_names()}
+LOADED_SHEETS: dict[str, dict[str, dict]] = {ws: None for ws in get_all_sheet_names()}
+LOADED_SHEETS_OLD: dict[str, dict[str, dict]] = {ws: None for ws in get_all_sheet_names()}
 
 
-def load_sheet(sh, old: bool = False) -> dict[str, dict]:
-    sh_name = get_sh_name(sh)
+def load_sheet(ws, old: bool = False) -> dict[str, dict]:
+    sh_name = get_sh_name(ws)
     if old:
         global LOADED_SHEETS_OLD
         if not LOADED_SHEETS_OLD[sh_name]:
@@ -32,8 +32,8 @@ def load_sheet(sh, old: bool = False) -> dict[str, dict]:
 
 
 def get_sheet(wb: xlrd.Book, sh_name: str) -> dict[str, dict]:
-    sh = wb.sheet_by_name(sh_name)
+    ws = wb.sheet_by_name(sh_name)
     columns_dict = get_sheet_attributes_columns_dict(sh_name)
     generic_obj_name = GENERIC_OBJ_NAME.get(sh_name, None)
-    sh_dict = get_sh_dict(sh, columns_dict, generic_obj_name)
+    sh_dict = get_sh_dict(ws, columns_dict, generic_obj_name)
     return sh_dict

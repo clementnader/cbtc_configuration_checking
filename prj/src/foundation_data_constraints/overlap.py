@@ -170,9 +170,9 @@ def _check_ovl_sw(ovl: str, ovl_val: dict[str], ovl_sw: str, table_name: str):
 
     for dc_sys_sw, control_table_sw in zip(dc_sys_ovl_sw, ovl_sw_list):
         if not dc_sys_sw.endswith(control_table_sw):
-            dc_sys_ovl_sw_str = f"{bg_color(Color.yellow)}{Color.black}{dc_sys_sw}{Color.reset}{Color.white}".join(
+            dc_sys_ovl_sw_str = f"{csi_bg_color(Color.yellow)}{Color.black}{dc_sys_sw}{Color.reset}{Color.white}".join(
                 ', '.join(dc_sys_ovl_sw).split(dc_sys_sw))
-            ovl_sw_str = f"{bg_color(Color.yellow)}{Color.black}{control_table_sw}{Color.reset}{Color.white}".join(
+            ovl_sw_str = f"{csi_bg_color(Color.yellow)}{Color.black}{control_table_sw}{Color.reset}{Color.white}".join(
                 ovl_sw.split(control_table_sw))
             if any(sw.endswith(control_table_sw) for sw in dc_sys_ovl_sw):
                 print_warning(f"For Overlap {Color.green}{ovl}{Color.reset}, the order of the switches does not "
