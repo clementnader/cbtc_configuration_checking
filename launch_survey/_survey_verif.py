@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-from src import *
+import sys
+
+sys.path.append("..")
+
+from prj.src import *
 
 
 def main():

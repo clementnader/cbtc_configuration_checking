@@ -7,13 +7,23 @@ from string import ascii_uppercase
 
 
 __all__ = ["DESKTOP_DIRECTORY", "Optional", "Union", "Generator", "Callable",
-           "ascii_uppercase", "columns_from_to", "sort_dict", "pretty_print_dict"]
+           "ascii_uppercase", "columns_from_to", "sort_dict", "pretty_print_dict",
+           "get_file_directory_path", "get_full_path"]
 
 
 DESKTOP_DIRECTORY = os.path.join(os.getenv("UserProfile"), r"Desktop")
 
 
-def columns_from_to(first: str, last: str):
+def get_full_path(file: str, relative_path: str) -> str:
+    file_directory_path = get_file_directory_path(file)
+    return os.path.join(file_directory_path, relative_path)
+
+
+def get_file_directory_path(file: str) -> str:
+    return os.path.dirname(os.path.realpath(file))
+
+
+def columns_from_to(first: str, last: str) -> list[str]:
     assert len(first) <= 2 and len(last) <= 2
     if len(first) == 1:
         first = " " + first
@@ -38,7 +48,7 @@ def columns_from_to(first: str, last: str):
     return list_cols
 
 
-def sort_dict(in_dict):
+def sort_dict(in_dict: dict) -> dict:
     return {key: in_dict[key] for key in sorted(in_dict)}
 
 

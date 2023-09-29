@@ -16,19 +16,12 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
         if not obj_condition(res_sheet_name, obj_val):
             continue
         survey_obj_info = survey_info.get(obj_name)
-        survey_object_comment = survey_obj_info["obj_comment"] if survey_obj_info is not None else None
         survey_track = survey_obj_info["track"] if survey_obj_info is not None else None
-        survey_track_comment = survey_obj_info["track_comment"] if survey_obj_info is not None else None
         surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
         surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
-        design_kp = survey_obj_info["design_kp"] if survey_obj_info is not None else None
-        design_kp_comment = survey_obj_info["design_kp_comment"] if survey_obj_info is not None else None
         res_dict[obj_name] = _add_dc_sys_info(dc_sys_sheet, obj_val)
-        res_dict[obj_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp, "design_kp": design_kp})
-        res_dict[obj_name].update({"survey_object_comment": survey_object_comment,
-                                   "survey_track_comment": survey_track_comment,
-                                   "surveyed_kp_comment": surveyed_kp_comment,
-                                   "design_kp_comment": design_kp_comment})
+        res_dict[obj_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
+        res_dict[obj_name].update({"surveyed_kp_comment": surveyed_kp_comment})
 
     res_dict.update(_add_extra_info_from_survey(list(dc_sys_dict.keys()), survey_info))
     return res_dict
@@ -58,10 +51,6 @@ def _add_extra_info_from_survey(list_obj_names: list[str], survey_info: dict[str
         if obj_name in list_obj_names:
             continue
         extra_dict[obj_name] = {"track": None, "dc_sys_kp": None}
-        extra_dict[obj_name].update({"survey_track": obj_val["track"], "surveyed_kp": obj_val["surveyed_kp"],
-                                     "design_kp": obj_val["design_kp"]})
-        extra_dict[obj_name].update({"survey_object_comment": obj_val["obj_comment"],
-                                     "survey_track_comment": obj_val["track_comment"],
-                                     "surveyed_kp_comment": obj_val["surveyed_kp_comment"],
-                                     "design_kp_comment": obj_val["design_kp_comment"]})
+        extra_dict[obj_name].update({"survey_track": obj_val["track"], "surveyed_kp": obj_val["surveyed_kp"]})
+        extra_dict[obj_name].update({"surveyed_kp_comment": obj_val["surveyed_kp_comment"]})
     return extra_dict

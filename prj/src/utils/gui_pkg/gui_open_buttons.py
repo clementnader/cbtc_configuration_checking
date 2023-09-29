@@ -50,14 +50,13 @@ def add_survey_open_button(window: tkinter.Frame, ref_row: int, extra_func: Call
     ref_col = tkinter.StringVar()
     type_col = tkinter.StringVar()
     track_col = tkinter.StringVar()
-    design_kp_col = tkinter.StringVar()
     survey_kp_col = tkinter.StringVar()
 
     add_dir_and_file_open_button(window, ref_row, survey_directory, survey_file_name,
                                  title_text, open_text, file_types,
                                  extra_func=lambda: add_survey_info(
                                      window, ref_row, survey_sheet, start_line, ref_col, type_col, track_col,
-                                     design_kp_col, survey_kp_col, extra_func=extra_func))
+                                     survey_kp_col, extra_func=extra_func))
 
     survey_info = {
         "survey_directory": survey_directory,
@@ -67,7 +66,6 @@ def add_survey_open_button(window: tkinter.Frame, ref_row: int, extra_func: Call
         "ref_col": ref_col,
         "type_col": type_col,
         "track_col": track_col,
-        "design_kp_col": design_kp_col,
         "survey_kp_col": survey_kp_col
     }
 
@@ -77,7 +75,7 @@ def add_survey_open_button(window: tkinter.Frame, ref_row: int, extra_func: Call
 def add_survey_info(window: tkinter.Frame, ref_row: int,
                     survey_sheet: tkinter.StringVar, start_line: tkinter.StringVar,
                     ref_col: tkinter.StringVar, type_col: tkinter.StringVar, track_col: tkinter.StringVar,
-                    design_kp_col: tkinter.StringVar, survey_kp_col: tkinter.StringVar,
+                    survey_kp_col: tkinter.StringVar,
                     extra_func: Callable[None, None] = None) -> None:
 
     label = tkinter.Label(window, text="Survey Sheet: ", font=tkinter.font.Font(size=9, weight="bold"))
@@ -105,15 +103,10 @@ def add_survey_info(window: tkinter.Frame, ref_row: int,
     track_col_entry = tkinter.Entry(window, textvariable=track_col)
     track_col_entry.grid(column=1, row=ref_row+7, sticky="w")
 
-    label = tkinter.Label(window, text="Design KP Column: ", font=tkinter.font.Font(size=9, weight="bold"))
-    label.grid(column=0, row=ref_row+8, sticky="w")
-    design_kp_col_entry = tkinter.Entry(window, textvariable=design_kp_col)
-    design_kp_col_entry.grid(column=1, row=ref_row+8, sticky="w")
-
     label = tkinter.Label(window, text="Survey KP Column: ", font=tkinter.font.Font(size=9, weight="bold"))
-    label.grid(column=0, row=ref_row+9, sticky="w")
+    label.grid(column=0, row=ref_row+8, sticky="w")
     survey_kp_col_entry = tkinter.Entry(window, textvariable=survey_kp_col)
-    survey_kp_col_entry.grid(column=1, row=ref_row+9, sticky="w")
+    survey_kp_col_entry.grid(column=1, row=ref_row+8, sticky="w")
 
     if extra_func is not None:
         extra_func()

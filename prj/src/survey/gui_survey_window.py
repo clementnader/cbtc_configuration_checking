@@ -58,7 +58,6 @@ def update_database_loc(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
     DATABASE_LOC.survey_loc.ref_col = list()
     DATABASE_LOC.survey_loc.type_col = list()
     DATABASE_LOC.survey_loc.track_col = list()
-    DATABASE_LOC.survey_loc.design_kp_col = list()
     DATABASE_LOC.survey_loc.survey_kp_col = list()
 
     for survey_name, survey_info in survey_loc_dict.items():
@@ -69,7 +68,6 @@ def update_database_loc(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
         DATABASE_LOC.survey_loc.ref_col.append(get_col(survey_info["ref_col"].get()))
         DATABASE_LOC.survey_loc.type_col.append(get_col(survey_info["type_col"].get()))
         DATABASE_LOC.survey_loc.track_col.append(get_col(survey_info["track_col"].get()))
-        DATABASE_LOC.survey_loc.design_kp_col.append(get_col(survey_info["design_kp_col"].get()))
         DATABASE_LOC.survey_loc.survey_kp_col.append(get_col(survey_info["survey_kp_col"].get()))
 
 
@@ -177,8 +175,7 @@ def is_everything_ready(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
         if survey_info["survey_directory"].get() == "" or survey_info["survey_file_name"].get() == "" \
                 or survey_info["survey_sheet"].get() == "" or survey_info["start_line"].get() == "" \
                 or survey_info["ref_col"].get() == "" or survey_info["type_col"].get() == "" \
-                or survey_info["track_col"].get() == "" \
-                or survey_info["design_kp_col"].get() == "" or survey_info["survey_kp_col"].get() == "":
+                or survey_info["track_col"].get() == "" or survey_info["survey_kp_col"].get() == "":
             test = False
 
     return test

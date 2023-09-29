@@ -10,8 +10,7 @@ __all__ = ["create_dc_tu_verif_file"]
 
 
 DC_TU_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_add_verif_014_dc_tu.xlsx")
-FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
-DC_TU_VERIF_TEMPLATE = os.path.join(FILE_DIRECTORY_PATH, DC_TU_VERIF_TEMPLATE_RELATIVE_PATH)
+DC_TU_VERIF_TEMPLATE = get_full_path(__file__, DC_TU_VERIF_TEMPLATE_RELATIVE_PATH)
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 VERIF_FILE_NAME = "Analysis of ADD_VERIF_014.xlsx"
@@ -47,13 +46,7 @@ def _create_verif_file(ip_address_dict: dict, ssh_key_dict: dict) -> str:
     _update_ssh_key_sheet(wb, ssh_key_dict)
     verif_file_name = f" - {get_c11_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
     res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
-    try:
-        wb.save(res_file_path)
-    except PermissionError:
-        print_error(f"Permission denied to write at {res_file_path = }."
-                    f"\nYou have to close it if you want it to be overwritten.")
-        if input(f"Do you want to retry? (Y/N) ").upper() in ["Y", "YES"]:
-            wb.save(res_file_path)
+    save_xl_file(wb, res_file_path)
     print_success(f"ADD_VERIF_014 analysis file is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")
     return res_file_path

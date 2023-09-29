@@ -9,10 +9,13 @@ from .get_cctool_oo_schema_info import *
 __all__ = ["create_cctool_oo_enum_lists_info_file"]
 
 
+RESULT_DIRECTORY_RELATIVE_PATH = os.path.join("..", "..", "cctool_oo_schema")
+RESULT_DIRECTORY = get_full_path(__file__, RESULT_DIRECTORY_RELATIVE_PATH)
+
+
 def create_cctool_oo_enum_lists_info_file():
     py_file_name = "cctool_oo_enum_lists.py"
-    res_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..", "cctool_oo_schema")
-    res_py_file_full_path = os.path.join(res_directory, py_file_name)
+    res_py_file_full_path = os.path.join(RESULT_DIRECTORY, py_file_name)
     cctool_oo_enum_lists_dict = load_cctool_oo_enum_lists_info()
 
     if not cctool_oo_enum_lists_dict:
@@ -40,4 +43,3 @@ def get_clean_value(value: str):
     value = value.replace('?', "Question_Mark")  # remove special char
     value = value.replace("->", "_a_")  # remove special chars
     return value
-

@@ -11,8 +11,7 @@ __all__ = ["create_survey_verif_file"]
 
 
 SURVEY_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_survey_verification.xlsx")
-FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
-SURVEY_VERIF_TEMPLATE = os.path.join(FILE_DIRECTORY_PATH, SURVEY_VERIF_TEMPLATE_RELATIVE_PATH)
+SURVEY_VERIF_TEMPLATE = get_full_path(__file__, SURVEY_VERIF_TEMPLATE_RELATIVE_PATH)
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 VERIF_FILE_NAME = "Correspondence with Site Survey.xlsx"
@@ -23,9 +22,8 @@ TRACK_COL = "B"
 DC_SYS_KP_COL = "C"
 SURVEY_TRACK_COL = "D"
 SURVEYED_KP_COL = "E"
-DESIGN_KP_COL = "F"
-DIFFERENCE_COL = "G"
-STATUS_COL = "H"
+DIFFERENCE_COL = "F"
+STATUS_COL = "G"
 
 
 def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
@@ -44,13 +42,7 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
         _update_verif_sheet(sheet_name, ws, verif_dict)
     verif_file_name = f" - {get_c_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
     res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
-    try:
-        wb.save(res_file_path)
-    except PermissionError:
-        print_error(f"Permission denied to write at {res_file_path = }."
-                    f"\nYou have to close it if you want it to be overwritten.")
-        if input(f"Do you want to retry? (Y/N) ").upper() in ["Y", "YES"]:
-            wb.save(res_file_path)
+    save_xl_file(wb, res_file_path)
     print_success(f"Correspondence with Site Survey verification file is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")
     return res_file_path
@@ -61,53 +53,45 @@ def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]):
     for line, (obj_name, obj_val) in enumerate(verif_dict.items(), start=START_LINE):
         track = obj_val["track"]
         dc_sys_kp = obj_val["dc_sys_kp"]
-        survey_obj_comment = obj_val["survey_object_comment"]
         survey_track = obj_val["survey_track"]
-        survey_track_comment = obj_val["survey_track_comment"]
         surveyed_kp = obj_val["surveyed_kp"]
         surveyed_kp_comment = obj_val["surveyed_kp_comment"]
-        design_kp = obj_val["design_kp"]
-        design_kp_comment = obj_val["design_kp_comment"]
-        _add_line_info(ws, line, obj_name, track, dc_sys_kp, survey_track, surveyed_kp, design_kp)
-        _add_line_comments(ws, line, survey_obj_comment, survey_track_comment, surveyed_kp_comment, design_kp_comment)
+        _add_line_info(ws, line, obj_name, track, dc_sys_kp, survey_track, surveyed_kp)
+        _add_line_comments(ws, line, surveyed_kp_comment)
         _add_line_calculations(ws, line, tolerance)
 
 
 def _add_line_info(ws, line: int, obj_name: str, track: str, dc_sys_kp: float,
-                   survey_track: float, surveyed_kp: float, design_kp: float):
+                   survey_track: float, surveyed_kp: float):
     ws[f"{NAME_COL}{line}"] = obj_name
     ws[f"{TRACK_COL}{line}"] = track
+    if track is not None:
+        set_bg_color(ws, hex_color=XlBgColor.light_yellow, cell=f"{TRACK_COL}{line}")
     ws[f"{DC_SYS_KP_COL}{line}"] = dc_sys_kp
     if dc_sys_kp is not None:
         set_bg_color(ws, hex_color=XlBgColor.light_yellow, cell=f"{DC_SYS_KP_COL}{line}")
     ws[f"{SURVEY_TRACK_COL}{line}"] = survey_track
+    if survey_track is not None:
+        set_bg_color(ws, hex_color=XlBgColor.light_green, cell=f"{SURVEY_TRACK_COL}{line}")
     ws[f"{SURVEYED_KP_COL}{line}"] = surveyed_kp
     if surveyed_kp is not None:
         set_bg_color(ws, hex_color=XlBgColor.light_green, cell=f"{SURVEYED_KP_COL}{line}")
-    ws[f"{DESIGN_KP_COL}{line}"] = design_kp
 
 
-def _add_line_comments(ws, line: int, survey_object_comment: str, survey_track_comment: str,
-                       surveyed_kp_comment: str, design_kp_comment: str):
-    if survey_object_comment is not None:
-        add_cell_comment(ws, survey_object_comment, cell=f"{NAME_COL}{line}")
-    if survey_track_comment is not None:
-        add_cell_comment(ws, survey_track_comment, cell=f"{SURVEY_TRACK_COL}{line}")
-    if surveyed_kp_comment is not None:
-        add_cell_comment(ws, surveyed_kp_comment, cell=f"{SURVEYED_KP_COL}{line}")
-    if design_kp_comment is not None:
-        add_cell_comment(ws, design_kp_comment, cell=f"{DESIGN_KP_COL}{line}")
+def _add_line_comments(ws, line: int, surveyed_kp_comment: str):
+    add_cell_comment(ws, surveyed_kp_comment, cell=f"{SURVEYED_KP_COL}{line}")
 
 
 def _add_line_calculations(ws, line: int, tolerance: str):
-    ws[f"{DIFFERENCE_COL}{line}"] = f'= IF(ISBLANK(A{line}), "", ' \
-                                    f'IF(ISBLANK(C{line}), "Not in DC_SYS", ' \
-                                    f'IF(ISBLANK(E{line}), "Not Surveyed", ' \
-                                    f'C{line} - E{line})))'
-    ws[f"{STATUS_COL}{line}"] = f'= IF(G{line} = "", "", ' \
-                                f'IF(G{line} = "Not in DC_SYS", "Not in DC_SYS", ' \
-                                f'IF(G{line} = "Not Surveyed", "Not Surveyed", ' \
-                                f'IF(ABS(G{line}) <= {tolerance}, "OK", "KO"))))'
+    ws[f"{DIFFERENCE_COL}{line}"] = f'= IF(ISBLANK({NAME_COL}{line}), "", ' \
+                                    f'IF(ISBLANK({DC_SYS_KP_COL}{line}), "Not in DC_SYS", ' \
+                                    f'IF(ISBLANK({SURVEYED_KP_COL}{line}), "Not Surveyed", ' \
+                                    f'{DC_SYS_KP_COL}{line} - {SURVEYED_KP_COL}{line})))'
+    ws[f"{STATUS_COL}{line}"] = f'= IF({DIFFERENCE_COL}{line} = "", "", ' \
+                                f'IF({DIFFERENCE_COL}{line} = "Not in DC_SYS", "Not in DC_SYS", ' \
+                                f'IF({DIFFERENCE_COL}{line} = "Not Surveyed", "Not Surveyed", ' \
+                                f'IF(ABS({DIFFERENCE_COL}{line}) <= {tolerance}, "OK", "KO"))))'
+    center_horizontal_alignment(ws, cell=f"{STATUS_COL}{line}")
 
 
 def _get_tolerance(sheet_name: str):

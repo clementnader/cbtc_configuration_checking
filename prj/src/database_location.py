@@ -49,7 +49,6 @@ class ProjectDatabaseLoc:
         ref_col = None
         type_col = None
         track_col = None
-        design_kp_col = None
         survey_kp_col = None
 
     class RamsIfAnalysisLoc:
@@ -98,7 +97,6 @@ class ProjectDatabaseLoc:
                 self.survey_loc.ref_col = 1
                 self.survey_loc.type_col = 2
                 self.survey_loc.track_col = 3
-                self.survey_loc.design_kp_col = 4
                 self.survey_loc.survey_kp_col = 11
             # -- Control Tables -- #
             if old_version:
@@ -145,7 +143,6 @@ class ProjectDatabaseLoc:
             self.survey_loc.ref_col = [1, 1]
             self.survey_loc.type_col = [4, 2]
             self.survey_loc.track_col = [2, 3]
-            self.survey_loc.design_kp_col = [6, 4]
             self.survey_loc.survey_kp_col = [3, 5]
 
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES" \
@@ -269,7 +266,6 @@ class ProjectDatabaseLoc:
             self.survey_loc.ref_col = [1, 1, 13]
             self.survey_loc.type_col = [2, 2, 14]
             self.survey_loc.track_col = [3, 3, 15]
-            self.survey_loc.design_kp_col = [4, 4, 16]
             self.survey_loc.survey_kp_col = [7, 7, 17]
 
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\TSK" \

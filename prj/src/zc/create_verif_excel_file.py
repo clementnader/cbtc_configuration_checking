@@ -7,10 +7,9 @@ from ..database_location import *
 
 
 IF_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "templates", "template_if_results.xlsx")
-FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
-IF_VERIF_TEMPLATE = os.path.join(FILE_DIRECTORY_PATH, IF_VERIF_TEMPLATE_RELATIVE_PATH)
+IF_VERIF_TEMPLATE = get_full_path(__file__, IF_VERIF_TEMPLATE_RELATIVE_PATH)
 
-OUTPUT_DIRECTORY = os.path.join(os.getenv("UserProfile"), r"Desktop")
+OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 
 START_LINE = 3
 OBJECT_COL = "A"

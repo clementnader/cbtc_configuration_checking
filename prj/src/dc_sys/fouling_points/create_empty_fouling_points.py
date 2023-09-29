@@ -7,9 +7,9 @@ from ..dc_sys_utils import *
 
 
 FOULING_POINT_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "Fouling Points template.xlsx")
-FILE_DIRECTORY_PATH = os.path.dirname(os.path.realpath(__file__))
-FOULING_POINT_TEMPLATE = os.path.join(FILE_DIRECTORY_PATH, FOULING_POINT_TEMPLATE_RELATIVE_PATH)
-OUTPUT_DIRECTORY = os.path.join(os.getenv("UserProfile"), r"Desktop")
+FOULING_POINT_TEMPLATE = get_full_path(__file__, FOULING_POINT_TEMPLATE_RELATIVE_PATH)
+
+OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 FOULING_POINT_SHEET = "Fouling_Point"
 
 FOULING_POINT_START_LINE = 3

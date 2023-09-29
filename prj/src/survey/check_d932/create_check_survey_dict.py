@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from ..d932_utils import *
-from ..load_d932 import *
 
 
 __all__ = ["create_check_survey_dict"]
 
 
-def create_check_survey_dict():
+def create_check_survey_dict(survey_info):
     survey_verif_dict = dict()
-    survey_info = load_survey()
     for survey_type, survey_type_value in SURVEY_TYPES_DICT.items():
         res_sheet = survey_type_value["res_sheet"]
         dcsys_sh = survey_type_value["dcsys_sh"]
@@ -37,5 +35,4 @@ def _get_kp_to_order_dict(x, verif_dict):
         If none, put a dummy large value, for the object to be at the end of the order. """
     return verif_dict[x]["dc_sys_kp"] if verif_dict[x]["dc_sys_kp"] is not None \
         else verif_dict[x]["surveyed_kp"] if verif_dict[x]["surveyed_kp"] is not None \
-        else verif_dict[x]["design_kp"] if verif_dict[x]["design_kp"] is not None \
         else 1E20
