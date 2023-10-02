@@ -24,9 +24,11 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         survey_track = survey_obj_info["track"] if survey_obj_info is not None else None
         surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
         surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
+        comments = survey_obj_info["comments"] if survey_obj_info is not None else None
+
         res_dict[sw_name] = {"track": sw_val[0], "dc_sys_kp": sw_val[1]}
         res_dict[sw_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
-        res_dict[sw_name].update({"surveyed_kp_comment": surveyed_kp_comment})
+        res_dict[sw_name].update({"surveyed_kp_comment": surveyed_kp_comment, "comments": comments})
 
     res_dict.update(_add_extra_info_from_survey(list(sw_dict.keys()), survey_info))
     return res_dict
@@ -55,5 +57,6 @@ def _add_extra_info_from_survey(list_sw_names: list[str], survey_info: dict[str,
             continue
         extra_dict[sw_name] = {"track": None, "dc_sys_kp": None}
         extra_dict[sw_name].update({"survey_track": sw_val["track"], "surveyed_kp": sw_val["surveyed_kp"]})
-        extra_dict[sw_name].update({"surveyed_kp_comment": sw_val["surveyed_kp_comment"]})
+        extra_dict[sw_name].update({"surveyed_kp_comment": sw_val["surveyed_kp_comment"],
+                                    "comments": sw_val["comments"]})
     return extra_dict

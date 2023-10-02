@@ -16,7 +16,7 @@ SURVEY_VERIF_TEMPLATE = get_full_path(__file__, SURVEY_VERIF_TEMPLATE_RELATIVE_P
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 VERIF_FILE_NAME = "Correspondence with Site Survey.xlsx"
 
-START_LINE = 5
+START_ROW = 5
 NAME_COL = "A"
 TRACK_COL = "B"
 DC_SYS_KP_COL = "C"
@@ -24,6 +24,8 @@ SURVEY_TRACK_COL = "D"
 SURVEYED_KP_COL = "E"
 DIFFERENCE_COL = "F"
 STATUS_COL = "G"
+COMMENTS_COL = "H"
+MANUAL_VERIFICATION_COL = "I"
 
 
 def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
@@ -37,6 +39,7 @@ def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
 
 def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
     wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE)
+    update_header_sheet_for_verif_file(wb)
     for sheet_name, verif_dict in survey_verif_dict.items():
         ws = wb.get_sheet_by_name(sheet_name)
         _update_verif_sheet(sheet_name, ws, verif_dict)
@@ -50,48 +53,54 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
 
 def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]):
     tolerance = _get_tolerance(sheet_name)
-    for line, (obj_name, obj_val) in enumerate(verif_dict.items(), start=START_LINE):
+    for row, (obj_name, obj_val) in enumerate(verif_dict.items(), start=START_ROW):
         track = obj_val["track"]
         dc_sys_kp = obj_val["dc_sys_kp"]
         survey_track = obj_val["survey_track"]
         surveyed_kp = obj_val["surveyed_kp"]
         surveyed_kp_comment = obj_val["surveyed_kp_comment"]
-        _add_line_info(ws, line, obj_name, track, dc_sys_kp, survey_track, surveyed_kp)
-        _add_line_comments(ws, line, surveyed_kp_comment)
-        _add_line_calculations(ws, line, tolerance)
+        comments = obj_val["comments"]
+
+        _add_line_info(ws, row, obj_name, track, dc_sys_kp, survey_track, surveyed_kp)
+        _add_line_cell_comments(ws, row, surveyed_kp_comment)
+        _add_line_calculations(ws, row, tolerance)
+        _add_line_comments_column(ws, row, comments)
 
 
-def _add_line_info(ws, line: int, obj_name: str, track: str, dc_sys_kp: float,
+def _add_line_info(ws, row: int, obj_name: str, track: str, dc_sys_kp: float,
                    survey_track: float, surveyed_kp: float):
-    ws[f"{NAME_COL}{line}"] = obj_name
-    ws[f"{TRACK_COL}{line}"] = track
+    create_cell(ws, obj_name, row=row, column=NAME_COL)
     if track is not None:
-        set_bg_color(ws, hex_color=XlBgColor.light_yellow, cell=f"{TRACK_COL}{line}")
-    ws[f"{DC_SYS_KP_COL}{line}"] = dc_sys_kp
+        create_cell(ws, track, row=row, column=TRACK_COL, bg_color=XlBgColor.light_yellow)
     if dc_sys_kp is not None:
-        set_bg_color(ws, hex_color=XlBgColor.light_yellow, cell=f"{DC_SYS_KP_COL}{line}")
-    ws[f"{SURVEY_TRACK_COL}{line}"] = survey_track
+        create_cell(ws, dc_sys_kp, row=row, column=DC_SYS_KP_COL, bg_color=XlBgColor.light_yellow)
     if survey_track is not None:
-        set_bg_color(ws, hex_color=XlBgColor.light_green, cell=f"{SURVEY_TRACK_COL}{line}")
-    ws[f"{SURVEYED_KP_COL}{line}"] = surveyed_kp
+        create_cell(ws, survey_track, row=row, column=SURVEY_TRACK_COL, bg_color=XlBgColor.light_green)
     if surveyed_kp is not None:
-        set_bg_color(ws, hex_color=XlBgColor.light_green, cell=f"{SURVEYED_KP_COL}{line}")
+        create_cell(ws, surveyed_kp, row=row, column=SURVEYED_KP_COL, bg_color=XlBgColor.light_green)
 
 
-def _add_line_comments(ws, line: int, surveyed_kp_comment: str):
-    add_cell_comment(ws, surveyed_kp_comment, cell=f"{SURVEYED_KP_COL}{line}")
+def _add_line_cell_comments(ws, row: int, surveyed_kp_comment: str):
+    if surveyed_kp_comment is not None:
+        add_cell_comment(ws, surveyed_kp_comment, row=row, column=SURVEYED_KP_COL)
 
 
-def _add_line_calculations(ws, line: int, tolerance: str):
-    ws[f"{DIFFERENCE_COL}{line}"] = f'= IF(ISBLANK({NAME_COL}{line}), "", ' \
-                                    f'IF(ISBLANK({DC_SYS_KP_COL}{line}), "Not in DC_SYS", ' \
-                                    f'IF(ISBLANK({SURVEYED_KP_COL}{line}), "Not Surveyed", ' \
-                                    f'{DC_SYS_KP_COL}{line} - {SURVEYED_KP_COL}{line})))'
-    ws[f"{STATUS_COL}{line}"] = f'= IF({DIFFERENCE_COL}{line} = "", "", ' \
-                                f'IF({DIFFERENCE_COL}{line} = "Not in DC_SYS", "Not in DC_SYS", ' \
-                                f'IF({DIFFERENCE_COL}{line} = "Not Surveyed", "Not Surveyed", ' \
-                                f'IF(ABS({DIFFERENCE_COL}{line}) <= {tolerance}, "OK", "KO"))))'
-    center_horizontal_alignment(ws, cell=f"{STATUS_COL}{line}")
+def _add_line_comments_column(ws, row: int, comments: str):
+    if comments is not None:
+        create_cell(ws, comments, row=row, column=COMMENTS_COL, line_wrap=True)
+
+
+def _add_line_calculations(ws, row: int, tolerance: str):
+    difference_formula = f'= IF(ISBLANK({NAME_COL}{row}), "", ' \
+                         f'IF(ISBLANK({DC_SYS_KP_COL}{row}), "Not in DC_SYS", ' \
+                         f'IF(ISBLANK({SURVEYED_KP_COL}{row}), "Not Surveyed", ' \
+                         f'{DC_SYS_KP_COL}{row} - {SURVEYED_KP_COL}{row})))'
+    create_cell(ws, difference_formula, row=row, column=DIFFERENCE_COL)
+    status_formula = f'= IF({DIFFERENCE_COL}{row} = "", "", ' \
+                     f'IF({DIFFERENCE_COL}{row} = "Not in DC_SYS", "Not in DC_SYS", ' \
+                     f'IF({DIFFERENCE_COL}{row} = "Not Surveyed", "Not Surveyed", ' \
+                     f'IF(ABS({DIFFERENCE_COL}{row}) <= {tolerance}, "OK", "KO"))))'
+    create_cell(ws, status_formula, row=row, column=STATUS_COL, center_horizontal=True)
 
 
 def _get_tolerance(sheet_name: str):

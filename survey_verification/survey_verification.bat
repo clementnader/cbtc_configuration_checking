@@ -12,7 +12,7 @@ echo Installing the required Python libraries...
 echo. && echo ---------------------------------------------- && echo.
 call _installing_python_modules.bat %PYTHON_EXE%
 
-cd ..\launch_survey
+cd ..\survey_verification
 
 echo. && echo ---------------------------------------------- && echo.
 echo Launching the Survey Verification tool...

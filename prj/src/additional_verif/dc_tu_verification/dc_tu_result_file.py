@@ -42,6 +42,7 @@ def create_dc_tu_verif_file(ip_address_dict: dict, ssh_key_dict: dict):
 
 def _create_verif_file(ip_address_dict: dict, ssh_key_dict: dict) -> str:
     wb = load_xlsx_wb(DC_TU_VERIF_TEMPLATE)
+    update_header_sheet_for_verif_file(wb)
     _update_ip_addr_sheet(wb, ip_address_dict)
     _update_ssh_key_sheet(wb, ssh_key_dict)
     verif_file_name = f" - {get_c11_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
@@ -76,10 +77,10 @@ def _update_values_sheet(ws: xl_ws.Worksheet, nb_of_diff_values: int,
     list_of_values = list()
     list_of_ranges_for_duplicate_conditional_formatting = list()
     for prj_line_number, sub_dict in values_dict.items():
-        current_row = _manage_merged_line_for_prj_line_number(ws, current_row, prj_line_number)
+        current_row = _merged_cell_for_prj_line_number(ws, current_row, prj_line_number)
         for train_unit_number, sub_sub_dict in sub_dict.items():
             color_bool = not color_bool  # to alternate colors
-            current_row = _manage_merged_line_for_train_unit_number(ws, current_row, train_unit_number, color_bool)
+            current_row = _merged_cell_for_train_unit_number(ws, current_row, train_unit_number, color_bool)
             for cc_num, sub_sub_sub_dict in sub_sub_dict.items():
                 current_row, list_of_values = \
                     _update_param_sheet_per_cc(ws, current_row, cc_num, sub_sub_sub_dict, list_of_values,
@@ -98,18 +99,17 @@ def _update_param_sheet_per_cc(ws: xl_ws.Worksheet, current_row: int, cc_num: in
     for param_pattern, param_values in param_dict.items():
         if param_pattern == get_pattern(CC_ID_REGEX_PATTERN):
             param_values: str
-            current_row = _manage_merged_line_for_cc_id(ws, current_row, cc_num, param_pattern, param_values,
-                                                        color_bool)
+            current_row = _merged_cell_for_cc_id(ws, current_row, cc_num, param_pattern, param_values, color_bool)
         elif param_pattern in [get_pattern(CC_PMC_ALPHA_ADDRESS_REGEX_PATTERN),
                                get_pattern(CC_PMC_BETA_ADDRESS_REGEX_PATTERN),
                                get_pattern(CC_PMC_SSH_PUBLIC_KEY_REGEX_PATTERN)]:
             param_values: list[tuple[int, str]]
-            current_row = _add_line_for_param(ws, current_row, cc_num, param_pattern, param_values,
-                                              list_of_all_values, color_bool)
+            current_row = _add_row_for_param(ws, current_row, cc_num, param_pattern, param_values, list_of_all_values,
+                                             color_bool)
     return current_row, list_of_all_values
 
 
-def _manage_merged_line_for_prj_line_number(ws: xl_ws.Worksheet, current_row: int, prj_line_number: int) -> int:
+def _merged_cell_for_prj_line_number(ws: xl_ws.Worksheet, current_row: int, prj_line_number: int) -> int:
     create_merged_cell(ws, f"LINE NUMBER {prj_line_number}",
                        start_row=current_row, start_column=PMC_FIRST_COLUMN,
                        end_row=current_row, end_column=STATUS_COLUMN - 1,
@@ -117,8 +117,8 @@ def _manage_merged_line_for_prj_line_number(ws: xl_ws.Worksheet, current_row: in
     return current_row + 1
 
 
-def _manage_merged_line_for_train_unit_number(ws: xl_ws.Worksheet, current_row: int, train_unit_number: int,
-                                              color_bool: bool) -> int:
+def _merged_cell_for_train_unit_number(ws: xl_ws.Worksheet, current_row: int, train_unit_number: int,
+                                       color_bool: bool) -> int:
     bg_color = XlBgColor.blue if color_bool else XlBgColor.green
     create_merged_cell(ws, f"{TRAIN_UNIT_ID} = {train_unit_number}",
                        start_row=current_row, start_column=PMC_FIRST_COLUMN,
@@ -127,8 +127,8 @@ def _manage_merged_line_for_train_unit_number(ws: xl_ws.Worksheet, current_row: 
     return current_row + 1
 
 
-def _manage_merged_line_for_cc_id(ws: xl_ws.Worksheet, current_row: int, cc_num: int,
-                                  cc_id_pattern: str, cc_id_value: str, color_bool: bool) -> int:
+def _merged_cell_for_cc_id(ws: xl_ws.Worksheet, current_row: int, cc_num: int, cc_id_pattern: str, cc_id_value: str,
+                           color_bool: bool) -> int:
     cc_id_name = cc_id_pattern.replace("CCx", f"CC{cc_num}")
     bg_color = XlBgColor.blue if color_bool else XlBgColor.green
     create_merged_cell(ws, f"{cc_id_name} = {cc_id_value}",
@@ -138,9 +138,9 @@ def _manage_merged_line_for_cc_id(ws: xl_ws.Worksheet, current_row: int, cc_num:
     return current_row + 1
 
 
-def _add_line_for_param(ws: xl_ws.Worksheet, current_row: int, cc_num: int, param_pattern: str,
-                        param_values: list[tuple[int, str]], list_of_all_values: list[tuple[str, int, int]],
-                        color_bool: bool) -> int:
+def _add_row_for_param(ws: xl_ws.Worksheet, current_row: int, cc_num: int, param_pattern: str,
+                       param_values: list[tuple[int, str]], list_of_all_values: list[tuple[str, int, int]],
+                       color_bool: bool) -> int:
     bg_color = XlBgColor.light_blue if color_bool else XlBgColor.light_green
     # Write the PMC header line
     if param_pattern != get_pattern(CC_PMC_BETA_ADDRESS_REGEX_PATTERN):
@@ -181,11 +181,11 @@ def _manage_status(current_value: str, current_row: int, current_col: int,
 def _set_status_and_comments_columns(ws: xl_ws.Worksheet, current_row: int,
                                      dict_of_status: dict[int, dict[str, Union[str, list[str]]]]) -> None:
     # Status cell
-    line_status = "KO" if any([status["duplicate_cells"] for status in dict_of_status.values()]) else "OK"
-    create_cell(ws, f"{line_status}", row=current_row, column=STATUS_COLUMN,
+    row_status = "KO" if any([status["duplicate_cells"] for status in dict_of_status.values()]) else "OK"
+    create_cell(ws, f"{row_status}", row=current_row, column=STATUS_COLUMN,
                 center_horizontal=True, borders=True)
     # Comments cell
-    if line_status == "OK":
+    if row_status == "OK":
         return
     list_of_comments = list()
     for pmc_num, pmc_status_dict in dict_of_status.items():

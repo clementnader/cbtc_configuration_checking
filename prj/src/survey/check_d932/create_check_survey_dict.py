@@ -26,8 +26,8 @@ def _order_survey_verif_dict(verif_dict: dict):
 
 def _get_track_to_order_dict(x, verif_dict):
     """ Get track name inside the verif dict dictionary, according to which one exists. """
-    return verif_dict[x]["track"] if verif_dict[x]["track"] is not None \
-        else verif_dict[x]["survey_track"]
+    return verif_dict[x]["track"].lower() if verif_dict[x]["track"] is not None \
+        else verif_dict[x]["survey_track"].lower()
 
 
 def _get_kp_to_order_dict(x, verif_dict):

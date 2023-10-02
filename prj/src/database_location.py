@@ -45,7 +45,7 @@ class ProjectDatabaseLoc:
     class SurveyLoc:
         survey_addr = None
         survey_sheet = None
-        start_line = None
+        start_row = None
         ref_col = None
         type_col = None
         track_col = None
@@ -93,7 +93,7 @@ class ProjectDatabaseLoc:
                 # -- Survey -- #
                 self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey.xlsx"
                 self.survey_loc.survey_sheet = r"AFS_DEP_ML_AGG_REV_1_12.04.23"
-                self.survey_loc.start_line = 13
+                self.survey_loc.start_row = 13
                 self.survey_loc.ref_col = 1
                 self.survey_loc.type_col = 2
                 self.survey_loc.track_col = 3
@@ -139,12 +139,12 @@ class ProjectDatabaseLoc:
                                            r"C:\Users\naderc\Desktop\KCR"
                                            r"\AFS_Project_KCR_Sydhavn_survey_eng table_30.08.23.xlsx"]
             self.survey_loc.survey_sheet = [r"Result Final", r"D932"]
-            self.survey_loc.start_line = [2, 3]
+            self.survey_loc.start_row = [2, 3]
             self.survey_loc.ref_col = [1, 1]
             self.survey_loc.type_col = [4, 2]
             self.survey_loc.track_col = [2, 3]
             self.survey_loc.survey_kp_col = [3, 5]
-
+            # -- Control Tables -- #
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES" \
                                              r"\CR-ASTS-045007-11.00-ATT001- Line CT Routes.pdf"
             self.control_tables_route.cmc = r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES" \
@@ -161,7 +161,18 @@ class ProjectDatabaseLoc:
             self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V04\DC_PAR_newx.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V04\C64_D413\DC_BOP.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V04"
-
+            # -- Survey -- #
+            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
+                                           r"\2022_03_11_Inner_Circle_Features.xlsx",
+                                           r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
+                                           r"\2022_03_11_Outer_Circle_Features.xlsx"]
+            self.survey_loc.survey_sheet = [r"Inner Circle", r"Outer Circle"]
+            self.survey_loc.start_row = [2, 2]
+            self.survey_loc.ref_col = [1, 1]
+            self.survey_loc.type_col = [2, 2]
+            self.survey_loc.track_col = [3, 3]
+            self.survey_loc.survey_kp_col = [4, 4]
+            # -- Control Tables -- #
             self.control_tables_route.line = r"C:\Users\naderc\Desktop\Glasgow\Control Tables" \
                                              r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_" \
                                              r"Rev00-3-86-Routes.pdf"
@@ -262,7 +273,7 @@ class ProjectDatabaseLoc:
                                            r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_B.xls",
                                            r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_C.xlsx"]
             self.survey_loc.survey_sheet = [r"TSK_Object_list_310720_ro", r"TSK_Object_list_REV.3", r"Φύλλο1"]
-            self.survey_loc.start_line = [2, 2, 3]
+            self.survey_loc.start_row = [2, 2, 3]
             self.survey_loc.ref_col = [1, 1, 13]
             self.survey_loc.type_col = [2, 2, 14]
             self.survey_loc.track_col = [3, 3, 15]

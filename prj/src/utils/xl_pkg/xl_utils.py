@@ -44,10 +44,10 @@ def get_xlrd_float_value(ws: xlrd.sheet, row: int, column: int) -> Optional[Unio
 
 
 def get_xlrd_value(ws: xlrd.sheet, row: int, column: int) -> Optional[str]:
-    xlrd_line = get_xlrd_row(row)
+    xlrd_row = get_xlrd_row(row)
     xlrd_col = get_xlrd_column(column)
     try:
-        cell_value = ws.cell_value(xlrd_line, xlrd_col)
+        cell_value = ws.cell_value(xlrd_row, xlrd_col)
     except IndexError:
         cell_value = None
     if cell_value == "":
@@ -64,10 +64,20 @@ def get_xlsx_value(ws, row: int, column: int) -> Optional[str]:
 
 def get_row_and_column_from_cell(cell: str = None, row: int = None, column: Union[str, int] = None) -> tuple[int, int]:
     if cell is not None:
-        row = int(cell[1])
-        column = cell[0]
+        row, column = split_cell(cell)
     if isinstance(column, str):
         column = xl_ut.column_index_from_string(column)
+    return row, column
+
+
+def split_cell(cell: str) -> tuple[int, str]:
+    first_digit_index = -1
+    for i, character in enumerate(cell):
+        if character.isdigit():
+            first_digit_index = i
+            break
+    column = cell[:first_digit_index]
+    row = int(cell[first_digit_index:])
     return row, column
 
 

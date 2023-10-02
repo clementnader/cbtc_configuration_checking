@@ -61,14 +61,14 @@ def _analyze_mtor_ccte_file(file):
 
 def _get_kos_res_sheet(ws, mtor: bool):
     dict_of_kos = dict()
-    first_line = 2
+    first_row = 2
     param_id_column = "A"
     verification_column = "J"
-    for line in range(first_line, get_xl_ws_number_of_rows(ws) + 1):
-        verif_res = get_xl_cell_value(ws, row=line, column=verification_column)
+    for row in range(first_row, get_xl_number_of_rows(ws) + 1):
+        verif_res = get_xl_cell_value(ws, row=row, column=verification_column)
         if verif_res is None:
             continue
-        param_id_name = get_xl_cell_value(ws, row=line, column=param_id_column)
+        param_id_name = get_xl_cell_value(ws, row=row, column=param_id_column)
         if not _check_if_verif_is_ok(verif_res):
             dict_of_kos[param_id_name] = verif_res
     return dict_of_kos

@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import time
+import datetime
 
 
-__all__ = ["time", "format_timespan", "format_timespan_simple"]
+__all__ = ["time", "format_timespan", "format_timespan_simple", "get_today_date"]
 
 
 def format_timespan(seconds):
@@ -47,3 +48,9 @@ def split_time(seconds):
     mn, s = divmod(s, 60)
     hr, mn = divmod(mn, 60)
     return hr, mn, s, ms
+
+
+def get_today_date():
+    today = datetime.date.today()
+    date = f"{today:%d/%m/%Y}"
+    return date

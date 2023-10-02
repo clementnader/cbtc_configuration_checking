@@ -21,9 +21,11 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         survey_track = survey_obj_info["track"] if survey_obj_info is not None else None
         surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
         surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
+        comments = survey_obj_info["comments"] if survey_obj_info is not None else None
+
         res_dict[fg_name] = {"track": fg_val[0], "dc_sys_kp": fg_val[1]}
         res_dict[fg_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
-        res_dict[fg_name].update({"surveyed_kp_comment": surveyed_kp_comment})
+        res_dict[fg_name].update({"surveyed_kp_comment": surveyed_kp_comment, "comments": comments})
 
     res_dict.update(_add_extra_info_from_survey(list(fg_dict.keys()), survey_info))
     return res_dict
@@ -52,5 +54,6 @@ def _add_extra_info_from_survey(list_fg_names: list[str], survey_info: dict[str,
             continue
         extra_dict[fg_name] = {"track": None, "dc_sys_kp": None}
         extra_dict[fg_name].update({"survey_track": fg_val["track"], "surveyed_kp": fg_val["surveyed_kp"]})
-        extra_dict[fg_name].update({"surveyed_kp_comment": fg_val["surveyed_kp_comment"]})
+        extra_dict[fg_name].update({"surveyed_kp_comment": fg_val["surveyed_kp_comment"],
+                                    "comments": fg_val["comments"]})
     return extra_dict

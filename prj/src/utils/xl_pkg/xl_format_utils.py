@@ -13,7 +13,7 @@ from .xl_utils import *
 from ..common_utils import *
 
 
-__all__ = ["XlFontColor", "XlBgColor", "add_cell_comment",
+__all__ = ["XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comment",
            "create_cell", "create_merged_cell",
            "set_font_size", "set_bold_font", "set_bg_color",
            "center_vertical_alignment", "center_horizontal_alignment", "enable_line_wrap",
@@ -39,6 +39,17 @@ class XlBgColor:
     light_blue = "DDEBF7"
 
 
+def get_xl_bg_dimmer_color(bg: str):
+    xl_bg_colors_dict = get_class_attr_dict(XlBgColor)
+    for key, val in xl_bg_colors_dict.items():
+        if bg == val:
+            if key.startswith("light_"):
+                dimmer_key = key.removeprefix("light_")
+                if dimmer_key in xl_bg_colors_dict:
+                    return xl_bg_colors_dict[dimmer_key]
+    return bg
+
+
 # ------ Cell Comment ------ #
 
 def add_cell_comment(ws: openpyxl.worksheet.worksheet.Worksheet, comment: str,
@@ -50,27 +61,17 @@ def add_cell_comment(ws: openpyxl.worksheet.worksheet.Worksheet, comment: str,
 
 # ------ Cell Formatting ------ #
 
-def create_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
+def create_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: Union[str, float, None],
                 cell: str = None, row: int = None, column: Union[str, int] = None,
-                font_size: int = None, bold: bool = False, bg_color: str = None,
+                font_size: int = None, bold: bool = False, italic: bool = False, bg_color: str = None,
                 center_vertical: bool = True, center_horizontal: bool = False, line_wrap: bool = False,
-                borders: bool = True):
+                borders: bool = False) -> None:
     row, column = get_row_and_column_from_cell(cell, row, column)
 
     ws.cell(row=row, column=column, value=value)
     # Cell Formatting
-    if font_size is not None:
-        set_font_size(ws, font_size=font_size, row=row, column=column)
-    if bold:
-        set_bold_font(ws, row=row, column=column)
-    if bg_color is not None:
-        set_bg_color(ws, hex_color=bg_color, row=row, column=column)
-    if center_vertical:
-        center_vertical_alignment(ws, row=row, column=column)
-    if center_horizontal:
-        center_horizontal_alignment(ws, row=row, column=column)
-    if line_wrap:
-        enable_line_wrap(ws, row=row, column=column)
+    _update_cell_formatting(ws, row, column, font_size, bold, italic, bg_color, center_vertical, center_horizontal,
+                            line_wrap)
     # Cell Borders
     if borders:
         draw_exterior_borders(ws, row=row, column=column)
@@ -79,10 +80,10 @@ def create_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
 def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
                        start_cell: str = None, start_row: int = None, start_column: Union[str, int] = None,
                        end_cell: str = None, end_row: int = None, end_column: Union[str, int] = None,
-                       font_size: int = None, bold: bool = False, bg_color: str = None,
+                       font_size: int = None, bold: bool = False, italic: bool = False, bg_color: str = None,
                        center_vertical: bool = True, center_horizontal: bool = False,
                        line_wrap: bool = True,
-                       borders: bool = False):
+                       borders: bool = False) -> None:
     start_row, start_column = get_row_and_column_from_cell(start_cell, start_row, start_column)
     end_row, end_column = get_row_and_column_from_cell(end_cell, end_row, end_column)
 
@@ -90,22 +91,32 @@ def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
                    start_column=start_column, end_column=end_column)
     ws.cell(row=start_row, column=start_column, value=value)
     # Cell Formatting
-    if font_size is not None:
-        set_font_size(ws, font_size=font_size, row=start_row, column=start_column)
-    if bold:
-        set_bold_font(ws, row=start_row, column=start_column)
-    if bg_color is not None:
-        set_bg_color(ws, hex_color=bg_color, row=start_row, column=start_column)
-    if center_vertical:
-        center_vertical_alignment(ws, row=start_row, column=start_column)
-    if center_horizontal:
-        center_horizontal_alignment(ws, row=start_row, column=start_column)
-    if line_wrap:
-        enable_line_wrap(ws, row=start_row, column=start_column)
+    _update_cell_formatting(ws, start_row, start_column, font_size, bold, italic, bg_color, center_vertical,
+                            center_horizontal, line_wrap)
     # Cell Borders
     if borders:
         draw_exterior_borders_on_range(ws, start_row=start_row, end_row=end_row,
                                        start_column=start_column, end_column=end_column)
+
+
+def _update_cell_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, row: int, column: int,
+                            font_size: int, bold: bool, italic: bool, bg_color: str,
+                            center_vertical: bool, center_horizontal: bool,
+                            line_wrap: bool) -> None:
+    if font_size is not None:
+        set_font_size(ws, font_size=font_size, row=row, column=column)
+    if bold:
+        set_bold_font(ws, row=row, column=column)
+    if italic:
+        set_italic_font(ws, row=row, column=column)
+    if bg_color is not None:
+        set_bg_color(ws, hex_color=bg_color, row=row, column=column)
+    if center_vertical:
+        center_vertical_alignment(ws, row=row, column=column)
+    if center_horizontal:
+        center_horizontal_alignment(ws, row=row, column=column)
+    if line_wrap:
+        enable_line_wrap(ws, row=row, column=column)
 
 
 def set_font_size(ws: openpyxl.worksheet.worksheet.Worksheet, font_size: int,
@@ -119,6 +130,13 @@ def set_bold_font(ws: openpyxl.worksheet.worksheet.Worksheet,
                   cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
     font_style = openpyxl.styles.Font(bold=True)
+    ws[cell].font += font_style
+
+
+def set_italic_font(ws: openpyxl.worksheet.worksheet.Worksheet,
+                    cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+    cell = get_cell_from_row_and_column(cell, row, column)
+    font_style = openpyxl.styles.Font(italic=True)
     ws[cell].font += font_style
 
 

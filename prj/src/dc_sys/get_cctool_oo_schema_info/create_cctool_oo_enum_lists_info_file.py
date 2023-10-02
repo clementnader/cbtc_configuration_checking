@@ -16,14 +16,17 @@ RESULT_DIRECTORY = get_full_path(__file__, RESULT_DIRECTORY_RELATIVE_PATH)
 def create_cctool_oo_enum_lists_info_file():
     py_file_name = "cctool_oo_enum_lists.py"
     res_py_file_full_path = os.path.join(RESULT_DIRECTORY, py_file_name)
-    cctool_oo_enum_lists_dict = load_cctool_oo_enum_lists_info()
+    cctool_oo_file = get_corresponding_cctool_oo_schema()
+    cctool_oo_enum_lists_dict = load_cctool_oo_enum_lists_info(cctool_oo_file)
 
     if not cctool_oo_enum_lists_dict:
         print_error(f"The CCTool-OO Schema file has not been parsed, "
                     f"the Python file for the Enum List classes is not created.")
         return
 
-    text = "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\n"
+    file_desc = "Automatically generated Python file defining classes for the enumerates from the EnumList sheet " \
+                "of the CCTool-OO Schema file."
+    text = create_header_for_the_generated_files(cctool_oo_file, file_desc)
     text += add_obj_attrs(cctool_oo_enum_lists_dict)
     with open(res_py_file_full_path, 'w') as f:
         f.write(text)

@@ -5,21 +5,12 @@ from ..utils import *
 from .cctool_oo_schema import DCSYS
 
 
-__all__ = ["get_all_sheet_names", "get_class_attr_dict", "get_sh_name", "get_sheet_attributes_columns_dict",
+__all__ = ["get_all_sheet_names", "get_sh_name", "get_sheet_attributes_columns_dict",
            "get_sheet_class_from_name", "get_dc_sys_attr_name"]
 
 
 def get_all_sheet_names() -> list[str]:
     return list(get_class_attr_dict(DCSYS).keys())
-
-
-def get_class_attr_dict(cl) -> dict[str]:
-    if isinstance(cl, type):
-        return {key: val for key, val in cl.__dict__.items()
-                if not (key.startswith("__") and key.endswith("__"))}
-    else:
-        return {key: val for key, val in cl.__class__.__dict__.items()
-                if not (key.startswith("__") and key.endswith("__"))}
 
 
 def get_sh_name(ws) -> str:

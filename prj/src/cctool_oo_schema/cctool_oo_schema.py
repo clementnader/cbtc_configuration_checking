@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# ------------------------------------------------------------------------------------------------ #
+# Automatically generated Python file defining a DCSYS class containing the column information of  #
+# sheets and attributes from the CCTool-OO Schema sheet of the CCTool-OO Schema file.              #
+# ------------------------------------------------------------------------------------------------ #
+# Compliant with Ref Sys 07-03-03-00                                                               #
+# ------------------------------------------------------------------------------------------------ #
+
 
 class Ligne__SegmentsDepolarises:
 	Cell = {'sh_name': 'Ligne', 'attr_name': 'SegmentsDepolarises', 'sub_attr_name': 'Cell', 'cols': [7, 8, 9, 10, 11, 12, 13, 14]}

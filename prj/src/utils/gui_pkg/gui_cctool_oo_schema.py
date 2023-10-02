@@ -5,6 +5,7 @@ import os
 import sys
 from ...database_location import DATABASE_LOC
 from ..colors_pkg import *
+from ..xl_pkg import XlBgColor
 from .gui_open_buttons import *
 from .gui_utils import *
 
@@ -18,14 +19,21 @@ def cctool_schema_window():
     window.resizable(False, False)
     window.attributes("-topmost", True)
 
-    top_frame = tkinter.Frame(window)
-    top_frame.grid(column=0, row=0, padx=5, pady=5, sticky="w")
-    cctool_oo_directory, cctool_oo_file_name = add_cctool_oo_open_button(top_frame, ref_row=0,
-                                                                         extra_func=lambda: window.destroy())
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    window.geometry(f"+{screen_width//4}+{screen_height//4}")
+
+    bg = f"#{XlBgColor.light_blue}"
+    window.configure(bg=bg)
+    sub_frame = tkinter.Frame(window, bg=bg, padx=10, pady=10)
+    sub_frame.grid(column=0, row=0, sticky="nsew")
+
+    cctool_oo_directory, cctool_oo_file_name = \
+        add_cctool_oo_open_button(sub_frame, ref_row=0, extra_func=lambda: window.destroy())
 
     window.mainloop()
 
-    if cctool_oo_directory.get() == "" or cctool_oo_file_name == "":
+    if cctool_oo_directory.get() == "" or cctool_oo_file_name.get() == "":
         print_error("Execution aborted.")
         sys.exit(1)
 

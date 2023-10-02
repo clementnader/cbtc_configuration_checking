@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# ------------------------------------------------------------------------------------------------ #
+# Automatically generated Python file defining classes for the enumerates from the EnumList sheet  #
+# the CCTool-OO Schema file.                                                                       #
+# ------------------------------------------------------------------------------------------------ #
+# Compliant with Ref Sys 07-03-03-00                                                               #
+# ------------------------------------------------------------------------------------------------ #
+
 
 class WTF:
 	Question_Mark = "?"

@@ -2,6 +2,5 @@
 # -*- coding: utf-8 -*-
 
 from .both_xl_extensions import *
-from .save_xl_utils import *
 from .xl_format_utils import *
 from .xl_utils import *

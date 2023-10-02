@@ -90,16 +90,18 @@ def route_and_overlap():
 
 def survey():
     # check_survey()
+    # survey_window()
+    # cctool_schema_window()
     return
 
 
 def constraints():
     # check_offset_correctness()
-
+    #
     # r_cdv_5(print_ok=False)  # TODO for r_cdv_5:
     #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
     #                             plutôt que faire une diff avec le kit C11
-    #                               plus: retourner un CSV pour pouvoir montrer les données;
+    #                               plus: retourner un fichier de vérif pour pouvoir montrer les données;
     #                               vérifier l'histoire de tag_accurate_laying_uncertainty:
     #                                   ce n'est pas du tout marqué dans la contrainte donc peut-être à désactiver;
     #                               faire R_IVB_1 aussi.
@@ -115,6 +117,7 @@ def constraints():
 
 
 def main():
+    # print(get_user_full_name())
     # show_colors()
     # print_all_colors()
     # test_rainbow()
