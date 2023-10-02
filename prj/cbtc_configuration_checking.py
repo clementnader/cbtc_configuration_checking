@@ -31,8 +31,10 @@ def zc():
 
 
 def cc():
+    # verification_of_the_md5_checksum()
+    # checksum_compare_parser()
     # check_diff_cc_param()
-    # convert_ccparam()
+    # convert_cc_param()
     return
 
 

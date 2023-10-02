@@ -13,4 +13,4 @@ Steps to use the tool to compare the DC_SYS information with the survey file(s):
             - and the different columns for the data the tool will use (note that you can use either the letter of the column or the corresponding number).
         You will have also the possibility to add another survey files (some projects have various files for the survey).
     6. Once all the information has been specified, you can press the button "Launch Survey Verification".
-    7. The result Excel file is placed on the Desktop and is opened automatically.*
+    7. The result Excel file is placed into the Desktop and is opened automatically.

@@ -21,9 +21,9 @@ def open_excel_file(file_path: str) -> None:
     os.system(f"start excel.exe /x \"{file_path}\"")
 
 
-def launch_cmd(cmd: str) -> None:
+def launch_cmd(cmd: str, shell: bool = True, cwd: str = None, env: dict[str] = None) -> None:
     print_log(f" > {cmd}\n")
-    subprocess.call(cmd, shell=True)
+    subprocess.call(cmd, shell=shell, cwd=cwd, env=env)
 
 
 def catch_output_cmd(cmd: str) -> str:

@@ -8,7 +8,10 @@ from ..utils import *
 from .cc_param_utils import *
 
 
-def convert_ccparam():
+__all__ = ["convert_cc_param"]
+
+
+def convert_cc_param():
     parser = argparse.ArgumentParser(
         add_help=True,
         description=f"Convert CCParameter.csv files in kit C11_D470 from Unix to Windows.",

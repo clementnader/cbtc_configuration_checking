@@ -6,11 +6,14 @@ import sys
 import subprocess
 import argparse
 from ..utils import *
+from ..database_location import *
+
+
+__all__ = ["verification_of_the_md5_checksum", "checksum_compare_parser"]
 
 
 ORIGINAL_FILE = "md5sum.txt"
-REGEN_FILE = "Appendix C_MD5 Checksum of the files analysed.txt"
-
+REGEN_FILE = "md5sum_regenerated.txt"
 BASH_CMD = f"find -type f -print0 | sort | xargs -r0 md5sum > \"{REGEN_FILE}\""
 
 
@@ -31,6 +34,11 @@ def get_software_location(sw):
 GIT_PATH = get_software_location("Git")
 BEYOND_COMPARE_PATH = get_software_location("Beyond Compare 4")
 BCOMP_EXE = "BCompare.exe"
+
+
+def verification_of_the_md5_checksum():
+    kit_c11 = DATABASE_LOC.kit_c11_dir
+    compare_checksums(kit_c11)
 
 
 def checksum_compare_parser():
@@ -55,20 +63,22 @@ def regen_checksum(path_kit_c11):
                   f"\t{Color.light_orange}{BASH_CMD}{Color.reset}\n"
                   f"needs to be launched on your side.")
             return
-        new_env = {"PATH": os.path.join(GIT_PATH, 'usr', 'bin')}
+        new_env = {"PATH": os.path.join(GIT_PATH, "usr", "bin")}
     else:
         new_env = None
-    print(f"\n{Color.blue}Generating MD5 checksums in file \"{REGEN_FILE}\"...{Color.reset}")
-    print(f"\t> {Color.light_orange}{BASH_CMD}{Color.reset}")
-    subprocess.call(BASH_CMD, cwd=path_kit_c11, env=new_env, shell=True)
+    print_section_title(f"Generating MD5 checksums in file \"{REGEN_FILE}\"...")
+    launch_cmd(BASH_CMD, cwd=path_kit_c11, env=new_env)
+
+
+def sort_md5_lines(lines: list[str]):
+    return sorted(lines, key=lambda x: x.split(" ", 1)[1].casefold())
 
 
 def order_original_checksum(path_kit_c11):
-    print(f"\n{Color.blue}Reordering the original checksum file to be able to do the comparison...{Color.reset}")
+    print_section_title(f"Reordering the original checksum file to be able to do the comparison...")
     original_file_path = os.path.join(path_kit_c11, ORIGINAL_FILE)
     with open(original_file_path, 'r') as og_file:
-        lines = og_file.readlines()
-        lines.sort(key=lambda x: x.split(" ", 1)[1])
+        lines = sort_md5_lines(og_file.readlines())
         ordered_original = os.path.join(path_kit_c11, "_ordered".join(os.path.splitext(ORIGINAL_FILE)))
         with open(ordered_original, 'w') as new_file:
             new_file.writelines(lines)
@@ -76,11 +86,10 @@ def order_original_checksum(path_kit_c11):
 
 
 def order_regen_checksum(path_kit_c11):
-    print(f"\n{Color.blue}Reordering the regenerated checksum file to be able to do the comparison...{Color.reset}")
+    print_section_title(f"Reordering the regenerated checksum file to be able to do the comparison...")
     regen_file_path = os.path.join(path_kit_c11, REGEN_FILE)
     with open(regen_file_path, 'r') as og_file:
-        lines = og_file.readlines()
-        lines.sort(key=lambda x: x.split(" ", 1)[1])
+        lines = sort_md5_lines(og_file.readlines())
         for i, line in enumerate(lines):
             lines[i] = line.replace(" *./", "  ./")
         ordered_regen = os.path.join(path_kit_c11, "_ordered".join(os.path.splitext(REGEN_FILE)))
@@ -93,14 +102,12 @@ def launch_beyond_compare(ordered_original, ordered_regen):
     if BEYOND_COMPARE_PATH is None:
         print_error(f"\nBeyond Compare 4 is not installed.")
         return
-    print(f"\n{Color.blue}Launching Beyond Compare 4...{Color.reset}")
+    print_section_title(f"Launching Beyond Compare 4...")
     subprocess.Popen(f"{BCOMP_EXE} \"{ordered_original}\" \"{ordered_regen}\"", cwd=BEYOND_COMPARE_PATH, shell=True)
 
 
 def compare_checksums(path_kit_c11):
-    print(f"{Color.vivid_blue}{Color.underline}"
-          f"Regenerating the MD5 checksum file to compare it to the original checksum file "
-          f"to create Appendix C of the OnBoard DPSR{Color.reset}\n")
+    print_title(f"Verification of the Delivery Chain MD5 Checksum\n")
     regen_checksum(path_kit_c11)
     ordered_original = order_original_checksum(path_kit_c11)
     if not os.path.exists(os.path.join(path_kit_c11, REGEN_FILE)):

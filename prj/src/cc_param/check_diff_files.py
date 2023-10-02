@@ -3,13 +3,17 @@
 
 import os
 from ..utils import *
+# from ..database_location import DATABASE_LOC
 from .cc_param_utils import *
-from .html_style_diff_file import additional_css_style
+from .html_style_diff_file import *
+
+
+__all__ = ["check_diff_cc_param"]
 
 
 # MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\Ankara\ANK_L2_C11_D470_06_05_03_V06\ANK_L2_C11_D470_06_05_03_V06"
 MAIN_DIRECTORY = r"C:\Users\naderc\Desktop\ML4_TF3_C11_D470_06_05_05_V03\ML4_TF3_C11_D470_06_05_05_V03"
-RESULT_FOLDER = r"C:\Users\naderc\Desktop"
+RESULT_FOLDER = DESKTOP_DIRECTORY
 
 # From DC_SYS > Train
 # TYPES_OF_TRAIN = ["BOMB", "ZELC"]
@@ -19,6 +23,44 @@ RESULT_FOLDER = r"C:\Users\naderc\Desktop"
 TYPES_OF_TRAIN = ["ML"]
 LIST_TRAIN_NUM_LIMITS = [f"{401}-{447}"]  # first type of train is between 1 and 36
 NB_CABS_OF_TYPES = [1]  # TODO
+
+
+def check_diff_cc_param():
+    dict_split_type_trains = split_type_trains(get_cc_param())
+    dict_diff_results = dict()
+    for train_type, type_dict in dict_split_type_trains.items():
+        ref_train_num = list(type_dict.keys())[0]
+        ref_train_unit_dir = type_dict[ref_train_num]["main_dir"]
+        ref_cc_param_path = type_dict[ref_train_num]["file_path"]
+        ref_file = os.path.join(MAIN_DIRECTORY, ref_train_unit_dir, ref_cc_param_path)
+        with open(os.path.join(ref_file), 'r') as ref_f:
+            ref_lines = ref_f.readlines()
+            titles = read_csv(ref_lines[0])
+            dict_diff = dict()
+            for train_value in type_dict.values():
+                train_unit_dir = train_value["main_dir"]
+                cc_param_path = train_value["file_path"]
+                other_file = os.path.join(MAIN_DIRECTORY, train_unit_dir, cc_param_path)
+                with open(os.path.join(MAIN_DIRECTORY, other_file), 'r') as f:
+                    lines = f.readlines()
+                    for i, (ref_line, line) in enumerate(zip(ref_lines, lines)):
+                        ref_value = read_csv(ref_line)
+                        ref_value[INFO_COLUMN] = ref_value[INFO_COLUMN].replace(",", ",<br />")
+                        values = read_csv(line)
+                        values[INFO_COLUMN] = values[INFO_COLUMN].replace(",", ",<br />")
+                        if line != ref_line:
+                            if values[VALUE_COLUMN] != ref_value[VALUE_COLUMN]:
+                                if i not in dict_diff:
+                                    dict_diff[i] = {title: ref_value[j] for j, title in enumerate(titles)
+                                                    if j != VALUE_COLUMN}
+                                    dict_diff[i][ref_train_unit_dir] = ref_value[VALUE_COLUMN]
+                                dict_diff[i][train_unit_dir] = values[VALUE_COLUMN]
+                            else:
+                                print_warning(f"Difference on something else than the {titles[VALUE_COLUMN]}:"
+                                              f"\n{line = }\n{ref_line = }")
+        dict_diff_results[train_type] = dict_diff
+    create_html_file(dict_diff_results)
+    return dict_diff_results
 
 
 def get_train_unit_files() -> dict[int, dict[str, str]]:
@@ -78,44 +120,6 @@ def split_type_trains(dict_train_units):
         train_type = train_value["type"]
         dict_split_type_trains[train_type][train_num] = train_value
     return dict_split_type_trains
-
-
-def check_diff_cc_param():
-    dict_split_type_trains = split_type_trains(get_cc_param())
-    dict_diff_results = dict()
-    for train_type, type_dict in dict_split_type_trains.items():
-        ref_train_num = list(type_dict.keys())[0]
-        ref_train_unit_dir = type_dict[ref_train_num]["main_dir"]
-        ref_cc_param_path = type_dict[ref_train_num]["file_path"]
-        ref_file = os.path.join(MAIN_DIRECTORY, ref_train_unit_dir, ref_cc_param_path)
-        with open(os.path.join(ref_file), 'r') as ref_f:
-            ref_lines = ref_f.readlines()
-            titles = read_csv(ref_lines[0])
-            dict_diff = dict()
-            for train_value in type_dict.values():
-                train_unit_dir = train_value["main_dir"]
-                cc_param_path = train_value["file_path"]
-                other_file = os.path.join(MAIN_DIRECTORY, train_unit_dir, cc_param_path)
-                with open(os.path.join(MAIN_DIRECTORY, other_file), 'r') as f:
-                    lines = f.readlines()
-                    for i, (ref_line, line) in enumerate(zip(ref_lines, lines)):
-                        ref_value = read_csv(ref_line)
-                        ref_value[INFO_COLUMN] = ref_value[INFO_COLUMN].replace(",", ",<br />")
-                        values = read_csv(line)
-                        values[INFO_COLUMN] = values[INFO_COLUMN].replace(",", ",<br />")
-                        if line != ref_line:
-                            if values[VALUE_COLUMN] != ref_value[VALUE_COLUMN]:
-                                if i not in dict_diff:
-                                    dict_diff[i] = {title: ref_value[j] for j, title in enumerate(titles)
-                                                    if j != VALUE_COLUMN}
-                                    dict_diff[i][ref_train_unit_dir] = ref_value[VALUE_COLUMN]
-                                dict_diff[i][train_unit_dir] = values[VALUE_COLUMN]
-                            else:
-                                print_warning(f"Difference on something else than the {titles[VALUE_COLUMN]}:"
-                                              f"\n{line = }\n{ref_line = }")
-        dict_diff_results[train_type] = dict_diff
-    create_html_file(dict_diff_results)
-    return dict_diff_results
 
 
 def read_csv(line):
