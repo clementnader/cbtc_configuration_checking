@@ -11,11 +11,11 @@ __all__ = ["create_cctool_oo_enum_lists_info_file"]
 
 RESULT_DIRECTORY_RELATIVE_PATH = os.path.join("..", "..", "cctool_oo_schema")
 RESULT_DIRECTORY = get_full_path(__file__, RESULT_DIRECTORY_RELATIVE_PATH)
+PY_FILE_NAME = "cctool_oo_enum_lists.py"
+RES_PY_FILE_FULL_PATH = os.path.join(RESULT_DIRECTORY, PY_FILE_NAME)
 
 
 def create_cctool_oo_enum_lists_info_file():
-    py_file_name = "cctool_oo_enum_lists.py"
-    res_py_file_full_path = os.path.join(RESULT_DIRECTORY, py_file_name)
     cctool_oo_file = get_corresponding_cctool_oo_schema()
     cctool_oo_enum_lists_dict = load_cctool_oo_enum_lists_info(cctool_oo_file)
 
@@ -28,7 +28,7 @@ def create_cctool_oo_enum_lists_info_file():
                 "of the CCTool-OO Schema file."
     text = create_header_for_the_generated_files(cctool_oo_file, file_desc)
     text += add_obj_attrs(cctool_oo_enum_lists_dict)
-    with open(res_py_file_full_path, 'w') as f:
+    with open(RES_PY_FILE_FULL_PATH, 'w') as f:
         f.write(text)
 
 

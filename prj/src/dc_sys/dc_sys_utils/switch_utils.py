@@ -67,7 +67,7 @@ def give_sw_pos(sw):
     """Returns the position of the switch with the seg and offset. """
     point_seg = get_point_seg(sw)
     upstream = is_sw_point_seg_upstream(sw)
-    len_seg = get_len_seg(point_seg)
+    len_seg = get_seg_len(point_seg)
     x = len_seg if upstream else 0
     return point_seg, x
 

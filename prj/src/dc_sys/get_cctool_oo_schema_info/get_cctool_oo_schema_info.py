@@ -36,7 +36,7 @@ def get_corresponding_cctool_oo_schema():
     if DATABASE_LOC.cctool_oo_schema != "":
         return DATABASE_LOC.cctool_oo_schema
 
-    version = get_cctool_oo_version()
+    version = get_cctool_oo_name()
     for file in os.listdir(CCTOOL_OO_SCHEMA_DIR):
         full_path = os.path.join(CCTOOL_OO_SCHEMA_DIR, file)
         file, ext = os.path.splitext(file)

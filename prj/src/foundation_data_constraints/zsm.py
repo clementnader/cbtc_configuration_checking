@@ -19,7 +19,7 @@ def initialize_res_dict():
     limits_seg_dict = get_cbtc_ter_limits()
 
     res_dict = {seg: {
-        "seg_limits": (0.0, get_len_seg(seg)),
+        "seg_limits": (0.0, get_seg_len(seg)),
         "list_limits": list(),
         "list_limits_diff": list()
     } for seg in seg_dict if seg is not None}
@@ -27,7 +27,7 @@ def initialize_res_dict():
     for seg, x, downstream in limits_seg_dict:
         if downstream:
             res_dict[seg] = {
-                "seg_limits": (x, get_len_seg(seg)),
+                "seg_limits": (x, get_seg_len(seg)),
                 "list_limits": list(),
                 "list_limits_diff": list()
             }
@@ -59,7 +59,7 @@ def get_zsm_limits():
 def manage_zsm_limits_on_different_segs(res_dict):
     for seg, seg_value in res_dict.items():
         for x, other_seg in seg_value["list_limits_diff"]:
-            len_seg = get_len_seg(seg)
+            len_seg = get_seg_len(seg)
 
             if is_seg_downstream(seg, other_seg, downstream=True):  # if other_seg is downstream
                 linked_segs = get_straight_linked_segs(seg, downstream=True)
@@ -78,7 +78,7 @@ def manage_zsm_limits_on_different_segs(res_dict):
                     break
                 # linked_seg is entirely in a zsm
                 if not res_dict[linked_seg]["list_limits"]:  # no limits defined yet
-                    res_dict[linked_seg]["list_limits"] = [(0, get_len_seg(linked_seg))]
+                    res_dict[linked_seg]["list_limits"] = [(0, get_seg_len(linked_seg))]
 
 
 def concatenate_zsm_limits(res_dict):

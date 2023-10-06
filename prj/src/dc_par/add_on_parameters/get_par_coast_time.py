@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
 def par_coast_time(variables: dict = None):
-    if "CoastTime" in get_sheet_attributes_columns_dict(DCSYS.Train_Types):
+    if "CoastTime" in get_class_attr_dict(DCSYS.Train_Types):
         sheet_class = DCSYS.Train_Types
     else:
         sheet_class = DCSYS.Train_Consist

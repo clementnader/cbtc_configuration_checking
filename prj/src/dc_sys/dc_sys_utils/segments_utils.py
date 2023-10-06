@@ -7,7 +7,7 @@ from ..load_database import *
 
 
 __all__ = ["is_seg_upstream_of_a_switch", "is_seg_downstream_of_a_switch",
-           "get_len_seg", "are_points_matching", "get_seg_track",
+           "get_seg_len", "are_points_matching", "get_seg_track",
            "is_seg_depolarized", "get_depolarized_segs", "get_associated_depol",
            "get_linked_segs", "get_straight_linked_segs", "get_correct_seg_offset"]
 
@@ -27,7 +27,7 @@ def is_seg_downstream_of_a_switch(seg: str) -> bool:
     return False
 
 
-def get_len_seg(seg_name: str) -> float:
+def get_seg_len(seg_name: str) -> float:
     seg_dict = load_sheet(DCSYS.Seg)
     return round(float(get_dc_sys_value(seg_dict[seg_name], DCSYS.Seg.Longueur)), 3)
 
@@ -35,8 +35,8 @@ def get_len_seg(seg_name: str) -> float:
 def are_points_matching(seg1: str, x1: float, seg2: str, x2: float, tolerance: float = .00) -> bool:
     if seg1 == seg2 and round(abs(x1 - x2), 2) <= tolerance:
         return True
-    len_seg1 = get_len_seg(seg1)
-    len_seg2 = get_len_seg(seg2)
+    len_seg1 = get_seg_len(seg1)
+    len_seg2 = get_seg_len(seg2)
     if x1 == len_seg1 and x2 == 0:
         next_segs = get_linked_segs(seg1, downstream=True)
         if seg2 in next_segs:
@@ -134,18 +134,18 @@ def get_straight_linked_segs(seg: str, downstream: bool, depth: int = 10, verbos
 
 
 def get_correct_seg_offset(seg: str, x: float) -> tuple[str, float]:
-    len_seg = get_len_seg(seg)
+    len_seg = get_seg_len(seg)
     downstream_segs = get_straight_linked_segs(seg, downstream=True, verbose=True)
     upstream_segs = get_straight_linked_segs(seg, downstream=False, verbose=True)
 
     while x > len_seg:
         x -= len_seg
         seg = downstream_segs.__next__()
-        len_seg = get_len_seg(seg)
+        len_seg = get_seg_len(seg)
 
     while x < 0:
         seg = upstream_segs.__next__()
-        len_seg = get_len_seg(seg)
+        len_seg = get_seg_len(seg)
         x += len_seg
 
     return seg, x

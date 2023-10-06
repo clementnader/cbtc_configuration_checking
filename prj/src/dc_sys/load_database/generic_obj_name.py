@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ...cctool_oo_schema import *
 
 
@@ -35,7 +36,7 @@ GENERIC_OBJ_NAME = {
     ]},
     "Traction_Profiles": {"cols": [
         DCSYS.Traction_Profiles.TrainType
-        if "TrainType" in get_sheet_attributes_columns_dict(DCSYS.Traction_Profiles)
+        if "TrainType" in get_class_attr_dict(DCSYS.Traction_Profiles)
         else DCSYS.Traction_Profiles.TrainConsist,
         DCSYS.Traction_Profiles.Speed,
     ]},

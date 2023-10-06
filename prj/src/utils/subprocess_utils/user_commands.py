@@ -10,8 +10,8 @@ __all__ = ["get_user_full_name"]
 
 
 FULL_NAME_ATTRIBUTES = {
-    "en": "Full name",
     "fr": "Nom complet",
+    "en": "Full name",
 }
 
 

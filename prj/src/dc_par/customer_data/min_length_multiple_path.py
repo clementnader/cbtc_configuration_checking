@@ -30,10 +30,10 @@ def min_length_multiple_path(in_cbtc: bool = False):
             if dist is None:
                 continue
             if len(list_of_paths) == 2:  # if there are two paths
-                dist -= (get_len_seg(start_seg) + get_len_seg(end_seg))
+                dist -= (get_seg_len(start_seg) + get_seg_len(end_seg))
                 long_path = [path for direction, path in list_of_paths
                              if (direction, path) != (end_upstream, short_path)][0]
-                long_path_length = get_path_len(long_path) - (get_len_seg(start_seg) + get_len_seg(end_seg))
+                long_path_length = get_path_len(long_path) - (get_seg_len(start_seg) + get_seg_len(end_seg))
                 downstream_str = {True: "downstream", False: "upstream"}[start_downstream]
                 upstream_str = {True: "downstream", False: "upstream"}[not end_upstream]
                 multiple_path_len_dict[f"{start_seg} {downstream_str} to {end_seg} {upstream_str}"] = {

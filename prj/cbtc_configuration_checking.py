@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 from src import *
 
 
@@ -120,7 +121,7 @@ def constraints():
 
 def main():
     # print(get_user_full_name())
-    # show_colors()
+    # show_named_colors()
     # print_all_colors()
     # test_rainbow()
     # test_moving_progress_bar()
@@ -160,8 +161,15 @@ def main():
 
 
 if __name__ == "__main__":
-    # Initialization commands
+    # Initialization Commands
+    current_cctool_oo_version = get_version_of_cctool_oo_schema_python_file()
     print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}\n"
-                f"with CCTool-OO Schema version {Color.pale_green}{get_ga_version()}{Color.reset}.")
+                f"with CCTool-OO Schema version:\n"
+                f"{Color.pale_green}{current_cctool_oo_version}{Color.reset}")
     regenerate_cctool_oo_schema_info()
+    if get_version_of_cctool_oo_schema_python_file() != current_cctool_oo_version:
+        print_error(f"The compiled code is not in line with the current CCTool-OO Schema.")
+        print(f"{Color.white}Relaunch the tool.{Color.reset}")
+        sys.exit(1)
+    # Main Functions
     main()

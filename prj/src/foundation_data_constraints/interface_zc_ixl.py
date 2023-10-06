@@ -267,7 +267,8 @@ def _rule_1_check_ovl(ovl_msg_dict: dict):
                            f"and [Overlap Type] = 'NO_CBTC_REQUEST'",
                            TypeNomLogiqueInfoMESPAS.OLZ_OVERLAP_LK,
                            should_be_vital=True,
-                           is_flux_pas_mes=False) is False:
+                           is_flux_pas_mes=False,
+                           only_one_zc=True) is False:
             success = False
     if success is True:
         print_log(f"No KO.")
@@ -455,7 +456,8 @@ def _rule_3_check_signal(sig_msg_dict: dict):
 
         related_ovl_list = get_related_overlaps(sig_name)
         ovl_names = [ovl[0] for ovl in related_ovl_list]
-        tpp = [get_dc_sys_value(related_ovl[1], DCSYS.IXL_Overlap.WithTpp) == YesOrNo.O for related_ovl in related_ovl_list]
+        tpp = [get_dc_sys_value(related_ovl[1], DCSYS.IXL_Overlap.WithTpp) == YesOrNo.O
+               for related_ovl in related_ovl_list]
         if any(tpp) and not all(tpp):
             print_error(f"All the overlaps related to signal {Color.blue}{sig_name}{Color.reset} "
                         f"do not have the same flag [With TPP]:")
@@ -631,7 +633,7 @@ def _rule_3_check_tsr_area_speed(tsr_area_speed_msg_dict: dict):
 
 # ------- Common Sub Functions to test flows ------- #
 def _check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, condition_str: str,
-                    target_msg_types: Union[str, list[str]], should_be_vital: bool,
+                    target_msg_types: Union[str, list[str]], should_be_vital: bool, only_one_zc: bool = False,
                     is_flux_pas_mes: bool = True, vital_condition: bool = None, vital_condition_str: str = None,
                     obj_type_str: str = None, zc: str = None, tsr_speed: str = None,
                     tsr_area_missing_speeds: list = None):
@@ -660,7 +662,7 @@ def _check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, co
                                   if get_dc_sys_value(msg_info, obj_class.NomLogiqueInfo) == target_msg_type}
                 if zc is None:
                     _check_message_zc(obj_type, obj_name, associated_msg, obj_type_str, target_msg_type,
-                                      condition, condition_str, should_be_vital, is_flux_pas_mes)
+                                      condition, condition_str, should_be_vital, is_flux_pas_mes, only_one_zc)
             print_warning(f"Useless flow(s) to be removed as the condition {Color.white}"
                           f"{condition_str.replace(Color.reset, Color.reset + Color.white)}{Color.reset} "
                           f"is not met for {obj_type_str} {Color.blue}{obj_name}{Color.reset}:")
@@ -686,7 +688,7 @@ def _check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, co
             continue
         if zc is None:
             if _check_message_zc(obj_type, obj_name, associated_msg, obj_type_str, target_msg_type,
-                                 condition, condition_str, should_be_vital, is_flux_pas_mes) is False:
+                                 condition, condition_str, should_be_vital, is_flux_pas_mes, only_one_zc) is False:
                 success = False
         # In ZC Overlay, there would be a message for each ZC
         for associated_msg_name, associated_msg_info in associated_msg.items():
@@ -710,10 +712,11 @@ def _check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, co
 
 
 def _check_message_zc(obj_type, obj_name: str, associated_msg, obj_type_str, target_msg_type,
-                      condition: bool, condition_str: str, should_be_vital: bool, is_flux_pas_mes: bool):
+                      condition: bool, condition_str: str, should_be_vital: bool, is_flux_pas_mes: bool,
+                      only_one_zc: bool):
     obj_class = DCSYS.Flux_PAS_MES if is_flux_pas_mes else DCSYS.Flux_MES_PAS
     success = True
-    expected_zc_list = get_zc_of_obj(obj_type, obj_name)
+    expected_zc_list, ls_list = get_zc_managing_obj(obj_type, obj_name)
     msg_zc_dict = dict()
     for associated_msg_name, associated_msg_info in associated_msg.items():
         zc_name = get_dc_sys_value(associated_msg_info, obj_class.PasUtilisateur1)
@@ -730,22 +733,34 @@ def _check_message_zc(obj_type, obj_name: str, associated_msg, obj_type_str, tar
     extra_msg_zc = {zc_name: info for zc_name, info in msg_zc_dict.items() if zc_name not in expected_zc_list}
     missing_zc = [zc_name for zc_name in expected_zc_list if zc_name not in msg_zc_dict]
 
+    if only_one_zc and len(msg_zc_dict) > 1:
+        print_error(f"The flows of {obj_type_str} shall be sent by a sole ZC in ZC overlay.")
+        for zc, msg in msg_zc_dict.items():
+            print(f"\tin {Color.beige}{zc = }{Color.reset}: {msg}")
+        success = False
+
     if extra_msg_zc:
-        print_warning(f"Useless flow(s) to be removed as {obj_type_str} {Color.blue}{obj_name}{Color.reset}"
-                      f"is not in the ZC\n(but in {expected_zc_list})")
+        print_warning(f"Useless flow(s) to be removed as {obj_type_str} {Color.blue}{obj_name}{Color.reset} "
+                      f"is not in the ZC\n(but in {expected_zc_list}" +
+                      (f" <--> {ls_list})" if ls_list is not None else ""))
         for zc, msg in extra_msg_zc.items():
             print(f"\tin {Color.beige}{zc = }{Color.reset}: {msg}")
         success = False
     if missing_zc:
-        pass
-        # In case of ZC overlay, we often need that only one of the two ZC sends the signal.
-        # Don't know when it is required that both sends the signal (maybe it is only when receiving from the IXL).
-        # print_error(f"A flow of type {Color.yellow}{target_msg_type}{Color.reset} should be defined for "
-        #             f"{obj_type_str} {Color.blue}{obj_name}{Color.reset} "
-        #             f"for ZC {Color.pink}{missing_zc}{Color.reset} (object is in {expected_zc_list}).\n"
-        #             f"It should be of type {Color.orange}"
-        #             f"{VitalOrNotType.SECU if should_be_vital else VitalOrNotType.FONC}{Color.reset}\n"
-        #             f"(the condition {Color.white}{condition_str.replace(Color.reset, Color.reset + Color.white)}"
-        #             f"{Color.reset} is {'not ' if condition else ''}met).")
+        if only_one_zc:
+            pass
+        else:
+            # In case of ZC overlay, we often need that only one of the two ZC sends the signal.
+            # Don't know when it is required that both sends the signal (maybe it is only when receiving from the IXL).
+            print_error(f"A flow of type {Color.yellow}{target_msg_type}{Color.reset} should be defined for "
+                        f"{obj_type_str} {Color.blue}{obj_name}{Color.reset} "
+                        f"for ZC {Color.pink}{missing_zc}{Color.reset} "
+                        f"(object is in {expected_zc_list}" +
+                        (f" <--> {ls_list})" if ls_list is not None else "") + ".\n" +
+                        f"It should be of type {Color.orange}"
+                        f"{VitalOrNotType.SECU if should_be_vital else VitalOrNotType.FONC}{Color.reset}\n"
+                        f"(the condition {Color.white}{condition_str.replace(Color.reset, Color.reset + Color.white)}"
+                        f"{Color.reset} is {'not ' if not condition else ''}met).")
+            success = False
 
     return success

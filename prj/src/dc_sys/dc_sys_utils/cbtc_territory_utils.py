@@ -50,8 +50,8 @@ def update_segs_within_cbtc_ter() -> None:
     cbtc_limits = get_start_and_end_limits_cbtc_ter()
 
     for start_lim in cbtc_limits:
-        start_seg, _, start_direction = start_lim
-        get_next_segments(start_seg, start_direction, cbtc_limits)
+        start_seg, start_x, start_direction = start_lim
+        get_next_segments(start_seg, start_x, start_direction, cbtc_limits)
 
     update_list_seg_lim(cbtc_limits)
 
@@ -70,8 +70,12 @@ def get_start_and_end_limits_cbtc_ter() -> list[tuple[str, float, bool]]:
     return cbtc_limits
 
 
-def get_next_segments(start_seg: str, downstream: bool, cbtc_limits: list[tuple[str, float, bool]]) -> None:
+def get_next_segments(start_seg: str, start_x: float, downstream: bool,
+                      cbtc_limits: list[tuple[str, float, bool]]) -> None:
     global CBTC_TER_SEGMENTS
+
+    if is_first_seg_on_another_limit(start_seg, start_x, downstream, cbtc_limits):
+        return
 
     def inner_recurs_next_seg(seg: str, inner_downstream: bool):
         global CBTC_TER_SEGMENTS
@@ -90,13 +94,27 @@ def get_next_segments(start_seg: str, downstream: bool, cbtc_limits: list[tuple[
     inner_recurs_next_seg(start_seg, downstream)
 
 
+def is_first_seg_on_another_limit(start_seg: str, start_x: float, downstream: bool,
+                                  cbtc_limits: list[tuple[str, float, bool]]) -> bool:
+    for limit_seg, limit_x, limit_downstream in cbtc_limits:
+        if start_seg == limit_seg:
+            if (downstream and start_x < limit_x) or (not downstream and start_x > limit_x):
+                if not downstream == limit_downstream:
+                    return True
+                print_warning("Reach a CBTC Territory limit but with a different direction.")
+                print(f"{start_seg = }, {start_x = }, {downstream = }")
+                print((limit_seg, limit_x, limit_downstream))
+                return True
+    return False
+
+
 def is_seg_end_limit(seg: str, downstream: bool, cbtc_limits: list[tuple[str, float, bool]]) -> bool:
     if (seg, not downstream) in [(limit_seg, limit_downstream) for limit_seg, _, limit_downstream in cbtc_limits]:
         return True
     if seg in [limit_seg for limit_seg, _, _ in cbtc_limits]:
         print_warning("Reach a CBTC Territory limit but with a different direction.")
         print(f"{seg = }, {downstream = }")
-        print([limit_seg for limit_seg, _, _ in cbtc_limits if seg == limit_seg])
+        print([(limit_seg, limit_downstream) for limit_seg, _, limit_downstream in cbtc_limits if seg == limit_seg])
         return True
     return False
 
@@ -111,7 +129,7 @@ def update_list_seg_lim(cbtc_limits: list[tuple[str, float, bool]]) -> None:
             if (seg, x, not downstream) in cbtc_limits:  # a limit between two IN CBTC Territory
                 left_limits_on_seg.remove((seg, x, downstream))
             if (downstream and x == 0 and not get_linked_segs(seg, downstream=False)) \
-                    or (not downstream and x == get_len_seg(seg) and not get_linked_segs(seg, downstream=True)):
+                    or (not downstream and x == get_seg_len(seg) and not get_linked_segs(seg, downstream=True)):
                 left_limits_on_seg.remove((seg, x, downstream))
         if not left_limits_on_seg:
             CBTC_TER_SEGMENTS.append((current_seg, None))
@@ -120,7 +138,7 @@ def update_list_seg_lim(cbtc_limits: list[tuple[str, float, bool]]) -> None:
             CBTC_TER_LIMITS.append((seg, x, downstream))
 
 
-def is_point_in_cbtc_ter(seg: str, x: float) -> Optional[bool]:
+def is_point_in_cbtc_ter(seg: str, x: float, direction: str = None) -> Optional[bool]:
     x = float(x)
     cbtc_ter_segments = get_segs_within_cbtc_ter()
     cbtc_ter_limits = get_cbtc_ter_limits()
@@ -130,6 +148,11 @@ def is_point_in_cbtc_ter(seg: str, x: float) -> Optional[bool]:
         lim_seg, lim_x, lim_downstream = lim
         if seg == lim_seg:
             if x == lim_x:  # limit point
+                if direction is not None:
+                    if lim_downstream == (direction == Direction.CROISSANT):
+                        return True
+                    else:
+                        return False
                 return None
             if lim_downstream and x > lim_x:
                 return True

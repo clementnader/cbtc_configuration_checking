@@ -27,6 +27,6 @@ def regenerate_cctool_oo_schema_info():
     print_log("Regenerating the CCTool-OO Schema information files.")
     print(f"{Color.yellow}{get_cctool_oo_version_info(cctool_oo_file)}{Color.reset}\n")
 
-    # regenerate the CCTool-OO Schema Info class files to match the current version
+    # Regenerate the CCTool-OO Schema Info class files to match the current version
     create_cctool_oo_schema_info_file()
     create_cctool_oo_enum_lists_info_file()

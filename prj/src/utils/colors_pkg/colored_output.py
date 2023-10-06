@@ -3,9 +3,10 @@
 
 import os
 import sys
+import re
 
 
-__all__ = ["Color", "csi_bg_color", "remove_colors", "print_all_colors", "show_colors", "test_rainbow",
+__all__ = ["Color", "csi_bg_color", "remove_colors", "print_all_colors", "show_named_colors", "test_rainbow",
            "move_up", "move_down", "move_left", "move_right"]
 
 
@@ -111,7 +112,7 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     reverse = csi_seq(7)
 
     # Rainbow
-    rainbow = [csi_color_seq(i) for i in [
+    rainbow = [csi_color_seq(_i) for _i in [
         52,   88, 124, 160, 196,  # red
         202, 208, 214, 220, 226,  # orange to yellow
         190, 154, 118,  82,  46,  # yellow to green
@@ -119,10 +120,10 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
         45,   39,  33,  27,       # blue
         57,   56,  55,  54,  53,  # blue to purple
     ]]
-    progress_pride = duplicate_each_elem([csi_color_seq(i) for i in [
+    progress_pride = duplicate_each_elem([csi_color_seq(_i) for _i in [
         15,  213,  51,  95,   0,
         # white, pink, cyan, brown, black
-    ]], 3) + duplicate_each_elem([csi_color_seq(i) for i in [
+    ]], 3) + duplicate_each_elem([csi_color_seq(_i) for _i in [
         196, 208, 220,  46,  27,  90,
         # red, orange, yellow, green, blue, purple
     ]], 3)
@@ -184,16 +185,15 @@ def print_all_colors():
     print("\n")
 
 
-def show_colors():
+def show_named_colors():
     for name, val in Color.__dict__.items():
         if not name.startswith("__") and not name.endswith("__") and isinstance(val, str):
-            print(f" - {val}{name}{Color.reset}")
+            print(f" · {val}{name}{Color.reset}")
 
 
 def remove_colors(string: str):
     res_string = string
-    for name, val in Color.__dict__.items():
-        if not name.startswith("__") and not name.endswith("__") and isinstance(val, str):
-            if val in res_string:
-                res_string = res_string.replace(val, "")
+    res_string = re.sub("\\".join(c for c in ESCAPE_SEQ) + ".*?m", "", res_string)
+    # the '?' is to remove the greedy behavior of the '*' quantifier
+    # in order to match with the smallest text inside the brackets, if there is more than one pair of brackets
     return res_string

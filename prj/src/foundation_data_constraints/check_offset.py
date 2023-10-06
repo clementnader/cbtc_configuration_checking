@@ -3,7 +3,7 @@
 
 from ..utils import *
 from ..dc_sys.load_database.load_xl import *
-from ..dc_sys import get_len_seg, get_track_limits, from_kp_to_seg_offset, from_seg_offset_to_kp, are_points_matching
+from ..dc_sys import get_seg_len, get_track_limits, from_kp_to_seg_offset, from_seg_offset_to_kp, are_points_matching
 
 
 START_LINE = 3
@@ -65,7 +65,7 @@ def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name)
             success = False
         x = float(x.replace(',', '.'))
     x = round(x, 3)
-    len_seg = get_len_seg(seg)
+    len_seg = get_seg_len(seg)
     if not (0 <= x):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"Offset at cell {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "

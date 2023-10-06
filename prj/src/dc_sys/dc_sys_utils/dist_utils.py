@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
+from ...cctool_oo_schema import *
 from .path_utils import get_all_upstream_segments, get_all_downstream_segments
-from .segments_utils import get_len_seg, get_linked_segs, is_seg_depolarized, get_associated_depol
+from .segments_utils import get_seg_len, get_linked_segs, is_seg_depolarized, get_associated_depol
+from .common_utils import *
 
 
 __all__ = ["get_dist", "get_dist_downstream", "get_list_of_paths", "get_min_dist_and_list_of_paths",
            "get_smallest_path", "get_path_len", "get_downstream_path", "get_min_path_downstream",
+           "get_dist_between_objects", "print_dist_between_objects",
            "get_virtual_seg_ordered_extremities",
            "is_point_between", "is_seg_downstream", "are_segs_linked"]
 
@@ -59,6 +62,40 @@ def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x
         return False
 
 
+def print_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str) -> None:
+    type_str_1 = get_sh_name(obj_type_1)
+    type_str_2 = get_sh_name(obj_type_2)
+    d = get_dist_between_objects(obj_type_1, obj_name_1, obj_type_2, obj_name_2)
+    if d is None:
+        print(f"No path found between {type_str_1} {Color.mint_green}{obj_name_1}{Color.reset} "
+              f"and {Color.mint_green}{type_str_2}{Color.reset} {obj_name_2}.")
+    else:
+        print(f"Distance between {type_str_1} {Color.mint_green}{obj_name_1}{Color.reset} "
+              f"and {type_str_2} {Color.mint_green}{obj_name_2}{Color.reset} is {Color.beige}{d}{Color.reset}.")
+
+
+def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str) -> Optional[float]:
+    loc1 = get_obj_position(obj_type_1, obj_name_1)
+    loc2 = get_obj_position(obj_type_2, obj_name_2)
+    if loc1 is None or loc2 is None:
+        return None
+    if isinstance(loc1, tuple):
+        loc1 = [loc1]
+    if isinstance(loc2, tuple):
+        loc2 = [loc2]
+    min_d = None
+    for lim1 in loc1:
+        seg1, x1 = lim1[0], lim1[1]
+        for lim2 in loc2:
+            seg2, x2 = lim2[0], lim2[1]
+            current_d = get_dist(seg1, x1, seg2, x2)
+            if current_d is None:
+                continue
+            if min_d is None or current_d < min_d:
+                min_d = current_d
+    return min_d
+
+
 def get_dist(seg1: str, x1: float, seg2: str, x2: float, verbose: bool = False) -> Optional[float]:
     """ Return the distance between (seg1, x1) and (seg2, x2). """
     x1 = float(x1)
@@ -95,9 +132,9 @@ def get_dist_downstream(seg1: str, x1: float, seg2: str, x2: float, downstream: 
     if downstream:  # seg2 is downstream of seg1
         dist -= x1
     else:  # seg2 is upstream of seg1
-        dist -= (get_len_seg(seg1) - x1)
+        dist -= (get_seg_len(seg1) - x1)
     if upstream:  # seg1 is upstream of seg2
-        dist -= (get_len_seg(seg2) - x2)
+        dist -= (get_seg_len(seg2) - x2)
     else:  # seg1 is downstream of seg2
         dist -= x2
     return round(dist, 3)
@@ -133,10 +170,10 @@ def get_min_path_downstream(start_seg: str, end_seg: str, downstream: bool
             else:
                 next_inner_downstream = inner_downstream
             inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg],
-                                  round(path_len + get_len_seg(next_seg), 3))
+                                  round(path_len + get_seg_len(next_seg), 3))
 
     for upstream, accessible_segs_from_end in get_upstream_segs_according_to_direction(end_seg, start_seg, downstream):
-        inner_recurs_next_seg(start_seg, downstream, [start_seg], get_len_seg(start_seg))
+        inner_recurs_next_seg(start_seg, downstream, [start_seg], get_seg_len(start_seg))
 
     if min_len == -1:
         return None, [], None
@@ -254,7 +291,7 @@ def get_smallest_path(list_paths: list[tuple[bool, list[str]]]) -> tuple[float, 
 
 def get_path_len(path: list[str]) -> float:
     """ Return the length of a path: the sum of the segments lengths. """
-    return round(sum([get_len_seg(seg) for seg in path]), 3)
+    return round(sum([get_seg_len(seg) for seg in path]), 3)
 
 
 def get_virtual_seg_ordered_extremities(seg1: str, x1: float, seg2: str, x2: float):

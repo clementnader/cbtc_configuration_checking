@@ -75,7 +75,7 @@ def print_log(*args, end="\n"):
 
 G_LAST_COLOR_INDEX = 0
 G_START_TIME = 0
-C_PROBA = .2
+C_PROBA = .1
 G_COIN_FLIP = numpy.random.random() < C_PROBA
 
 

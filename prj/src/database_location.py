@@ -16,6 +16,7 @@ class Projects:
 
     Baltimore = "Baltimore"
     BART = "BART"
+    Kolkata = "Kolkata"
     Wenzhou = "Wenzhou"
     Mock_up = "Mock-up"
     Mock_up_2 = "Mock-up 2"
@@ -31,6 +32,7 @@ PROJECT_NAME = Projects.Thessaloniki
 
 # PROJECT_NAME = Projects.Baltimore
 # PROJECT_NAME = Projects.BART
+# PROJECT_NAME = Projects.Kolkata
 # PROJECT_NAME = Projects.Wenzhou
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2
@@ -305,7 +307,11 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\BART" \
                                r"\BART_V2.3.0_SYS_1-DC_SYS-DRAGON_2.1.1 (RefSys 7.2.1.1).xls"
 
-        # ------------------------------- Mock-up -------------------------------#
+        # ------------------------------- Kolkata -------------------------------#
+        elif project_name == Projects.Kolkata:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KMRC Kolkatta\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
+
+        # ------------------------------- Wenzhou -------------------------------#
         elif project_name == Projects.Wenzhou:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_04\DC_SYS_0804.xls"
 
