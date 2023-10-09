@@ -28,6 +28,7 @@ def create_cctool_oo_enum_lists_info_file():
                 "of the CCTool-OO Schema file."
     text = create_header_for_the_generated_files(cctool_oo_file, file_desc)
     text += add_obj_attrs(cctool_oo_enum_lists_dict)
+    text = text.replace("\t", "    ")
     with open(RES_PY_FILE_FULL_PATH, 'w') as f:
         f.write(text)
 

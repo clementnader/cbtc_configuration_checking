@@ -5,7 +5,11 @@ import os
 from ..utils import *
 
 
-MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Riyadh\Verification of MTOR and CCTE Plugs"
+# MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Riyadh\Verification of MTOR and CCTE Plugs"
+MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Glasgow\Verification of MTOR and CCTE Plugs"
+# MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\Verification of MTOR and CCTE Plugs"
+
+
 HEADER_SHEET = "Header"
 
 CELLS_TO_PATCH = {

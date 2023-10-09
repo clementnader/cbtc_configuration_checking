@@ -25,6 +25,7 @@ def get_user_full_name() -> str:
         out = catch_output_cmd(cmd)
         if out:
             full_name = out
+            break
     if full_name is None:
         print_log(f"Unable to find the user name.")
         return ""

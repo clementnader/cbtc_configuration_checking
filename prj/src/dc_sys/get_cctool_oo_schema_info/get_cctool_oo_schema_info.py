@@ -4,7 +4,7 @@
 import os
 from ...utils import *
 from ...database_location import *
-from .get_version import *
+from .get_compatible_cctool_oo_version import *
 from .load_cctool_oo_schema import *
 from .load_cctool_oo_schema.load_xl import *
 

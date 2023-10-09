@@ -26,12 +26,9 @@ def compare_dc_sys():
     return
 
 
-def zc():
-    # create_if_files()
-    return
-
-
 def cc():
+    # get_mtor_ccte_ko()
+    # patch_cc_mtor_ccte()
     # verification_of_the_md5_checksum()
     # checksum_compare_parser()
     # check_diff_cc_param()
@@ -110,9 +107,9 @@ def constraints():
     #                               faire R_IVB_1 aussi.
     # r_dyntag_3()
     # cf_zsm_cbtc_10()
-    # cf_dg_1()
+    # cf_dg_1()  # TODO: check correct Line Section and check Vital/Non Vital
     # cf_dg_2()
-    # r_mes_pas_itf_1()
+    # r_mes_pas_itf_1()  # TODO: check when both should receive/send both the messages
     # r_mes_pas_itf_3()
     # cf_signal_12()  # TODO: change the IVB limit upstream with the CDV (no need to use the control tables)
     # ixl_overlap_platform_related()
@@ -125,11 +122,6 @@ def main():
     # print_all_colors()
     # test_rainbow()
     # test_moving_progress_bar()
-
-    # get_mtor_ccte_ko()
-    # patch_cc_mtor_ccte()
-    # checksum_compare_parser()
-    # convert_ccparam()
 
     # get_walkways_track_kp_pos()
     # pretty_print_dict(get_track_in_cbtc_ter(), max_lvl=0)
@@ -154,7 +146,6 @@ def main():
     parameters_constraints()
 
     cc()
-    zc()
 
     compare_dc_sys()
     return

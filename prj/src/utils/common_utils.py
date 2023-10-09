@@ -8,7 +8,7 @@ from string import ascii_uppercase
 
 __all__ = ["DESKTOP_DIRECTORY", "Optional", "Union", "Generator", "Callable",
            "ascii_uppercase", "columns_from_to", "sort_dict", "pretty_print_dict",
-           "get_file_directory_path", "get_full_path", "get_class_attr_dict"]
+           "get_file_directory_path", "get_full_path", "get_class_attr_dict", "get_print_prefix"]
 
 
 DESKTOP_DIRECTORY = os.path.join(os.getenv("UserProfile"), r"Desktop")

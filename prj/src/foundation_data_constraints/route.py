@@ -159,10 +159,10 @@ def _check_route_sw(route: str, route_val: dict[str], route_sw: str, table_name:
 
     for dc_sys_sw, control_table_sw in zip(dc_sys_route_sw, route_sw_list):
         if not dc_sys_sw.endswith(control_table_sw):
-            dc_sys_route_sw_str = f"{csi_bg_color(Color.yellow)}{Color.black}{dc_sys_sw}{Color.reset}{Color.white}".join(
-                ', '.join(dc_sys_route_sw).split(dc_sys_sw))
-            route_sw_str = f"{csi_bg_color(Color.yellow)}{Color.black}{control_table_sw}{Color.reset}{Color.white}".join(
-                route_sw.split(control_table_sw))
+            dc_sys_route_sw_str = f"{csi_bg_color(Color.yellow)}{Color.black}{dc_sys_sw}{Color.reset}" \
+                                  f"{Color.white}".join(", ".join(dc_sys_route_sw).split(dc_sys_sw))
+            route_sw_str = f"{csi_bg_color(Color.yellow)}{Color.black}{control_table_sw}{Color.reset}" \
+                           f"{Color.white}".join(route_sw.split(control_table_sw))
             if any(sw.endswith(control_table_sw) for sw in dc_sys_route_sw):
                 corresponding_sw = [sw for sw in dc_sys_route_sw if sw.endswith(control_table_sw)][0]
                 dc_sys_route_sw_str = f"{csi_bg_color(Color.light_red)}{Color.black}{corresponding_sw}" \
@@ -207,10 +207,10 @@ def _check_route_path(route: str, route_val: dict[str], route_path: str, table_n
 
     for dc_sys_ivb, control_table_ivb in zip(dc_sys_route_ivb, route_path_list):
         if not dc_sys_ivb.endswith(control_table_ivb):
-            dc_sys_route_ivb_str = f"{csi_bg_color(Color.yellow)}{Color.black}{dc_sys_ivb}{Color.reset}{Color.white}".join(
-                ', '.join(dc_sys_route_ivb).split(dc_sys_ivb))
-            route_path_str = f"{csi_bg_color(Color.yellow)}{Color.black}{control_table_ivb}{Color.reset}{Color.white}".join(
-                route_path.split(control_table_ivb))
+            dc_sys_route_ivb_str = f"{csi_bg_color(Color.yellow)}{Color.black}{dc_sys_ivb}{Color.reset}" \
+                                   f"{Color.white}".join(', '.join(dc_sys_route_ivb).split(dc_sys_ivb))
+            route_path_str = f"{csi_bg_color(Color.yellow)}{Color.black}{control_table_ivb}{Color.reset}" \
+                             f"{Color.white}".join(route_path.split(control_table_ivb))
             if any(ivb.endswith(control_table_ivb) for ivb in dc_sys_route_ivb):
                 corresponding_ivb = [ivb for ivb in dc_sys_route_ivb if ivb.endswith(control_table_ivb)][0]
                 dc_sys_route_ivb_str = f"{csi_bg_color(Color.light_red)}{Color.black}{corresponding_ivb}" \

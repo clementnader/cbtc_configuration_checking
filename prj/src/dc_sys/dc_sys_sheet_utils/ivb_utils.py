@@ -4,7 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
-from .segments_utils import are_points_matching, get_linked_segs
+from ..dc_sys_common_utils import *
 
 
 __all__ = ["get_next_ivb_limits_from_point", "get_all_ivb_limits"]

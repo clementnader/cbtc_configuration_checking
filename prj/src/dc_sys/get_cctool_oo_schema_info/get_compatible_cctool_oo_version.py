@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..load_database.load_xl import load_wb
 from ...utils import *
+from ...dc_sys.load_database.load_xl import load_wb
 
 
 __all__ = ["get_cctool_oo_name"]

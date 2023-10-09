@@ -4,7 +4,7 @@
 from ...fouling_points import fouling_points
 from ...cctool_oo_schema import *
 from ..load_database import *
-from ..dc_sys_utils import *
+from ..dc_sys_sheet_utils import *
 
 
 def get_fouling_point_seg_offset(sw_name, fouling_point_kp, heel_direction):

@@ -60,6 +60,7 @@ def create_cctool_oo_schema_info_file():
     text = create_header_for_the_generated_files(cctool_oo_file, file_desc)
     text += add_obj_attrs(cctool_oo_schema_dict)
     text += add_main_class(cctool_oo_schema_dict)
+    text = text.replace("\t", "    ")
     with open(RES_PY_FILE_FULL_PATH, 'w') as f:
         f.write(text)
 

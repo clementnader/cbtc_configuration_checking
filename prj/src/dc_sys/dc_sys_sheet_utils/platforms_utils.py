@@ -4,8 +4,8 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
+from ..dc_sys_common_utils import is_seg_downstream
 from .cbtc_territory_utils import is_point_in_cbtc_ter
-from .dist_utils import is_seg_downstream
 
 
 __all__ = ["get_plts_in_cbtc_ter", "get_atb_zone_related_to_plt", "is_platform_limit_1_upstream_limit_2"]

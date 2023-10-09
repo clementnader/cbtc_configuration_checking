@@ -5,8 +5,7 @@ import sys
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
-from .common_utils import *
-from .segments_utils import *
+from ..dc_sys_common_utils import *
 from .line_section_utils import *
 from .maz_utils import *
 

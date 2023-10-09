@@ -4,9 +4,8 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
-from .segments_utils import *
+from ..dc_sys_common_utils import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
-from .dist_utils import get_downstream_path, get_virtual_seg_ordered_extremities
 
 
 __all__ = ["get_slopes_in_cbtc_ter", "get_min_and_max_slopes_at_point", "get_min_and_max_slopes_on_virtual_seg"]

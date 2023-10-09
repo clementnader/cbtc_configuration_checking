@@ -4,8 +4,8 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
+from ..dc_sys_common_utils import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
-from .segments_utils import *
 
 
 __all__ = ["get_maz_in_cbtc_ter", "get_segs_within_maz", "is_point_in_maz",

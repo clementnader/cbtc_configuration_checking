@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from pyautocad import Autocad, APoint
+# from pyautocad import Autocad, APoint
 
 
 __all__ = []

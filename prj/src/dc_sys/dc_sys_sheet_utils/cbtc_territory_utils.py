@@ -4,7 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
-from .segments_utils import *
+from ..dc_sys_common_utils import *
 
 
 __all__ = ["get_segs_within_cbtc_ter", "get_cbtc_ter_limits", "get_all_segs_in_cbtc_ter",

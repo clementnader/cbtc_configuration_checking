@@ -13,5 +13,4 @@ from .foundation_data_constraints import *
 from .parameters_constraints import *
 from .survey import *
 from .utils import *
-from .zc import *
 from .database_location import *

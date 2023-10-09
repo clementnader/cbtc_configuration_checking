@@ -4,7 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
-from .common_utils import *
+from ..dc_sys_common_utils import *
 
 
 __all__ = ["get_line_section_of_obj"]

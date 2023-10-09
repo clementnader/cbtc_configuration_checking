@@ -3,9 +3,9 @@
 
 from ...utils import *
 from ...cctool_oo_schema import *
-from .path_utils import get_all_upstream_segments, get_all_downstream_segments
-from .segments_utils import get_seg_len, get_linked_segs, is_seg_depolarized, get_associated_depol
 from .common_utils import *
+from .segments_utils import *
+from .path_utils import *
 
 
 __all__ = ["get_dist", "get_dist_downstream", "get_list_of_paths", "get_min_dist_and_list_of_paths",

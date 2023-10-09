@@ -4,8 +4,8 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
+from ..dc_sys_common_utils import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
-from .segments_utils import *
 
 
 __all__ = ["get_sws_in_cbtc_ter", "is_sw_point_seg_upstream", "give_sw_pos", "give_sw_kp_pos", "get_heel_position",
@@ -25,30 +25,6 @@ def get_sws_in_cbtc_ter():
     return within_cbtc_sw_dict
 
 
-def get_point_seg(sw):
-    return get_dc_sys_value(sw, DCSYS.Aig.SegmentPointe)
-
-
-def is_sw_point_seg_upstream(sw):
-    """Returns True if the point segment of the switch is upstream of the two heels segments,
-    returns False if it is downstream,
-    raises an error if it is neither the first nor the second."""
-    point_seg = get_dc_sys_value(sw, DCSYS.Aig.SegmentPointe)
-    right_heel = get_dc_sys_value(sw, DCSYS.Aig.SegmentTd)
-    left_heel = get_dc_sys_value(sw, DCSYS.Aig.SegmentTg)
-
-    downstream_segs = get_linked_segs(point_seg, downstream=True)
-    upstream_segs = get_linked_segs(point_seg, downstream=False)
-    other_segs_are_downstream = [other_seg in downstream_segs for other_seg in [right_heel, left_heel]]
-    other_segs_are_upstream = [other_seg in upstream_segs for other_seg in [right_heel, left_heel]]
-
-    if all(other_segs_are_downstream):
-        return True
-    if all(other_segs_are_upstream):
-        return False
-    raise Exception("The point segment is not found upstream or downstream of the heels.")
-
-
 def get_heel_position(point_seg, heel) -> tuple[Optional[str], str]:
     sw_dict = load_sheet(DCSYS.Aig)
     for sw_name, sw_value in sw_dict.items():
@@ -61,15 +37,6 @@ def get_heel_position(point_seg, heel) -> tuple[Optional[str], str]:
             if heel == sw_left_heel:
                 return sw_name, Switch_Position.GAUCHE
     return None, ""
-
-
-def give_sw_pos(sw):
-    """Returns the position of the switch with the seg and offset. """
-    point_seg = get_point_seg(sw)
-    upstream = is_sw_point_seg_upstream(sw)
-    len_seg = get_seg_len(point_seg)
-    x = len_seg if upstream else 0
-    return point_seg, x
 
 
 def give_sw_kp_pos(sw):

@@ -85,7 +85,7 @@ def get_min_dist(local_slope, is_danger_point_a_switch: bool = False):
     all_sub_variables = dict()
     at_rollback_dist_local_slope = get_at_rollback_dist(local_slope, variables=all_sub_variables)
     mtc_rollback_dist_local_slope = get_at_rollback_dist(local_slope, mtc=True, variables=all_sub_variables)
-    final_value = additional_value + max(at_rollback_dist_local_slope, mtc_rollback_dist_local_slope)
+    final_value = round(additional_value + max(at_rollback_dist_local_slope, mtc_rollback_dist_local_slope), 3)
     variables = {
         additional_value_str: f"{additional_value} m",
         "at_rollback_dist_local_slope": f"{at_rollback_dist_local_slope} m",
