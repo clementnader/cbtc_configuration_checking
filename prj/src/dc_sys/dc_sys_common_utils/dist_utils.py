@@ -43,8 +43,8 @@ def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x
     if not without_ring_loopback:
         return True
     # We need to find which path is the smallest
-    dist1, _, _, _ = get_downstream_path(start_seg, end_seg, start_downstream=True)
-    dist2, _, _, _ = get_downstream_path(start_seg, end_seg, start_downstream=False)
+    dist1, _, _ = get_min_path_downstream(start_seg, end_seg, downstream=True)
+    dist2, _, _ = get_min_path_downstream(start_seg, end_seg, downstream=False)
     if dist1 is None and dist2 is None:
         print_error(f"Ring configuration: {end_seg=} is at the same time downstream "
                     f"and upstream {start_seg=}."
@@ -121,7 +121,6 @@ def get_dist_downstream(seg1: str, x1: float, seg2: str, x2: float, downstream: 
         else:
             return None
 
-    # dist, _, _, upstream = get_downstream_path(seg1, seg2, start_downstream=downstream)
     dist, _, upstream = get_min_path_downstream(seg1, seg2, downstream=downstream)
 
     if dist is None:

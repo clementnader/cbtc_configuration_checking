@@ -317,11 +317,11 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Mock-up -------------------------------#
         elif project_name == Projects.Mock_up:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\BART\DC_SYS_mock-up.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Mock-Up DC_SYS\DC_SYS_mock-up.xls"
 
         # ------------------------------- Mock-up 2 -------------------------------#
         elif project_name == Projects.Mock_up_2:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\BART\DC_SYS_mock-up2.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Mock-Up DC_SYS\DC_SYS_mock-up2.xls"
 
 
 DATABASE_LOC = ProjectDatabaseLoc(PROJECT_NAME)
