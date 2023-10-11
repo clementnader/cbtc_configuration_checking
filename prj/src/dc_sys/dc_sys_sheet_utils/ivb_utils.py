@@ -5,9 +5,27 @@ from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
 from ..dc_sys_common_utils import *
+from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
-__all__ = ["get_next_ivb_limits_from_point", "get_all_ivb_limits"]
+__all__ = ["get_ivb_in_cbtc_ter", "get_next_ivb_limits_from_point", "get_all_ivb_limits"]
+
+
+def get_ivb_in_cbtc_ter():
+    ivb_dict = load_sheet(DCSYS.IVB)
+    within_cbtc_ivb_dict = dict()
+    for ivb, ivb_value in ivb_dict.items():
+        limits_in_cbtc_ter = list()
+        for seg, x in get_dc_sys_zip_values(ivb_value, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X):
+            limits_in_cbtc_ter.append(is_point_in_cbtc_ter(seg, x))
+        if any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter) and \
+                all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter):
+            within_cbtc_ivb_dict[ivb] = ivb_value
+        elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
+            print_warning(f"IVB {ivb} is both inside and outside CBTC Territory. "
+                          f"It is still taken into account.")
+            within_cbtc_ivb_dict[ivb] = ivb_value
+    return within_cbtc_ivb_dict
 
 
 def get_next_ivb_limits_from_point(seg: str, x: float, downstream: bool):

@@ -7,7 +7,7 @@ from ..dc_par import *
 
 
 def r_cdv_5(print_ok: bool = False):
-    sw_dict = get_sws_in_cbtc_ter()
+    sw_dict = get_switches_in_cbtc_ter()
 
     error_counts = [0, 0]
     for sw_name, sw_value in sw_dict.items():

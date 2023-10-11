@@ -8,15 +8,15 @@ from ..dc_sys import *
 
 def min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc: bool = True):
     if in_cbtc:
-        plt_dict = get_plts_in_cbtc_ter()
+        plt_dict = get_platforms_in_cbtc_ter()
     else:
         plt_dict = load_sheet(DCSYS.Quai)
     dict_min_dist = dict()
 
     for i, (plt, plt_value) in enumerate(plt_dict.items()):
-        for osp in get_dc_sys_zip_values(plt_value, DCSYS.Quai.PointDArret.Name, DCSYS.Quai.PointDArret.Seg,
-                                         DCSYS.Quai.PointDArret.X, DCSYS.Quai.PointDArret.SensApproche):
-            osp_name, osp_seg, osp_x, osp_direction = osp
+        for osp_name, osp_seg, osp_x, osp_direction in get_dc_sys_zip_values(
+                plt_value, DCSYS.Quai.PointDArret.Name, DCSYS.Quai.PointDArret.Seg,
+                DCSYS.Quai.PointDArret.X, DCSYS.Quai.PointDArret.SensApproche):
             if osp_name is not None:  # if OSP exists
                 if osp_direction in [StoppingPointApproachType.CROISSANT, StoppingPointApproachType.DOUBLE_SENS]:
                     key, value = get_dist_osp_next_plt(osp_name, osp_seg, osp_x, osp_direction, plt, plt_dict,

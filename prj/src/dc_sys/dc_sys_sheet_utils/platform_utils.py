@@ -8,10 +8,10 @@ from ..dc_sys_common_utils import is_seg_downstream
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
-__all__ = ["get_plts_in_cbtc_ter", "get_atb_zone_related_to_plt", "is_platform_limit_1_upstream_limit_2"]
+__all__ = ["get_platforms_in_cbtc_ter", "get_atb_zone_related_to_plt", "is_platform_limit_1_upstream_limit_2"]
 
 
-def get_plts_in_cbtc_ter():
+def get_platforms_in_cbtc_ter():
     plt_dict = load_sheet(DCSYS.Quai)
     within_cbtc_plt_dict = dict()
     for plt_name, plt_value in plt_dict.items():
@@ -20,7 +20,8 @@ def get_plts_in_cbtc_ter():
                                                         DCSYS.Quai.ExtremiteDuQuai.X):
             limit_in_cbtc.append(is_point_in_cbtc_ter(limit_seg, limit_x))
 
-        if all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limit_in_cbtc):
+        if any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limit_in_cbtc) and \
+                all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limit_in_cbtc):
             within_cbtc_plt_dict[plt_name] = plt_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limit_in_cbtc):
             print_warning(f"Platform {plt_name} is both inside and outside CBTC Territory. "

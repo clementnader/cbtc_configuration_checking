@@ -19,7 +19,7 @@ def get_routes():
 
 def _get_route_ivb(route_value: dict[str, str]):
     route_ivb_list = list()
-    for ivb, in get_dc_sys_zip_values(route_value, DCSYS.Iti.RouteIvb.Ivb):
+    for ivb in get_dc_sys_value(route_value, DCSYS.Iti.RouteIvb.Ivb):
         if ivb:
             route_ivb_list.append(ivb.upper())
     route_ivb_list.append(get_dc_sys_value(route_value, DCSYS.Iti.DestinationIvb))

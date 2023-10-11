@@ -82,7 +82,7 @@ def _update_depol_segs() -> None:
     global DEPOLARIZED_SEGMENTS
     line_dict = load_sheet(DCSYS.Ligne)
     for line_info in line_dict.values():
-        for depol_seg, in get_dc_sys_zip_values(line_info, DCSYS.Ligne.SegmentsDepolarises.Cell):
+        for depol_seg in get_dc_sys_value(line_info, DCSYS.Ligne.SegmentsDepolarises.Cell):
             if depol_seg is not None:
                 DEPOLARIZED_SEGMENTS.append(_get_second_depol_seg(depol_seg))
 
@@ -106,7 +106,7 @@ def get_linked_segs(seg: str, downstream: bool) -> list[str]:
     seg_dict = load_sheet(DCSYS.Seg)
     attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     linked_segs = list()
-    for linked_seg, in get_dc_sys_zip_values(seg_dict[seg], attr):
+    for linked_seg in get_dc_sys_value(seg_dict[seg], attr):
         if linked_seg is not None:
             linked_segs.append(linked_seg)
     return linked_segs

@@ -67,7 +67,16 @@ def get_start_and_end_limits_cbtc_ter() -> list[tuple[str, float, bool]]:
                                                            DCSYS.CBTC_TER.Extremite.X, DCSYS.CBTC_TER.Extremite.Sens):
                 cbtc_limits.append((seg, x, (direction == Direction.CROISSANT)))
 
-    return cbtc_limits
+    return remove_useless_limits(cbtc_limits)
+
+
+def remove_useless_limits(cbtc_limits: list[tuple[str, float, bool]]) -> list[tuple[str, float, bool]]:
+    limits_to_remove = list()
+    for seg, x, downstream in cbtc_limits:
+        if (seg, x, not downstream) in cbtc_limits:
+            limits_to_remove.append((seg, x, downstream))
+            limits_to_remove.append((seg, x, not downstream))
+    return [lim for lim in cbtc_limits if lim not in limits_to_remove]
 
 
 def get_next_segments(start_seg: str, start_x: float, downstream: bool,

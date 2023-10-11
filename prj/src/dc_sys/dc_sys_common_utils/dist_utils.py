@@ -3,7 +3,7 @@
 
 from ...utils import *
 from ...cctool_oo_schema import *
-from .common_utils import *
+from .position_utils import *
 from .segments_utils import *
 from .path_utils import *
 
@@ -16,8 +16,8 @@ __all__ = ["get_dist", "get_dist_downstream", "get_list_of_paths", "get_min_dist
 
 
 def are_segs_linked(seg1: str, seg2: str, x1: float = None, x2: float = None) -> bool:
-    return is_seg_downstream(seg1, seg2, x1, x2, downstream=True) or \
-           is_seg_downstream(seg1, seg2, x1, x2, downstream=False)
+    return is_seg_downstream(seg1, seg2, x1, x2, downstream=True, without_ring_loopback=True) or \
+           is_seg_downstream(seg1, seg2, x1, x2, downstream=False, without_ring_loopback=True)
 
 
 def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x: float = None,
@@ -41,8 +41,6 @@ def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x
             else end_seg in [seg for seg, _ in get_all_upstream_segments(start_seg)]
     # Ring Configuration
     if not without_ring_loopback:
-        print_warning(f"Ring configuration: {end_seg=} is at the same time downstream "
-                      f"and upstream {start_seg=}.")
         return True
     # We need to find which path is the smallest
     dist1, _, _, _ = get_downstream_path(start_seg, end_seg, start_downstream=True)

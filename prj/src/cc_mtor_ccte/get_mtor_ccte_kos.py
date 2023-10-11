@@ -3,7 +3,11 @@
 
 import os
 from ..utils import *
-from .patch_cc_mtor_ccte import MTOR_CCTE_PATH
+
+
+# MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Riyadh\Verification of MTOR and CCTE Plugs"
+MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Glasgow\Verification of MTOR and CCTE Plugs"
+# MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\Verification of MTOR and CCTE Plugs"
 
 
 RES_SHEETS = {
@@ -36,7 +40,7 @@ def get_mtor_ccte_ko():
                         first_ko = False
                         print()
                     print(f"A different KO is seen on key {Color.blue}{key}{Color.reset}, "
-                          f"old KO is \"{Color.light_yellow}{dict_of_kos[sub_dict_name][key]}\", "
+                          f"old KO is \"{Color.light_yellow}{dict_of_kos[sub_dict_name][key]}{Color.reset}\", "
                           f"new KO is \"{Color.yellow}{val}{Color.reset}\".")
     print_log(f"\r{progress_bar(nb_files, nb_files, end=True)} analysis of "
               f"all MTOR and CCTE Plugs Verification files is done.")

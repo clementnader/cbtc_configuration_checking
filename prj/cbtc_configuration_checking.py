@@ -109,8 +109,8 @@ def constraints():
     # cf_zsm_cbtc_10()
     # cf_dg_1()  # TODO: check correct Line Section and check Vital/Non Vital
     # cf_dg_2()
-    # r_mes_pas_itf_1()  # TODO: check when both should receive/send both the messages
-    # r_mes_pas_itf_3()
+    # r_mes_pas_itf_1(in_cbtc=False)  # TODO: check when both ZC should receive/send both the messages
+    # r_mes_pas_itf_3(in_cbtc=False)
     # cf_signal_12()  # TODO: change the IVB limit upstream with the CDV (no need to use the control tables)
     # ixl_overlap_platform_related()
     return
@@ -152,15 +152,17 @@ def main():
 
 
 if __name__ == "__main__":
+    skip_init = False
     # Initialization Commands
-    current_cctool_oo_version = get_version_of_cctool_oo_schema_python_file()
-    print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}\n"
-                f"with CCTool-OO Schema version:\n"
-                f"{Color.pale_green}{current_cctool_oo_version}{Color.reset}")
-    regenerate_cctool_oo_schema_info()
-    if get_version_of_cctool_oo_schema_python_file() != current_cctool_oo_version:
-        print_error(f"The compiled code is not in line with the current CCTool-OO Schema.")
-        print(f"{Color.white}Relaunch the tool.{Color.reset}")
-        sys.exit(1)
+    if not skip_init:
+        current_cctool_oo_version = get_version_of_cctool_oo_schema_python_file()
+        print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}\n"
+                    f"with CCTool-OO Schema version:\n"
+                    f"{Color.pale_green}{current_cctool_oo_version}{Color.reset}")
+        regenerate_cctool_oo_schema_info()
+        if get_version_of_cctool_oo_schema_python_file() != current_cctool_oo_version:
+            print_error(f"The compiled code is not in line with the current CCTool-OO Schema.")
+            print(f"{Color.white}Relaunch the tool.{Color.reset}")
+            sys.exit(1)
     # Main Functions
     main()

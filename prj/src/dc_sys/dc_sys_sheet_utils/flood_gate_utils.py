@@ -7,21 +7,22 @@ from ..load_database import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
-__all__ = ["get_zsm_in_cbtc_ter"]
+__all__ = ["get_flood_gates_in_cbtc_ter"]
 
 
-def get_zsm_in_cbtc_ter():
-    zsm_dict = load_sheet(DCSYS.ZSM_CBTC)
-    within_cbtc_zsm_dict = dict()
-    for zsm_name, zsm_value in zsm_dict.items():
+def get_flood_gates_in_cbtc_ter():
+    fg_dict = load_sheet(DCSYS.Flood_Gate)
+
+    within_cbtc_fg_dict = dict()
+    for fg_name, fg_value in fg_dict.items():
         limits_in_cbtc_ter = list()
-        for seg, x in get_dc_sys_zip_values(zsm_value, DCSYS.ZSM_CBTC.ExtZsm.Seg, DCSYS.ZSM_CBTC.ExtZsm.X):
+        for seg, x in get_dc_sys_zip_values(fg_value, DCSYS.Flood_Gate.Limit.Seg, DCSYS.Flood_Gate.Limit.X):
             limits_in_cbtc_ter.append(is_point_in_cbtc_ter(seg, x))
         if any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter) and \
                 all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            within_cbtc_zsm_dict[zsm_name] = zsm_value
+            within_cbtc_fg_dict[fg_name] = fg_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            print_warning(f"{zsm_name} is both inside and outside CBTC Territory. "
+            print_warning(f"Flood Gate {fg_name} is both inside and outside CBTC Territory. "
                           f"It is still taken into account.")
-            within_cbtc_zsm_dict[zsm_name] = zsm_value
-    return within_cbtc_zsm_dict
+            within_cbtc_fg_dict[fg_name] = fg_value
+    return within_cbtc_fg_dict

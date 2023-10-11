@@ -8,11 +8,11 @@ from ..dc_sys_common_utils import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
-__all__ = ["get_sws_in_cbtc_ter", "is_sw_point_seg_upstream", "give_sw_pos", "give_sw_kp_pos", "get_heel_position",
+__all__ = ["get_switches_in_cbtc_ter", "is_sw_point_seg_upstream", "give_sw_pos", "give_sw_kp_pos", "get_heel_position",
            "get_switch_position_dict", "get_point_seg"]
 
 
-def get_sws_in_cbtc_ter():
+def get_switches_in_cbtc_ter():
     sw_dict = load_sheet(DCSYS.Aig)
     within_cbtc_sw_dict = dict()
     for sw_name, sw_value in sw_dict.items():

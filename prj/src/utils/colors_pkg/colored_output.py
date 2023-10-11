@@ -4,6 +4,7 @@
 import os
 import sys
 import re
+from ..common_utils import *
 
 
 __all__ = ["Color", "csi_bg_color", "remove_colors", "print_all_colors", "show_named_colors", "test_rainbow",
@@ -14,24 +15,23 @@ if sys.platform == "win32":  # for Windows
     os.system("color")
 
 
-ESCAPE_SEQ = f"\x1B["  # "\x1B" is equivalent to "\033" or "\27" and gives ESC
+ESCAPE_SEQ = "\x1B["  # "\x1B" is equivalent to "\033" or "\27" and gives ESC
 
 
-def csi_seq(n):
-    # CSI Control Sequence Introducer
+# CSI: Control Sequence Introducer
+def csi_seq(n: Union[int, str]) -> str:
     return f"{ESCAPE_SEQ}{n}m"
 
 
-def csi_color_seq(color_int):
-    # CSI Control Sequence Introducer
-    return f"{ESCAPE_SEQ}38;5;{color_int}m"
+def csi_color_seq(color_int: int) -> str:
+    return csi_seq(f"38;5;{color_int}")
 
 
-def csi_bg_color(color_seq: str):
+def csi_bg_color(color_seq: str) -> str:
     return color_seq.replace("[38", "[48")
 
 
-def duplicate_each_elem(i_list, nb_duplicates: int = 2):
+def duplicate_each_elem(i_list: list, nb_duplicates: int = 2) -> list:
     dup_list = list()
     for elem in i_list:
         for _ in range(nb_duplicates):
@@ -41,7 +41,7 @@ def duplicate_each_elem(i_list, nb_duplicates: int = 2):
 
 class Color:
     """ANSI escape code
-Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
+    Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
     # Reset
     reset = csi_seq(0)
 
@@ -113,18 +113,18 @@ Check https://en.wikipedia.org/wiki/ANSI_escape_code for more info"""
 
     # Rainbow
     rainbow = [csi_color_seq(_i) for _i in [
-        52,   88, 124, 160, 196,  # red
+        52,  88,  124, 160, 196,  # red
         202, 208, 214, 220, 226,  # orange to yellow
-        190, 154, 118,  82,  46,  # yellow to green
-        47,   48,  49,  50,  51,  # green to blue
-        45,   39,  33,  27,       # blue
-        57,   56,  55,  54,  53,  # blue to purple
+        190, 154, 118, 82,  46,   # yellow to green
+        47,  48,  49,  50,  51,   # green to blue
+        45,  39,  33,  27,        # blue
+        57,  56,  55,  54,  53,   # blue to purple
     ]]
     progress_pride = duplicate_each_elem([csi_color_seq(_i) for _i in [
-        15,  213,  51,  95,   0,
+        15,  213, 51,  95,  0,
         # white, pink, cyan, brown, black
     ]], 3) + duplicate_each_elem([csi_color_seq(_i) for _i in [
-        196, 208, 220,  46,  27,  90,
+        196, 208, 220, 46,  27,  90,
         # red, orange, yellow, green, blue, purple
     ]], 3)
 
@@ -186,14 +186,14 @@ def print_all_colors():
 
 
 def show_named_colors():
-    for name, val in Color.__dict__.items():
-        if not name.startswith("__") and not name.endswith("__") and isinstance(val, str):
+    for name, val in get_class_attr_dict(Color).items():
+        if isinstance(val, str):
             print(f" · {val}{name}{Color.reset}")
 
 
 def remove_colors(string: str):
     res_string = string
-    res_string = re.sub("\\".join(c for c in ESCAPE_SEQ) + ".*?m", "", res_string)
+    res_string = re.sub("\\".join(c for c in ESCAPE_SEQ) + ".*?[mABCD]", "", res_string)
     # the '?' is to remove the greedy behavior of the '*' quantifier
     # in order to match with the smallest text inside the brackets, if there is more than one pair of brackets
     return res_string

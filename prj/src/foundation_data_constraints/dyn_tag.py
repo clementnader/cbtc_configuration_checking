@@ -21,7 +21,7 @@ def r_dyntag_3():
         print_log(f"\r{progress_bar(i, nb_dyn_tags)} processing DMC timeout distance of {dyn_tag}...", end="")
         res_dict[dyn_tag] = get_tag_to_last_route_distance(dyn_tag_val)
         calc_dmc_timeout_dist = round(res_dict[dyn_tag]["tag_to_last_route_distance"] + block_laying_uncertainty, 3)
-        dc_sys_dmc_timeout_dist = round(get_dc_sys_value(dyn_tag_val, DCSYS.IATPM_tags.DmcTimeout.Distance)[0], 3)
+        dc_sys_dmc_timeout_dist = round(get_dc_sys_value(dyn_tag_val, DCSYS.IATPM_tags.DmcTimeout.Distance), 3)
         res_dict[dyn_tag]["calc_dmc_timeout_dist"] = calc_dmc_timeout_dist
         res_dict[dyn_tag]["dc_sys_dmc_timeout_dist"] = dc_sys_dmc_timeout_dist
 

@@ -10,6 +10,8 @@ def get_dc_sys_value(obj: dict[str], attr: dict[str]):
         return obj[attr["attr_name"]]
     else:
         list_attrs = obj[attr["attr_name"]][attr["sub_attr_name"]]
+        if len(list_attrs) == 1:
+            return list_attrs[0]
         list_attrs = [attr for attr in list_attrs if attr is not None]
         return list_attrs
 
