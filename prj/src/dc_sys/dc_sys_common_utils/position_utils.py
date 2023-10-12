@@ -64,14 +64,14 @@ def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, 
     obj_sh = get_sheet_class_from_name(obj_type)
     sh_attrs = get_class_attr_dict(obj_sh).keys()
 
+    if "ExtremiteDuQuai" in sh_attrs:
+        limits = get_platform_oriented_limits(obj_val)
+        return limits
     if "Limit" in sh_attrs:
         limits = get_obj_limits(obj_val, obj_sh.Limit)
         return limits
     if "Extremite" in sh_attrs:
         limits = get_obj_limits(obj_val, obj_sh.Extremite)
-        return limits
-    if "ExtremiteDuQuai" in sh_attrs:
-        limits = get_obj_limits(obj_val, obj_sh.ExtremiteDuQuai)
         return limits
     if "ExtremiteSuivi" in sh_attrs:
         limits = get_obj_limits(obj_val, obj_sh.ExtremiteSuivi)
@@ -88,7 +88,7 @@ def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, 
         return [(seg1, x1), (seg2, x2)]
     if "De" in sh_attrs and "A" in sh_attrs:
         seg1, x1 = get_dc_sys_values(obj_val, obj_sh.De.Seg, obj_sh.De.X)
-        seg2, x2 = get_dc_sys_values(obj_val, obj_sh.To.Seg, obj_sh.To.X)
+        seg2, x2 = get_dc_sys_values(obj_val, obj_sh.A.Seg, obj_sh.A.X)
         return [(seg1, x1), (seg2, x2)]
     return None
 
@@ -99,6 +99,9 @@ def get_obj_oriented_zone_limits(obj_type, obj_name: str) -> Union[None, list[tu
     obj_sh = get_sheet_class_from_name(obj_type)
     sh_attrs = get_class_attr_dict(obj_sh).keys()
 
+    if "ExtremiteDuQuai" in sh_attrs:
+        limits = get_platform_oriented_limits(obj_val)
+        return limits
     if "Limit" in sh_attrs:
         limits = get_obj_oriented_limits(obj_val, obj_sh.Limit)
         return limits
@@ -126,4 +129,16 @@ def get_obj_oriented_limits(obj_val: dict[str], obj_limit_attr) -> Union[None, l
         limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X, obj_limit_attr.Sens))
     else:
         limits = None
+    return limits
+
+
+def get_platform_oriented_limits(obj_val) -> list[tuple[str, float, str]]:
+    limits = list()
+    for seg, x, direction in get_dc_sys_zip_values(obj_val, DCSYS.Quai.ExtremiteDuQuai.Seg,
+                                                   DCSYS.Quai.ExtremiteDuQuai.X, DCSYS.Quai.ExtremiteDuQuai.SensExt):
+        if direction == LineRelatedDirection.SENS_LIGNE:  # the downstream platform end, so the zone is upstream
+            direction = Direction.DECROISSANT
+        elif direction == LineRelatedDirection.SENS_OPPOSE:  # the upstream platform end, so the zone is downstream
+            direction = Direction.CROISSANT
+        limits.append((seg, x, direction))
     return limits

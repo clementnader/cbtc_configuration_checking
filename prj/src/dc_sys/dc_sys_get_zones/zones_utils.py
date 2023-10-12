@@ -47,7 +47,7 @@ def update_segs_within_zones(obj_type_name: str) -> None:
 
     obj_dict = load_sheet(obj_type_name)
     for obj_name, obj_info in obj_dict.items():
-        zone_limits = get_oriented_limits_of_zone(obj_type_name, obj_name)
+        zone_limits = get_oriented_limits_of_obj(obj_type_name, obj_name)
         if not zone_limits:
             return
 

@@ -49,8 +49,8 @@ class LineRelatedDirection:
 
 
 class TrackPredominantDirection:
-    G_a_D = "G->D"
-    D_a_G = "D->G"
+    G_D = "G->D"
+    D_G = "D->G"
 
 
 class Direction:

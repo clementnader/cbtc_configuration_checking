@@ -20,6 +20,7 @@ class Projects:
     Wenzhou = "Wenzhou"
     Mock_up = "Mock-up"
     Mock_up_2 = "Mock-up 2"
+    Mock_up_3 = "Mock-up 3"
 
 
 # PROJECT_NAME = Projects.Ankara
@@ -36,6 +37,7 @@ PROJECT_NAME = Projects.Thessaloniki
 # PROJECT_NAME = Projects.Wenzhou
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2
+# PROJECT_NAME = Projects.Mock_up_3
 
 
 class ProjectDatabaseLoc:
@@ -322,6 +324,10 @@ class ProjectDatabaseLoc:
         # ------------------------------- Mock-up 2 -------------------------------#
         elif project_name == Projects.Mock_up_2:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\Mock-Up DC_SYS\DC_SYS_mock-up2.xls"
+
+        # ------------------------------- Mock-up 3 -------------------------------#
+        elif project_name == Projects.Mock_up_3:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Mock-Up DC_SYS\DC_SYS_mock-up3.xls"
 
 
 DATABASE_LOC = ProjectDatabaseLoc(PROJECT_NAME)

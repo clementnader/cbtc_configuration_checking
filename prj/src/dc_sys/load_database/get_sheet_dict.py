@@ -42,11 +42,13 @@ def get_generic_sh_dict(ws: xlrd.sheet, columns_dict: dict[str], generic_obj_nam
 
 def get_generic_sh_object_key(cols: list, info_for_object):
     keys = list()
-    for attr in cols:
-        if "col" in attr:
-            key = info_for_object[attr["attr_name"]]
+    for col in cols:
+        col_attr = col["attr"]
+        col_type = col["type"]
+        if "col" in col_attr:
+            key = col_type(info_for_object[col_attr["attr_name"]])
         else:
-            key = info_for_object[attr["attr_name"]][attr["sub_attr_name"]][0]
+            key = col_type(info_for_object[col_attr["attr_name"]][col_attr["sub_attr_name"]][0])
         keys.append(key)
     return tuple(keys)
 
