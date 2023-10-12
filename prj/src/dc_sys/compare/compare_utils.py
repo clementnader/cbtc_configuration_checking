@@ -3,7 +3,7 @@
 
 from ...utils import *
 from ...cctool_oo_schema import *
-from ..load_database import load_sheet
+from ..load_database import *
 
 
 __all__ = ["compare_sheet", "compare_all_sheets"]
