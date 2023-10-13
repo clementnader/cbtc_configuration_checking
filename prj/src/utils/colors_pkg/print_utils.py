@@ -24,7 +24,7 @@ def print_title(title: str, color: str = Color.blue):
         len_line = len(remove_colors(line))
         whole_len = max(whole_len, len_line + 10)
 
-    print("\r", end="")
+    print()
     print_bar(whole_len)
     for line in title.splitlines():
         len_line = len(remove_colors(line))

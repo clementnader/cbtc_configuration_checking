@@ -43,8 +43,12 @@ def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x
     if not without_ring_loopback:
         return True
     # We need to find which path is the smallest
-    dist1, _, _ = get_min_path_downstream(start_seg, end_seg, downstream=True)
-    dist2, _, _ = get_min_path_downstream(start_seg, end_seg, downstream=False)
+    if start_x is None or end_x is None:
+        dist1, _, _ = get_min_path_downstream(start_seg, end_seg, downstream=True)
+        dist2, _, _ = get_min_path_downstream(start_seg, end_seg, downstream=False)
+    else:
+        dist1 = get_dist_downstream(start_seg, start_x, end_seg, end_x, downstream=True)
+        dist2 = get_dist_downstream(start_seg, start_x, end_seg, end_x, downstream=False)
     if dist1 is None and dist2 is None:
         print_error(f"Ring configuration: {end_seg=} is at the same time downstream "
                     f"and upstream {start_seg=}."
@@ -160,7 +164,7 @@ def get_min_path_downstream(start_seg: str, end_seg: str, downstream: bool
             # this path will not lead to the end segment
             return
         for next_seg in get_linked_segs(seg, inner_downstream):
-            if next_seg in path:  # for ring
+            if next_seg in path:  # a whole loop has been made
                 continue
             if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
                 next_inner_downstream = not inner_downstream
@@ -231,7 +235,7 @@ def get_downstream_path(start_seg: str, end_seg: str, start_downstream: bool, ma
         if max_nb_paths is not None and len(list_paths) > max_nb_paths:
             return
         for next_seg in get_linked_segs(seg, inner_downstream):
-            if next_seg in path:  # for ring
+            if next_seg in path:  # a whole loop has been made
                 continue
             if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
                 next_inner_downstream = not inner_downstream

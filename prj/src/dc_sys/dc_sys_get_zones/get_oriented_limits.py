@@ -72,38 +72,7 @@ def get_orientation_of_zone_limits(obj_type_name: str, obj_name: str, zone_limit
     if not missed_limits:
         return oriented_zone_limits
 
-    for _ in range(10):  # we try 10 rounds to found all limits orientation
-        oriented_zone_limits.extend([limit for limit in update_missed_limits(
-            obj_type_name, obj_name, oriented_zone_limits, zone_limits) if limit not in oriented_zone_limits])
-        missed_limits = get_missed_limits(oriented_zone_limits, zone_limits)
-        if not missed_limits:
-            return oriented_zone_limits
-
-    # Not all limits orientation has been found
-    print_error(f"Unable to get all oriented limits for {obj_type_name} {obj_name}.")
-    print(f"{zone_limits = }\n{oriented_zone_limits = }")
-    oriented_zone_limits.extend([(seg, x, None) for seg, x in missed_limits])
-
-    return oriented_zone_limits
-
-
-def update_missed_limits(obj_type_name: str, obj_name: str, oriented_zone_limits: list[tuple[str, float, bool]],
-                         zone_limits: list[tuple[str, float]]) -> list[tuple[str, float, bool]]:
-    missed_limits = get_missed_limits(oriented_zone_limits, zone_limits)
-    if not missed_limits:
-        return []
-
-    if not oriented_zone_limits:
-        print_error(f"No limit direction was found for {obj_type_name} {obj_name}:\n"
-                    f"{zone_limits}.")
-        return []
-
-    found_limits = list()
-    for start_limit in oriented_zone_limits:
-        found_limits.extend([limit for limit in find_other_limits(obj_type_name, obj_name, start_limit, zone_limits)
-                             if limit not in found_limits])
-
-    return found_limits
+    return update_missed_limits(obj_type_name, obj_name, oriented_zone_limits, zone_limits)
 
 
 def get_missed_limits(oriented_zone_limits: list[tuple[str, float, bool]],
@@ -111,26 +80,80 @@ def get_missed_limits(oriented_zone_limits: list[tuple[str, float, bool]],
     return [limit for limit in zone_limits if limit not in [(seg, x) for seg, x, _ in oriented_zone_limits]]
 
 
-def find_other_limits(obj_type_name: str, obj_name: str, start_limit: tuple[str, float, bool],
-                      zone_limits: list[tuple[str, float]]) -> list[tuple[str, float, bool]]:
+def update_missed_limits(obj_type_name: str, obj_name: str, oriented_zone_limits: list[tuple[str, float, bool]],
+                         zone_limits: list[tuple[str, float]]) -> list[tuple[str, float, Optional[bool]]]:
+    nb_limits = len(zone_limits)
+    for cnt in range(nb_limits):
+        missed_limits = get_missed_limits(oriented_zone_limits, zone_limits)
+        if not missed_limits:  # all limits orientations have been found
+            break
+
+        if cnt < len(oriented_zone_limits):  # we try to reach limits from an already oriented limit
+            start_limit = oriented_zone_limits[cnt]
+            other_limits, wrong_limit_direction = find_other_limits(start_limit, zone_limits)
+            if wrong_limit_direction:
+                print_error(f"Reached the end of track, the zone is not closed for {obj_type_name} {obj_name}:\n"
+                            f"problem starting from {start_limit}: "
+                            f"end of track has been reached or a whole loop has been made.")
+                continue
+            oriented_zone_limits.extend([limit for limit in other_limits if limit not in oriented_zone_limits])
+
+        else:  # we try to reach limits from a non-oriented limit (we will try in both directions)
+            cnt -= len(oriented_zone_limits)
+            start_limit_seg, start_limit_x = missed_limits[cnt]
+            # try in increasing direction
+            start_limit = (start_limit_seg, start_limit_x, True)
+            other_limits, wrong_limit_direction = find_other_limits(start_limit, zone_limits)
+            if wrong_limit_direction:
+                # try in decreasing direction
+                start_limit = (start_limit_seg, start_limit_x, False)
+                other_limits, wrong_limit_direction = find_other_limits(start_limit, zone_limits)
+                if wrong_limit_direction:
+                    print_error(f"Reached the end of track, the zone is not closed for {obj_type_name} {obj_name}:\n"
+                                f"problem starting from {(start_limit_seg, start_limit_x)} (tried in both directions): "
+                                f"end of track has been reached or a whole loop has been made.")
+                    continue
+            oriented_zone_limits.append(start_limit)
+            oriented_zone_limits.extend([limit for limit in other_limits if limit not in oriented_zone_limits])
+
+    missed_limits = get_missed_limits(oriented_zone_limits, zone_limits)
+    if missed_limits:  # Not all limits orientation has been found
+        print_error(f"Unable to get all oriented limits for {obj_type_name} {obj_name}.")
+        print(f"{zone_limits = }\n{oriented_zone_limits = }")
+        oriented_zone_limits.extend([(seg, x, None) for seg, x in missed_limits])
+
+    return oriented_zone_limits
+
+
+def find_other_limits(start_limit: tuple[str, float, bool], zone_limits: list[tuple[str, float]]
+                      ) -> tuple[list[tuple[str, float, bool]], bool]:
     start_seg, start_x, downstream = start_limit
     other_limit = first_seg_on_another_limit(start_seg, start_x, downstream, zone_limits)
     if other_limit is not None:
-        return [other_limit]
+        return [other_limit], False
 
     other_limits = list()
+    wrong_limit_direction = False
+    all_accessed_segs = list()
 
     def inner_recurs_next_seg(seg: str, inner_downstream: bool):
-        nonlocal other_limits
-        if not get_linked_segs(seg, inner_downstream):
-            print_error(f"Reached the end of track, the zone is not closed for {obj_type_name} {obj_name}.")
+        nonlocal other_limits, wrong_limit_direction, all_accessed_segs
+        if wrong_limit_direction:
+            return
+        if not get_linked_segs(seg, inner_downstream):  # reach end of track
+            wrong_limit_direction = True
             return
 
+        all_accessed_segs.append((seg, inner_downstream))
         for next_seg in get_linked_segs(seg, inner_downstream):
             if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
+
+            if (next_seg, next_inner_downstream) in all_accessed_segs:  # a whole loop has been made
+                wrong_limit_direction = True
+                return
 
             reached_limit = reached_other_limit(next_seg, next_inner_downstream, zone_limits)
             if reached_limit is not None:
@@ -139,7 +162,7 @@ def find_other_limits(obj_type_name: str, obj_name: str, start_limit: tuple[str,
             inner_recurs_next_seg(next_seg, next_inner_downstream)
 
     inner_recurs_next_seg(start_seg, downstream)
-    return other_limits
+    return other_limits, wrong_limit_direction
 
 
 def first_seg_on_another_limit(start_seg: str, start_x: float, downstream: bool,
