@@ -4,7 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
-from ..dc_sys_common_utils import get_dist, get_list_of_paths, is_seg_downstream
+from ..dc_sys_path_and_distances import *
 
 
 __all__ = ["give_point_seg_vb", "get_len_vb", "get_segs_in_vb", "is_seg_in_vb", "get_vb_associated_to_sw",

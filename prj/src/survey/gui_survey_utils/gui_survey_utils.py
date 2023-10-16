@@ -132,10 +132,10 @@ def is_everything_ready(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
         test = False
 
     for survey_name, survey_info in survey_loc_dict.items():
-        if survey_info["survey_directory"].get() == "" or survey_info["survey_file_name"].get() == "" \
-                or survey_info["survey_sheet"].get() == "" or survey_info["start_row"].get() == "" \
-                or survey_info["ref_col"].get() == "" or survey_info["type_col"].get() == "" \
-                or survey_info["track_col"].get() == "" or survey_info["survey_kp_col"].get() == "":
+        if (survey_info["survey_directory"].get() == "" or survey_info["survey_file_name"].get() == ""
+                or survey_info["survey_sheet"].get() == "" or survey_info["start_row"].get() == ""
+                or survey_info["ref_col"].get() == "" or survey_info["type_col"].get() == ""
+                or survey_info["track_col"].get() == "" or survey_info["survey_kp_col"].get() == ""):
             test = False
 
     return test

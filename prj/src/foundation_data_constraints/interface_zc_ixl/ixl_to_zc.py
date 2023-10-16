@@ -55,8 +55,8 @@ def _rule_1_check_plt(plt_msg_dict: dict, in_cbtc: bool):
 
         ws_eqpt_dict = load_sheet(DCSYS.Wayside_Eqpt)
         related_ws_eqpt = get_dc_sys_value(plt, DCSYS.Quai.RelatedWaysideEquip)
-        with_ess = get_dc_sys_value(plt, DCSYS.Quai.WithEss) == YesOrNo.O and \
-            get_dc_sys_value(ws_eqpt_dict[related_ws_eqpt], DCSYS.Wayside_Eqpt.Function.Zc[0])
+        with_ess = (get_dc_sys_value(plt, DCSYS.Quai.WithEss) == YesOrNo.O
+                    and get_dc_sys_value(ws_eqpt_dict[related_ws_eqpt], DCSYS.Wayside_Eqpt.Function.Zc[0]))
         if _check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_ess,
                            f"flag [With ESS] set to 'Y' "
                            f"and [Related Wayside Equip] {related_ws_eqpt} is a ZC",
@@ -103,8 +103,8 @@ def _rule_1_check_signal(sig_msg_dict: dict, in_cbtc: bool):
         is_not_buffer_or_pr = get_dc_sys_value(sig, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
                                                                             SignalType.PERMANENT_ARRET]
 
-        cbtc_terr_exit_or_with_iatp = get_dc_sys_value(sig, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O or \
-            get_dc_sys_value(sig, DCSYS.Sig.WithIatpDepCheck) == YesOrNo.O
+        cbtc_terr_exit_or_with_iatp = (get_dc_sys_value(sig, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O
+                                       or get_dc_sys_value(sig, DCSYS.Sig.WithIatpDepCheck) == YesOrNo.O)
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, is_not_buffer_or_pr,
                            "should exist for all Signals (excluding buffers and permanent reds)",
                            TypeNomLogiqueInfoMESPAS.PR_ASPECT,
@@ -282,8 +282,8 @@ def _rule_1_check_ovl(ovl_msg_dict: dict, in_cbtc: bool):
     success = True
     for ovl_name, ovl in ovl_dict.items():
         related_sig = get_dc_sys_value(ovl, DCSYS.IXL_Overlap.DestinationSignal)
-        with_overlap = get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.Enc_Dep) == YesOrNo.O and \
-            get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST
+        with_overlap = (get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.Enc_Dep) == YesOrNo.O
+                        and get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST)
         if _check_obj_msgs(DCSYS.IXL_Overlap, ovl_msg_dict, ovl_name, with_overlap,
                            f"signal upstream the overlap ({related_sig}) has flag [With overlap] set to 'Y' "
                            f"and [Overlap Type] = 'NO_CBTC_REQUEST'",
@@ -385,8 +385,7 @@ def _rule_1_check_tsr_area(tsr_area_msg_dict: dict, in_cbtc: bool):
         for tsr_speed in tsr_speed_dict.keys():
             tsr_area_speed_name = tsr_area_name + "_" + tsr_speed
             for zc_name in get_all_zc():
-                is_zc_zcr = get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr) \
-                                == YesOrNo.O
+                is_zc_zcr = get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr) == YesOrNo.O
                 zcr_and_interfaced_with_hmi = is_zc_zcr and tsr_interfaced_with_vhmi
 
                 if _check_obj_msgs(DCSYS.TSR_Area, tsr_area_msg_dict, tsr_area_speed_name,

@@ -79,8 +79,8 @@ def plt_upstream_on_seg(ref_seg, ref_direction: str, ref_x: float = None):
             upstream_limit = limits[1]
         test_seg, test_x, plt_limit = upstream_limit
         if test_seg == ref_seg:
-            if ref_x is None or (ref_direction == Direction.CROISSANT and test_x <= ref_x) \
-                    or (ref_direction == Direction.DECROISSANT and test_x >= ref_x):
+            if (ref_x is None or (ref_direction == Direction.CROISSANT and test_x <= ref_x)
+                    or (ref_direction == Direction.DECROISSANT and test_x >= ref_x)):
                 plt_ends_on_seg.append((plt_name, plt_limit, test_x))
     if not plt_ends_on_seg:
         return None
@@ -96,8 +96,8 @@ def another_sig_upstream_on_seg(ref_sig_name, ref_seg, ref_direction: str, ref_x
         test_seg, test_x = get_dc_sys_values(sig, DCSYS.Sig.Seg, DCSYS.Sig.X)
         test_direction = get_dc_sys_value(sig, DCSYS.Sig.Sens)
         if test_direction == ref_direction and test_seg == ref_seg:
-            if ref_x is None or (ref_direction == Direction.CROISSANT and test_x <= ref_x) \
-                    or (ref_direction == Direction.DECROISSANT and test_x >= ref_x):
+            if (ref_x is None or (ref_direction == Direction.CROISSANT and test_x <= ref_x)
+                    or (ref_direction == Direction.DECROISSANT and test_x >= ref_x)):
                 sigs_on_seg.append((sig_name, test_x))
     if not sigs_on_seg:
         return None

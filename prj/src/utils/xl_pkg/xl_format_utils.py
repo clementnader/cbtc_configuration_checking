@@ -17,6 +17,7 @@ __all__ = ["XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comme
            "create_cell", "create_merged_cell",
            "set_font_size", "set_bold_font", "set_bg_color",
            "center_vertical_alignment", "center_horizontal_alignment", "enable_line_wrap",
+           "adjust_fixed_row_height",
            "draw_exterior_borders", "draw_exterior_borders_on_range",
            "add_duplicate_values_conditional_formatting", "add_formula_conditional_formatting"]
 
@@ -166,6 +167,16 @@ def enable_line_wrap(ws: openpyxl.worksheet.worksheet.Worksheet,
     cell = get_cell_from_row_and_column(cell, row, column)
     alignment_style = openpyxl.styles.Alignment(wrap_text=True)
     ws[cell].alignment += alignment_style
+
+
+def adjust_fixed_row_height(ws: openpyxl.worksheet.worksheet.Worksheet,
+                            cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+    row, column = get_row_and_column_from_cell(cell, row, column)
+    value = get_xlsx_value(ws, row, column)
+    if value is None or "\n" not in value:
+        return
+    line_feed_count = value.count("\n")
+    ws.row_dimensions[row].height = (line_feed_count + 1) * 15
 
 
 # ------ Cell Borders ------ #

@@ -24,8 +24,8 @@ def create_cctool_oo_enum_lists_info_file():
                     f"the Python file for the Enum List classes is not created.")
         return
 
-    file_desc = "Automatically generated Python file defining classes for the enumerates from the EnumList sheet " \
-                "of the CCTool-OO Schema file."
+    file_desc = ("Automatically generated Python file defining classes for the enumerates from the EnumList sheet "
+                 "of the CCTool-OO Schema file.")
     text = create_header_for_the_generated_files(cctool_oo_file, file_desc)
     text += add_obj_attrs(cctool_oo_enum_lists_dict)
     text = text.replace("\t", "    ")

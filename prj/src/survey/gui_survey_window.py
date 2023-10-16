@@ -107,11 +107,11 @@ def create_new_survey_tab(tab_control: tkinter.ttk.Notebook, tabs: list[tkinter.
             tab_control, tab_frame, tabs, delete_buttons_dict, survey_loc_dict, bg), bg=bg)
 
     if tab_number != 1:  # if there is only one tab, no delete button
-        delete_buttons_dict[tab_name] = \
-            add_delete_tab_button(tab_control, tab_frame, tabs, delete_buttons_dict, survey_loc_dict)
+        delete_buttons_dict[tab_name] = (
+            add_delete_tab_button(tab_control, tab_frame, tabs, delete_buttons_dict, survey_loc_dict))
     if len(tabs) == 2:  # if there are more than one tab, add the delete button on the first tab
-        delete_buttons_dict[tab_control.tab(tabs[0], "text")] = \
-            add_delete_tab_button(tab_control, tabs[0], tabs, delete_buttons_dict, survey_loc_dict)
+        delete_buttons_dict[tab_control.tab(tabs[0], "text")] = (
+            add_delete_tab_button(tab_control, tabs[0], tabs, delete_buttons_dict, survey_loc_dict))
 
 
 def add_another_survey_button(tab_control: tkinter.ttk.Notebook, tab_frame: tkinter.Frame, tabs: list,

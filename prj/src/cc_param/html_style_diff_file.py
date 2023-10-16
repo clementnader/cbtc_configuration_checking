@@ -12,6 +12,6 @@ def additional_css_style():
     html_code += "tr:hover {background: #EEEEFF;}\n"
     html_code += "tr.headline:hover {background: #FFFFFF;}\n"  # deactivate hover for headline
     html_code += "th:hover, td:hover {background: #CCCCFF;}\n"
-    html_code += "th:not(.sticky):hover::after, td:hover::after {background: #EEEEFF; " \
-                 "content: ''; position: absolute; left: 0; top: -5000px; width: 100%; height: 10000px; z-index: -1;}\n"
+    html_code += ("th:not(.sticky):hover::after, td:hover::after {background: #EEEEFF; content: ''; "
+                  "position: absolute; left: 0; top: -5000px; width: 100%; height: 10000px; z-index: -1;}\n")
     return html_code

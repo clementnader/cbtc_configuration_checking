@@ -106,8 +106,8 @@ def _check_message_zc(obj_type, obj_name: str, associated_msg, obj_type_str, tar
             ):
         expected_zc_list, related_obj = get_zc_managing_obj(obj_type, obj_name)
         managed = True
-        if get_sh_name(obj_type) == get_sh_name(DCSYS.Sig)\
-                or get_sh_name(obj_type) == get_sh_name(DCSYS.Protection_Zone):
+        if (get_sh_name(obj_type) == get_sh_name(DCSYS.Sig)
+                or get_sh_name(obj_type) == get_sh_name(DCSYS.Protection_Zone)):
             do_print_warning = False
     else:
         managed = False

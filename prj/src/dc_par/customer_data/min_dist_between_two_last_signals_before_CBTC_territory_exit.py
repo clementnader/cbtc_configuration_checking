@@ -6,6 +6,9 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
+__all__ = ["min_dist_between_two_last_signals_before_cbtc_territory_exit"]
+
+
 def get_sig_before_cbtc_exit(sig_dict: dict) -> list[str]:
     res_list = list()
     for sig, sig_value in sig_dict.items():

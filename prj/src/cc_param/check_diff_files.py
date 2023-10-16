@@ -129,8 +129,8 @@ def read_csv(line):
 def html_display_info():
     multiple_types = len(TYPES_OF_TRAIN) > 1
     html_code = f"<p>"
-    html_code += f"There are {len(TYPES_OF_TRAIN)} types of train units:" if multiple_types \
-        else f"There is {len(TYPES_OF_TRAIN)} type of train units:"
+    html_code += (f"There are {len(TYPES_OF_TRAIN)} types of train units:" if multiple_types
+                  else f"There is {len(TYPES_OF_TRAIN)} type of train units:")
     html_code += "<br />\n"
     html_code += ", ".join([f"{train_type} ({html_display_train_types_limits(limits)})"
                             for train_type, limits in zip(TYPES_OF_TRAIN, LIST_TRAIN_NUM_LIMITS)])
@@ -170,11 +170,11 @@ def html_result_table(dict_diff):
     html_code += "\t\t<tr class=\"headline\">\n"
     for i, sub_key in enumerate(list_sub_keys):
         if i == RANK_COLUMN:
-            html_code += f"\t\t\t<th>" \
-                         f"{sub_key}</th>\n"
+            html_code += (f"\t\t\t<th>"
+                          f"{sub_key}</th>\n")
         elif i == ID_COLUMN:
-            html_code += f"\t\t\t<th>" \
-                         f"{sub_key}</th>\n"
+            html_code += (f"\t\t\t<th>"
+                          f"{sub_key}</th>\n")
         else:
             html_code += f"\t\t\t<th>{sub_key}</th>\n"
     html_code += "\t\t</tr>\n"
@@ -184,11 +184,11 @@ def html_result_table(dict_diff):
             html_code += "\t\t<tr>\n"
             for i, value in enumerate(values):
                 if i == RANK_COLUMN:
-                    html_code += f"\t\t\t<th>" \
-                                 f"{values.get(value, '-')}</th>\n"
+                    html_code += (f"\t\t\t<th>"
+                                  f"{values.get(value, '-')}</th>\n")
                 elif i == ID_COLUMN:
-                    html_code += f"\t\t\t<th>" \
-                                 f"{values.get(value, '-')}</th>\n"
+                    html_code += (f"\t\t\t<th>"
+                                  f"{values.get(value, '-')}</th>\n")
                 else:
                     html_code += f"\t\t\t<td>{values.get(value, '-')}</td>\n"
             html_code += "\t\t</tr>\n"

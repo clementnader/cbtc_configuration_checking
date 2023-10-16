@@ -5,6 +5,9 @@ import os
 from ..utils import *
 
 
+__all__ = ["get_mtor_ccte_ko"]
+
+
 # MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Riyadh\Verification of MTOR and CCTE Plugs"
 MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Glasgow\Verification of MTOR and CCTE Plugs"
 # MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\Verification of MTOR and CCTE Plugs"
@@ -59,11 +62,11 @@ def _analyze_mtor_ccte_file(file):
     else:
         ws = get_xl_sheet_by_name(wb, RES_SHEETS["mtor"])
         mtor = True
-    dict_of_kos = _get_kos_res_sheet(ws, mtor=mtor)
+    dict_of_kos = _get_kos_res_sheet(ws)
     return dict_of_kos, mtor
 
 
-def _get_kos_res_sheet(ws, mtor: bool):
+def _get_kos_res_sheet(ws):
     dict_of_kos = dict()
     first_row = 2
     param_id_column = "A"

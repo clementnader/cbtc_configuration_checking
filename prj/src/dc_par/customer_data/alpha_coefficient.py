@@ -5,6 +5,9 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
+__all__ = ["cd_alpha"]
+
+
 def cd_alpha(variables: dict = None):
     train_types_dict = load_sheet(DCSYS.Train_Types)
 

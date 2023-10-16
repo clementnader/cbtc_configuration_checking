@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .read_cc_param import get_cc_params
+from .read_cc_param import *
+
+
+__all__ = ["get_cc_param_values"]
 
 
 def get_cc_param_values(param_name: str):

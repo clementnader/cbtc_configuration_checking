@@ -64,8 +64,8 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
         is_not_buffer_or_pr = get_dc_sys_value(sig, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
                                                                             SignalType.PERMANENT_ARRET]
 
-        with_overlap = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Enc_Dep) == YesOrNo.O and \
-            get_dc_sys_value(sig, DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST
+        with_overlap = (is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Enc_Dep) == YesOrNo.O
+                        and get_dc_sys_value(sig, DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST)
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_overlap,
                            "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
                            TypeNomLogiqueInfoPASMES.CBTC_OLZ, should_be_vital=True) is False:
@@ -76,8 +76,8 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
                            TypeNomLogiqueInfoPASMES.X_RQ, should_be_vital=True) is False:
             success = False
 
-        sa_or_overlap = (is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == YesOrNo.O) \
-            or with_overlap
+        sa_or_overlap = ((is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == YesOrNo.O)
+                         or with_overlap)
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, sa_or_overlap, "flag [With SA] set to 'Y' or "
                            "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
                            TypeNomLogiqueInfoPASMES.STOP_ASSURE, should_be_vital=True) is False:
@@ -88,8 +88,9 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
                            TypeNomLogiqueInfoPASMES.CBTC_APZ, should_be_vital=True) is False:
             success = False
 
-        with_arc = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Da_Passage) == YesOrNo.O and \
-            get_dc_sys_value(sig, DCSYS.Sig.TypeDa) in [TypeDA.SECTIONAL_RELEASE, TypeDA.TRAIN_PASSAGE_PROVING]
+        with_arc = (is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Da_Passage) == YesOrNo.O
+                    and get_dc_sys_value(sig, DCSYS.Sig.TypeDa)
+                    in [TypeDA.SECTIONAL_RELEASE, TypeDA.TRAIN_PASSAGE_PROVING])
         if _check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_arc, "flag [With ARC] set to 'Y' and "
                            "[ARC Type] = 'SECTIONAL_RELEASE' or 'TRAIN_PASSAGE_PROVING'",
                            TypeNomLogiqueInfoPASMES.TRAIN_PASS_HS, should_be_vital=True) is False:
@@ -259,8 +260,8 @@ def _rule_3_check_tsr_area_speed(tsr_area_speed_msg_dict: dict, in_cbtc: bool):
         for tsr_speed in tsr_speed_dict.keys():
             tsr_area_speed_name = tsr_area_name + "_" + tsr_speed
             for zc_name in get_all_zc():
-                is_zc_zcr = get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr)[0] \
-                                == YesOrNo.O
+                is_zc_zcr = (get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr)[0]
+                             == YesOrNo.O)
                 zcr_and_interfaced_with_hmi = is_zc_zcr and tsr_interfaced_with_vhmi
                 if _check_obj_msgs(DCSYS.TSR_Area, tsr_area_speed_msg_dict, tsr_area_speed_name,
                                    zcr_and_interfaced_with_hmi, f"message transmitter {zc_name} is a ZCR "

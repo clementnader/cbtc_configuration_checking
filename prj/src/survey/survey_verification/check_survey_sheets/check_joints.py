@@ -13,10 +13,11 @@ def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
     joints_dict = get_joints_dict()
     res_dict = dict()
     for joint_name, joint_val in joints_dict.items():
-        other_name = joint_val["other_name"]
-        if other_name in survey_info:
+        other_name = joint_val.get("other_name")
+        if other_name is not None and other_name in survey_info:
             joint_name = other_name
-        survey_obj_info = survey_info.get(joint_name)
+        survey_obj_info = survey_info.get(joint_name.upper())
+        joint_name = survey_obj_info["obj_name"] if survey_obj_info is not None else joint_name
         survey_track = survey_obj_info["track"] if survey_obj_info is not None else None
         surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
         surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
@@ -33,7 +34,8 @@ def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
 
 def _add_extra_info_from_survey(joints_dict: dict[str, dict[str, str]], survey_info: dict[str, dict[str]]):
     extra_dict = dict()
-    for joint_name, joint_val in survey_info.items():
+    for joint_val in survey_info.values():
+        joint_name = joint_val["obj_name"]
         if _is_joint_in_joints_dict(joint_name, joints_dict):
             continue
         extra_dict[joint_name] = {"track": None, "dc_sys_kp": None}
@@ -46,6 +48,6 @@ def _add_extra_info_from_survey(joints_dict: dict[str, dict[str, str]], survey_i
 def _is_joint_in_joints_dict(joint_name, joints_dict):
     for key, val in joints_dict.items():
         other_name = val["other_name"]
-        if joint_name == key or joint_name == other_name:
+        if joint_name.upper() == key or joint_name.upper() == other_name:
             return True
     return False

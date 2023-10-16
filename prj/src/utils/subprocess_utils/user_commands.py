@@ -37,6 +37,6 @@ def get_user_full_name() -> str:
 
 
 def cmd_to_get_full_name(full_name_attr: str) -> str:
-    cmd = f"@echo off && FOR /f \"tokens=2*\" %n IN (\'net user \"%USERNAME%\" /domain^" \
-          f"|findstr /C:\"{full_name_attr}\"\') DO echo %o"
+    cmd = (f"@echo off && FOR /f \"tokens=2*\" %n IN (\'net user \"%USERNAME%\" /domain^"
+           f"|findstr /C:\"{full_name_attr}\"\') DO echo %o")
     return cmd

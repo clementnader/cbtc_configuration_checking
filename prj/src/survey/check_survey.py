@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from ..utils import *
-from .check_d932 import *
-from .load_d932 import *
+from .survey_verification import *
+from .load_survey import *
 
 
 __all__ = ["check_survey"]

@@ -5,6 +5,9 @@ from ..cctool_oo_schema import *
 from ..dc_sys import *
 
 
+__all__ = ["get_slope_at_plt"]
+
+
 def get_slope_at_plt(in_cbtc: bool = True):
     if in_cbtc:
         plt_dict = get_platforms_in_cbtc_ter()

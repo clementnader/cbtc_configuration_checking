@@ -106,8 +106,8 @@ def _add_none_limits(block_name, matching_blocks):
                                    and track == missing_lim_track]
         if other_lim_on_same_track:
             other_lim_kp = float(other_lim_on_same_track[0][1])
-            matching_blocks[(missing_lim_track, missing_lim_kp)] = "_right" if float(missing_lim_kp) > other_lim_kp \
-                else "_left"
+            matching_blocks[(missing_lim_track, missing_lim_kp)] = ("_right" if float(missing_lim_kp) > other_lim_kp
+                                                                    else "_left")
         else:
             matching_blocks[(missing_lim_track, missing_lim_kp)] = _add_switch_in_name(block_name, matching_blocks,
                                                                                        missing_limit_counter)

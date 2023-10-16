@@ -21,9 +21,9 @@ def min_switch_area_length(in_cbtc: bool = False):
         sw_block_name, sw_block_value = get_block_associated_to_sw(sw_value)
         dict_switch_area_length[sw]["len_point_side_dict"] = get_len_point_side(sw_block_value, sw_value)
         dict_switch_area_length[sw]["min_flank_area_length_dict"] = get_min_flank_area_length(sw_value)
-        dict_switch_area_length[sw]["switch_area_length"] = \
-            dict_switch_area_length[sw]["min_flank_area_length_dict"]["min_flank_area_length"] \
-            + dict_switch_area_length[sw]["len_point_side_dict"]["len_point_side"]
+        dict_switch_area_length[sw]["switch_area_length"] = (
+                dict_switch_area_length[sw]["min_flank_area_length_dict"]["min_flank_area_length"]
+                + dict_switch_area_length[sw]["len_point_side_dict"]["len_point_side"])
     print_log(f"\r{progress_bar(nb_sw, nb_sw, end=True)} processing length of switches area finished.\n")
 
     min_switch_area_len = min(value["switch_area_length"] for sw, value in dict_switch_area_length.items())
@@ -65,7 +65,7 @@ def get_len_point_side(sw_block, sw_value):
     return {"len_point_side": dist, "path_len_point_side": associated_key, "dict_len_point_side": dict_len_point_side}
 
 
-def get_min_flank_area_length(sw):
+def get_min_flank_area_length(sw: dict) -> dict[str]:
     """ Return the minimal flank area length for a switch in left or right position """
     dict_min_flank_area_len = dict()
     dict_min_flank_area_len.update(get_right_or_left_flank_area_length(sw, right=True))
@@ -79,7 +79,7 @@ def get_min_flank_area_length(sw):
             "dict_min_flank_area_len": dict_min_flank_area_len}
 
 
-def get_right_or_left_flank_area_length(sw, right: bool):
+def get_right_or_left_flank_area_length(sw: dict, right: bool) -> dict[str, dict[str, Union[float, str]]]:
     directed_flank = DCSYS.Aig.AreaRightPositionFlank if right else DCSYS.Aig.AreaLeftPositionFlank
     min_flank_area_len = None
     min_pos = None
@@ -96,10 +96,10 @@ def get_right_or_left_flank_area_length(sw, right: bool):
     return {min_pos: {"flank_area_len": min_flank_area_len, "path": min_path}}
 
 
-def get_dist_flank_position(flank_pos):
+def get_dist_flank_position(flank_pos: tuple[str, float, str, float]) -> tuple[Optional[float], Optional[str]]:
     begin_seg, begin_x, end_seg, end_x = flank_pos
     if not begin_seg:
         return None, None
 
-    return get_dist(begin_seg, begin_x, end_seg, end_x, verbose=True), f"between ({begin_seg}, {begin_x})" \
-                                                                       f" and ({end_seg}, {end_x})"
+    return (get_dist(begin_seg, begin_x, end_seg, end_x, verbose=True),
+            f"between ({begin_seg}, {begin_x}) and ({end_seg}, {end_x})")

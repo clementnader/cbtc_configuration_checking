@@ -3,7 +3,8 @@
 
 import os
 from ...utils import *
-from ..d932_utils import *
+from ..survey_types import *
+from ..survey_utils import *
 
 
 __all__ = ["create_survey_verif_file"]
@@ -60,10 +61,12 @@ def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]):
         surveyed_kp_comment = obj_val["surveyed_kp_comment"]
         comments = obj_val["comments"]
 
+        reverse_polarity = check_polarity(dc_sys_kp, surveyed_kp)
+
         _add_line_info(ws, row, obj_name, track, dc_sys_kp, survey_track, surveyed_kp)
         _add_line_cell_comments(ws, row, surveyed_kp_comment)
         _add_line_calculations(ws, row, tolerance)
-        _add_line_comments_column(ws, row, comments)
+        _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity)
 
 
 def _add_line_info(ws, row: int, obj_name: str, track: str, dc_sys_kp: float,
@@ -84,21 +87,35 @@ def _add_line_cell_comments(ws, row: int, surveyed_kp_comment: str):
         add_cell_comment(ws, surveyed_kp_comment, row=row, column=SURVEYED_KP_COL)
 
 
-def _add_line_comments_column(ws, row: int, comments: str):
+def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, reverse_polarity: bool):
+    if reverse_polarity:
+        if comments is None:
+            comments = '= '
+        else:
+            comments = f'= "{comments}"\n'
+        comments += (f'"Opposite sign in survey.\n'
+                     f'Difference with absolute signs makes " & '
+                     f'ROUND(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row}), 3) & ",\nwhich is "'
+                     f' & IF(ABS(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row})) <= {tolerance},'
+                     f' "lower", "larger") & " than the tolerance " & {tolerance}'
+                     f' & IF(ABS(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row})) <= {tolerance},'
+                     f' " -> OK", " -> KO") & "."')
     if comments is not None:
         create_cell(ws, comments, row=row, column=COMMENTS_COL, line_wrap=True)
+        # line feeds inside a formula are not directly taken into account by the line wrap to autofit the row height
+        adjust_fixed_row_height(ws, row=row, column=COMMENTS_COL)
 
 
 def _add_line_calculations(ws, row: int, tolerance: str):
-    difference_formula = f'= IF(ISBLANK({NAME_COL}{row}), "", ' \
-                         f'IF(ISBLANK({DC_SYS_KP_COL}{row}), "Not in DC_SYS", ' \
-                         f'IF(ISBLANK({SURVEYED_KP_COL}{row}), "Not Surveyed", ' \
-                         f'{DC_SYS_KP_COL}{row} - {SURVEYED_KP_COL}{row})))'
+    difference_formula = (f'= IF(ISBLANK({NAME_COL}{row}), "", '
+                          f'IF(ISBLANK({DC_SYS_KP_COL}{row}), "Not in DC_SYS", '
+                          f'IF(ISBLANK({SURVEYED_KP_COL}{row}), "Not Surveyed", '
+                          f'{DC_SYS_KP_COL}{row} - {SURVEYED_KP_COL}{row})))')
     create_cell(ws, difference_formula, row=row, column=DIFFERENCE_COL)
-    status_formula = f'= IF({DIFFERENCE_COL}{row} = "", "", ' \
-                     f'IF({DIFFERENCE_COL}{row} = "Not in DC_SYS", "Not in DC_SYS", ' \
-                     f'IF({DIFFERENCE_COL}{row} = "Not Surveyed", "Not Surveyed", ' \
-                     f'IF(ABS({DIFFERENCE_COL}{row}) <= {tolerance}, "OK", "KO"))))'
+    status_formula = (f'= IF({DIFFERENCE_COL}{row} = "", "", '
+                      f'IF({DIFFERENCE_COL}{row} = "Not in DC_SYS", "Not in DC_SYS", '
+                      f'IF({DIFFERENCE_COL}{row} = "Not Surveyed", "Not Surveyed", '
+                      f'IF(ABS({DIFFERENCE_COL}{row}) <= {tolerance}, "OK", "KO"))))')
     create_cell(ws, status_formula, row=row, column=STATUS_COL, center_horizontal=True)
 
 

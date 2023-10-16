@@ -18,8 +18,8 @@ def get_ivb_in_cbtc_ter():
         limits_in_cbtc_ter = list()
         for seg, x in get_dc_sys_zip_values(ivb_value, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X):
             limits_in_cbtc_ter.append(is_point_in_cbtc_ter(seg, x))
-        if any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter) and \
-                all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter):
+        if (any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter)
+                and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_ivb_dict[ivb] = ivb_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
             print_warning(f"IVB {ivb} is both inside and outside CBTC Territory. "
@@ -61,8 +61,8 @@ def get_all_ivb_limits() -> dict[tuple[str, float], str]:
     return dict_ivb_limits
 
 
-def _add_limits_to_dict(ivb_name: str, ivb_limit: tuple[str, float], dict_ivb_limits: dict[tuple[str, float], str]) \
-        -> None:
+def _add_limits_to_dict(ivb_name: str, ivb_limit: tuple[str, float], dict_ivb_limits: dict[tuple[str, float], str]
+                        ) -> None:
     for limit, ivb_names in dict_ivb_limits.items():
         if are_points_matching(limit[0], limit[1], ivb_limit[0], ivb_limit[1]):
             ivb_names += " - " + ivb_name

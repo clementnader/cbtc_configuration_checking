@@ -66,8 +66,8 @@ def get_par_v1_at_rollback_dist_v(local_slope, mtc: bool = False, variables: dic
 def get_par_v2_at_rollback_dist_v(local_slope, mtc: bool = False, variables: dict = None):
     par_gamma_slope = get_par_gamma_slope(local_slope, variables)
     par_v1_at_rollback_dist_v = get_par_v1_at_rollback_dist_v(local_slope, mtc, variables)
-    value = par_v1_at_rollback_dist_v \
-        + (par_gamma_traction_max(variables) + par_gamma_slope) * par_traction_cut_time(variables)
+    value = (par_v1_at_rollback_dist_v
+             + (par_gamma_traction_max(variables) + par_gamma_slope) * par_traction_cut_time(variables))
     if variables is not None:
         par_v1_str = "par_v1_mtc_rollback_dist_v" if mtc else "par_v1_at_rollback_dist_v"
         variables.update({

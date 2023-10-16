@@ -5,6 +5,7 @@ from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
 from ..dc_sys_common_utils import *
+from ..dc_sys_path_and_distances import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
@@ -19,8 +20,8 @@ def get_blocks_in_cbtc_ter():
         limits_in_cbtc_ter = list()
         for seg, x in get_dc_sys_zip_values(block_value, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X):
             limits_in_cbtc_ter.append(is_point_in_cbtc_ter(seg, x))
-        if any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter) and \
-                all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter):
+        if (any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter)
+                and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_block_dict[block] = block_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
             print_warning(f"Block {block} is both inside and outside CBTC Territory. "

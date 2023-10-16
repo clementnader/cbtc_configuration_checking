@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..cctool_oo_schema import *
-from .check_d932.check_survey_sheets import *
+from .survey_verification.check_survey_sheets import *
 
 
 __all__ = ["SURVEY_TYPES_DICT"]

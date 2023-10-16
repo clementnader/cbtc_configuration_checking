@@ -271,8 +271,8 @@ def _check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, co
             continue
         # The constraint does not specify if the message should be vital or not.
         # for associated_msg_name, associated_msg_info in associated_msg.items():
-        #     is_msg_vital = get_dc_sys_value(associated_msg_info, obj_class.TypeFoncSecu) \
-        #                    == VitalOrNotType.SECU
+        #     is_msg_vital = (get_dc_sys_value(associated_msg_info, obj_class.TypeFoncSecu)
+        #                     == VitalOrNotType.SECU)
         #     if is_msg_vital != should_be_vital:
         #         print_error(f"Flow {Color.beige}{associated_msg_name}{Color.reset} "
         #                     f"for {obj_type_str} {Color.blue}{obj_name}{Color.reset} "

@@ -56,7 +56,7 @@ def compare_dict(dict1: dict, dict2: dict, dict1_name: str, dict2_name: str, lvl
                     compare_sub_dict(key, dict1[key], dict2[key], dict1_name, dict2_name, lvl, s)
             else:
                 print("\n".join(s))
-                print(f"{get_print_prefix(lvl - 1)}Values are different: \n"
+                print(f"{get_print_prefix(lvl - 1)}Values are different:\n"
                       f"{get_print_prefix(lvl)}\t· {dict1_name}: {Color.light_yellow}{dict1[key]}{Color.reset}\n"
                       f"{get_print_prefix(lvl)}\t· {dict2_name}: {Color.yellow}{dict2[key]}{Color.reset}\n")
     return False
@@ -79,7 +79,7 @@ def compare_sub_dict(key: str, dict1: dict, dict2: dict, dict1_name: str, dict2_
             if elem1 != elem2:
                 print("\n".join(x for x in s if x is not None))
                 print(f"{get_print_prefix(lvl + 1)}> {Color.pink}{i}{Color.reset}")
-                print(f"{get_print_prefix(lvl)}Values are different: \n"
+                print(f"{get_print_prefix(lvl)}Values are different:\n"
                       f"{get_print_prefix(lvl + 1)}\t· {dict1_name}: {Color.light_yellow}{elem1}{Color.reset}\n"
                       f"{get_print_prefix(lvl + 1)}\t· {dict2_name}: {Color.yellow}{elem2}{Color.reset}\n")
     else:
@@ -87,15 +87,15 @@ def compare_sub_dict(key: str, dict1: dict, dict2: dict, dict1_name: str, dict2_
             if len(s) == lvl - 1:
                 s.append(None)
             s[lvl - 1] = f"{get_print_prefix(lvl)}> {Color.pale_green}{sub_key}{Color.reset}"
-            list_of_obj_1 = sorted([x for x in dict1[sub_key] if x is not None]) + \
-                [x for x in dict1[sub_key] if x is None]
-            list_of_obj_2 = sorted([x for x in dict2[sub_key] if x is not None]) + \
-                [x for x in dict2[sub_key] if x is None]
+            list_of_obj_1 = (sorted([x for x in dict1[sub_key] if x is not None])
+                             + [x for x in dict1[sub_key] if x is None])
+            list_of_obj_2 = (sorted([x for x in dict2[sub_key] if x is not None])
+                             + [x for x in dict2[sub_key] if x is None])
             for i, (elem1, elem2) in enumerate(zip(list_of_obj_1, list_of_obj_2)):
                 if elem1 != elem2:
                     print("\n".join(x for x in s if x is not None))
                     print(f"{get_print_prefix(lvl + 1)}> {Color.pink}{i}{Color.reset}")
-                    print(f"{get_print_prefix(lvl)}Values are different: \n"
+                    print(f"{get_print_prefix(lvl)}Values are different:\n"
                           f"{get_print_prefix(lvl + 1)}\t· {dict1_name}: {Color.light_yellow}{elem1}{Color.reset}\n"
                           f"{get_print_prefix(lvl + 1)}\t· {dict2_name}: {Color.yellow}{elem2}{Color.reset}\n")
 

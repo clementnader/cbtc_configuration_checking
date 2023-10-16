@@ -4,16 +4,16 @@
 from ...fouling_points import fouling_points
 from ...cctool_oo_schema import *
 from ..load_database import *
-from ..dc_sys_sheet_utils import *
+from ..dc_sys_common_utils import *
 
 
 def get_fouling_point_seg_offset(sw_name, fouling_point_kp, heel_direction):
     sw_dict = load_sheet(DCSYS.Aig)
     seg_dict = load_sheet(DCSYS.Seg)
     heel_directions = ("left_heel", "right_heel")
-    attr = DCSYS.Aig.SegmentTg if heel_direction == heel_directions[0] \
-        else DCSYS.Aig.SegmentTd if heel_direction == heel_directions[1] \
-        else None
+    attr = (DCSYS.Aig.SegmentTg if heel_direction == heel_directions[0]
+            else DCSYS.Aig.SegmentTd if heel_direction == heel_directions[1]
+            else None)
     if attr is None:
         raise Exception(f"The heel direction given {heel_direction} does not correspond to expected {heel_directions}.")
     heel_seg = get_dc_sys_value(sw_dict[sw_name], attr)

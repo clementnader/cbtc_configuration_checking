@@ -6,6 +6,9 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
+__all__ = ["smallest_size_of_a_switch_block_heel"]
+
+
 def smallest_size_of_a_switch_block_heel(in_cbtc: bool = False):
     if in_cbtc:
         sw_dict = get_switches_in_cbtc_ter()

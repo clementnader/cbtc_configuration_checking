@@ -5,6 +5,9 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
+__all__ = ["par_gamma_traction_max"]
+
+
 def par_gamma_traction_max(variables: dict = None):
     traction_dict = load_sheet(DCSYS.Traction_Profiles)
 

@@ -7,25 +7,28 @@ from ....dc_sys import *
 
 # Tag, Signal and Buffer
 def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]]):
-    assert dc_sys_sheet == DCSYS.Bal or dc_sys_sheet == DCSYS.Sig
-    assert res_sheet_name == "Tag" or res_sheet_name == "Signal" or res_sheet_name == "Buffer"
+    assert dc_sys_sheet in [DCSYS.Bal, DCSYS.Sig]
+    assert res_sheet_name in ["Tag", "Signal", "Buffer"]
 
     dc_sys_dict = load_sheet(dc_sys_sheet)
+    list_obj_names = list()
     res_dict = dict()
     for obj_name, obj_val in dc_sys_dict.items():
         if not obj_condition(res_sheet_name, obj_val):
             continue
-        survey_obj_info = survey_info.get(obj_name)
+        survey_obj_info = survey_info.get(obj_name.upper())
+        obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
         survey_track = survey_obj_info["track"] if survey_obj_info is not None else None
         surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
         surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
         comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
+        list_obj_names.append(obj_name)
         res_dict[obj_name] = _add_dc_sys_info(dc_sys_sheet, obj_val)
         res_dict[obj_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
         res_dict[obj_name].update({"surveyed_kp_comment": surveyed_kp_comment, "comments": comments})
 
-    res_dict.update(_add_extra_info_from_survey(list(dc_sys_dict.keys()), survey_info))
+    res_dict.update(_add_extra_info_from_survey(list_obj_names, survey_info))
     return res_dict
 
 
@@ -49,7 +52,8 @@ def _add_dc_sys_info(dc_sys_sheet, obj_val):
 
 def _add_extra_info_from_survey(list_obj_names: list[str], survey_info: dict[str, dict[str]]):
     extra_dict = dict()
-    for obj_name, obj_val in survey_info.items():
+    for obj_val in survey_info.values():
+        obj_name = obj_val["obj_name"]
         if obj_name in list_obj_names:
             continue
         extra_dict[obj_name] = {"track": None, "dc_sys_kp": None}

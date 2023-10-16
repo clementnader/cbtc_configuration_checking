@@ -4,6 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..dc_sys_common_utils import *
+from ..dc_sys_path_and_distances import *
 
 
 __all__ = ["get_oriented_limits_of_obj"]
@@ -80,7 +81,8 @@ def get_missed_limits(oriented_zone_limits: list[tuple[str, float, bool]],
     return [limit for limit in zone_limits if limit not in [(seg, x) for seg, x, _ in oriented_zone_limits]]
 
 
-def update_missed_limits(obj_type_name: str, obj_name: str, oriented_zone_limits: list[tuple[str, float, bool]],
+def update_missed_limits(obj_type_name: str, obj_name: str,
+                         oriented_zone_limits: list[tuple[str, float, Optional[bool]]],
                          zone_limits: list[tuple[str, float]]) -> list[tuple[str, float, Optional[bool]]]:
     nb_limits = len(zone_limits)
     for cnt in range(nb_limits):

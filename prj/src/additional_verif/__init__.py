@@ -2,5 +2,5 @@
 # -*- coding: utf-8 -*-
 
 from .dc_tu_verification import *
-from .min_dist_between_tags import min_dist_between_tags
-from .slope_at_platform import get_slope_at_plt
+from .min_dist_between_tags import *
+from .slope_at_platform import *

@@ -11,8 +11,8 @@ from ..control_tables import *
 def cf_signal_12():
     # In nominal case the IXL approach zone locking for a dedicated signal is configured
     # to contain the first physical track circuit.
-    csv = "Signal Name;Type;Direction;IVB Name;Block Limit Downstream;;;;Block Limit Upstream;;;;Distance;" \
-          "Distance minus value to remove;DLT Distance;Status\n"
+    csv = ("Signal Name;Type;Direction;IVB Name;Block Limit Downstream;;;;Block Limit Upstream;;;;Distance;"
+           "Distance minus value to remove;DLT Distance;Status\n")
     csv += ";;;;Seg;x;Track;KP;Seg;x;Track;KP;;;;\n"
     print_title(f"Verification of CF_SIGNAL_12", color=Color.mint_green)
     block_laying_uncertainty = get_param_value("block_laying_uncertainty")
@@ -39,8 +39,8 @@ def cf_signal_12():
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig)
         ivb_lim_track, ivb_lim_kp = from_seg_offset_to_kp(ivb_lim_seg, ivb_lim_x)
 
-        min_dist, corresponding_entrance, ivb_name = \
-            _get_distance_between_block_and_approach_zone(sig_name, ivb_lim_seg, ivb_lim_x)
+        min_dist, corresponding_entrance, ivb_name = (
+            _get_distance_between_block_and_approach_zone(sig_name, ivb_lim_seg, ivb_lim_x))
 
         if min_dist is None:
             csv += f"{ivb_name};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};;;;;;;{dlt_distance};{'OK'}\n"
@@ -49,10 +49,10 @@ def cf_signal_12():
         test_value = round(min_dist - value_to_remove, 3)
         success = dlt_distance == 0 or dlt_distance <= test_value
 
-        csv += f"{ivb_name};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};" \
-               f"{corresponding_entrance[0]};{corresponding_entrance[1]};" \
-               f"{corresponding_entrance_track};{corresponding_entrance_kp};" \
-               f"{min_dist};{test_value};{dlt_distance};{'OK' if success else 'KO'}\n"
+        csv += (f"{ivb_name};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};"
+                f"{corresponding_entrance[0]};{corresponding_entrance[1]};"
+                f"{corresponding_entrance_track};{corresponding_entrance_kp};"
+                f"{min_dist};{test_value};{dlt_distance};{'OK' if success else 'KO'}\n")
 
         # if not success:
         #     print_error(f"For Signal {Color.blue}{sig_name}{Color.reset} on IVB {ivb_name}:\n"

@@ -5,6 +5,7 @@ from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
 from ..dc_sys_common_utils import *
+from ..dc_sys_path_and_distances import *
 from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
@@ -100,8 +101,8 @@ def get_slopes_between(start_seg, start_x, end_seg, end_x, slope_dict: dict):
                 slope_seg = get_dc_sys_value(slope, DCSYS.Profil.Seg)
                 slope_x = float(get_dc_sys_value(slope, DCSYS.Profil.X))
                 if seg == slope_seg:
-                    if (start_seg != slope_seg or start_x <= slope_x) \
-                            and (end_seg != slope_seg or end_x >= slope_x):
+                    if ((start_seg != slope_seg or start_x <= slope_x)
+                            and (end_seg != slope_seg or end_x >= slope_x)):
                         slopes.append(slope)
 
     return slopes

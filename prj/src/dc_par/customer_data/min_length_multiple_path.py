@@ -6,6 +6,9 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
+__all__ = ["min_length_multiple_path"]
+
+
 def min_length_multiple_path(in_cbtc: bool = False):
     seg_dict = load_sheet(DCSYS.Seg)
     if in_cbtc:

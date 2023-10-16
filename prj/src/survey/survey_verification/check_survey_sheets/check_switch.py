@@ -18,19 +18,25 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
     assert res_sheet_name == "Switch"
 
     sw_dict = _get_dc_sys_sw_dict()
+    list_sw_names = list()
     res_dict = dict()
     for sw_name, sw_val in sw_dict.items():
-        survey_obj_info = survey_info.get(sw_name)
+        other_name = sw_val.get("other_name")
+        if other_name is not None and other_name in survey_info:
+            sw_name = other_name
+        survey_obj_info = survey_info.get(sw_name.upper())
+        sw_name = survey_obj_info["obj_name"] if survey_obj_info is not None else sw_name
         survey_track = survey_obj_info["track"] if survey_obj_info is not None else None
         surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
         surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
         comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
-        res_dict[sw_name] = {"track": sw_val[0], "dc_sys_kp": sw_val[1]}
+        list_sw_names.append(sw_name)
+        res_dict[sw_name] = {"track": sw_val["track"], "dc_sys_kp": sw_val["dc_sys_kp"]}
         res_dict[sw_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
         res_dict[sw_name].update({"surveyed_kp_comment": surveyed_kp_comment, "comments": comments})
 
-    res_dict.update(_add_extra_info_from_survey(list(sw_dict.keys()), survey_info))
+    res_dict.update(_add_extra_info_from_survey(list_sw_names, survey_info))
     return res_dict
 
 
@@ -40,19 +46,23 @@ def _get_dc_sys_sw_dict():
     seg_dict = load_sheet(DCSYS.Seg)
     for sw_name, sw_val in sw_dict.items():
         upstream = is_sw_point_seg_upstream(sw_val)
-        for pos_val in SW_INFO_DICT.values():
+        for sw_pos_name, pos_val in SW_INFO_DICT.items():
             sw_name_and_pos = sw_name + pos_val["suffix"]
             seg = get_dc_sys_value(sw_val, pos_val["attr"])
             track = get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
             kp_attr = DCSYS.Seg.Origine if upstream == pos_val["seg_start_if_sw_upstream"] else DCSYS.Seg.Fin
             dc_sys_kp = get_dc_sys_value(seg_dict[seg], kp_attr)
-            res_dict[sw_name_and_pos] = (track, dc_sys_kp)
+            res_dict[sw_name_and_pos] = {"track": track, "dc_sys_kp": dc_sys_kp}
+            if sw_pos_name == "point":  # For Copenhagen first survey, the switch point name is the switch name only
+                #                          without the "_C" suffix
+                res_dict[sw_name_and_pos]["other_name"] = sw_name
     return res_dict
 
 
 def _add_extra_info_from_survey(list_sw_names: list[str], survey_info: dict[str, dict[str]]):
     extra_dict = dict()
-    for sw_name, sw_val in survey_info.items():
+    for sw_val in survey_info.values():
+        sw_name = sw_val["obj_name"]
         if sw_name in list_sw_names:
             continue
         extra_dict[sw_name] = {"track": None, "dc_sys_kp": None}

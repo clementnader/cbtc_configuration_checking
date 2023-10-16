@@ -82,9 +82,8 @@ def _update_values_sheet(ws: xl_ws.Worksheet, nb_of_diff_values: int,
             color_bool = not color_bool  # to alternate colors
             current_row = _merged_cell_for_train_unit_number(ws, current_row, train_unit_number, color_bool)
             for cc_num, sub_sub_sub_dict in sub_sub_dict.items():
-                current_row, list_of_values = \
-                    _update_param_sheet_per_cc(ws, current_row, cc_num, sub_sub_sub_dict, list_of_values,
-                                               color_bool)
+                current_row, list_of_values = (
+                    _update_param_sheet_per_cc(ws, current_row, cc_num, sub_sub_sub_dict, list_of_values, color_bool))
                 list_of_ranges_for_duplicate_conditional_formatting.append(
                     f"$B${current_row-nb_of_diff_values}:$D${current_row-1}")
     _set_up_conditional_formatting(ws, list_of_ranges_for_duplicate_conditional_formatting)
@@ -189,20 +188,18 @@ def _set_status_and_comments_columns(ws: xl_ws.Worksheet, current_row: int,
         return
     list_of_comments = list()
     for pmc_num, pmc_status_dict in dict_of_status.items():
-        current_cell = pmc_status_dict["current_cell"]
         duplicate_cells = pmc_status_dict["duplicate_cells"]
-        _rewrite_status_of_previous_cells(ws, duplicate_cells, current_cell)
+        _rewrite_status_of_previous_cells(ws, duplicate_cells)
         list_of_comments.append(f"Value for PMC {pmc_num} is in duplicate with cell " +
                                 " and cell ".join(duplicate_cells) + ".")
     create_cell(ws, "\n".join(list_of_comments), row=current_row, column=COMMENTS_COLUMN,
                 line_wrap=True, borders=True)
 
 
-def _rewrite_status_of_previous_cells(ws: xl_ws.Worksheet, duplicate_cells: list[str], current_cell: str) -> None:
+def _rewrite_status_of_previous_cells(ws: xl_ws.Worksheet, duplicate_cells: list[str]) -> None:
     for cell in duplicate_cells:
         row, _ = get_row_and_column_from_cell(cell=cell)
         create_cell(ws, "KO", row=row, column=STATUS_COLUMN)
-    # TODO set the comments using the current cell
 
 
 def _set_up_conditional_formatting(ws: xl_ws.Worksheet, list_of_ranges: list[str]):

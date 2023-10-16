@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+__all__ = ["g"]
+
+
 def g(variables: dict = None):
     value = 9.81
     if variables is not None:

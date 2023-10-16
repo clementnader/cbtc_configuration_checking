@@ -137,8 +137,8 @@ def update_list_seg_lim(cbtc_limits: list[tuple[str, float, bool]]) -> None:
         for seg, x, downstream in limits_on_seg:
             if (seg, x, not downstream) in cbtc_limits:  # a limit between two IN CBTC Territory
                 left_limits_on_seg.remove((seg, x, downstream))
-            if (downstream and x == 0 and not get_linked_segs(seg, downstream=False)) \
-                    or (not downstream and x == get_seg_len(seg) and not get_linked_segs(seg, downstream=True)):
+            if ((downstream and x == 0 and not get_linked_segs(seg, downstream=False))
+                    or (not downstream and x == get_seg_len(seg) and not get_linked_segs(seg, downstream=True))):
                 left_limits_on_seg.remove((seg, x, downstream))
         if not left_limits_on_seg:
             CBTC_TER_SEGMENTS.append((current_seg, None))
