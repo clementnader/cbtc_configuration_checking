@@ -12,25 +12,23 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
     assert res_sheet_name in ["Tag", "Signal", "Buffer"]
 
     dc_sys_dict = load_sheet(dc_sys_sheet)
-    list_obj_names = list()
+    list_used_obj_names = list()
     res_dict = dict()
     for obj_name, obj_val in dc_sys_dict.items():
         if not obj_condition(res_sheet_name, obj_val):
             continue
-        survey_obj_info = survey_info.get(obj_name.upper())
+        track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
+
+        survey_name = obj_name.upper()
+        survey_obj_info = survey_info.get(survey_name)
+        if survey_obj_info is not None:
+            list_used_obj_names.append(survey_name)
+
         obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
-        survey_track = survey_obj_info["track"] if survey_obj_info is not None else None
-        surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
-        surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
-        comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
-        list_obj_names.append(obj_name)
-        track, dc_sys_kp = _add_dc_sys_info(dc_sys_sheet, obj_val)
-        res_dict[obj_name] = {"track": track, "dc_sys_kp": dc_sys_kp,
-                              "survey_track": survey_track, "surveyed_kp": surveyed_kp,
-                              "surveyed_kp_comment": surveyed_kp_comment, "comments": comments}
+        res_dict[obj_name] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
 
-    res_dict.update(add_extra_info_from_survey(list_obj_names, survey_info))
+    res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict
 
 
@@ -46,7 +44,7 @@ def obj_condition(res_sheet, obj_val):
     return is_sig_buffer == buffer
 
 
-def _add_dc_sys_info(dc_sys_sheet, obj_val) -> tuple[str, float]:
+def _get_dc_sys_position(dc_sys_sheet, obj_val) -> tuple[str, float]:
     track = get_dc_sys_value(obj_val, dc_sys_sheet.Voie)
     kp = get_dc_sys_value(obj_val, dc_sys_sheet.Pk)
     return track, kp

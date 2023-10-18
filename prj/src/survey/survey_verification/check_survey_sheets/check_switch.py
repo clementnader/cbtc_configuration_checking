@@ -18,33 +18,30 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
     assert dc_sys_sheet == DCSYS.Aig
     assert res_sheet_name == "Switch"
 
-    sw_dict = _get_dc_sys_sw_dict()
-    list_sw_names = list()
+    obj_dict = _get_dc_sys_switch_dict()
+    list_used_obj_names = list()
     res_dict = dict()
-    for sw_name, sw_val in sw_dict.items():
-        other_name = sw_val.get("other_name")
+    for obj_name, obj_val in obj_dict.items():
+        track, dc_sys_kp = obj_val["track"], obj_val["dc_sys_kp"]
+
+        other_name = obj_val.get("other_name")
         if other_name is not None and other_name in survey_info:
-            sw_name = other_name
-        survey_obj_info = survey_info.get(sw_name.upper())
-        sw_name = survey_obj_info["obj_name"] if survey_obj_info is not None else sw_name
-        survey_track = survey_obj_info["track"] if survey_obj_info is not None else None
-        surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
-        surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
-        comments = survey_obj_info["comments"] if survey_obj_info is not None else None
+            survey_name = other_name.upper()
+        else:
+            survey_name = obj_name.upper()
+        survey_obj_info = survey_info.get(survey_name)
+        if survey_obj_info is not None:
+            list_used_obj_names.append(survey_name)
 
-        list_sw_names.append(sw_name)
-        track, dc_sys_kp = sw_val["track"], sw_val["dc_sys_kp"]
-        res_dict[sw_name] = {"track": track, "dc_sys_kp": dc_sys_kp,
-                             "survey_track": survey_track, "surveyed_kp": surveyed_kp,
-                             "surveyed_kp_comment": surveyed_kp_comment, "comments": comments}
-        res_dict[sw_name].update({})
-        res_dict[sw_name].update({})
+        obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
 
-    res_dict.update(add_extra_info_from_survey(list_sw_names, survey_info))
+        res_dict[obj_name] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
+
+    res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict
 
 
-def _get_dc_sys_sw_dict():
+def _get_dc_sys_switch_dict():
     res_dict = dict()
     sw_dict = load_sheet(DCSYS.Aig)
     seg_dict = load_sheet(DCSYS.Seg)
