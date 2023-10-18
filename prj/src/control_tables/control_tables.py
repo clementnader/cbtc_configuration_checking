@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 import os
 from ..database_location import *
 from ..utils import *
@@ -122,6 +123,8 @@ def _create_csv(csv: str, result_file: str):
     except PermissionError:
         print_error(f"Permission denied to write at {result_file = }."
                     f"\nYou have to close it if you want it to be overwritten.")
-        if input(f"Do you want to retry? (Y/N) ").upper() in ["Y", "YES"]:
-            with open(result_file, "w") as f:
-                f.write(csv)
+        if not ask_question_yes_or_no("Do you want to retry?"):
+            print_error("Execution aborted.")
+            sys.exit(1)
+        with open(result_file, "w") as f:
+            f.write(csv)

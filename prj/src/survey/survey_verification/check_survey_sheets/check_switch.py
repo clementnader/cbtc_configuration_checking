@@ -3,6 +3,7 @@
 
 from ....cctool_oo_schema import *
 from ....dc_sys import *
+from .common_utils import *
 
 
 SW_INFO_DICT = {
@@ -32,11 +33,14 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
         list_sw_names.append(sw_name)
-        res_dict[sw_name] = {"track": sw_val["track"], "dc_sys_kp": sw_val["dc_sys_kp"]}
-        res_dict[sw_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
-        res_dict[sw_name].update({"surveyed_kp_comment": surveyed_kp_comment, "comments": comments})
+        track, dc_sys_kp = sw_val["track"], sw_val["dc_sys_kp"]
+        res_dict[sw_name] = {"track": track, "dc_sys_kp": dc_sys_kp,
+                             "survey_track": survey_track, "surveyed_kp": surveyed_kp,
+                             "surveyed_kp_comment": surveyed_kp_comment, "comments": comments}
+        res_dict[sw_name].update({})
+        res_dict[sw_name].update({})
 
-    res_dict.update(_add_extra_info_from_survey(list_sw_names, survey_info))
+    res_dict.update(add_extra_info_from_survey(list_sw_names, survey_info))
     return res_dict
 
 
@@ -57,16 +61,3 @@ def _get_dc_sys_sw_dict():
                 #                          without the "_C" suffix
                 res_dict[sw_name_and_pos]["other_name"] = sw_name
     return res_dict
-
-
-def _add_extra_info_from_survey(list_sw_names: list[str], survey_info: dict[str, dict[str]]):
-    extra_dict = dict()
-    for sw_val in survey_info.values():
-        sw_name = sw_val["obj_name"]
-        if sw_name in list_sw_names:
-            continue
-        extra_dict[sw_name] = {"track": None, "dc_sys_kp": None}
-        extra_dict[sw_name].update({"survey_track": sw_val["track"], "surveyed_kp": sw_val["surveyed_kp"]})
-        extra_dict[sw_name].update({"surveyed_kp_comment": sw_val["surveyed_kp_comment"],
-                                    "comments": sw_val["comments"]})
-    return extra_dict

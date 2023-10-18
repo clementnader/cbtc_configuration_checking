@@ -118,7 +118,7 @@ def constraints():
 
 def main():
     # print(get_user_full_name())
-    # show_named_colors()
+    # print_named_colors()
     # print_all_colors()
     # test_rainbow()
     # test_moving_progress_bar()

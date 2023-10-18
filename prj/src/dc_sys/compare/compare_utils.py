@@ -26,7 +26,7 @@ def compare_all_sheets(start: str = None):
             else:
                 continue
         compare_sheet(key)
-        input("Press Enter to continue to next sheet...")
+        input(f"{Color.white}Press Enter to continue to next sheet...{Color.reset}")
         print()
 
 

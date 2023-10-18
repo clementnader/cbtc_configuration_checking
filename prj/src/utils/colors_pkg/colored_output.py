@@ -7,7 +7,7 @@ import re
 from ..common_utils import *
 
 
-__all__ = ["Color", "csi_bg_color", "remove_colors", "print_all_colors", "show_named_colors", "test_rainbow",
+__all__ = ["Color", "csi_bg_color", "remove_colors", "print_all_colors", "print_named_colors", "test_rainbow",
            "move_up", "move_down", "move_left", "move_right"]
 
 
@@ -185,7 +185,7 @@ def print_all_colors():
     print("\n")
 
 
-def show_named_colors():
+def print_named_colors():
     for name, val in get_class_attr_dict(Color).items():
         if isinstance(val, str):
             print(f" · {val}{name}{Color.reset}")

@@ -46,7 +46,7 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
     verif_file_name = f" - {get_c_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
     res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
     save_xl_file(wb, res_file_path)
-    print_success(f"Correspondence with Site Survey verification file is available at:\n"
+    print_success(f"\"Correspondence with Site Survey\" verification file is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")
     return res_file_path
 
@@ -103,7 +103,8 @@ def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, rever
     if comments is not None:
         create_cell(ws, comments, row=row, column=COMMENTS_COL, line_wrap=True)
         # line feeds inside a formula are not directly taken into account by the line wrap to autofit the row height
-        adjust_fixed_row_height(ws, row=row, column=COMMENTS_COL)
+        if reverse_polarity:
+            adjust_fixed_row_height(ws, row=row, column=COMMENTS_COL)
 
 
 def _add_line_calculations(ws, row: int, tolerance: str):

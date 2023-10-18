@@ -18,7 +18,8 @@ def load_survey() -> dict:
     global LOADED_SURVEY
     if not LOADED_SURVEY:
         for survey_addr, survey_sheet, start_row, ref_col, type_col, track_col, survey_kp_col in get_d932_loc_info():
-            print(f"Loading sheet \"{survey_sheet}\" of survey {Color.blue}{survey_addr}{Color.reset}.\n")
+            print_log(f"Loading sheet {Color.blue}{survey_sheet}{Color.reset} of "
+                      f"survey file {Color.cyan}{survey_addr}{Color.reset}...\n")
             wb = load_survey_wb(survey_addr)
             d932_sh = get_xl_sheet_by_name(wb, survey_sheet)
             LOADED_SURVEY.update(get_survey(LOADED_SURVEY, d932_sh,
@@ -45,10 +46,9 @@ def get_d932_loc_info():
     return zip(survey_addr, survey_sheet, start_row, ref_col, type_col, track_col, survey_kp_col)
 
 
-def get_survey(loaded_survey, d932_sh, start_row, ref_col, type_col, track_col, survey_kp_col,
-               survey_name: str) -> dict:
-    if not loaded_survey:
-        loaded_survey = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
+def get_survey(loaded_survey: dict[str, dict[str]], d932_sh, start_row, ref_col, type_col, track_col, survey_kp_col,
+               survey_name: str) -> dict[str, dict[str]]:
+    intermediate_survey_dict = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
 
     for row in range(start_row, get_xl_number_of_rows(d932_sh) + 1):
         obj_name = get_xl_cell_value(d932_sh, row=row, column=ref_col)
@@ -67,25 +67,52 @@ def get_survey(loaded_survey, d932_sh, start_row, ref_col, type_col, track_col, 
             continue
 
         surveyed_kp_comment = f"From {survey_name}"
-        if key_name in loaded_survey[survey_type]:
-            old_surveyed_kp = loaded_survey[survey_type][key_name]["surveyed_kp"]
-            if old_surveyed_kp is not None and surveyed_kp is not None and surveyed_kp != old_surveyed_kp:
-                old_surveyed_comment = loaded_survey[survey_type][key_name]["surveyed_kp_comment"]
-                comment = (f"Another surveyed KP value exists in survey "
-                           f"{old_surveyed_comment.removeprefix('From ')}: {old_surveyed_kp}.")
-                if loaded_survey[survey_type][key_name]["comments"] is not None:
-                    loaded_survey[survey_type][key_name]["comments"] += "\n" + comment
-                else:
-                    loaded_survey[survey_type][key_name]["comments"] = comment
-
-            loaded_survey[survey_type][key_name]["obj_name"] = obj_name
-            loaded_survey[survey_type][key_name]["track"] = track
-            loaded_survey[survey_type][key_name]["surveyed_kp"] = surveyed_kp
-            loaded_survey[survey_type][key_name]["surveyed_kp_comment"] = surveyed_kp_comment
+        if key_name in intermediate_survey_dict[survey_type]:  # two values in the same survey file
+            old_surveyed_values = intermediate_survey_dict[survey_type][key_name]["list_surveyed_values"]
+            surveyed_values = old_surveyed_values + [surveyed_kp]
+            surveyed_kp = round(sum(surveyed_values) / len(surveyed_values), 4)
+            comments = (f"Object appearing {len(surveyed_values)} times in same survey {survey_name}.\n"
+                        f"List of surveyed KPs is: {str(surveyed_values).removeprefix('[').removesuffix(']')}.\n"
+                        f"The average value is taken for the surveyed KP: {surveyed_kp}.")
         else:
-            loaded_survey[survey_type][key_name] = {"obj_name": obj_name, "track": track, "surveyed_kp": surveyed_kp,
-                                                    "surveyed_kp_comment": surveyed_kp_comment,
-                                                    "comments": None}
+            comments = None
+            surveyed_values = [surveyed_kp]
+        intermediate_survey_dict[survey_type][key_name] = {
+            "obj_name": obj_name, "track": track, "surveyed_kp": surveyed_kp,
+            "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
+            "list_surveyed_values": surveyed_values
+        }
+
+    loaded_survey = _update_survey_dictionary(loaded_survey, intermediate_survey_dict)
+
+    return loaded_survey
+
+
+def _update_survey_dictionary(loaded_survey: dict[str, dict[str]], intermediate_survey_dict: dict[str, dict[str]]
+                              ) -> dict[str, dict[str]]:
+    if not loaded_survey:
+        loaded_survey = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
+
+    for survey_type, sub_dict in intermediate_survey_dict.items():
+        for key_name, intermediate_survey_value in sub_dict.items():
+            comments = intermediate_survey_value["comments"]
+            if key_name in loaded_survey[survey_type]:  # object already surveyed in another survey file
+                old_surveyed_kp = loaded_survey[survey_type][key_name]["surveyed_kp"]
+                old_comments = loaded_survey[survey_type][key_name]["comments"]
+                if old_comments or intermediate_survey_value["surveyed_kp"] != old_surveyed_kp:
+                    old_surveyed_comment = loaded_survey[survey_type][key_name]["surveyed_kp_comment"]
+                    new_comment = (f"Another surveyed KP value exists in survey "
+                                   f"{old_surveyed_comment.removeprefix('From ')}: {old_surveyed_kp}.")
+                    if comments is not None:
+                        comments += "\n" + new_comment
+                    else:
+                        comments = new_comment
+            loaded_survey[survey_type][key_name] = {
+                "obj_name": intermediate_survey_value["obj_name"], "track": intermediate_survey_value["track"],
+                "surveyed_kp": intermediate_survey_value["surveyed_kp"],
+                "surveyed_kp_comment": intermediate_survey_value["surveyed_kp_comment"],
+                "comments": comments
+            }
 
     return loaded_survey
 

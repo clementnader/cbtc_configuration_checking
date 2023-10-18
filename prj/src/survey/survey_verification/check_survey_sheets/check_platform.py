@@ -5,6 +5,7 @@ from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
 from ...survey_utils import *
+from .common_utils import *
 
 
 PLT_PREFIX = {
@@ -30,11 +31,12 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
         list_plt_names.append(plt_name)
-        res_dict[plt_name] = {"track": plt_val[0], "dc_sys_kp": plt_val[1]}
-        res_dict[plt_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
-        res_dict[plt_name].update({"surveyed_kp_comment": surveyed_kp_comment, "comments": comments})
+        track, dc_sys_kp = plt_val
+        res_dict[plt_name] = {"track": track, "dc_sys_kp": dc_sys_kp,
+                              "survey_track": survey_track, "surveyed_kp": surveyed_kp,
+                              "surveyed_kp_comment": surveyed_kp_comment, "comments": comments}
 
-    res_dict.update(_add_extra_info_from_survey(list_plt_names, survey_info))
+    res_dict.update(add_extra_info_from_survey(list_plt_names, survey_info))
     return res_dict
 
 
@@ -68,7 +70,9 @@ def _get_survey_plt_order_pattern(plt_name: str, survey_info: dict[str],
     if not survey_plt_ends:  # platform not surveyed
         return "left_and_right", True  # default order
     if len(survey_plt_ends) != 2:
-        print_warning(f"Different than 2 platform ends have been found for {plt_name}:\n{survey_plt_ends}")
+        print_log(
+            f"{'Only one platform end has' if len(survey_plt_ends) == 1 else 'More than two platform ends have'}"
+            f" been found in survey for {plt_name}:\n{survey_plt_ends}\n")
         return "left_and_right", True  # default order
 
     survey_name_1, survey_name_2 = survey_plt_ends
@@ -114,16 +118,3 @@ def _get_corresponding_prefix(survey_name: str) -> tuple[Optional[str], Optional
             if survey_name.startswith(plt_prefix.upper()):
                 return ordering_type, plt_end_type
     return None, None
-
-
-def _add_extra_info_from_survey(list_plt_names: list[str], survey_info: dict[str, dict[str]]):
-    extra_dict = dict()
-    for plt_val in survey_info.values():
-        plt_name = plt_val["obj_name"]
-        if plt_name in list_plt_names:
-            continue
-        extra_dict[plt_name] = {"track": None, "dc_sys_kp": None}
-        extra_dict[plt_name].update({"survey_track": plt_val["track"], "surveyed_kp": plt_val["surveyed_kp"]})
-        extra_dict[plt_name].update({"surveyed_kp_comment": plt_val["surveyed_kp_comment"],
-                                    "comments": plt_val["comments"]})
-    return extra_dict

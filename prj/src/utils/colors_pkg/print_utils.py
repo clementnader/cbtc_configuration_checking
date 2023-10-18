@@ -8,7 +8,7 @@ from ..time_utils import *
 
 __all__ = ["print_bar", "print_title", "print_section_title", "print_error", "print_warning", "print_success",
            "print_log", "progress_bar", "print_sub_variables", "print_variables", "print_final_value",
-           "test_moving_progress_bar"]
+           "test_moving_progress_bar", "ask_question_yes_or_no"]
 
 
 def print_bar(length: int = 100):
@@ -157,3 +157,8 @@ def _modify_variables_to_print(variables: dict[str, str]):
             print(var_name)
         dict_to_print[var_name] = variables[var_name].replace("^2", "²").replace("^3", "³")
     return dict_to_print
+
+
+def ask_question_yes_or_no(question: str) -> bool:
+    return input(f"{Color.yellow}{question}{Color.reset} "
+                 f"{Color.light_yellow}(Y/N){Color.reset} ").upper() in ["Y", "YES"]

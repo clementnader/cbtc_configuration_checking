@@ -3,6 +3,7 @@
 
 import os
 import sys
+from ...utils import *
 from ..xl_pkg import *
 from ..colors_pkg import *
 
@@ -13,7 +14,7 @@ __all__ = ["save_xl_file"]
 def save_xl_file(wb: openpyxl.workbook.Workbook, res_file_path: str):
     if os.path.isfile(res_file_path):
         print_error(f"{res_file_path = } already exists.")
-        if input(f"Do you want to overwrite it? (Y/N) ").upper() not in ["Y", "YES"]:
+        if not ask_question_yes_or_no("Do you want to overwrite it?"):
             print_error("Execution aborted.")
             sys.exit(1)
     try:
@@ -21,7 +22,7 @@ def save_xl_file(wb: openpyxl.workbook.Workbook, res_file_path: str):
     except PermissionError:
         print_error(f"Permission denied to write at {res_file_path = }."
                     f"\nYou have to close it if you want it to be overwritten.")
-        if input(f"Do you want to retry? (Y/N) ").upper() not in ["Y", "YES"]:
+        if not ask_question_yes_or_no("Do you want to retry?"):
             print_error("Execution aborted.")
             sys.exit(1)
         wb.save(res_file_path)

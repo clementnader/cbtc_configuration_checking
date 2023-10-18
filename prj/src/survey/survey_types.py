@@ -15,7 +15,7 @@ SURVEY_TYPES_DICT = {
     "PLATFORM":      {"res_sheet": "Platform",   "dcsys_sh": DCSYS.Quai,       "func": check_platform,
                       "tol": "platform_tol",
                       "other_names": []},
-    "TC":            {"res_sheet": "BlockJoint", "dcsys_sh": DCSYS.CDV,        "func": check_joints,
+    "TC":            {"res_sheet": "Block_Joint", "dcsys_sh": DCSYS.CDV,        "func": check_joints,
                       "tol": "joint_tol",
                       "other_names": []},
     "SIGNAL":        {"res_sheet": "Signal",     "dcsys_sh": DCSYS.Sig,        "func": check_object,

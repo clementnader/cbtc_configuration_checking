@@ -3,6 +3,7 @@
 
 from ....cctool_oo_schema import *
 from ....dc_sys import *
+from .common_utils import *
 
 
 # Tag, Signal and Buffer
@@ -24,11 +25,12 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
         comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
         list_obj_names.append(obj_name)
-        res_dict[obj_name] = _add_dc_sys_info(dc_sys_sheet, obj_val)
-        res_dict[obj_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
-        res_dict[obj_name].update({"surveyed_kp_comment": surveyed_kp_comment, "comments": comments})
+        track, dc_sys_kp = _add_dc_sys_info(dc_sys_sheet, obj_val)
+        res_dict[obj_name] = {"track": track, "dc_sys_kp": dc_sys_kp,
+                              "survey_track": survey_track, "surveyed_kp": surveyed_kp,
+                              "surveyed_kp_comment": surveyed_kp_comment, "comments": comments}
 
-    res_dict.update(_add_extra_info_from_survey(list_obj_names, survey_info))
+    res_dict.update(add_extra_info_from_survey(list_obj_names, survey_info))
     return res_dict
 
 
@@ -44,10 +46,10 @@ def obj_condition(res_sheet, obj_val):
     return is_sig_buffer == buffer
 
 
-def _add_dc_sys_info(dc_sys_sheet, obj_val):
-    track_attr = dc_sys_sheet.Voie
-    kp_attr = dc_sys_sheet.Pk
-    return {"track": get_dc_sys_value(obj_val, track_attr), "dc_sys_kp": get_dc_sys_value(obj_val, kp_attr)}
+def _add_dc_sys_info(dc_sys_sheet, obj_val) -> tuple[str, float]:
+    track = get_dc_sys_value(obj_val, dc_sys_sheet.Voie)
+    kp = get_dc_sys_value(obj_val, dc_sys_sheet.Pk)
+    return track, kp
 
 
 def _add_extra_info_from_survey(list_obj_names: list[str], survey_info: dict[str, dict[str]]):

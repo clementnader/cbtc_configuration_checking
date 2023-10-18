@@ -9,8 +9,8 @@ from prj.src import *
 
 
 def main():
-    exec_file_full_path = get_full_path(__file__, "_survey_verif.py")
-    regen_cctool_oo_schema_wrapper(exec_file_full_path)
+    file_to_launch_full_address = get_full_path(__file__, "_survey_verif.py")
+    regen_cctool_oo_schema_wrapper(file_to_launch_full_address)
 
 
 if __name__ == "__main__":

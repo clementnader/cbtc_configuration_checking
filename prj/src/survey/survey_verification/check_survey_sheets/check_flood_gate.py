@@ -5,6 +5,7 @@ from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
 from ...survey_utils import *
+from .common_utils import *
 
 
 FG_PREFIX = {
@@ -30,11 +31,12 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
         list_fg_names.append(fg_name)
-        res_dict[fg_name] = {"track": fg_val[0], "dc_sys_kp": fg_val[1]}
-        res_dict[fg_name].update({"survey_track": survey_track, "surveyed_kp": surveyed_kp})
-        res_dict[fg_name].update({"surveyed_kp_comment": surveyed_kp_comment, "comments": comments})
+        track, dc_sys_kp = fg_val
+        res_dict[fg_name] = {"track": track, "dc_sys_kp": dc_sys_kp,
+                             "survey_track": survey_track, "surveyed_kp": surveyed_kp,
+                             "surveyed_kp_comment": surveyed_kp_comment, "comments": comments}
 
-    res_dict.update(_add_extra_info_from_survey(list_fg_names, survey_info))
+    res_dict.update(add_extra_info_from_survey(list_fg_names, survey_info))
     return res_dict
 
 
@@ -114,17 +116,3 @@ def _get_corresponding_prefix(survey_name: str) -> Optional[str]:
         if survey_name.startswith(fg_prefix.upper()):
             return fg_end_type
     return None
-
-
-def _add_extra_info_from_survey(list_fg_names: list[str], survey_info: dict[str, dict[str]]):
-    extra_dict = dict()
-    for fg_val in survey_info.values():
-        fg_name = fg_val["obj_name"]
-        if fg_name in list_fg_names:
-            continue
-        extra_dict[fg_name] = {"track": None, "dc_sys_kp": None}
-        extra_dict[fg_name].update({"survey_name": fg_val["obj_name"], "survey_track": fg_val["track"],
-                                    "surveyed_kp": fg_val["surveyed_kp"]})
-        extra_dict[fg_name].update({"surveyed_kp_comment": fg_val["surveyed_kp_comment"],
-                                    "comments": fg_val["comments"]})
-    return extra_dict

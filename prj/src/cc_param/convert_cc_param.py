@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 import os
 import shutil
 import argparse
@@ -39,10 +40,7 @@ def copy_kit_c11_d470(input_dir, dest_dir):
           f"\t{Color.yellow}{input_dir}{Color.reset}\n"
           f"to\n"
           f"\t{Color.yellow}{full_res_dir}{Color.reset}\n")
-    create_success = create_result_dir(full_res_dir)
-    if not create_success:
-        print_error(f"Process aborted.")
-        return
+    create_result_dir(full_res_dir)
     for train_dir in os.listdir(input_dir):
         full_path = os.path.join(input_dir, train_dir)
         dest_path = os.path.join(full_res_dir, train_dir)
@@ -55,16 +53,15 @@ def copy_kit_c11_d470(input_dir, dest_dir):
           f"\t{Color.light_green}{full_res_dir}{Color.reset}")
 
 
-def create_result_dir(full_res_dir):
+def create_result_dir(full_res_dir: str) -> None:
     if os.path.exists(full_res_dir):
         print_warning(f"The result folder already exists"
                       f"\n at {full_res_dir}.")
-        if input(f"{Color.beige}Are you sure you want to overwrite it?{Color.reset} "
-                 f"{Color.yellow}[y/n]{Color.reset} ").upper() not in ["Y", "YES"]:
-            return False
+        if not ask_question_yes_or_no("Do you want to overwrite it?"):
+            print_error(f"Process aborted.")
+            sys.exit(1)
         shutil.rmtree(full_res_dir)
     os.makedirs(full_res_dir)
-    return True
 
 
 def create_dir(dir_path):

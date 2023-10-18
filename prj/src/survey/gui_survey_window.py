@@ -10,6 +10,8 @@ __all__ = ["survey_window"]
 
 
 def survey_window():
+    print_title(f"Survey Verification", color=Color.mint_green)
+    print(f"{Color.light_green}Select the DC_SYS and the Survey information to verify.{Color.reset}\n")
     # Root window
     window = tkinter.Tk()
     window.title("Survey Verification")

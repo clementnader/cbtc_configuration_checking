@@ -13,7 +13,7 @@ def get_number_of_cc(dc_tu_dict: dict[int, dict[int, dict[str, str]]]) -> int:
     for line_number, sub_dict in dc_tu_dict.items():  # for each line
         for train_unit_number, sub_sub_dict in sub_dict.items():  # for each train unit
             for param_name in sub_sub_dict.keys():  # for each parameter
-                if CC_ID_REGEX_PATTERN.match(param_name) is None:
+                if CC_ID_REGEX_PATTERN.search(param_name) is None:
                     continue
                 num_cc = get_num_cc_param_name(param_name)
                 if num_cc == 1:
@@ -44,7 +44,7 @@ def get_ip_address_and_ssh_key(dc_tu_dict: dict[int, dict[int, dict[str, str]]])
             ssh_key_dict[line_number][train_unit_number] = dict()
             for param_name, param_value in sub_sub_dict.items():  # for each parameter
                 # CCx_IDx parameter, initialization of the 2 dictionaries
-                if CC_ID_REGEX_PATTERN.match(param_name) is not None:
+                if CC_ID_REGEX_PATTERN.search(param_name) is not None:
                     current_cc_num = get_num_cc_param_name(param_name)
                     ip_address_dict[line_number][train_unit_number][current_cc_num] = {
                         get_pattern(CC_ID_REGEX_PATTERN): param_value,
@@ -56,21 +56,21 @@ def get_ip_address_and_ssh_key(dc_tu_dict: dict[int, dict[int, dict[str, str]]])
                         get_pattern(CC_PMC_SSH_PUBLIC_KEY_REGEX_PATTERN): list(),
                     }
                 # CCx_PMCx_ALPHA_ADDRESS parameter
-                elif CC_PMC_ALPHA_ADDRESS_REGEX_PATTERN.match(param_name) is not None:
+                elif CC_PMC_ALPHA_ADDRESS_REGEX_PATTERN.search(param_name) is not None:
                     current_cc_num = get_num_cc_param_name(param_name)
                     current_pmc_num = get_num_pmc_param_name(param_name)
                     ip_address_dict[line_number][train_unit_number][current_cc_num][
                         get_pattern(CC_PMC_ALPHA_ADDRESS_REGEX_PATTERN)
                     ].append((current_pmc_num, param_value))
                 # CCx_PMCx_BETA_ADDRESS parameter
-                elif CC_PMC_BETA_ADDRESS_REGEX_PATTERN.match(param_name) is not None:
+                elif CC_PMC_BETA_ADDRESS_REGEX_PATTERN.search(param_name) is not None:
                     current_cc_num = get_num_cc_param_name(param_name)
                     current_pmc_num = get_num_pmc_param_name(param_name)
                     ip_address_dict[line_number][train_unit_number][current_cc_num][
                         get_pattern(CC_PMC_BETA_ADDRESS_REGEX_PATTERN)
                     ].append((current_pmc_num, param_value))
                 # CCx_PMCx_SSH_PUBLIC_KEY parameter
-                elif CC_PMC_SSH_PUBLIC_KEY_REGEX_PATTERN.match(param_name) is not None:
+                elif CC_PMC_SSH_PUBLIC_KEY_REGEX_PATTERN.search(param_name) is not None:
                     current_cc_num = get_num_cc_param_name(param_name)
                     current_pmc_num = get_num_pmc_param_name(param_name)
                     ssh_key_dict[line_number][train_unit_number][current_cc_num][
