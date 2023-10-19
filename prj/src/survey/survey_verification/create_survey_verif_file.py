@@ -51,7 +51,7 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
     return res_file_path
 
 
-def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]):
+def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]) -> None:
     tolerance = _get_tolerance(sheet_name)
     for row, (obj_name, obj_val) in enumerate(verif_dict.items(), start=START_ROW):
         track = obj_val["track"]
@@ -67,10 +67,11 @@ def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]):
         _add_line_cell_comments(ws, row, surveyed_kp_comment)
         _add_line_calculations(ws, row, tolerance)
         _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity)
+        _set_exterior_border(ws, row)
 
 
 def _add_line_info(ws, row: int, obj_name: str, track: str, dc_sys_kp: float,
-                   survey_track: float, surveyed_kp: float):
+                   survey_track: float, surveyed_kp: float) -> None:
     create_cell(ws, obj_name, row=row, column=NAME_COL)
     if track is not None:
         create_cell(ws, track, row=row, column=TRACK_COL, bg_color=XlBgColor.light_yellow)
@@ -82,20 +83,20 @@ def _add_line_info(ws, row: int, obj_name: str, track: str, dc_sys_kp: float,
         create_cell(ws, surveyed_kp, row=row, column=SURVEYED_KP_COL, bg_color=XlBgColor.light_green)
 
 
-def _add_line_cell_comments(ws, row: int, surveyed_kp_comment: str):
+def _add_line_cell_comments(ws, row: int, surveyed_kp_comment: str) -> None:
     if surveyed_kp_comment is not None:
         add_cell_comment(ws, surveyed_kp_comment, row=row, column=SURVEYED_KP_COL)
 
 
-def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, reverse_polarity: bool):
+def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, reverse_polarity: bool) -> None:
     if reverse_polarity:
         if comments is None:
             comments = '= '
         else:
-            comments = f'= "{comments}"\n'
+            comments = f'= "{comments}"\n\n'
         comments += (f'"Opposite sign in survey.\n'
                      f'Difference with absolute signs makes " & '
-                     f'ROUND(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row}), 3) & ",\nwhich is "'
+                     f'ROUND(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row}), 4) & ",\nwhich is "'
                      f' & IF(ABS(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row})) <= {tolerance},'
                      f' "lower", "larger") & " than the tolerance " & {tolerance}'
                      f' & IF(ABS(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row})) <= {tolerance},'
@@ -107,12 +108,13 @@ def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, rever
             adjust_fixed_row_height(ws, row=row, column=COMMENTS_COL)
 
 
-def _add_line_calculations(ws, row: int, tolerance: str):
+def _add_line_calculations(ws, row: int, tolerance: str) -> None:
     difference_formula = (f'= IF(ISBLANK({NAME_COL}{row}), "", '
                           f'IF(ISBLANK({DC_SYS_KP_COL}{row}), "Not in DC_SYS", '
                           f'IF(ISBLANK({SURVEYED_KP_COL}{row}), "Not Surveyed", '
                           f'{DC_SYS_KP_COL}{row} - {SURVEYED_KP_COL}{row})))')
     create_cell(ws, difference_formula, row=row, column=DIFFERENCE_COL)
+    set_fixed_number_of_digits(ws, 4, row=row, column=DIFFERENCE_COL)
     status_formula = (f'= IF({DIFFERENCE_COL}{row} = "", "", '
                       f'IF({DIFFERENCE_COL}{row} = "Not in DC_SYS", "Not in DC_SYS", '
                       f'IF({DIFFERENCE_COL}{row} = "Not Surveyed", "Not Surveyed", '
@@ -120,10 +122,15 @@ def _add_line_calculations(ws, row: int, tolerance: str):
     create_cell(ws, status_formula, row=row, column=STATUS_COL, center_horizontal=True)
 
 
-def _get_tolerance(sheet_name: str):
+def _get_tolerance(sheet_name: str) -> Optional[str]:
     for val in SURVEY_TYPES_DICT.values():
         if val["res_sheet"] == sheet_name:
             return val["tol"]
     print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
                 f"{SURVEY_TYPES_DICT = }")
     return None
+
+
+def _set_exterior_border(ws, row: int) -> None:
+    draw_all_borders_of_a_range(ws, start_row=row, end_row=row,
+                                start_column=NAME_COL, end_column=MANUAL_VERIFICATION_COL)

@@ -15,10 +15,12 @@ from ..common_utils import *
 
 __all__ = ["XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comment",
            "create_cell", "create_merged_cell",
+           "set_fixed_number_of_digits",
            "set_font_size", "set_bold_font", "set_bg_color",
            "center_vertical_alignment", "center_horizontal_alignment", "enable_line_wrap",
            "adjust_fixed_row_height",
-           "draw_exterior_borders", "draw_exterior_borders_on_range",
+           "draw_exterior_borders", "draw_all_borders_of_a_range",
+           "draw_exterior_borders_of_a_range",
            "add_duplicate_values_conditional_formatting", "add_formula_conditional_formatting"]
 
 
@@ -60,7 +62,7 @@ def add_cell_comment(ws: openpyxl.worksheet.worksheet.Worksheet, comment: str,
     ws[cell].comment = comment
 
 
-# ------ Cell Formatting ------ #
+# ------ Create cells ------ #
 
 def create_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: Union[str, float, None],
                 cell: str = None, row: int = None, column: Union[str, int] = None,
@@ -96,8 +98,8 @@ def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
                             center_horizontal, line_wrap)
     # Cell Borders
     if borders:
-        draw_exterior_borders_on_range(ws, start_row=start_row, end_row=end_row,
-                                       start_column=start_column, end_column=end_column)
+        draw_all_borders_of_a_range(ws, start_row=start_row, end_row=end_row, start_column=start_column,
+                                    end_column=end_column)
 
 
 def _update_cell_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, row: int, column: int,
@@ -119,6 +121,17 @@ def _update_cell_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, row: int
     if line_wrap:
         enable_line_wrap(ws, row=row, column=column)
 
+
+# ------ Number Formatting ------ #
+
+def set_fixed_number_of_digits(ws: openpyxl.worksheet.worksheet.Worksheet, number_of_digits: int,
+                               cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+    cell = get_cell_from_row_and_column(cell, row, column)
+    number_format = "0." + "0"*number_of_digits
+    ws[cell].number_format = number_format
+
+
+# ------ Cell Formatting ------ #
 
 def set_font_size(ws: openpyxl.worksheet.worksheet.Worksheet, font_size: int,
                   cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
@@ -173,10 +186,10 @@ def adjust_fixed_row_height(ws: openpyxl.worksheet.worksheet.Worksheet,
                             cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     row, column = get_row_and_column_from_cell(cell, row, column)
     value = get_xlsx_value(ws, row, column)
-    if value is None or "\n" not in value:
+    if value is None:
         return
     line_feed_count = value.count("\n")
-    ws.row_dimensions[row].height = (line_feed_count + 1) * 15
+    ws.row_dimensions[row].height = 15 * (line_feed_count + 1)
 
 
 # ------ Cell Borders ------ #
@@ -189,15 +202,46 @@ def draw_exterior_borders(ws: openpyxl.worksheet.worksheet.Worksheet,
     ws[cell].border = border
 
 
-def draw_exterior_borders_on_range(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str = None,
-                                   start_row: int = None, end_row: int = None,
-                                   start_column: Union[int, str] = None, end_column: Union[int, str] = None) -> None:
+def draw_all_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str = None,
+                                start_row: int = None, end_row: int = None,
+                                start_column: Union[int, str] = None, end_column: Union[int, str] = None) -> None:
     cell_range = get_cell_range(cell_range, start_row, end_row, start_column, end_column)
     side = xl_borders.Side(border_style="thin")
     border = xl_borders.Border(left=side, right=side, top=side, bottom=side)
     for row in ws[cell_range]:
         for cell in row:
             cell.border = border
+
+
+def draw_exterior_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str = None,
+                                     start_row: int = None, end_row: int = None,
+                                     start_column: Union[int, str] = None, end_column: Union[int, str] = None) -> None:
+    cell_range = get_cell_range(cell_range, start_row, end_row, start_column, end_column)
+    # Remove all borders
+    no_border = xl_borders.Border()
+    for row in ws[cell_range]:
+        for cell in row:
+            cell.border = no_border
+    # Add exterior borders
+    side = xl_borders.Side(border_style="thin")
+    left_border = xl_borders.Border(left=side)
+    right_border = xl_borders.Border(right=side)
+    top_border = xl_borders.Border(top=side)
+    bottom_border = xl_borders.Border(bottom=side)
+    # Add top border on first row
+    first_row = ws[cell_range][0]
+    for cell in first_row:
+        cell.border += top_border
+    # Add bottom border on last row
+    last_row = ws[cell_range][-1]
+    for cell in last_row:
+        cell.border += bottom_border
+    # Add left border on first column, and right border on last column
+    for row in ws[cell_range]:
+        first_cell = row[0]
+        first_cell.border += left_border
+        last_cell = row[-1]
+        last_cell.border += right_border
 
 
 # ------ Conditional Formatting ------ #

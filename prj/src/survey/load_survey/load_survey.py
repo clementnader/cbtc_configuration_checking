@@ -6,6 +6,7 @@ from ...utils import *
 from ...database_location import *
 from ..survey_types import *
 from .load_xl import *
+from .switch_survey_utils import *
 
 
 __all__ = ["load_survey"]
@@ -83,6 +84,7 @@ def get_survey(loaded_survey: dict[str, dict[str]], d932_sh, start_row, ref_col,
             "list_surveyed_values": surveyed_values
         }
 
+    intermediate_survey_dict["SWP"].update(add_switch_center_points(intermediate_survey_dict["SWP"], survey_name))
     loaded_survey = _update_survey_dictionary(loaded_survey, intermediate_survey_dict)
 
     return loaded_survey
@@ -104,7 +106,7 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str]], intermediate_
                     new_comment = (f"Another surveyed KP value exists in survey "
                                    f"{old_surveyed_comment.removeprefix('From ')}: {old_surveyed_kp}.")
                     if comments is not None:
-                        comments += "\n" + new_comment
+                        comments += "\n\n" + new_comment
                     else:
                         comments = new_comment
             loaded_survey[survey_type][key_name] = {
