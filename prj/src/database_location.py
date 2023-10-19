@@ -86,18 +86,20 @@ class ProjectDatabaseLoc:
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B"
             else:
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS.xls"
+                # self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS.xls"
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_R4_P1B.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R2"
                 # -- Survey -- #
-                self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey.xlsx"
-                self.survey_loc.survey_sheet = r"AFS_DEP_ML_AGG_REV_1_12.04.23"
-                self.survey_loc.start_row = 13
-                self.survey_loc.ref_col = 1
-                self.survey_loc.type_col = 2
-                self.survey_loc.track_col = 3
-                self.survey_loc.survey_kp_col = 11
+                self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
+                                               r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey.xlsx"]
+                self.survey_loc.survey_sheet = [r"PhotoBook", r"AFS_DEP_ML_AGG_REV_1_12.04.23"]
+                self.survey_loc.start_row = [2, 13]
+                self.survey_loc.ref_col = [1, 1]
+                self.survey_loc.type_col = [2, 2]
+                self.survey_loc.track_col = [3, 3]
+                self.survey_loc.survey_kp_col = [4, 11]
             # -- Control Tables -- #
             if old_version:
                 self.control_tables_route.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables"

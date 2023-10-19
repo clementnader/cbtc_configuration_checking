@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
 
@@ -34,5 +35,5 @@ def from_kp_to_seg_offset(track, kp):
             if seg_track == track and seg_end_kp <= kp <= seg_orig_kp:
                 x = seg_orig_kp - kp
                 return seg_name, x
-    print(f"Unable to find seg, offset for {(track, kp)}")
+    print_error(f"Unable to find a corresponding (segment, offset) for {(track, kp) = })")
     return None, None

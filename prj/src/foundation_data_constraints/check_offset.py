@@ -107,13 +107,13 @@ def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col,
     if not (min_kp <= kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"KP at cell {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
-                    f"should be larger than the start kp of track {track} ({min_kp})"
+                    f"should be larger than the start KP of track {track} ({min_kp})"
                     f"\n{kp = }")
         success = False
     if not (kp <= max_kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"KP at cell {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
-                    f"should be lower than the end kp of track {track} ({max_kp})"
+                    f"should be lower than the end KP of track {track} ({max_kp})"
                     f"\n{kp = }")
         success = False
     return success
@@ -183,26 +183,32 @@ def test_match_x_kp(ws, row, seg_col, x_col, track_col, kp_col, sh_name, first_c
     kp = round(get_xl_float_value(ws, row=row, column=kp_col), 2)
 
     test_seg, test_x = from_kp_to_seg_offset(track, kp)
-    test_x = round(test_x, 2)
+    if test_seg is None or test_x is None:
+        print(f"Error in sheet {Color.blue}{sh_name}{Color.reset}: at row {row}.")
+        success = False
+        skip_verif_seg_x = True
+    else:
+        test_x = round(test_x, 2)
+        skip_verif_seg_x = False
     test_track, test_kp = from_seg_offset_to_kp(seg, x)
     test_kp = round(test_kp, 2)
 
-    if not are_points_matching(seg, x, test_seg, test_x, tolerance=tolerance):
+    if not skip_verif_seg_x and not are_points_matching(seg, x, test_seg, test_x, tolerance=tolerance):
         success = False
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"at line {Color.yellow}{row}{Color.reset} ({Color.beige}{first_cell = }{Color.reset}), "
-                    f"(SEG, OFFSET) {Color.light_green}{(seg, x)}{Color.reset} "
+                    f"at row {Color.yellow}{row}{Color.reset} ({Color.beige}{first_cell = }{Color.reset}), "
+                    f"(segment, offset) {Color.light_green}{(seg, x)}{Color.reset} "
                     f"(at columns {get_xl_column_letter(seg_col)} and {get_xl_column_letter(x_col)})\n"
                     f"is different from the one recalculated {Color.light_green}{(test_seg, test_x)}{Color.reset}\n"
-                    f"with the (TRACK, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
+                    f"with the (track, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
                     f"(at columns {get_xl_column_letter(track_col)} and {get_xl_column_letter(kp_col)}).")
     if track != test_track or round(abs(kp - test_kp), 2) > tolerance:
         success = False
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"at line {Color.yellow}{row}{Color.reset} ({Color.beige}{first_cell = }{Color.reset}), "
-                    f"(TRACK, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
+                    f"at row {Color.yellow}{row}{Color.reset} ({Color.beige}{first_cell = }{Color.reset}), "
+                    f"(track, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
                     f"(at columns {get_xl_column_letter(track_col)} and {get_xl_column_letter(kp_col)})\n"
                     f"is different from the one recalculated {Color.light_blue}{(test_track, test_kp)}{Color.reset}\n"
-                    f"with the (SEG, OFFSET) {Color.light_green}{(seg, x)}{Color.reset} "
+                    f"with the (segment, offset) {Color.light_green}{(seg, x)}{Color.reset} "
                     f"(at columns {get_xl_column_letter(seg_col)} and {get_xl_column_letter(x_col)}).")
     return success
