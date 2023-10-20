@@ -232,7 +232,10 @@ def _rule_3_check_tpz(tpz_msg_dict: dict, in_cbtc: bool):
 
 def _rule_3_check_cross_call(cross_call_msg_dict: dict, in_cbtc: bool):
     print_section_title(f"\nChecking {TypeClasseObjetPASMES.CROSSING_CALLING_AREA}...")
-    cross_call_dict = load_sheet(DCSYS.Crossing_Calling_Area)
+    if not in_cbtc:
+        cross_call_dict = load_sheet(DCSYS.Crossing_Calling_Area)
+    else:
+        cross_call_dict = get_crossing_calling_areas_in_cbtc_ter()
     success = True
     for cross_call_name, cross_call in cross_call_dict.items():
         if _check_obj_msgs(DCSYS.SS, cross_call_msg_dict, cross_call_name, True,

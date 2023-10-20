@@ -93,8 +93,8 @@ class ProjectDatabaseLoc:
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R2"
                 # -- Survey -- #
                 self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
-                                               r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey.xlsx"]
-                self.survey_loc.survey_sheet = [r"PhotoBook", r"AFS_DEP_ML_AGG_REV_1_12.04.23"]
+                                               r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey 18-10-2023.xlsx"]
+                self.survey_loc.survey_sheet = [r"PhotoBook", r"AFS_DEP_ML_DEF_05.10.23REV_1"]
                 self.survey_loc.start_row = [2, 13]
                 self.survey_loc.ref_col = [1, 1]
                 self.survey_loc.type_col = [2, 2]

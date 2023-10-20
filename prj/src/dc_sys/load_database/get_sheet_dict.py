@@ -92,11 +92,11 @@ def check_value_has_spaces(sh_name, value, row, column, key):
                           f"at cell {Color.blue}{get_xl_column_letter(column)}{row}{Color.reset}:\n\t"
                           f"key column name: \"{Color.beige}{key}{Color.reset}\", "
                           f"value: \"{Color.white}{value}{Color.reset}\"")
-            g_list_of_values_with_leading_spaces.append(value)
+            # g_list_of_values_with_leading_spaces.append(value)
     if isinstance(value, str) and value.endswith(" "):
         if not any(value.endswith(old_val) for old_val in g_list_of_values_with_trailing_spaces):
             print_warning(f"There is a trailing space in sheet {Color.yellow}{sh_name}{Color.reset} "
                           f"at cell {Color.blue}{get_xl_column_letter(column)}{row}{Color.reset}:\n\t"
                           f"key column name: \"{Color.beige}{key}{Color.reset}\", "
                           f"value: \"{Color.white}{value}{Color.reset}\"")
-            g_list_of_values_with_trailing_spaces.append(value)
+            # g_list_of_values_with_trailing_spaces.append(value)

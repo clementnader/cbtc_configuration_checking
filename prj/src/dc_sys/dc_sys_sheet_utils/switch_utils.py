@@ -5,25 +5,11 @@ from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
 from ..dc_sys_common_utils import *
-from .cbtc_territory_utils import is_point_in_cbtc_ter
 
 
-__all__ = ["get_switches_in_cbtc_ter", "is_sw_point_seg_upstream", "give_sw_pos", "give_sw_kp_pos", "get_heel_position",
+__all__ = ["is_sw_point_seg_upstream", "give_sw_pos", "give_sw_kp_pos", "get_heel_position",
            "get_switch_position_dict", "get_point_seg",
            "get_dc_sys_switch_points_dict", "get_corresponding_center_switch_point_track"]
-
-
-def get_switches_in_cbtc_ter():
-    sw_dict = load_sheet(DCSYS.Aig)
-    within_cbtc_sw_dict = dict()
-    for sw_name, sw_value in sw_dict.items():
-        seg, x = give_sw_pos(sw_value)
-        if is_point_in_cbtc_ter(seg, x) is not False:
-            within_cbtc_sw_dict[sw_name] = sw_value
-        if is_point_in_cbtc_ter(seg, x) is None:
-            print_warning(f"Switch {sw_name} is on a limit of CBTC Territory. "
-                          f"It is still taken into account.")
-    return within_cbtc_sw_dict
 
 
 def get_heel_position(point_seg, heel) -> tuple[Optional[str], str]:

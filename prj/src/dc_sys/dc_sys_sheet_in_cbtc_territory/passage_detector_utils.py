@@ -4,7 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
-from .cbtc_territory_utils import is_point_in_cbtc_ter
+from ..dc_sys_get_cbtc_territory import *
 
 
 __all__ = ["get_passage_detectors_in_cbtc_ter"]
