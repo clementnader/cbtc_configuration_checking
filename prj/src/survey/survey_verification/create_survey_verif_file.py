@@ -53,7 +53,8 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
 
 def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]) -> None:
     tolerance = _get_tolerance(sheet_name)
-    for row, (obj_name, obj_val) in enumerate(verif_dict.items(), start=START_ROW):
+    for row, (obj_full_name, obj_val) in enumerate(verif_dict.items(), start=START_ROW):
+        obj_name = obj_full_name[0]
         track = obj_val["track"]
         dc_sys_kp = obj_val["dc_sys_kp"]
         survey_track = obj_val["survey_track"]
@@ -67,25 +68,50 @@ def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]) -> Non
         _add_line_cell_comments(ws, row, surveyed_kp_comment)
         _add_line_calculations(ws, row, tolerance)
         _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity)
-        _set_exterior_border(ws, row)
 
 
 def _add_line_info(ws, row: int, obj_name: str, track: str, dc_sys_kp: float,
                    survey_track: float, surveyed_kp: float) -> None:
-    create_cell(ws, obj_name, row=row, column=NAME_COL)
+    # Name
+    create_cell(ws, obj_name, row=row, column=NAME_COL, borders=True)
+    # DC_SYS Track
+    create_cell(ws, track, row=row, column=TRACK_COL, borders=True)
     if track is not None:
-        create_cell(ws, track, row=row, column=TRACK_COL, bg_color=XlBgColor.light_yellow)
+        set_bg_color(ws, XlBgColor.light_yellow, row=row, column=TRACK_COL)
+    # DC_SYS KP
+    create_cell(ws, dc_sys_kp, row=row, column=DC_SYS_KP_COL, borders=True)
     if dc_sys_kp is not None:
-        create_cell(ws, dc_sys_kp, row=row, column=DC_SYS_KP_COL, bg_color=XlBgColor.light_yellow)
+        set_bg_color(ws, XlBgColor.light_yellow, row=row, column=DC_SYS_KP_COL)
+    # Survey Track
+    create_cell(ws, survey_track, row=row, column=SURVEY_TRACK_COL, borders=True)
     if survey_track is not None:
-        create_cell(ws, survey_track, row=row, column=SURVEY_TRACK_COL, bg_color=XlBgColor.light_green)
+        set_bg_color(ws, XlBgColor.light_green, row=row, column=SURVEY_TRACK_COL)
+    # Survey KP
+    create_cell(ws, surveyed_kp, row=row, column=SURVEYED_KP_COL, borders=True)
     if surveyed_kp is not None:
-        create_cell(ws, surveyed_kp, row=row, column=SURVEYED_KP_COL, bg_color=XlBgColor.light_green)
+        set_bg_color(ws, XlBgColor.light_green, row=row, column=SURVEYED_KP_COL)
 
 
 def _add_line_cell_comments(ws, row: int, surveyed_kp_comment: str) -> None:
+    # Comments on Surveyed KP cell to tell from which survey info comes
     if surveyed_kp_comment is not None:
         add_cell_comment(ws, surveyed_kp_comment, row=row, column=SURVEYED_KP_COL)
+
+
+def _add_line_calculations(ws, row: int, tolerance: str) -> None:
+    # Difference
+    difference_formula = (f'= IF(ISBLANK({NAME_COL}{row}), "", '
+                          f'IF(ISBLANK({DC_SYS_KP_COL}{row}), "Not in DC_SYS", '
+                          f'IF(ISBLANK({SURVEYED_KP_COL}{row}), "Not Surveyed", '
+                          f'{DC_SYS_KP_COL}{row} - {SURVEYED_KP_COL}{row})))')
+    create_cell(ws, difference_formula, row=row, column=DIFFERENCE_COL, borders=True)
+    set_fixed_number_of_digits(ws, 4, row=row, column=DIFFERENCE_COL)
+    # Status
+    status_formula = (f'= IF({DIFFERENCE_COL}{row} = "", "", '
+                      f'IF({DIFFERENCE_COL}{row} = "Not in DC_SYS", "Not in DC_SYS", '
+                      f'IF({DIFFERENCE_COL}{row} = "Not Surveyed", "Not Surveyed", '
+                      f'IF(ABS({DIFFERENCE_COL}{row}) <= {tolerance}, "OK", "KO"))))')
+    create_cell(ws, status_formula, row=row, column=STATUS_COL, borders=True, center_horizontal=True)
 
 
 def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, reverse_polarity: bool) -> None:
@@ -101,25 +127,13 @@ def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, rever
                      f' "lower", "larger") & " than the tolerance " & {tolerance}'
                      f' & IF(ABS(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row})) <= {tolerance},'
                      f' " -> OK", " -> KO") & "."')
-    if comments is not None:
-        create_cell(ws, comments, row=row, column=COMMENTS_COL, line_wrap=True)
+    # Comments
+    create_cell(ws, comments, row=row, column=COMMENTS_COL, borders=True, line_wrap=True)
+    if reverse_polarity:
         # line feeds inside a formula are not directly taken into account by the line wrap to autofit the row height
-        if reverse_polarity:
-            adjust_fixed_row_height(ws, row=row, column=COMMENTS_COL)
-
-
-def _add_line_calculations(ws, row: int, tolerance: str) -> None:
-    difference_formula = (f'= IF(ISBLANK({NAME_COL}{row}), "", '
-                          f'IF(ISBLANK({DC_SYS_KP_COL}{row}), "Not in DC_SYS", '
-                          f'IF(ISBLANK({SURVEYED_KP_COL}{row}), "Not Surveyed", '
-                          f'{DC_SYS_KP_COL}{row} - {SURVEYED_KP_COL}{row})))')
-    create_cell(ws, difference_formula, row=row, column=DIFFERENCE_COL)
-    set_fixed_number_of_digits(ws, 4, row=row, column=DIFFERENCE_COL)
-    status_formula = (f'= IF({DIFFERENCE_COL}{row} = "", "", '
-                      f'IF({DIFFERENCE_COL}{row} = "Not in DC_SYS", "Not in DC_SYS", '
-                      f'IF({DIFFERENCE_COL}{row} = "Not Surveyed", "Not Surveyed", '
-                      f'IF(ABS({DIFFERENCE_COL}{row}) <= {tolerance}, "OK", "KO"))))')
-    create_cell(ws, status_formula, row=row, column=STATUS_COL, center_horizontal=True)
+        adjust_fixed_row_height(ws, row=row, column=COMMENTS_COL)
+    # Manual Verification
+    create_cell(ws, None, row=row, column=MANUAL_VERIFICATION_COL, borders=True, center_horizontal=True)
 
 
 def _get_tolerance(sheet_name: str) -> Optional[str]:
@@ -129,8 +143,3 @@ def _get_tolerance(sheet_name: str) -> Optional[str]:
     print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
                 f"{SURVEY_TYPES_DICT = }")
     return None
-
-
-def _set_exterior_border(ws, row: int) -> None:
-    draw_all_borders_of_a_range(ws, start_row=row, end_row=row,
-                                start_column=NAME_COL, end_column=MANUAL_VERIFICATION_COL)

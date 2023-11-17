@@ -13,7 +13,7 @@ __all__ = ["verification_of_the_md5_checksum", "checksum_compare_parser"]
 
 
 ORIGINAL_FILE = "md5sum.txt"
-REGEN_FILE = "md5sum_regenerated.txt"
+REGEN_FILE = "RAMSmd5sum.txt"
 BASH_CMD = f"find -type f -print0 | sort | xargs -r0 md5sum > \"{REGEN_FILE}\""
 
 

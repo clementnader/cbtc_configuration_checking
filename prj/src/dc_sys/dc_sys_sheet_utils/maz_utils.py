@@ -3,6 +3,7 @@
 
 from ...utils import *
 from ...cctool_oo_schema import *
+from ..dc_sys_common_utils import *
 from ..dc_sys_get_zones import *
 
 
@@ -15,7 +16,7 @@ def get_maz_of_point(seg: str, x: float, direction: str = None) -> Optional[str]
         print_warning(f"No MAZ has been found covering {(seg, x)}.")
         return None
     if len(list_maz) > 1:
-        print_warning(f"{(seg, x)} is covered by multiple MAZ: {list_maz}.")
+        print_warning(f"{(seg, x, direction)} is covered by multiple MAZ: {list_maz}.")
     return list_maz[0]
 
 
@@ -24,7 +25,9 @@ def get_maz_of_extremities(limits: Union[list[tuple[str, float]], list[tuple[str
     for lim in limits:
         seg, x = lim[0], lim[1]
         if len(lim) > 2:
-            direction = lim[2]
+            direction = get_reverse_direction(lim[2])  # for a single point object,
+            # we consider it belongs to the zone upstream of it,
+            # behavior is mimicked for the zone too
         else:
             direction = None
         maz = get_maz_of_point(seg, x, direction)

@@ -5,23 +5,29 @@ from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
 from ..dc_par import *
-from ..control_tables import *
+# from ..control_tables import *
 
 
-def cf_signal_12():
+def cf_signal_12(no_overshoot: bool = False):
     # In nominal case the IXL approach zone locking for a dedicated signal is configured
     # to contain the first physical track circuit.
-    csv = ("Signal Name;Type;Direction;IVB Name;Block Limit Downstream;;;;Block Limit Upstream;;;;Distance;"
+    csv = ("Signal Name;Type;Direction;IXL Approach Zone;Block Limit Downstream;;;;Block Limit Upstream;;;;Distance;"
            "Distance minus value to remove;DLT Distance;Status\n")
     csv += ";;;;Seg;x;Track;KP;Seg;x;Track;KP;;;;\n"
     print_title(f"Verification of CF_SIGNAL_12", color=Color.mint_green)
+    at_deshunt_max_dist = get_param_value("at_deshunt_max_dist")
     block_laying_uncertainty = get_param_value("block_laying_uncertainty")
     mtc_rollback_dist = get_param_value("mtc_rollback_dist")
     at_rollback_dist = get_param_value("at_rollback_dist")
     overshoot_recovery_dist = get_param_value("overshoot_recovery_dist")
     overshoot_recovery_stopping_max_dist = get_param_value("overshoot_recovery_stopping_max_dist")
-    value_to_remove = block_laying_uncertainty + max(mtc_rollback_dist, at_rollback_dist,
-                                                     overshoot_recovery_dist + overshoot_recovery_stopping_max_dist)
+    if no_overshoot:
+        value_to_remove = (at_deshunt_max_dist + block_laying_uncertainty +
+                           max(mtc_rollback_dist, at_rollback_dist))
+    else:
+        value_to_remove = (at_deshunt_max_dist + block_laying_uncertainty +
+                           max(mtc_rollback_dist, at_rollback_dist,
+                               overshoot_recovery_dist + overshoot_recovery_stopping_max_dist))
 
     sig_dict = load_sheet(DCSYS.Sig)
     nb_sigs = len(sig_dict.keys())
@@ -39,17 +45,17 @@ def cf_signal_12():
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig)
         ivb_lim_track, ivb_lim_kp = from_seg_offset_to_kp(ivb_lim_seg, ivb_lim_x)
 
-        min_dist, corresponding_entrance, ivb_name = (
+        min_dist, corresponding_entrance, ivb_names = (
             _get_distance_between_block_and_approach_zone(sig_name, ivb_lim_seg, ivb_lim_x))
 
         if min_dist is None:
-            csv += f"{ivb_name};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};;;;;;;{dlt_distance};{'OK'}\n"
+            csv += f"{ivb_names};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};;;;;;;{dlt_distance};{'KO'}\n"
             continue
         corresponding_entrance_track, corresponding_entrance_kp = from_seg_offset_to_kp(*corresponding_entrance)
         test_value = round(min_dist - value_to_remove, 3)
         success = dlt_distance == 0 or dlt_distance <= test_value
 
-        csv += (f"{ivb_name};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};"
+        csv += (f"{ivb_names};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};"
                 f"{corresponding_entrance[0]};{corresponding_entrance[1]};"
                 f"{corresponding_entrance_track};{corresponding_entrance_kp};"
                 f"{min_dist};{test_value};{dlt_distance};{'OK' if success else 'KO'}\n")
@@ -81,51 +87,99 @@ def _get_distance_between_block_and_approach_zone(sig_name: str, ivb_lim_seg, iv
     if not list_ivb:
         print(f"\nThe signal {sig_name} has no IXL approach area: {list_ivb}")
         return None, None, None
-    if len(list_ivb) > 1:
-        print(f"\nThe signal {sig_name} has more than one IVB in the IXL approach area: {list_ivb}")
-        return None, None, None
-    ivb_name = list_ivb[0]
-    ivb_dict = load_sheet(DCSYS.IVB)
+    ivb_names = ", ".join(list_ivb)
+    list_entrance_points = _get_entrance_points_of_approach_zone(sig_name, list_ivb)
     min_dist = None
     corresponding_entrance = None
 
-    for entrance_seg, entrance_x in get_dc_sys_zip_values(ivb_dict[ivb_name], DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X):
+    for entrance_seg, entrance_x in list_entrance_points:
         if are_points_matching(entrance_seg, entrance_x, ivb_lim_seg, ivb_lim_x):
             continue
         dist = get_dist(entrance_seg, entrance_x, ivb_lim_seg, ivb_lim_x)
+        if dist is None:
+            continue
         if min_dist is None or dist < min_dist:
             min_dist = dist
             corresponding_entrance = (entrance_seg, entrance_x)
-    return min_dist, corresponding_entrance, ivb_name
+    return min_dist, corresponding_entrance, ivb_names
 
 
-def _get_approach_area_ivb(sig_name: str):
-    list_approach_ivb = list()
-    route_control_tables = parse_control_tables(CONTROL_TABLE_TYPE.route, use_csv_file=True)
-    for route_name, route_val in route_control_tables.items():
-        control_sig = [val.upper().strip() for key, val in route_val.items()
-                       if any(key.startswith(key_id) for key_id in ROUTE_CONTROL_SIG_CONTROL_TABLE)][0]
-        if _control_table_sig_correspond(sig_name, control_sig):
-            approach_ivb = [val.upper().strip() for key, val in route_val.items()
-                            if key.startswith(ROUTE_APPROACH_AREA_CLEARANCE_CONTROL_TABLE)][0]
-            if approach_ivb == "--":
-                approach_ivb_list = []
-            else:
-                approach_ivb_list = approach_ivb.split(",")
-                approach_ivb_list = [ivb.strip() for ivb in approach_ivb_list]
-            if not list_approach_ivb or len(approach_ivb_list) < len(list_approach_ivb):
-                list_approach_ivb = approach_ivb_list
-    return [_get_corresponding_dc_sys_ivb(ivb) for ivb in list_approach_ivb]
-
-
-def _control_table_sig_correspond(sig_name: str, control_table_sig_name: str) -> bool:
-    sig_nb = sig_name.split("_")[-1]
-    return sig_nb == control_table_sig_name
-
-
-def _get_corresponding_dc_sys_ivb(control_table_ivb_name: str):
+def _get_entrance_points_of_approach_zone(sig_name: str, list_ivb: list[str]) -> list[tuple[str, float]]:
     ivb_dict = load_sheet(DCSYS.IVB)
-    for ivb_name in ivb_dict.keys():
-        if ivb_name.upper().endswith(control_table_ivb_name):
-            return ivb_name
-    return None
+    list_points = list()
+    for ivb_name in list_ivb:
+        if ivb_name not in ivb_dict:
+            print_error(f"For Signal {sig_name}, IXL APZ defines containing IVB {ivb_name}. "
+                        f"But this IVB does not exist in the DC_SYS.")
+            continue
+        list_points.extend(list(get_dc_sys_zip_values(ivb_dict[ivb_name], DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X)))
+
+    list_points_without_double = list()
+    for i, (entrance_seg, entrance_x) in enumerate(list_points):
+        list_points_reduced = list_points[:i] + list_points[i+1:]
+        if any(are_points_matching(entrance_seg, entrance_x, seg, x) for seg, x in list_points_reduced):
+            continue
+        list_points_without_double.append((entrance_seg, entrance_x))
+
+    return list_points_without_double
+
+
+
+IXL_APZ_FILE = (r"C:\Users\naderc\Desktop\KCR"
+                r"\CR-ASTS-GEN=Gen-PS=ATC=GEN-IFM-ICD-042155_14.00#ATT004XLSX - ATC - C12_D404  IXL APZ Rev01.xlsx")
+IXL_APZ_SHEET_NAME = r"IXL APZ"
+START_LINE = 2
+SIG_COLUMN = 'A'
+APZ_START_COLUMN = 2
+APZ_NB_COLUMNS = 5
+
+LOADED_DB = dict()
+
+
+def _get_approach_area_ivb(sig_name: str) -> list[str]:
+    if not LOADED_DB:
+        wb = load_xlsx_wb(IXL_APZ_FILE)
+        ws = get_xl_sheet_by_name(wb, IXL_APZ_SHEET_NAME)
+        for row in range(START_LINE, get_xl_number_of_rows(ws) + 1):
+            sig = get_xl_cell_value(ws, row=row, column=SIG_COLUMN)
+            if sig is None:
+                continue
+            apz_ivb_list = list()
+            for column in range(APZ_START_COLUMN, APZ_START_COLUMN+APZ_NB_COLUMNS):
+                ivb = get_xl_cell_value(ws, row=row, column=column)
+                if ivb is not None:
+                    apz_ivb_list.append(ivb)
+            LOADED_DB[sig] = apz_ivb_list
+    return LOADED_DB[sig_name]
+
+
+# def _get_approach_area_ivb(sig_name: str):
+#     list_approach_ivb = list()
+#     route_control_tables = parse_control_tables(CONTROL_TABLE_TYPE.route, use_csv_file=True)
+#     for route_name, route_val in route_control_tables.items():
+#         control_sig = [val.upper().strip() for key, val in route_val.items()
+#                        if any(key.startswith(key_id) for key_id in ROUTE_CONTROL_SIG_CONTROL_TABLE)][0]
+#         if _control_table_sig_correspond(sig_name, control_sig):
+#             approach_ivb = [val.upper().strip() for key, val in route_val.items()
+#                             if key.startswith(ROUTE_APPROACH_AREA_CLEARANCE_CONTROL_TABLE)][0]
+#             if approach_ivb == "--":
+#                 approach_ivb_list = []
+#             else:
+#                 approach_ivb_list = approach_ivb.split(",")
+#                 approach_ivb_list = [ivb.strip() for ivb in approach_ivb_list]
+#             if not list_approach_ivb or len(approach_ivb_list) < len(list_approach_ivb):
+#                 list_approach_ivb = approach_ivb_list
+#     return [_get_corresponding_dc_sys_ivb(ivb) for ivb in list_approach_ivb]
+#
+#
+# def _control_table_sig_correspond(sig_name: str, control_table_sig_name: str) -> bool:
+#     sig_nb = sig_name.split("_")[-1]
+#     return sig_nb == control_table_sig_name
+#
+#
+# def _get_corresponding_dc_sys_ivb(control_table_ivb_name: str):
+#     ivb_dict = load_sheet(DCSYS.IVB)
+#     for ivb_name in ivb_dict.keys():
+#         if ivb_name.upper().endswith(control_table_ivb_name):
+#             return ivb_name
+#     return None

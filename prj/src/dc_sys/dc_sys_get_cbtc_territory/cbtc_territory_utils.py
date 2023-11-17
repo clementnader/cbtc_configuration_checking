@@ -158,7 +158,9 @@ def is_point_in_cbtc_ter(seg: str, x: float, direction: str = None) -> Optional[
         if seg == lim_seg:
             if x == lim_x:  # limit point
                 if direction is not None:
-                    if lim_downstream == (direction == Direction.CROISSANT):
+                    if lim_downstream != (direction == Direction.CROISSANT):  # for a single point object,
+                        # we consider it belongs to the zone upstream of it,
+                        # so the limit of the zone should have an opposite direction to the point
                         return True
                     else:
                         return False

@@ -123,6 +123,23 @@ def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str
     if seg in zone_segments:
         return True
 
+    # limit point
+    limits_on_point = [(lim_seg, lim_x, lim_downstream) for lim_seg, lim_x, lim_downstream in zone_limits
+                       if are_points_matching(lim_seg, lim_x, seg, x)]
+    if limits_on_point:
+        if len(limits_on_point) > 1:
+            print_warning(f"Weird zone for {obj_type} {Color.blue}{obj_name}{Color.reset} with multiple limits defined "
+                          f"on the same point:\n{limits_on_point}")
+        lim_downstream = limits_on_point[0][2]
+        if direction is not None:
+            if lim_downstream != (direction == Direction.CROISSANT):  # for a single point object,
+                # we consider it belongs to the zone upstream of it,
+                # so the limit of the zone should have an opposite direction to the point
+                return True
+            else:
+                return False
+        return None
+
     limits_on_seg = [(lim_seg, lim_x, lim_downstream) for lim_seg, lim_x, lim_downstream in zone_limits
                      if lim_seg == seg]
     if not limits_on_seg:
@@ -130,13 +147,6 @@ def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str
 
     closest_limit = sorted(limits_on_seg, key=lambda a: abs(a[1] - x))[0]
     lim_seg, lim_x, lim_downstream = closest_limit
-    if x == lim_x:  # limit point
-        if direction is not None:
-            if lim_downstream == (direction == Direction.CROISSANT):
-                return True
-            else:
-                return False
-        return None
     if (lim_downstream and x > lim_x) or (not lim_downstream and x < lim_x):
         return True
     return False
@@ -160,7 +170,9 @@ def get_zones_of_extremities(obj_type, limits: Union[list[tuple[str, float]], li
     for lim in limits:
         seg, x = lim[0], lim[1]
         if len(lim) > 2:
-            direction = lim[2]
+            direction = get_reverse_direction(lim[2])  # for a single point object,
+            # we consider it belongs to the zone upstream of it,
+            # behavior is mimicked for the zone too
         else:
             direction = None
         zones = get_zones_on_point(obj_type, seg, x, direction)

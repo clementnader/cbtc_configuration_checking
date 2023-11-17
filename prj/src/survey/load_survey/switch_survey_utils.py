@@ -29,7 +29,7 @@ def add_switch_center_points(sw_survey_info: dict[str, dict[str]], survey_name: 
                         f"as they are on the same track.")
         comments = _add_comment_for_switch_point(new_comments, old_comments)
 
-        res_dict[center_point_name.upper()] = {
+        res_dict[f"{center_point_name}__{center_point_track}".upper()] = {
             "obj_name": center_point_name, "track": center_point_track, "surveyed_kp": survey_obj_info["surveyed_kp"],
             "surveyed_kp_comment": survey_obj_info["surveyed_kp_comment"], "comments": comments
         }

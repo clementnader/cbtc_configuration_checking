@@ -69,13 +69,13 @@ def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name)
     if not (0 <= x):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"Offset at cell {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
-                    f"should be positive"
+                    f"shall be positive"
                     f"\n{x = }")
         success = False
     if not (x <= len_seg):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"Offset at cell {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
-                    f"should be lower than "
+                    f"shall be lower than "
                     f"the segment {seg} length ({len_seg})"
                     f"\n{x = }")
         success = False
@@ -107,13 +107,13 @@ def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col,
     if not (min_kp <= kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"KP at cell {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
-                    f"should be larger than the start KP of track {track} ({min_kp})"
+                    f"shall be larger than the start KP of track {track} ({min_kp})"
                     f"\n{kp = }")
         success = False
     if not (kp <= max_kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"KP at cell {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
-                    f"should be lower than the end KP of track {track} ({max_kp})"
+                    f"shall be lower than the end KP of track {track} ({max_kp})"
                     f"\n{kp = }")
         success = False
     return success

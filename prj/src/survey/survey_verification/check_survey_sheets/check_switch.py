@@ -18,17 +18,17 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         track, dc_sys_kp = obj_val["track"], obj_val["dc_sys_kp"]
 
         other_name = obj_val.get("other_name")
-        if other_name is not None and other_name in survey_info:
+        if other_name is not None and f"{other_name}__{track}" in survey_info:
             survey_name = other_name.upper()
         else:
-            survey_name = obj_name.upper()  # default
+            survey_name = f"{obj_name}__{track}".upper()  # default
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
 
-        obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
+        obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name.removesuffix(f"__{track}")
 
-        res_dict[obj_name] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
+        res_dict[(obj_name, track)] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict

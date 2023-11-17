@@ -19,8 +19,8 @@ def load_survey() -> dict:
     global LOADED_SURVEY
     if not LOADED_SURVEY:
         for survey_addr, survey_sheet, start_row, ref_col, type_col, track_col, survey_kp_col in get_d932_loc_info():
-            print_log(f"Loading sheet {Color.blue}{survey_sheet}{Color.reset} of "
-                      f"survey file {Color.cyan}{survey_addr}{Color.reset}...\n")
+            print_log(f"\nLoading sheet {Color.blue}{survey_sheet}{Color.reset} of "
+                      f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
             wb = load_survey_wb(survey_addr)
             d932_sh = get_xl_sheet_by_name(wb, survey_sheet)
             LOADED_SURVEY.update(get_survey(LOADED_SURVEY, d932_sh,
@@ -62,9 +62,18 @@ def get_survey(loaded_survey: dict[str, dict[str]], d932_sh, start_row, ref_col,
         if survey_type is None:
             continue
 
-        track = get_xl_cell_value(d932_sh, row=row, column=track_col)
+        track = get_xl_cell_value(d932_sh, row=row, column=track_col).strip().upper()
+        # FOR MILAN ONLY
+        if PROJECT_NAME == Projects.Milan:
+            track = ("T1" if track == "TRACK_1"
+                     else "T2" if track == "TRACK_2"
+                     else track)
         surveyed_kp = get_xl_float_value(d932_sh, row=row, column=survey_kp_col)
         if surveyed_kp is None:
+            continue
+        if not (isinstance(surveyed_kp, float) or isinstance(surveyed_kp, int)):
+            print_warning(f"Surveyed KP of {type_name} {key_name} in \"{survey_name}\" is not a number:\n"
+                          f"{type(surveyed_kp)} \"{surveyed_kp}\". Object is considered not surveyed.")
             continue
 
         surveyed_kp_comment = f"From {survey_name}"
@@ -78,7 +87,7 @@ def get_survey(loaded_survey: dict[str, dict[str]], d932_sh, start_row, ref_col,
         else:
             comments = None
             surveyed_values = [surveyed_kp]
-        intermediate_survey_dict[survey_type][key_name] = {
+        intermediate_survey_dict[survey_type][f"{key_name}__{track}"] = {
             "obj_name": obj_name, "track": track, "surveyed_kp": surveyed_kp,
             "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
             "list_surveyed_values": surveyed_values

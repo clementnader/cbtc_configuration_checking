@@ -19,14 +19,14 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
             continue
         track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
 
-        survey_name = obj_name.upper()
+        survey_name = f"{obj_name}__{track}".upper()
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
 
         obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
 
-        res_dict[obj_name] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
+        res_dict[(obj_name, track)] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict

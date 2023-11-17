@@ -26,7 +26,7 @@ def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
             list_used_obj_names.append(survey_name)
         obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
 
-        res_dict[obj_name] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
+        res_dict[(obj_name, track)] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict
@@ -81,8 +81,8 @@ def _remove_leading_zeros_and_trailing_letters(test_name: str) -> str:
 
 def _is_name_in_survey(obj_name: str, track, survey_info: dict[str]) -> tuple[bool, Optional[str]]:
     # Trivial case, the name in survey matches directly
-    if obj_name in survey_info:
-        return True, obj_name
+    if f"{obj_name}__{track}" in survey_info:
+        return True, f"{obj_name}__{track}"
 
     # We take the names in survey starting with the obj_name, and if it is only one in this case, we take it
     list_matching_objs = _get_matching_objs_in_survey(obj_name, track, survey_info)
@@ -138,8 +138,10 @@ def _is_name_in_survey(obj_name: str, track, survey_info: dict[str]) -> tuple[bo
 def _get_matching_objs_in_survey(obj_name: str, track: str, survey_info: dict[str]) -> list[str]:
     list_matching_objs = list()
     for survey_name, survey_obj_info in survey_info.items():
+        test_name = survey_name.split("__", 1)[0]  # remove the track in the survey_name,
+        # tracks are directly tested here
         survey_track = survey_obj_info["track"]
-        if track == survey_track and _survey_name_matching(survey_name, obj_name):
+        if track == survey_track and _survey_name_matching(test_name, obj_name):
             list_matching_objs.append(survey_name)
     return list_matching_objs
 

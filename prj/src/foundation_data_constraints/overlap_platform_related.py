@@ -11,13 +11,13 @@ def ixl_overlap_platform_related():
     for ovl_name, ovl in overlap_dict.items():
         sig_name = get_dc_sys_value(ovl, DCSYS.IXL_Overlap.DestinationSignal)
         platform_related = (get_dc_sys_value(ovl, DCSYS.IXL_Overlap.PlatformRelated) == YesOrNo.O)
-        should_be_plt_rel, plt_name, plt_limit = is_sig_downstream_a_plt(sig_name)
-        if platform_related != should_be_plt_rel:
+        shall_be_plt_rel, plt_name, plt_limit = is_sig_downstream_a_plt(sig_name)
+        if platform_related != shall_be_plt_rel:
             print_error(f"Overlap {Color.blue}{ovl_name}{Color.reset} related to signal "
-                        f"{Color.yellow}{sig_name}{Color.reset} should have "
+                        f"{Color.yellow}{sig_name}{Color.reset} shall have "
                         f"flag {Color.white}[Platform Related]{Color.reset} set to "
-                        f"{Color.cyan}'{'Y' if should_be_plt_rel else 'N'}'{Color.reset}.")
-            if should_be_plt_rel:
+                        f"{Color.cyan}'{'Y' if shall_be_plt_rel else 'N'}'{Color.reset}.")
+            if shall_be_plt_rel:
                 print(f"Indeed, signal {Color.yellow}{sig_name}{Color.reset} is downstream "
                       f"{Color.beige}{plt_limit}{Color.reset} of "
                       f"Platform {Color.mint_green}{plt_name}{Color.reset}.")

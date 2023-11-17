@@ -70,13 +70,13 @@ def dc_par_add_on_param():
 def route_and_overlap():
     # Create CSV files
     # parse_control_tables(
-    #     CONTROL_TABLE_TYPE.route, use_csv_file=True,
+    #     CONTROL_TABLE_TYPE.route, use_csv_file=False,
     #     # verbose=True,
     #     # specific_page=10,
     #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
     # )
     # parse_control_tables(
-    #     CONTROL_TABLE_TYPE.overlap, use_csv_file=True,
+    #     CONTROL_TABLE_TYPE.overlap, use_csv_file=False,
     #     # verbose=True,
     #     # specific_page=2,
     #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
@@ -107,11 +107,18 @@ def constraints():
     #                               faire R_IVB_1 aussi.
     # r_dyntag_3()
     # cf_zsm_cbtc_10()
-    # cf_dg_1()  # TODO: check correct Line Section and check Vital/Non Vital
+    # cf_dg_1()  # TODO: check correct Line Section
     # cf_dg_2()
-    # r_mes_pas_itf_1(in_cbtc=False)  # TODO: check when both ZC should receive/send both the messages
+    # r_mes_pas_itf_1(in_cbtc=False)  # TODO: check when both ZC should receive/send both the messages,
+    #                                    redo the Signals, use the EIS to check
     # r_mes_pas_itf_3(in_cbtc=False)
-    # cf_signal_12()  # TODO: change the IVB limit upstream with the CDV (no need to use the control tables)
+    # cf_signal_12(no_overshoot=True)  # TODO: change the IVB limit upstream with the CDV
+    #                                        (no need to use the control tables)
+    #                                        en fait déjà oui pas besoin d'utiliser les control tables
+    #                                        mais prendre plutôt l'IVB en amont de base
+    #                                        et pourquoi pas laisser le choix d'utiliser CDV ou IVB
+    #                                        et aussi mettre la possibilité d'ajouter un tableau en entrée
+    #                                        avec les IVB de l'APZ
     # ixl_overlap_platform_related()
     return
 
@@ -128,8 +135,8 @@ def main():
     # pretty_print_dict(get_sigs_in_cbtc_ter(), max_lvl=0)
     # pretty_print_dict(get_maz_in_cbtc_ter(), max_lvl=0)
     # pretty_print_dict(get_tags_in_cbtc_ter(), max_lvl=0)
-    # pretty_print_dict(get_sws_in_cbtc_ter(), max_lvl=0)
-    # pretty_print_dict(get_plts_in_cbtc_ter(), max_lvl=0)
+    # pretty_print_dict(get_switches_in_cbtc_ter(), max_lvl=0)
+    # pretty_print_dict(get_platforms_in_cbtc_ter(), max_lvl=0)
 
     # create_fouling_points_file()
 

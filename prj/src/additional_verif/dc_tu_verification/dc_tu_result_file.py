@@ -29,6 +29,8 @@ PARAMETER_NAME_COLUMN = 1
 PMC_FIRST_COLUMN = 2
 STATUS_COLUMN = 5
 COMMENTS_COLUMN = 6
+IP_ADDRESS_STATUS2_COLUMN = 7
+IP_ADDRESS_COMMENTS2_COLUMN = 8
 
 
 def create_dc_tu_verif_file(ip_address_dict: dict, ssh_key_dict: dict):
@@ -185,15 +187,23 @@ def _set_status_and_comments_columns(ws: xl_ws.Worksheet, current_row: int,
                 center_horizontal=True, borders=True)
     # Comments cell
     if row_status == "OK":
-        return
-    list_of_comments = list()
-    for pmc_num, pmc_status_dict in dict_of_status.items():
-        duplicate_cells = pmc_status_dict["duplicate_cells"]
-        _rewrite_status_of_previous_cells(ws, duplicate_cells)
-        list_of_comments.append(f"Value for PMC {pmc_num} is in duplicate with cell " +
-                                " and cell ".join(duplicate_cells) + ".")
-    create_cell(ws, "\n".join(list_of_comments), row=current_row, column=COMMENTS_COLUMN,
-                line_wrap=True, borders=True)
+        create_cell(ws, None, row=current_row, column=COMMENTS_COLUMN,
+                    line_wrap=True, borders=True)
+    else:
+        list_of_comments = list()
+        for pmc_num, pmc_status_dict in dict_of_status.items():
+            duplicate_cells = pmc_status_dict["duplicate_cells"]
+            _rewrite_status_of_previous_cells(ws, duplicate_cells)
+            list_of_comments.append(f"Value for PMC {pmc_num} is in duplicate with cell " +
+                                    " and cell ".join(duplicate_cells) + ".")
+        create_cell(ws, "\n".join(list_of_comments), row=current_row, column=COMMENTS_COLUMN,
+                    line_wrap=True, borders=True)
+    # Extra Status and Comments cells
+    if ws.title == PMC_IP_ADDRESS_SHEET_NAME:
+        create_cell(ws, None, row=current_row, column=IP_ADDRESS_STATUS2_COLUMN,
+                    center_horizontal=True, borders=True)
+        create_cell(ws, None, row=current_row, column=IP_ADDRESS_COMMENTS2_COLUMN,
+                    line_wrap=True, borders=True)
 
 
 def _rewrite_status_of_previous_cells(ws: xl_ws.Worksheet, duplicate_cells: list[str]) -> None:

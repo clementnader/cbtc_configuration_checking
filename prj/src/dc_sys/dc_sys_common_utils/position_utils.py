@@ -10,7 +10,8 @@ from .switch_utils import *
 __all__ = ["get_obj_position", "get_obj_zone_limits", "get_obj_oriented_zone_limits"]
 
 
-def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], list[tuple[str, float]],
+def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[str, float, str],
+                                                       list[tuple[str, float]],
                                                        list[tuple[str, float, str]], None]:
     """
     Returns the position of an object:
@@ -36,6 +37,9 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], list[t
 
     if "Seg" in sh_attrs and "X" in sh_attrs:
         seg, x = get_dc_sys_values(obj_val, obj_sh.Seg, obj_sh.X)
+        direction = _get_direction_of_point(obj_type, obj_name)
+        if direction is not None:
+            return seg, x, direction
         return seg, x
 
     limits = get_obj_zone_limits(obj_type, obj_name)
@@ -56,6 +60,22 @@ def _get_ovl_pos(obj_val: dict[str]) -> list[tuple[str, float]]:
 def _get_calib_pos(obj_val: dict[str]) -> list[tuple[str, float]]:
     start_tag, end_tag = get_dc_sys_values(obj_val, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
     return [get_obj_position(DCSYS.Bal, start_tag), get_obj_position(DCSYS.Bal, end_tag)]
+
+
+def _get_direction_of_point(obj_type, obj_name: str) -> Optional[str]:
+    obj_dict = load_sheet(obj_type)
+    obj_val = obj_dict[obj_name]
+    obj_sh = get_sheet_class_from_name(obj_type)
+    sh_attrs = get_class_attr_dict(obj_sh).keys()
+    if "Direction" in sh_attrs:
+        direction = get_dc_sys_value(obj_val, obj_sh.Direction)
+    elif "Sens" in sh_attrs:
+        direction = get_dc_sys_value(obj_val, obj_sh.Sens)
+    elif "SensAssocie" in sh_attrs:
+        direction = get_dc_sys_value(obj_val, obj_sh.SensAssocie)
+    else:
+        direction = None
+    return direction
 
 
 def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, float]], list[tuple[str, float, str]]]:

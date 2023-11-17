@@ -41,7 +41,7 @@ def _get_zc_of_traffic_stop(obj_name: str) -> list[str]:
     return list_zc
 
 
-def get_zc_of_obj(obj_type, obj_name: str) -> Optional[list[str]]:
+def get_zc_of_obj(obj_type, obj_name: str) -> list[str]:
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Traffic_Stop):  # a dedicated function for traffic stops
         return _get_zc_of_traffic_stop(obj_name)
     position = get_obj_position(obj_type, obj_name)
@@ -49,7 +49,7 @@ def get_zc_of_obj(obj_type, obj_name: str) -> Optional[list[str]]:
         return get_zc_of_point(*position)
     if isinstance(position, list):
         return get_zc_of_extremities(position)
-    return None
+    return []
 
 
 def get_ls_managed_by_zc(zc_name: str) -> list[str]:
@@ -72,25 +72,42 @@ def get_zc_managing_ls(ls_name: str) -> str:
     return list_zc[0]
 
 
-def _get_zc_managing_signal(sig_name: str) -> tuple[str, str]:
-    # sig_dict = load_sheet(DCSYS.Sig)
-    # sig_value = sig_dict[sig_name]
-    # sig_seg, sig_x = get_dc_sys_values(sig_value, DCSYS.Sig.Seg, DCSYS.Sig.X)
-    # sig_direction = get_dc_sys_value(sig_value, DCSYS.Sig.Sens)
+def _get_zc_managing_platform(plt_name: str) -> Optional[str]:
+    plt_dict = load_sheet(DCSYS.Quai)
+    ws_eqpt_dict = load_sheet(DCSYS.Wayside_Eqpt)
+    related_ws_eqpt = get_dc_sys_value(plt_dict[plt_name], DCSYS.Quai.RelatedWaysideEquip)
+    related_ws_eqpt_is_a_zc = (related_ws_eqpt is not None
+                               and get_dc_sys_value(ws_eqpt_dict[related_ws_eqpt],
+                                                    DCSYS.Wayside_Eqpt.Function.Zc) == YesOrNo.O)
+    zc = related_ws_eqpt if related_ws_eqpt_is_a_zc else None
+    return zc
+
+
+def _get_zc_managing_overlap(ovl_name: str) -> tuple[str, str]:
+    ovl_dict = load_sheet(DCSYS.IXL_Overlap)
+    sig_name = get_dc_sys_value(ovl_dict[ovl_name], DCSYS.IXL_Overlap.DestinationSignal)
+    return _get_zc_managing_signal(sig_name)
+
+
+def _get_zc_managing_signal(sig_name: str, sig_zc_upstream: bool) -> tuple[str, str]:
+    sig_dict = load_sheet(DCSYS.Sig)
+    sig_value = sig_dict[sig_name]
+    sig_seg, sig_x = get_dc_sys_values(sig_value, DCSYS.Sig.Seg, DCSYS.Sig.X)
+    sig_direction = get_dc_sys_value(sig_value, DCSYS.Sig.Sens)
     # at a limit between two IVB, the signal is considered to belong to the IVB in rear
 
-    # ivb_on_sig = get_zones_on_point(DCSYS.IVB, sig_seg, sig_x, direction=get_reverse_direction(sig_direction))
-    # if not ivb_on_sig:
-    #     print_error(f"Signal {sig_name} is on no IVB.")
-    #     sys.exit(1)
-    # if len(ivb_on_sig) > 1:
-    #     print_error(f"Signal {sig_name} is on multiple IVBs: {ivb_on_sig}.")
-    #     sys.exit(1)
-    # ivb = ivb_on_sig[0]
-    # zc = _get_zc_managing_ivb(ivb)
+    ivb_on_sig = get_zones_on_point(DCSYS.IVB, sig_seg, sig_x, direction=get_reverse_direction(sig_direction))
+    if not ivb_on_sig:
+        print_error(f"Signal {sig_name} is on no IVB.")
+        sys.exit(1)
+    if len(ivb_on_sig) > 1:
+        print_error(f"Signal {sig_name} is on multiple IVBs: {ivb_on_sig}.")
+        sys.exit(1)
+    ivb_in_rear = ivb_on_sig[0]
 
-    ls = get_line_section_of_obj(DCSYS.Sig, sig_name)[0]
-    zc = get_zc_managing_ls(ls)
+
+
+    zc = _get_zc_managing_ivb(ivb)
     return zc, ls
 
 
@@ -104,19 +121,13 @@ def _get_zc_managing_ivb(ivb_name: str) -> str:
     return dedicated_zc
 
 
-def _get_zc_managing_block(block_name: str) -> tuple[str, str]:
-    ls = get_line_section_of_obj(DCSYS.CDV, block_name)[0]
-    zc = get_zc_managing_ls(ls)
-    return zc, ls
-
-
 def _get_zc_managing_maz(maz_name: str) -> tuple[str, str]:
     ls = get_line_section_of_obj(DCSYS.Zaum, maz_name)[0]
     zc = get_zc_managing_ls(ls)
     return zc, ls
 
 
-def _get_zc_managing_protection_zone(obj_type, obj_name: str) -> tuple[list[str], list[str]]:
+def _get_zc_managing_ges_or_protection_zone(obj_type, obj_name: str) -> tuple[list[str], list[str]]:
     """ Function that shall work for both GES and Protection Zones. """
     pz_limits = get_obj_position(obj_type, obj_name)
     maz_list = get_maz_of_extremities(pz_limits)
@@ -131,25 +142,35 @@ def _get_zc_managing_protection_zone(obj_type, obj_name: str) -> tuple[list[str]
     return zc_list, ls_list
 
 
-def get_zc_managing_obj(obj_type, obj_name: str) -> tuple[Optional[list[str]], Optional[list[str]]]:
+def get_zc_managing_obj(obj_type, obj_name: str, sig_zc_upstream: bool = None) -> tuple[list[str], Optional[list[str]]]:
+    # Platform
+    if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai):
+        zc = _get_zc_managing_platform(obj_name)
+        return [zc], None
+    # Signal
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Sig):
-        zc, related_obj = _get_zc_managing_signal(obj_name)
+        zc, related_obj = _get_zc_managing_signal(obj_name, sig_zc_upstream)
         return [zc], [related_obj]
-
+    # Overlap
+    if get_sh_name(obj_type) == get_sh_name(DCSYS.IXL_Overlap):
+        zc, related_obj = _get_zc_managing_overlap(obj_name)
+        return [zc], [related_obj]
+    # IVB
     if get_sh_name(obj_type) == get_sh_name(DCSYS.IVB):
         zc = _get_zc_managing_ivb(obj_name)
         return [zc], None
-
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.CDV):
-        zc, related_obj = _get_zc_managing_block(obj_name)
-        return [zc], [related_obj]
-
+    # MAZ
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Zaum):
         zc, related_obj = _get_zc_managing_maz(obj_name)
         return [zc], [related_obj]
-
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.Protection_Zone):
-        return _get_zc_managing_protection_zone(obj_type, obj_name)
+    # GES and Protection Zone
+    if (("GES" in get_class_attr_dict(DCSYS)
+         and get_sh_name(obj_type) == get_sh_name(DCSYS.GES))
+        or ("Protection_Zone" in get_class_attr_dict(DCSYS)
+            and get_sh_name(obj_type) == get_sh_name(DCSYS.Protection_Zone))):
+        # For GES and Protection Zone, we need at least that the ZC managing the MAZ intersecting the zone
+        # is receiving the message
+        return _get_zc_managing_ges_or_protection_zone(obj_type, obj_name)
 
     list_zc = get_zc_of_obj(obj_type, obj_name)
     return list_zc, None

@@ -41,9 +41,12 @@ def print_section_title(title: str):
     print(main_color + "\n" + title + Color.reset)
 
 
-def print_error(*args, end="\n"):
+def print_error(*args, end="\n", no_pretext: bool = False):
     main_color = Color.light_red
-    print(f"\n{csi_bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
+    if not no_pretext:
+        print(f"\n{csi_bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
+    else:
+        print(f"{Color.reset}{main_color}", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)

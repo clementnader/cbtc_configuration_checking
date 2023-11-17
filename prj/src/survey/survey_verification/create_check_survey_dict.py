@@ -34,5 +34,4 @@ def _get_kp_to_order_dict(x, verif_dict):
     """ Get KP value inside the verif dict dictionary, with the different KP values according to which one exists.
         If none, put a dummy large value, for the object to be at the end of the order. """
     return (verif_dict[x]["dc_sys_kp"] if verif_dict[x]["dc_sys_kp"] is not None
-            else verif_dict[x]["surveyed_kp"] if verif_dict[x]["surveyed_kp"] is not None
-            else 1E20)
+            else verif_dict[x]["surveyed_kp"])

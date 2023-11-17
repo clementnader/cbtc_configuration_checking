@@ -40,7 +40,7 @@ class ControlTableInfo:
         elif table_type == CONTROL_TABLE_TYPE.overlap:
             control_tables = DATABASE_LOC.control_tables_overlap
         else:
-            print(f"Unknown table type: {table_type}, it should be \"{CONTROL_TABLE_TYPE.route}\" or "
+            print(f"Unknown table type: {table_type}, it shall be \"{CONTROL_TABLE_TYPE.route}\" or "
                   f"\"{CONTROL_TABLE_TYPE.overlap}\".")
             return
 
@@ -51,7 +51,7 @@ class ControlTableInfo:
         elif line_part == CONTROL_TABLE_LINE_PART.cmc2:
             self.control_tables_path = control_tables.cmc2
         else:
-            print(f"Unknown part of the line: {line_part}, it should be \"{CONTROL_TABLE_LINE_PART.line}\", "
+            print(f"Unknown part of the line: {line_part}, it shall be \"{CONTROL_TABLE_LINE_PART.line}\", "
                   f"\"{CONTROL_TABLE_LINE_PART.cmc}\" or \"{CONTROL_TABLE_LINE_PART.cmc2}\".")
             return
 

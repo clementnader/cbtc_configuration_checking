@@ -79,54 +79,41 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Brussels -------------------------------#
         elif project_name == Projects.Brussels:
-            old_version = False
-            if old_version:
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\DC_SYS_old.xls"
-                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\DC_PAR.xls"
-                self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B\C64_D413\DC_BOP.xls"
-                self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B"
-            else:
-                # self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS.xls"
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_R4_P1B.xls"
-                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_PAR.xls"
-                self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\C64_D413\DC_BOP.xls"
-                self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R2"
-                # -- Survey -- #
-                self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
-                                               r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey 18-10-2023.xlsx"]
-                self.survey_loc.survey_sheet = [r"PhotoBook", r"AFS_DEP_ML_DEF_05.10.23REV_1"]
-                self.survey_loc.start_row = [2, 13]
-                self.survey_loc.ref_col = [1, 1]
-                self.survey_loc.type_col = [2, 2]
-                self.survey_loc.track_col = [3, 3]
-                self.survey_loc.survey_kp_col = [4, 11]
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\C64_D413\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R4"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
+                                           r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey 05-10-2023.xlsx"]
+            self.survey_loc.survey_sheet = [r"PhotoBook", r"AFS_DEP_ML_DEF_05.10.23REV_1"]
+            self.survey_loc.start_row = [2, 13]
+            self.survey_loc.ref_col = [1, 1]
+            self.survey_loc.type_col = [2, 2]
+            self.survey_loc.track_col = [3, 3]
+            self.survey_loc.survey_kp_col = [4, 11]
             # -- Control Tables -- #
-            if old_version:
-                self.control_tables_route.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-                                                  r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
-                                                  r"rev00.01_ERASME-ANTENNA LINE.pdf")
-                self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-                                                 r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
-                                                 r"rev00.05_ERASME DEPOT.pdf")
-                self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-                                                    r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_"
-                                                    r"rev00.02_ERASME-ANTENNA LINE.pdf")
-                self.control_tables_overlap.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-                                                   r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_"
-                                                   r"rev00.05_ERASME DEPOT-6-91.pdf")
-            else:
-                self.control_tables_route.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-                                                  r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
-                                                  r"rev00.02_ERASME-ANTENNA LINE.pdf")
-                self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-                                                 r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
-                                                 r"rev01.00_ERASME DEPOT.pdf")
-                self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-                                                    r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_"
-                                                    r"rev00.02_ERASME-ANTENNA LINE.pdf")
-                self.control_tables_overlap.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-                                                   r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_"
-                                                   r"rev01.00_ERASME DEPOT.pdf")
+            # self.control_tables_route.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
+            #                                   r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
+            #                                   r"rev00.02_ERASME-ANTENNA LINE.pdf")
+            self.control_tables_route.line = (r"C:\Users\naderc\Desktop\BXL\control tables new"
+                                              r"\90000536.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES "
+                                              r"ITINÉRAIRES_FR_rev00.03_ERASME-ANTENNA LINE.pdf")
+            # self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
+            #                                  r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
+            #                                  r"rev01.00_ERASME DEPOT.pdf")
+            self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\BXL\control tables new"
+                                             r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
+                                             r"rev01.01_ERASME DEPOT.pdf")
+            # self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
+            #                                     r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_"
+            #                                     r"rev00.02_ERASME-ANTENNA LINE.pdf")
+            self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\BXL\control tables new"
+                                                r"\90000537.L02.FR-BXL_IXL_ LISTE DES OVERLAP + PARAMÈTRES "
+                                                r"OVERLAP_FR_rev00.03_ERASME-ANTENNA LINE.pdf")
+            self.control_tables_overlap.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
+                                               r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_"
+                                               r"rev01.00_ERASME DEPOT.pdf")
 
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
@@ -134,6 +121,7 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\DC_SYS.xls"
             self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\C64_D413\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\KCR\KCR_C11_D470_06_06_01_V03"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\KCR"
                                            r"\CR-ASTS-042189 - 15.00_ATT002 - ATC- KCR C_D932 - "
@@ -146,14 +134,6 @@ class ProjectDatabaseLoc:
             self.survey_loc.type_col = [4, 2]
             self.survey_loc.track_col = [2, 3]
             self.survey_loc.survey_kp_col = [3, 5]
-            # self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\KCR"
-            #                                r"\AFS_Project_KCR_Sydhavn_survey_eng table_30.08.23.xlsx")
-            # self.survey_loc.survey_sheet = r"D932"
-            # self.survey_loc.start_row = 3
-            # self.survey_loc.ref_col = 1
-            # self.survey_loc.type_col = 2
-            # self.survey_loc.track_col = 3
-            # self.survey_loc.survey_kp_col = 5
             # -- Control Tables -- #
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES"
                                               r"\CR-ASTS-045007-11.00-ATT001- Line CT Routes.pdf")
@@ -166,11 +146,11 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Glasgow -------------------------------#
         elif project_name == Projects.Glasgow:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V04\DC_SYS_new.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS.xls"
             self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V03\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V04\DC_PAR_newx.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V04\C64_D413\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V04"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V05"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
                                            r"\2022_03_11_Inner_Circle_Features.xlsx",
@@ -199,7 +179,8 @@ class ProjectDatabaseLoc:
         # ------------------------------- Milan -------------------------------#
         elif project_name == Projects.Milan:
             # ver = "TF3"
-            ver = "DEPOT + LN01"
+            # ver = "DEPOT + LN01"
+            ver = "WHOLE"
             # TF3
             if ver == "TF3":
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C_D470_01_02_RC2\ML4_DC_SYS.xls"
@@ -228,6 +209,27 @@ class ProjectDatabaseLoc:
                                                     r"\M4-ST00PGRE-55047_00.04_Allegato_1-341-397 - LINE - Overlap.pdf")
                 self.control_tables_overlap.cmc = (r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES"
                                                    r"\M4-ST00PGRE-55047_00.04_Allegato_1-833-847 - DEPOT - Overlap.pdf")
+            # WHOLE
+            elif ver == "WHOLE":
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_00_RC6\ML4_DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_00_RC6\ML4_DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_00_RC6\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C11_D470_06_06_02_V03"
+                # -- Survey -- #
+                self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\ML4\SURVEY"
+                                               r"\(ML4) LN04_Object_List_01.xlsx",
+                                               r"C:\Users\naderc\Desktop\ML4\SURVEY"
+                                               r"\ML4_TF2 REPORT OBJECT_AFS_REV_5.1.xlsx",
+                                               r"C:\Users\naderc\Desktop\ML4\SURVEY"
+                                               r"\ML4_TF3 AFS DB integration template.xlsx",
+                                               r"C:\Users\naderc\Desktop\ML4\SURVEY"
+                                               r"\ml4 tki_depot_ln01_object.xlsx"]
+                self.survey_loc.survey_sheet = ["Foglio1", "Foglio1", "Import", "ML4 TKI_Depot_LN01_Object_List_"]
+                self.survey_loc.start_row = [4, 3, 3, 2]
+                self.survey_loc.ref_col = [2, 2, 1, 1]
+                self.survey_loc.type_col = [1, 1, 2, 2]
+                self.survey_loc.track_col = [4, 4, 3, 3]
+                self.survey_loc.survey_kp_col = [7, 7, 4, 5]
 
         # ------------------------------- Riyadh -------------------------------#
         elif project_name == Projects.Riyadh:

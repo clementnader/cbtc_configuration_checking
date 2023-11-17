@@ -32,13 +32,13 @@ The tool automates the verification for the following elements:
    - and the different columns for the data the tool will use:
      - reference name: name of the surveyed element,
      - type: type of the surveyed element:
-       - for switches, type should be **SWP** or **SWITCH**;
-       - for platform ends, type should be **PLATFORM**;
-       - for blocks, type should be **TC**;
-       - for signals, type should be **SIGNAL**;
-       - for buffers, type should be **SIGNAL_BUFFER** or **BUFFER**;
-       - for tags, type should be **TAG**;
-       - for flood gates, type should be **FLOOD_GATE** or **FLOODGATE**;
+       - for switches, type shall be **SWP** or **SWITCH**;
+       - for platform ends, type shall be **PLATFORM**;
+       - for blocks, type shall be **TC**;
+       - for signals, type shall be **SIGNAL**;
+       - for buffers, type shall be **SIGNAL_BUFFER** or **BUFFER**;
+       - for tags, type shall be **TAG**;
+       - for flood gates, type shall be **FLOOD_GATE** or **FLOODGATE**;
      - track: track of the element,
      - surveyed KP: kilometer point surveyed by a geometer.
    
