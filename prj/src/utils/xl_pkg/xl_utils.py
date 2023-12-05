@@ -14,7 +14,7 @@ __all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws", "load_xlsx_wb", "get_xlrd_colum
 
 
 def load_xlsx_wb(path: str) -> openpyxl.workbook.Workbook:
-    return openpyxl.load_workbook(path)
+    return openpyxl.load_workbook(path, data_only=True)
 
 
 def get_xlrd_column(column_number: int) -> int:

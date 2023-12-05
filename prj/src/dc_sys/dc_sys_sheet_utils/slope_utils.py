@@ -29,6 +29,10 @@ def get_slope_at_point(seg: str, x: float) -> float:
         return upstream_slope_value
 
     total_distance = get_dist_downstream(upstream_seg, upstream_x, downstream_seg, downstream_x, downstream=True)
+    if total_distance is None:
+        # TODO solve problem with depol, cf Milan
+        print(upstream_seg, upstream_x, downstream_seg, downstream_x)
+        return 0.
     sub_distance = get_dist_downstream(upstream_seg, upstream_x, seg, x, downstream=True)
     # linear approximation of the slope between two points
     slope_value = (downstream_slope_value - upstream_slope_value) / total_distance * sub_distance + upstream_slope_value

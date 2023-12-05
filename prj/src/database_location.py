@@ -117,11 +117,11 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
-            self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_SYS.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V03\C64_D413\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\KCR\KCR_C11_D470_06_06_01_V03"
+            # self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_SYS.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04\C64_D413\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\KCR\KCR_C11_D470_06_06_01_V04"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\KCR"
                                            r"\CR-ASTS-042189 - 15.00_ATT002 - ATC- KCR C_D932 - "
@@ -146,11 +146,16 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Glasgow -------------------------------#
         elif project_name == Projects.Glasgow:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS.xls"
-            self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V03\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V05"
+            iatp = True
+            if iatp:
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS.xls"
+                self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V03\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V05"
+            else:
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_01_V01\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_01_V01\DC_PAR.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
                                            r"\2022_03_11_Inner_Circle_Features.xlsx",
@@ -223,13 +228,16 @@ class ProjectDatabaseLoc:
                                                r"C:\Users\naderc\Desktop\ML4\SURVEY"
                                                r"\ML4_TF3 AFS DB integration template.xlsx",
                                                r"C:\Users\naderc\Desktop\ML4\SURVEY"
-                                               r"\ml4 tki_depot_ln01_object.xlsx"]
-                self.survey_loc.survey_sheet = ["Foglio1", "Foglio1", "Import", "ML4 TKI_Depot_LN01_Object_List_"]
-                self.survey_loc.start_row = [4, 3, 3, 2]
-                self.survey_loc.ref_col = [2, 2, 1, 1]
-                self.survey_loc.type_col = [1, 1, 2, 2]
-                self.survey_loc.track_col = [4, 4, 3, 3]
-                self.survey_loc.survey_kp_col = [7, 7, 4, 5]
+                                               r"\ml4 tki_depot_ln01_object.xlsx",
+                                               r"C:\Users\naderc\Desktop\ML4\SURVEY"
+                                               r"\ML4_LN02 - Coni Zugna to Sforza AFS Object List.xlsx"]
+                self.survey_loc.survey_sheet = ["Foglio1", "Foglio1", "Import", "ML4 TKI_Depot_LN01_Object_List_",
+                                                "AFS Coni Zugna to Sforza"]
+                self.survey_loc.start_row = [4, 3, 3, 2, 2]
+                self.survey_loc.ref_col = [2, 2, 1, 1, 1]
+                self.survey_loc.type_col = [1, 1, 2, 2, 2]
+                self.survey_loc.track_col = [4, 4, 3, 3, 3]
+                self.survey_loc.survey_kp_col = [7, 7, 4, 5, 5]
 
         # ------------------------------- Riyadh -------------------------------#
         elif project_name == Projects.Riyadh:

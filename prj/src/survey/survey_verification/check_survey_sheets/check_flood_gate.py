@@ -24,6 +24,7 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
     res_dict = dict()
     for obj_name, obj_val in obj_dict.items():
         track, dc_sys_kp = obj_val
+        track = track.upper()
 
         survey_name = f"{obj_name}__{track}".upper()
         survey_obj_info = survey_info.get(survey_name)

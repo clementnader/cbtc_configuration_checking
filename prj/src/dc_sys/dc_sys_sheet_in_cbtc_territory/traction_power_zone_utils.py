@@ -22,7 +22,7 @@ def get_traction_power_zones_in_cbtc_ter():
                 and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_tpz_dict[tpz_name] = tpz_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            print_warning(f"Traction Power Zone {tpz_name} is both inside and outside CBTC Territory. "
-                          f"It is still taken into account.")
+            print_log(f"Traction Power Zone {tpz_name} is both inside and outside CBTC Territory. "
+                      f"It is still taken into account.")
             within_cbtc_tpz_dict[tpz_name] = tpz_value
     return within_cbtc_tpz_dict

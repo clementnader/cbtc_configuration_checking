@@ -21,7 +21,7 @@ def get_blocks_in_cbtc_ter():
                 and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_block_dict[block] = block_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            print_warning(f"Block {block} is both inside and outside CBTC Territory. "
-                          f"It is still taken into account.")
+            print_log(f"Block {block} is both inside and outside CBTC Territory. "
+                      f"It is still taken into account.")
             within_cbtc_block_dict[block] = block_value
     return within_cbtc_block_dict

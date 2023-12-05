@@ -68,6 +68,7 @@ def get_survey(loaded_survey: dict[str, dict[str]], d932_sh, start_row, ref_col,
             track = ("T1" if track == "TRACK_1"
                      else "T2" if track == "TRACK_2"
                      else track)
+
         surveyed_kp = get_xl_float_value(d932_sh, row=row, column=survey_kp_col)
         if surveyed_kp is None:
             continue
@@ -77,8 +78,8 @@ def get_survey(loaded_survey: dict[str, dict[str]], d932_sh, start_row, ref_col,
             continue
 
         surveyed_kp_comment = f"From {survey_name}"
-        if key_name in intermediate_survey_dict[survey_type]:  # two values in the same survey file
-            old_surveyed_values = intermediate_survey_dict[survey_type][key_name]["list_surveyed_values"]
+        if f"{key_name}__{track}" in intermediate_survey_dict[survey_type]:  # two values in the same survey file
+            old_surveyed_values = intermediate_survey_dict[survey_type][f"{key_name}__{track}"]["list_surveyed_values"]
             surveyed_values = old_surveyed_values + [surveyed_kp]
             surveyed_kp = round(sum(surveyed_values) / len(surveyed_values), 4)
             comments = (f"Object appearing {len(surveyed_values)} times in same survey {survey_name}.\n"

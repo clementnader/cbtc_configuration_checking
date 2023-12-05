@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 from ...utils import *
 from ...database_location import *
 from .get_compatible_cctool_oo_version import *
@@ -44,7 +45,7 @@ def get_corresponding_cctool_oo_schema():
             if file.endswith(version):
                 return full_path
     print_error(f"Unable to find the CCTool-OO Schema file for version {version} in directory {CCTOOL_OO_SCHEMA_DIR}")
-    return None
+    sys.exit(1)
 
 
 def get_cctool_oo_version_info(cctool_oo_file):

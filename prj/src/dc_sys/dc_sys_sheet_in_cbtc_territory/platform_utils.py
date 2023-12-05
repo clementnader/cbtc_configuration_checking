@@ -23,7 +23,7 @@ def get_platforms_in_cbtc_ter():
                 and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limit_in_cbtc)):
             within_cbtc_plt_dict[plt_name] = plt_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limit_in_cbtc):
-            print_warning(f"Platform {plt_name} is both inside and outside CBTC Territory. "
-                          f"It is still taken into account.")
+            print_log(f"Platform {plt_name} is both inside and outside CBTC Territory. "
+                      f"It is still taken into account.")
             within_cbtc_plt_dict[plt_name] = plt_value
     return within_cbtc_plt_dict

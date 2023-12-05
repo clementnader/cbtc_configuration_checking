@@ -7,8 +7,7 @@ from ..load_database import *
 from ..dc_sys_common_utils import *
 
 
-__all__ = ["is_sw_point_seg_upstream", "give_sw_pos", "give_sw_kp_pos", "get_heel_position",
-           "get_switch_position_dict", "get_point_seg",
+__all__ = ["give_sw_kp_pos", "get_heel_position", "get_switch_position_dict",
            "get_dc_sys_switch_points_dict", "get_corresponding_center_switch_point_track"]
 
 

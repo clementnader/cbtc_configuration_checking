@@ -22,7 +22,7 @@ def get_asr_in_cbtc_ter():
                 and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_asr_dict[asr_name] = asr_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            print_warning(f"Automatic Speed Restriction {asr_name} is both inside and outside CBTC Territory. "
-                          f"It is still taken into account.")
+            print_log(f"Automatic Speed Restriction {asr_name} is both inside and outside CBTC Territory. "
+                      f"It is still taken into account.")
             within_cbtc_asr_dict[asr_name] = asr_value
     return within_cbtc_asr_dict

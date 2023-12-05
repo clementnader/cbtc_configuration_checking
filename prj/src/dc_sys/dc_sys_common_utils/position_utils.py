@@ -4,6 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
+from .common_utils import *
 from .switch_utils import *
 
 
@@ -49,12 +50,14 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[
     return None
 
 
-def _get_ovl_pos(obj_val: dict[str]) -> list[tuple[str, float]]:
+def _get_ovl_pos(obj_val: dict[str]) -> list[tuple[str, float, str]]:
+    vsp_direction = get_dc_sys_value(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
+    # The zone of the overlap is upstream the VSP and downstream the release point
     rp_seg, rp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.ReleasePoint.Seg,
                                      DCSYS.IXL_Overlap.ReleasePoint.X)
     vsp_seg, vsp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg,
                                        DCSYS.IXL_Overlap.VitalStoppingPoint.X)
-    return [(rp_seg, rp_x), (vsp_seg, vsp_x)]
+    return [(rp_seg, rp_x, get_reverse_direction(vsp_direction)), (vsp_seg, vsp_x, vsp_direction)]
 
 
 def _get_calib_pos(obj_val: dict[str]) -> list[tuple[str, float]]:

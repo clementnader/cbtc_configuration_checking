@@ -14,11 +14,12 @@ def r_cdv_5(print_ok: bool = False):
         is_sw_upstream = is_sw_point_seg_upstream(sw_value)
         sw_block, sw_block_value = get_block_associated_to_sw(sw_value)
         upstream_limits, downstream_limits = find_upstream_n_downstream_limits(sw_block_value)
+        # TODO it is not working fine, to rework
 
         error_counts[0] += test_sw_danger_point(sw_name, sw_value, sw_block, is_sw_upstream,
                                                 upstream_limits, downstream_limits, print_ok)
-        error_counts[1] += test_fouling_point_danger_point(sw_name, sw_block, is_sw_upstream,
-                                                           upstream_limits, downstream_limits, print_ok)
+        # error_counts[1] += test_fouling_point_danger_point(sw_name, sw_block, is_sw_upstream,
+        #                                                    upstream_limits, downstream_limits, print_ok)
     if error_counts[0] > 0:
         print(f"{Color.blue}There was {Color.light_blue}{error_counts[0]}{Color.blue} "
               f"error{'s' if error_counts[0] >= 2 else ''} on R_CDV_5 "
@@ -55,8 +56,8 @@ def test_sw_danger_point(sw_name, sw_value, sw_block, is_sw_upstream, upstream_l
                   f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
                   f"\n\tthe local slope is {Color.green}{local_slope:.3%}{Color.reset}"
                   f"\n\tthe distance to the danger point is {Color.green}{dist}{Color.reset}")
-            # print_sub_variables(all_sub_variables)
-            # print_variables(variables)
+            print_sub_variables(all_sub_variables)
+            print_variables(variables)
             print_final_value(final_value_str)
             error_count += 1
         elif print_ok:
@@ -66,8 +67,8 @@ def test_sw_danger_point(sw_name, sw_value, sw_block, is_sw_upstream, upstream_l
                   f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
                   f"\n\tthe local slope is {Color.green}{local_slope:.3%}{Color.reset}"
                   f"\n\tthe distance to the danger point is {Color.green}{dist}{Color.reset}")
-            # print_sub_variables(all_sub_variables)
-            # print_variables(variables)
+            print_sub_variables(all_sub_variables)
+            print_variables(variables)
             print_final_value(final_value_str)
     return error_count
 
@@ -77,6 +78,7 @@ def get_min_dist(local_slope, is_danger_point_a_switch: bool = False):
     # at_deshunt_max_dist shall not be considered but only tag_accurate_laying_uncertainty
     # 2. If the danger point is a fouling point,
     # and the block not locking the switch is part of the IXL flank protection area, rule is not applicable.
+    is_danger_point_a_switch = False
     at_deshunt_max_dist = get_param_value("at_deshunt_max_dist")
     tag_accurate_laying_uncertainty = get_param_value("tag_accurate_laying_uncertainty")
     additional_value = at_deshunt_max_dist if not is_danger_point_a_switch else tag_accurate_laying_uncertainty

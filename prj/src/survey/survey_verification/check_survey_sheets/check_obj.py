@@ -18,6 +18,7 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
         if not obj_condition(res_sheet_name, obj_val):
             continue
         track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
+        track = track.upper()
 
         survey_name = f"{obj_name}__{track}".upper()
         survey_obj_info = survey_info.get(survey_name)

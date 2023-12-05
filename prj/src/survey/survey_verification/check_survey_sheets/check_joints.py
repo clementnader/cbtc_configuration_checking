@@ -18,8 +18,9 @@ def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
     res_dict = dict()
     for obj_name, obj_val in objs_dict.items():
         track, dc_sys_kp = obj_val["position"]
+        track = track.upper()
 
-        survey_name = _get_obj_names_in_survey(obj_name, obj_val, survey_info, objs_dict)
+        survey_name = _get_obj_names_in_survey(obj_name, obj_val, track, survey_info, objs_dict)
         survey_obj_info = survey_info.get(survey_name)
 
         if survey_obj_info is not None:
@@ -32,12 +33,11 @@ def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
     return res_dict
 
 
-def _get_obj_names_in_survey(obj_name: str, obj_val: dict[str], survey_info: dict[str],
+def _get_obj_names_in_survey(obj_name: str, obj_val: dict[str], track: str, survey_info: dict[str],
                              objs_dict: dict[str, dict[str]],
                              second_try: bool = False) -> Optional[str]:
     other_names = obj_val["other_names"]
-    track, _ = obj_val["position"]
-    for test_name in [obj_name] + other_names:
+    for test_name in _get_list_of_joint_test_names(obj_name, other_names):
         if test_name is None:
             continue
         test_name = test_name.upper()
@@ -50,7 +50,7 @@ def _get_obj_names_in_survey(obj_name: str, obj_val: dict[str], survey_info: dic
     if second_try:
         return None
 
-    survey_name = _get_obj_names_in_survey(obj_name, obj_val, survey_info, objs_dict, second_try=True)
+    survey_name = _get_obj_names_in_survey(obj_name, obj_val, track, survey_info, objs_dict, second_try=True)
     if survey_name is not None:
         return survey_name
 
@@ -59,6 +59,13 @@ def _get_obj_names_in_survey(obj_name: str, obj_val: dict[str], survey_info: dic
         return survey_name
 
     return obj_name
+
+
+def _get_list_of_joint_test_names(obj_name: str, other_names: list[str]) -> list[str]:
+    # in some older surveys, joint prefix is "JOINT_" instead of "JOI_"
+    list_test_names = [obj_name] + other_names
+    other_prefix_list = ["JOINT_" + name.removeprefix("JOI_") for name in list_test_names if name is not None]
+    return list_test_names + other_prefix_list
 
 
 def _test_one_obj_on_track(obj_name: str, track: str, objs_dict: dict[str, dict[str]], survey_info: dict[str]

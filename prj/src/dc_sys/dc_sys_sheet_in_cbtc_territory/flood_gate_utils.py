@@ -22,7 +22,7 @@ def get_flood_gates_in_cbtc_ter():
                 and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_fg_dict[fg_name] = fg_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            print_warning(f"Flood Gate {fg_name} is both inside and outside CBTC Territory. "
-                          f"It is still taken into account.")
+            print_log(f"Flood Gate {fg_name} is both inside and outside CBTC Territory. "
+                      f"It is still taken into account.")
             within_cbtc_fg_dict[fg_name] = fg_value
     return within_cbtc_fg_dict

@@ -41,26 +41,27 @@ def print_section_title(title: str):
     print(main_color + "\n" + title + Color.reset)
 
 
-def print_error(*args, end="\n", no_pretext: bool = False):
+def print_error(*args, end: str = "\n", no_newline: bool = False):
     main_color = Color.light_red
-    if not no_pretext:
-        print(f"\n{csi_bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
-    else:
-        print(f"{Color.reset}{main_color}", end="")
+    if not no_newline:
+        print("\n", end="")
+    print(f"{csi_bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)
 
 
-def print_warning(*args, end="\n"):
+def print_warning(*args, end: str = "\n", no_newline: bool = False):
     main_color = Color.orange
-    print(f"\n{csi_bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
+    if not no_newline:
+        print("\n", end="")
+    print(f"{csi_bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)
 
 
-def print_success(*args, end="\n"):
+def print_success(*args, end: str = "\n"):
     main_color = Color.vivid_green
     print(f"\n{main_color}", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
@@ -68,7 +69,7 @@ def print_success(*args, end="\n"):
     print(f"{Color.reset}\n", end=end)
 
 
-def print_log(*args, end="\n"):
+def print_log(*args, end: str = "\n"):
     main_color = Color.grey_blue
     print(main_color, end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)

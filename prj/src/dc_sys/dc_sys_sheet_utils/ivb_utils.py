@@ -7,7 +7,27 @@ from ..load_database import *
 from ..dc_sys_common_utils import *
 
 
-__all__ = ["get_next_ivb_limits_from_point", "get_all_ivb_limits"]
+__all__ = ["get_related_block_of_ivb", "get_ivb_on_block", "get_ivb_on_same_block",
+           "get_next_ivb_limits_from_point", "get_all_ivb_limits"]
+
+
+def get_related_block_of_ivb(ivb_name: str) -> str:
+    ivb_dict = load_sheet(DCSYS.IVB)
+    return get_dc_sys_value(ivb_dict[ivb_name], DCSYS.IVB.RelatedBlock)
+
+
+def get_ivb_on_block(block_name: str) -> list[str]:
+    list_ivb = list()
+    ivb_dict = load_sheet(DCSYS.IVB)
+    for ivb_name in ivb_dict.keys():
+        if get_related_block_of_ivb(ivb_name) == block_name:
+            list_ivb.append(ivb_name)
+    return list_ivb
+
+
+def get_ivb_on_same_block(ivb_name: str) -> list[str]:
+    block_name = get_related_block_of_ivb(ivb_name)
+    return get_ivb_on_block(block_name)
 
 
 def get_next_ivb_limits_from_point(seg: str, x: float, downstream: bool):

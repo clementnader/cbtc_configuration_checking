@@ -37,7 +37,7 @@ def cc():
 
 
 def additional_verif():
-    # dc_tu_verification()
+    # dc_tu_verification()  # TODO: trier les Train Units par ordre
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
@@ -47,16 +47,6 @@ def additional_verif():
 
 def parameters_constraints():
     # min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc=False)
-    return
-
-
-def dc_par_customer_data():
-    # min_length_multiple_path(in_cbtc=False)
-    # min_distance_between_vsp_overlap(in_cbtc=False)
-    # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
-    #                                                                    with a buffer just down the line
-    # max_dist_local_tag_group(in_cbtc=False)
-    # smallest_size_of_a_switch_block_heel(in_cbtc=False)
     return
 
 
@@ -88,6 +78,16 @@ def route_and_overlap():
     return
 
 
+def dc_par_customer_data():
+    # min_length_multiple_path(in_cbtc=True)
+    # min_distance_between_vsp_overlap(in_cbtc=False)
+    # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
+    #                                                                    with a buffer just down the line
+    # max_dist_local_tag_group(in_cbtc=False)
+    # smallest_size_of_a_switch_block_heel(in_cbtc=False)
+    return
+
+
 def survey():
     # check_survey()
     # survey_window()
@@ -97,6 +97,7 @@ def survey():
 
 def constraints():
     # check_offset_correctness()
+    # check_upstream_and_downstream_ivb_of_all_signals()
     #
     # r_cdv_5(print_ok=False)  # TODO for r_cdv_5:
     #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
@@ -109,16 +110,24 @@ def constraints():
     # cf_zsm_cbtc_10()
     # cf_dg_1()  # TODO: check correct Line Section
     # cf_dg_2()
-    # r_mes_pas_itf_1(in_cbtc=False)  # TODO: check when both ZC should receive/send both the messages,
-    #                                    redo the Signals, use the EIS to check
-    # r_mes_pas_itf_3(in_cbtc=False)
-    # cf_signal_12(no_overshoot=True)  # TODO: change the IVB limit upstream with the CDV
-    #                                        (no need to use the control tables)
-    #                                        en fait déjà oui pas besoin d'utiliser les control tables
-    #                                        mais prendre plutôt l'IVB en amont de base
-    #                                        et pourquoi pas laisser le choix d'utiliser CDV ou IVB
-    #                                        et aussi mettre la possibilité d'ajouter un tableau en entrée
-    #                                        avec les IVB de l'APZ
+    # r_mes_pas_itf_1(in_cbtc=False)  # TODO: find info to check if ZC receiving the Signal information
+    #                                    PR_ASPECT, AP_CAN_RQ and IL_SET is correct in ZC Overlay
+    # r_mes_pas_itf_3(in_cbtc=False)  # TODO: find a way to avoid raising KO if signal is at limit, cf KCR et TSK
+    #                                    for Signal information X_RQ, STOP_ASSURE and CBTC_APZ,
+    #                                       when checking ZC is correct in ZC Overlay
+    #                                       (the standard rule is that both ZC shall send the info)
+    #                                    ZC set by the tool for CBTC_OLZ and TRAIN_IN_BERTH
+    #                                       -> it seems multiple ZC can do the job sometimes,
+    #                                       and tool shall gives multiple ZC these times,
+    #                                       re-work the way ZC is assigned.
+    # cf_signal_12(no_overshoot=False, apz_with_tc=True)
+    # TODO: change the IVB limit upstream with the CDV
+    #     (no need to use the control tables)
+    #     en fait déjà oui pas besoin d'utiliser les control tables
+    #     mais prendre plutôt l'IVB en amont de base
+    #     et pourquoi pas laisser le choix d'utiliser CDV ou IVB
+    #     et aussi mettre la possibilité d'ajouter un tableau en entrée
+    #     avec les IVB de l'APZ
     # ixl_overlap_platform_related()
     return
 

@@ -23,7 +23,7 @@ def get_crossing_calling_areas_in_cbtc_ter():
                 and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_cross_call_dict[cross_call_name] = cross_call_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            print_warning(f"Crossing Calling Area {cross_call_name} is both inside and outside CBTC Territory. "
-                          f"It is still taken into account.")
+            print_log(f"Crossing Calling Area {cross_call_name} is both inside and outside CBTC Territory. "
+                      f"It is still taken into account.")
             within_cbtc_cross_call_dict[cross_call_name] = cross_call_value
     return within_cbtc_cross_call_dict

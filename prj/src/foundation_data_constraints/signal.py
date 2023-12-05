@@ -8,11 +8,11 @@ from ..dc_par import *
 # from ..control_tables import *
 
 
-def cf_signal_12(no_overshoot: bool = False):
+def cf_signal_12(no_overshoot: bool = False, apz_with_tc: bool = False, apz_from_excel_file: bool = False):
     # In nominal case the IXL approach zone locking for a dedicated signal is configured
     # to contain the first physical track circuit.
-    csv = ("Signal Name;Type;Direction;IXL Approach Zone;Block Limit Downstream;;;;Block Limit Upstream;;;;Distance;"
-           "Distance minus value to remove;DLT Distance;Status\n")
+    csv = ("Signal Name;Type;Direction;IXL Approach Zone;IVB Limit Downstream;;;;IVB Limit Upstream;;;;"
+           "IXL APZ Distance;Distance minus value to remove;DLT Distance;Automatic Status\n")
     csv += ";;;;Seg;x;Track;KP;Seg;x;Track;KP;;;;\n"
     print_title(f"Verification of CF_SIGNAL_12", color=Color.mint_green)
     at_deshunt_max_dist = get_param_value("at_deshunt_max_dist")
@@ -42,18 +42,22 @@ def cf_signal_12(no_overshoot: bool = False):
             continue
 
         dlt_distance = get_dc_sys_value(sig, DCSYS.Sig.DelayedLtDistance)
+        if dlt_distance == 0:
+            csv += f";;;;;;;;;;;{dlt_distance};{'OK'}\n"
+            continue
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig)
         ivb_lim_track, ivb_lim_kp = from_seg_offset_to_kp(ivb_lim_seg, ivb_lim_x)
 
         min_dist, corresponding_entrance, ivb_names = (
-            _get_distance_between_block_and_approach_zone(sig_name, ivb_lim_seg, ivb_lim_x))
+            _get_distance_between_block_and_approach_zone(sig_name, ivb_lim_seg, ivb_lim_x,
+                                                          apz_with_tc, apz_from_excel_file))
 
         if min_dist is None:
             csv += f"{ivb_names};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};;;;;;;{dlt_distance};{'KO'}\n"
             continue
         corresponding_entrance_track, corresponding_entrance_kp = from_seg_offset_to_kp(*corresponding_entrance)
         test_value = round(min_dist - value_to_remove, 3)
-        success = dlt_distance == 0 or dlt_distance <= test_value
+        success = dlt_distance <= test_value
 
         csv += (f"{ivb_names};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};"
                 f"{corresponding_entrance[0]};{corresponding_entrance[1]};"
@@ -82,20 +86,24 @@ def cf_signal_12(no_overshoot: bool = False):
     return
 
 
-def _get_distance_between_block_and_approach_zone(sig_name: str, ivb_lim_seg, ivb_lim_x):
-    list_ivb = _get_approach_area_ivb(sig_name)
+def _get_distance_between_block_and_approach_zone(sig_name: str, ivb_lim_seg, ivb_lim_x,
+                                                  apz_with_tc: bool = False, apz_from_excel_file: bool = False):
+    list_ivb = _get_approach_area_ivb(sig_name, apz_with_tc, apz_from_excel_file)
     if not list_ivb:
         print(f"\nThe signal {sig_name} has no IXL approach area: {list_ivb}")
         return None, None, None
     ivb_names = ", ".join(list_ivb)
-    list_entrance_points = _get_entrance_points_of_approach_zone(sig_name, list_ivb)
+    list_entrance_points = _get_entrance_points_of_approach_zone(sig_name, list_ivb, apz_with_tc)
     min_dist = None
     corresponding_entrance = None
 
+    sig_dict = load_sheet(DCSYS.Sig)
+    sig_direction = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.Sens)
     for entrance_seg, entrance_x in list_entrance_points:
         if are_points_matching(entrance_seg, entrance_x, ivb_lim_seg, ivb_lim_x):
             continue
-        dist = get_dist(entrance_seg, entrance_x, ivb_lim_seg, ivb_lim_x)
+        dist = get_dist_downstream(entrance_seg, entrance_x, ivb_lim_seg, ivb_lim_x,
+                                   downstream=sig_direction == Direction.CROISSANT)
         if dist is None:
             continue
         if min_dist is None or dist < min_dist:
@@ -104,15 +112,23 @@ def _get_distance_between_block_and_approach_zone(sig_name: str, ivb_lim_seg, iv
     return min_dist, corresponding_entrance, ivb_names
 
 
-def _get_entrance_points_of_approach_zone(sig_name: str, list_ivb: list[str]) -> list[tuple[str, float]]:
+def _get_entrance_points_of_approach_zone(sig_name: str, list_ivb: list[str], apz_with_tc: bool
+                                          ) -> list[tuple[str, float]]:
     ivb_dict = load_sheet(DCSYS.IVB)
+    tc_dict = load_sheet(DCSYS.CDV)
     list_points = list()
     for ivb_name in list_ivb:
-        if ivb_name not in ivb_dict:
-            print_error(f"For Signal {sig_name}, IXL APZ defines containing IVB {ivb_name}. "
-                        f"But this IVB does not exist in the DC_SYS.")
+        if (not apz_with_tc and ivb_name not in ivb_dict) or (apz_with_tc and ivb_name not in tc_dict):
+            obj_type = "IVB" if not apz_with_tc else "CDV"
+            print_error(f"For Signal {sig_name}, IXL APZ is defined containing {obj_type} {ivb_name}. "
+                        f"But this {obj_type} does not exist in the DC_SYS.")
             continue
-        list_points.extend(list(get_dc_sys_zip_values(ivb_dict[ivb_name], DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X)))
+        if not apz_with_tc:
+            list_points.extend(list(get_dc_sys_zip_values(ivb_dict[ivb_name],
+                                                          DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X)))
+        else:
+            list_points.extend(list(get_dc_sys_zip_values(tc_dict[ivb_name],
+                                                          DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)))
 
     list_points_without_double = list()
     for i, (entrance_seg, entrance_x) in enumerate(list_points):
@@ -124,19 +140,23 @@ def _get_entrance_points_of_approach_zone(sig_name: str, list_ivb: list[str]) ->
     return list_points_without_double
 
 
-
-IXL_APZ_FILE = (r"C:\Users\naderc\Desktop\KCR"
-                r"\CR-ASTS-GEN=Gen-PS=ATC=GEN-IFM-ICD-042155_14.00#ATT004XLSX - ATC - C12_D404  IXL APZ Rev01.xlsx")
-IXL_APZ_SHEET_NAME = r"IXL APZ"
+# IXL_APZ_FILE = (r"C:\Users\naderc\Desktop\KCR"
+#                 r"\CR-ASTS-GEN=Gen-PS=ATC=GEN-IFM-ICD-042155_14.00#ATT004XLSX - ATC - C12_D404  IXL APZ Rev01.xlsx")
+IXL_APZ_FILE = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_IXL_APZ.xlsx"
+# IXL_APZ_SHEET_NAME = r"IXL APZ"
+IXL_APZ_SHEET_NAME = r"IXL_APZ"
 START_LINE = 2
-SIG_COLUMN = 'A'
-APZ_START_COLUMN = 2
-APZ_NB_COLUMNS = 5
+# SIG_COLUMN = 'A'
+SIG_COLUMN = 'B'
+# APZ_START_COLUMN = 2
+APZ_START_COLUMN = 6
+# APZ_NB_COLUMNS = 5
+APZ_NB_COLUMNS = 3
 
 LOADED_DB = dict()
 
 
-def _get_approach_area_ivb(sig_name: str) -> list[str]:
+def _get_approach_area_ivb_from_excel_file(sig_name: str) -> Optional[list[str]]:
     if not LOADED_DB:
         wb = load_xlsx_wb(IXL_APZ_FILE)
         ws = get_xl_sheet_by_name(wb, IXL_APZ_SHEET_NAME)
@@ -150,7 +170,20 @@ def _get_approach_area_ivb(sig_name: str) -> list[str]:
                 if ivb is not None:
                     apz_ivb_list.append(ivb)
             LOADED_DB[sig] = apz_ivb_list
-    return LOADED_DB[sig_name]
+    return LOADED_DB.get(sig_name)
+
+
+def _get_approach_area_ivb(sig_name: str, apz_with_tc: bool = False, apz_from_excel_file: bool = False) -> list[str]:
+    if apz_from_excel_file:
+        apz_ivb_list = _get_approach_area_ivb_from_excel_file(sig_name)
+        if apz_ivb_list is not None:
+            return apz_ivb_list
+    sig_dict = load_sheet(DCSYS.Sig)
+    current_ivb = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.IvbJoint.UpstreamIvb)
+    if not apz_with_tc:
+        return [current_ivb]  # default IXL Approach Zone = first IVB
+    # IXL Approach Zone = first Track Circuit
+    return [get_related_block_of_ivb(current_ivb)]
 
 
 # def _get_approach_area_ivb(sig_name: str):

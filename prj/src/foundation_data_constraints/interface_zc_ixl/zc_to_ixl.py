@@ -22,14 +22,14 @@ def r_mes_pas_itf_3(in_cbtc: bool = False):
     _rule_3_check_block(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.CDV), in_cbtc)
     _rule_3_check_ivb(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.IVB), in_cbtc)
     _rule_3_check_switch(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.AIGUILLE), in_cbtc)
-    if "CBTC_PROTECTION_ZONE" in get_class_attr_dict(GESType):
+    if "GES" in get_class_attr_dict(DCSYS) and "CBTC_PROTECTION_ZONE" in get_class_attr_dict(GESType):
         _rule_3_check_cbtc_protection_zone(get_sub_dict_zc_ixl_itf(GESType.CBTC_PROTECTION_ZONE), in_cbtc)
     if "PROTECTION_ZONE" in get_class_attr_dict(TypeClasseObjetPASMES):
         _rule_3_check_protection_zone(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.PROTECTION_ZONE), in_cbtc)
     _rule_3_check_tpz(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.SS), in_cbtc)
     _rule_3_check_cross_call(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.CROSSING_CALLING_AREA), in_cbtc)
-    if "TSR_PREDEFINED_AREA_SPEED" in get_class_attr_dict(TypeClasseObjetPASMES):
-        _rule_3_check_tsr_area_speed(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.TSR_PREDEFINED_AREA_SPEED), in_cbtc)
+    # if "TSR_PREDEFINED_AREA_SPEED" in get_class_attr_dict(TypeClasseObjetPASMES):
+    #     _rule_3_check_tsr_area_speed(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.TSR_PREDEFINED_AREA_SPEED), in_cbtc)
 
 
 # ------- Rule 3 (ZC -> IXL) Sub Functions ------- #
@@ -70,7 +70,8 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
                         and get_dc_sys_value(sig, DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST)
         if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_overlap,
                           "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
-                          TypeNomLogiqueInfoPASMES.CBTC_OLZ, shall_be_vital=True) is False:
+                          TypeNomLogiqueInfoPASMES.CBTC_OLZ, shall_be_vital=True,
+                          only_one_zc=True, sig_upstream_ivb=True) is False:
             success = False
 
         concealable = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Annulable) == YesOrNo.O
@@ -81,7 +82,7 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
         sa_or_overlap = ((is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == YesOrNo.O)
                          or with_overlap)
         if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, sa_or_overlap, "flag [With SA] set to 'Y' or "
-                                                                            "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
+                          "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
                           TypeNomLogiqueInfoPASMES.STOP_ASSURE, shall_be_vital=True) is False:
             success = False
 
@@ -94,8 +95,9 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
                     and get_dc_sys_value(sig, DCSYS.Sig.TypeDa) in [TypeDA.SECTIONAL_RELEASE,
                                                                     TypeDA.TRAIN_PASSAGE_PROVING])
         if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_arc, "flag [With ARC] set to 'Y' and "
-                                                                       "[ARC Type] = 'SECTIONAL_RELEASE' or 'TRAIN_PASSAGE_PROVING'",
-                          TypeNomLogiqueInfoPASMES.TRAIN_PASS_HS, shall_be_vital=True) is False:
+                          "[ARC Type] = 'SECTIONAL_RELEASE' or 'TRAIN_PASSAGE_PROVING'",
+                          TypeNomLogiqueInfoPASMES.TRAIN_PASS_HS, shall_be_vital=True,
+                          only_one_zc=True, sig_upstream_ivb=False) is False:
             success = False
 
         related_ovl_list = get_related_overlaps(sig_name)
@@ -111,7 +113,8 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
                           f"flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST' "
                           f"and the related IXL Overlap {Color.yellow}{ovl_names}{Color.reset} "
                           f"flag [With TPP] set to 'Y'", TypeNomLogiqueInfoPASMES.TRAIN_IN_BERTH,
-                          shall_be_vital=True) is False:
+                          shall_be_vital=True,
+                          only_one_zc=True, sig_upstream_ivb=True) is False:
             success = False
 
         func_stop = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O

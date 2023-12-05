@@ -22,7 +22,7 @@ def get_tsr_area_in_cbtc_ter():
                 and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_tsr_dict[tsr_name] = tsr_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            print_warning(f"Temporary Speed Restriction Area {tsr_name} is both inside and outside CBTC Territory. "
-                          f"It is still taken into account.")
+            print_log(f"Temporary Speed Restriction Area {tsr_name} is both inside and outside CBTC Territory. "
+                      f"It is still taken into account.")
             within_cbtc_tsr_dict[tsr_name] = tsr_value
     return within_cbtc_tsr_dict

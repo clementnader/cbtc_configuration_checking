@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
 from ..dc_sys_common_utils import *
 from ..dc_sys_path_and_distances import *
+from ..dc_sys_get_zones import *
 
 
 __all__ = ["get_list_len_block", "get_block_associated_to_sw",
@@ -28,25 +30,27 @@ def find_upstream_n_downstream_limits(block):
     upstream_limits = list()
     downstream_limits = list()
     for seg1, x1 in get_dc_sys_zip_values(block, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X):
-        if is_block_limit_upstream((seg1, x1), block):
+        test_direction = is_block_limit_upstream((seg1, x1), block)
+        if test_direction is True:
             upstream_limits.append((seg1, x1))
-        else:
+        elif test_direction is False:
             downstream_limits.append((seg1, x1))
+        else:
+            print(f"unable to find if limit is upstream or downstream: "
+                  f"{(seg1, x1)}")
     return upstream_limits, downstream_limits
 
 
-def is_block_limit_upstream(start_lim: tuple, block):
+def is_block_limit_upstream(start_lim: tuple[str, float], block):
     start_seg, start_x = start_lim
     other_limits = [(seg, x) for seg, x in get_dc_sys_zip_values(block, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)
                     if (seg, x) != (start_seg, start_x)]
 
-    for lim in other_limits:
-        seg, x = lim
+    for seg, x in other_limits:
         if seg == start_seg:  # two limits of the block are on the same segment
             return float(start_x) <= float(x)
 
-    for lim in other_limits:
-        seg, _ = lim
+    for seg, _ in other_limits:
         if is_seg_downstream(start_seg, seg, downstream=True):  # seg is downstream of start_seg
             if does_path_exist_within_block(start_seg, seg, block, downstream=True):
                 return True  # start_seg is upstream of another limit within the block
@@ -84,31 +88,16 @@ def does_path_exist_within_block(seg1, seg2, block, downstream: bool = None):
     return inner_recurs_seg(seg1, seg2, downstream)
 
 
-def get_segs_in_blocks(block):
-    """ Return the list of segments in a block. """
-    set_segs = set()
-    upstream_limits, downstream_limits = find_upstream_n_downstream_limits(block)
-    for up_lim in upstream_limits:
-        up_seg, _ = up_lim
-        for down_lim in downstream_limits:
-            down_seg, _ = down_lim
-            _, _, list_paths, _ = get_downstream_path(up_seg, down_seg, start_downstream=True)
-            for _, path in list_paths:
-                for seg in path:
-                    set_segs.add(seg)
-    return set_segs
-
-
-def is_seg_in_block(block, seg: str):
-    """ Return True if a segment is in a block else False. """
-    return seg in get_segs_in_blocks(block)
-
-
-def get_block_associated_to_sw(sw):
+def get_block_associated_to_sw(sw: dict) -> Optional[tuple[str, dict]]:
     """ Get the block associated to a switch. """
+    point_seg, x = give_sw_pos(sw)
+    list_blocks = get_zones_on_point(DCSYS.CDV, point_seg, x)
+    if not list_blocks:
+        print_error(f"Unable to find block associated to switch:\n{sw}")
+        return None
+    if len(list_blocks) > 1:
+        print_error(f"Multiple blocks on switch:\n{sw}\n\t{list_blocks}")
+        return None
+    block_name = list_blocks[0]
     block_dict = load_sheet(DCSYS.CDV)
-    for block_name, block_value in block_dict.items():
-        if all(is_seg_in_block(block_value, seg)
-               for seg in get_dc_sys_values(sw, DCSYS.Aig.SegmentPointe, DCSYS.Aig.SegmentTd, DCSYS.Aig.SegmentTg)):
-            return block_name, block_value
-    print(f"Unable to find block associated to SW: {sw}")
+    return block_name, block_dict[block_name]

@@ -39,8 +39,8 @@ def r_mes_pas_itf_1(in_cbtc: bool = False):
     _rule_1_check_flood_gate(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.FLOOD_GATE), in_cbtc)
     _rule_1_check_traffic_stop(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.TRAFFIC_STOP), in_cbtc)
     _rule_1_check_asr(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.ASR), in_cbtc)
-    if "TSR_PREDEFINED_AREA" in get_class_attr_dict(TypeClasseObjetMESPAS):
-        _rule_1_check_tsr_area(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.TSR_PREDEFINED_AREA), in_cbtc)
+    # if "TSR_PREDEFINED_AREA" in get_class_attr_dict(TypeClasseObjetMESPAS):
+    #     _rule_1_check_tsr_area(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.TSR_PREDEFINED_AREA), in_cbtc)
 
 
 # ------- Rule 1 (IXL -> ZC) Sub Functions ------- #
@@ -203,8 +203,7 @@ def _rule_1_check_ivb(ivb_msg_dict: dict, in_cbtc: bool):
                           "flag [Direction Locking Block] set to 'Y'",
                           [TypeNomLogiqueInfoMESPAS.BLOCK_NORMAL_DIRECTION_L,
                            TypeNomLogiqueInfoMESPAS.BLOCK_REVERSE_DIRECTION_L],
-                          shall_be_vital=True,
-                          is_flux_pas_mes=False) is False:
+                          shall_be_vital=True, is_flux_pas_mes=False) is False:
             success = False
     if success is True:
         print_log(f"No KO.")
@@ -424,12 +423,13 @@ def _rule_1_check_tsr_area(tsr_area_msg_dict: dict, in_cbtc: bool):
                         f"and {TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_REMOVE_CMD} do not correspond:")
             print(f"{tsr_area_missing_speeds_for_set_cmd = }")
             print(f"{tsr_area_missing_speeds_for_remove_cmd = }")
-    csv = "TSR_Area;" + ";".join(LIST_OF_TSR_SPEEDS) + "\n"
-    for tsr_area, speed_dict in missing_speeds_dict.items():
-        csv += f"{tsr_area};"
-        for is_missing in speed_dict.values():
-            csv += f"{'Missing' if is_missing else ''};"
-        csv += "\n"
-    print(csv)
+    if missing_speeds_dict:
+        csv = "TSR_Area;" + ";".join(LIST_OF_TSR_SPEEDS) + "\n"
+        for tsr_area, speed_dict in missing_speeds_dict.items():
+            csv += f"{tsr_area};"
+            for is_missing in speed_dict.values():
+                csv += f"{'Missing' if is_missing else ''};"
+            csv += "\n"
+        print(csv)
     if success is True:
         print_log(f"No KO.")

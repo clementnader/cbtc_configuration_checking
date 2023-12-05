@@ -23,7 +23,7 @@ def get_cbtc_protection_zones_in_cbtc_ter():
                 and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
             within_cbtc_cbtc_pz_dict[cbtc_pz_name] = cbtc_pz_value
         elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-            print_warning(f"cbtc_pz {cbtc_pz_name} is both inside and outside CBTC Territory. "
-                          f"It is still taken into account.")
+            print_log(f"cbtc_pz {cbtc_pz_name} is both inside and outside CBTC Territory. "
+                      f"It is still taken into account.")
             within_cbtc_cbtc_pz_dict[cbtc_pz_name] = cbtc_pz_value
     return within_cbtc_cbtc_pz_dict

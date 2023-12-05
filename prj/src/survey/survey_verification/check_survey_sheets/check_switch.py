@@ -16,6 +16,7 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
     res_dict = dict()
     for obj_name, obj_val in obj_dict.items():
         track, dc_sys_kp = obj_val["track"], obj_val["dc_sys_kp"]
+        track = track.upper()
 
         other_name = obj_val.get("other_name")
         if other_name is not None and f"{other_name}__{track}" in survey_info:
