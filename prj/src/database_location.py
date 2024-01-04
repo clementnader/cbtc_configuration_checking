@@ -17,6 +17,7 @@ class Projects:
     Baltimore = "Baltimore"
     BART = "BART"
     Kolkata = "Kolkata"
+    MSH = "MSH"
     Wenzhou = "Wenzhou"
     Mock_up = "Mock-up"
     Mock_up_2 = "Mock-up 2"
@@ -35,6 +36,7 @@ PROJECT_NAME = Projects.Thessaloniki
 # PROJECT_NAME = Projects.Baltimore
 # PROJECT_NAME = Projects.BART
 # PROJECT_NAME = Projects.Kolkata
+# PROJECT_NAME = Projects.MSH
 # PROJECT_NAME = Projects.Wenzhou
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2
@@ -51,6 +53,7 @@ class ProjectDatabaseLoc:
     class SurveyLoc:
         survey_addr = None
         survey_sheet = None
+        all_sheets = None
         start_row = None
         ref_col = None
         type_col = None
@@ -314,6 +317,18 @@ class ProjectDatabaseLoc:
         # ------------------------------- Kolkata -------------------------------#
         elif project_name == Projects.Kolkata:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\KMRC Kolkatta\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
+
+        # ------------------------------- MSH -------------------------------#
+        elif project_name == Projects.MSH:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\MSH\MSH_C_D470_V09_02_RC1\DC_SYS.xls"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\MSH\Topo_V_06_00.xlsx"
+            self.survey_loc.all_sheets = True
+            self.survey_loc.start_row = 4
+            self.survey_loc.ref_col = 2
+            self.survey_loc.type_col = 1
+            self.survey_loc.track_col = 3
+            self.survey_loc.survey_kp_col = 5
 
         # ------------------------------- Wenzhou -------------------------------#
         elif project_name == Projects.Wenzhou:

@@ -21,7 +21,7 @@ def get_slope_at_plt(in_cbtc: bool = True):
 
     min_slope = min(plt_slope["min_slope"] for plt_slope in dict_plt_slopes.values())
     max_slope = max(plt_slope["max_slope"] for plt_slope in dict_plt_slopes.values())
-    print(f"The maximum slopes in platforms both positive and negative are, {print_in_cbtc(in_cbtc)}:"
+    print(f"\nThe maximum slopes in platforms both positive and negative are, {print_in_cbtc(in_cbtc)}:"
           f"\n{min_slope=:.4%}"
           f"\n > for {[plt for plt, plt_value in dict_plt_slopes.items() if plt_value['min_slope'] == min_slope]}"
           f"\n{max_slope=:.4%}"

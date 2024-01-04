@@ -23,6 +23,10 @@ def get_slope_at_point(seg: str, x: float) -> float:
     upstream_seg, upstream_x = get_dc_sys_values(upstream_slope, DCSYS.Profil.Seg, DCSYS.Profil.X)
     upstream_slope_value = get_dc_sys_value(upstream_slope, DCSYS.Profil.Pente)
 
+    if downstream_slope_value == upstream_slope_value:
+        # Constant slope
+        return downstream_slope_value
+
     if (seg, x) == (downstream_seg, downstream_x):
         return downstream_slope_value
     if (seg, x) == (upstream_seg, upstream_x):
@@ -54,8 +58,9 @@ def get_next_slope(start_seg: str, start_x: float, slope_dict: dict, downstream:
     inner_recurs_next_seg(start_seg, start_x)
 
     if not slopes:
-        print_warning(f"No slope found {'downstream' if downstream else 'upstream'} {(start_seg, start_x)}.")
-        return None
+        print_log(f"No slope found {'downstream' if downstream else 'upstream'} {(start_seg, start_x)}. "
+                  "The first slope in the other direction is taken, assuming slope is constant till end of track.\n")
+        return get_next_slope(start_seg, start_x, slope_dict, not downstream)
     if len(slopes) > 1:
         slopes.sort(
             key=lambda slope: get_dist_downstream(start_seg, start_x, *get_dc_sys_values(

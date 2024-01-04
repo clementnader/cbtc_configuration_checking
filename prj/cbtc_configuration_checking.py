@@ -99,7 +99,7 @@ def constraints():
     # check_offset_correctness()
     # check_upstream_and_downstream_ivb_of_all_signals()
     #
-    # r_cdv_5(print_ok=False)  # TODO for r_cdv_5:
+    # r_cdv_5(print_ok=True)  # TODO for r_cdv_5:
     #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
     #                             plutôt que faire une diff avec le kit C11
     #                               plus: retourner un fichier de vérif pour pouvoir montrer les données;

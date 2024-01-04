@@ -18,22 +18,35 @@ LOADED_SURVEY = dict()
 def load_survey() -> dict:
     global LOADED_SURVEY
     if not LOADED_SURVEY:
-        for survey_addr, survey_sheet, start_row, ref_col, type_col, track_col, survey_kp_col in get_d932_loc_info():
-            print_log(f"\nLoading sheet {Color.blue}{survey_sheet}{Color.reset} of "
-                      f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
+        for (survey_addr, survey_sheet, all_sheets, start_row,
+             ref_col, type_col, track_col, survey_kp_col) in get_survey_loc_info():
+            if all_sheets:
+                print_log(f"\nLoading all sheets of "
+                          f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
+            else:
+                print_log(f"\nLoading sheet {Color.blue}{survey_sheet}{Color.reset} of "
+                          f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
             wb = load_survey_wb(survey_addr)
-            d932_sh = get_xl_sheet_by_name(wb, survey_sheet)
-            LOADED_SURVEY.update(get_survey(LOADED_SURVEY, d932_sh,
-                                            start_row, ref_col, type_col, track_col, survey_kp_col,
-                                            os.path.split(survey_addr)[-1]))
+            if all_sheets:
+                sheet_names = get_xl_sheet_names(wb)
+            else:
+                sheet_names = [survey_sheet]
+
+            for sheet_name in sheet_names:
+                survey_ws = get_xl_sheet_by_name(wb, sheet_name)
+                LOADED_SURVEY.update(
+                    get_survey(LOADED_SURVEY, survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
+                               os.path.split(survey_addr)[-1]))
     return LOADED_SURVEY
 
 
-def get_d932_loc_info():
+def get_survey_loc_info():
     survey_addr = (DATABASE_LOC.survey_loc.survey_addr if isinstance(DATABASE_LOC.survey_loc.survey_addr, list)
                    else [DATABASE_LOC.survey_loc.survey_addr])
     survey_sheet = (DATABASE_LOC.survey_loc.survey_sheet if isinstance(DATABASE_LOC.survey_loc.survey_sheet, list)
                     else [DATABASE_LOC.survey_loc.survey_sheet])
+    all_sheets = (DATABASE_LOC.survey_loc.all_sheets if isinstance(DATABASE_LOC.survey_loc.all_sheets, list)
+                  else [DATABASE_LOC.survey_loc.all_sheets])
     start_row = (DATABASE_LOC.survey_loc.start_row if isinstance(DATABASE_LOC.survey_loc.start_row, list)
                  else [DATABASE_LOC.survey_loc.start_row])
     ref_col = (DATABASE_LOC.survey_loc.ref_col if isinstance(DATABASE_LOC.survey_loc.ref_col, list)
@@ -44,32 +57,32 @@ def get_d932_loc_info():
                  else [DATABASE_LOC.survey_loc.track_col])
     survey_kp_col = (DATABASE_LOC.survey_loc.survey_kp_col if isinstance(DATABASE_LOC.survey_loc.survey_kp_col, list)
                      else [DATABASE_LOC.survey_loc.survey_kp_col])
-    return zip(survey_addr, survey_sheet, start_row, ref_col, type_col, track_col, survey_kp_col)
+    return zip(survey_addr, survey_sheet, all_sheets, start_row, ref_col, type_col, track_col, survey_kp_col)
 
 
-def get_survey(loaded_survey: dict[str, dict[str]], d932_sh, start_row, ref_col, type_col, track_col, survey_kp_col,
+def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
                survey_name: str) -> dict[str, dict[str]]:
     intermediate_survey_dict = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
 
-    for row in range(start_row, get_xl_number_of_rows(d932_sh) + 1):
-        obj_name = get_xl_cell_value(d932_sh, row=row, column=ref_col)
+    for row in range(start_row, get_xl_number_of_rows(survey_ws) + 1):
+        obj_name = get_xl_cell_value(survey_ws, row=row, column=ref_col)
         if not obj_name:
             continue
         key_name = obj_name.upper()
 
-        type_name = get_xl_cell_value(d932_sh, row=row, column=type_col)
+        type_name = get_xl_cell_value(survey_ws, row=row, column=type_col)
         survey_type = _get_survey_type(type_name)
         if survey_type is None:
             continue
 
-        track = get_xl_cell_value(d932_sh, row=row, column=track_col).strip().upper()
+        track = get_xl_cell_value(survey_ws, row=row, column=track_col).strip().upper().replace("-", "_")
         # FOR MILAN ONLY
         if PROJECT_NAME == Projects.Milan:
             track = ("T1" if track == "TRACK_1"
                      else "T2" if track == "TRACK_2"
                      else track)
 
-        surveyed_kp = get_xl_float_value(d932_sh, row=row, column=survey_kp_col)
+        surveyed_kp = get_xl_float_value(survey_ws, row=row, column=survey_kp_col)
         if surveyed_kp is None:
             continue
         if not (isinstance(surveyed_kp, float) or isinstance(surveyed_kp, int)):

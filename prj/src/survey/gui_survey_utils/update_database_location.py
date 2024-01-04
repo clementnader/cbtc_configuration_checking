@@ -16,6 +16,7 @@ def update_database_loc(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
 
     DATABASE_LOC.survey_loc.survey_addr = list()
     DATABASE_LOC.survey_loc.survey_sheet = list()
+    DATABASE_LOC.survey_loc.all_sheets = list()
     DATABASE_LOC.survey_loc.start_row = list()
     DATABASE_LOC.survey_loc.ref_col = list()
     DATABASE_LOC.survey_loc.type_col = list()
@@ -26,6 +27,7 @@ def update_database_loc(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
         DATABASE_LOC.survey_loc.survey_addr.append(os.path.join(survey_info["survey_directory"].get(),
                                                    survey_info["survey_file_name"].get()).replace("/", os.path.sep))
         DATABASE_LOC.survey_loc.survey_sheet.append(survey_info["survey_sheet"].get())
+        DATABASE_LOC.survey_loc.all_sheets.append(survey_info["all_sheets"].get())
         DATABASE_LOC.survey_loc.start_row.append(int(survey_info["start_row"].get()))
         DATABASE_LOC.survey_loc.ref_col.append(get_col(survey_info["ref_col"].get()))
         DATABASE_LOC.survey_loc.type_col.append(get_col(survey_info["type_col"].get()))
