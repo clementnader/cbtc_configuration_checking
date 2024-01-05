@@ -90,6 +90,7 @@ class ProjectDatabaseLoc:
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
                                            r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey 05-10-2023.xlsx"]
             self.survey_loc.survey_sheet = [r"PhotoBook", r"AFS_DEP_ML_DEF_05.10.23REV_1"]
+            self.survey_loc.all_sheets = [False, False]
             self.survey_loc.start_row = [2, 13]
             self.survey_loc.ref_col = [1, 1]
             self.survey_loc.type_col = [2, 2]
@@ -132,6 +133,7 @@ class ProjectDatabaseLoc:
                                            r"C:\Users\naderc\Desktop\KCR"
                                            r"\AFS_Project_KCR_Sydhavn_survey_eng table_30.08.23.xlsx"]
             self.survey_loc.survey_sheet = [r"Result Final", r"D932"]
+            self.survey_loc.all_sheets = [False, False]
             self.survey_loc.start_row = [2, 3]
             self.survey_loc.ref_col = [1, 1]
             self.survey_loc.type_col = [4, 2]
@@ -151,8 +153,7 @@ class ProjectDatabaseLoc:
         elif project_name == Projects.Glasgow:
             iatp = True
             if iatp:
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS.xls"
-                self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V03\DC_SYS.xls"
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS_IATPM.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V05"
@@ -160,16 +161,26 @@ class ProjectDatabaseLoc:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_01_V01\DC_SYS.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_01_V01\DC_PAR.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
-                                           r"\2022_03_11_Inner_Circle_Features.xlsx",
-                                           r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
-                                           r"\2022_03_11_Outer_Circle_Features.xlsx"]
-            self.survey_loc.survey_sheet = [r"Inner Circle", r"Outer Circle"]
-            self.survey_loc.start_row = [2, 2]
-            self.survey_loc.ref_col = [1, 1]
-            self.survey_loc.type_col = [2, 2]
-            self.survey_loc.track_col = [3, 3]
-            self.survey_loc.survey_kp_col = [4, 4]
+            # self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
+            #                                r"\2022_03_11_Inner_Circle_Features.xlsx",
+            #                                r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
+            #                                r"\2022_03_11_Outer_Circle_Features.xlsx"]
+            # self.survey_loc.survey_sheet = [r"Inner Circle", r"Outer Circle"]
+            # self.survey_loc.all_sheets = [False, False]
+            # self.survey_loc.start_row = [2, 2]
+            # self.survey_loc.ref_col = [1, 1]
+            # self.survey_loc.type_col = [2, 2]
+            # self.survey_loc.track_col = [3, 3]
+            # self.survey_loc.survey_kp_col = [4, 4]
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\Glasgow"
+                                           r"\2023_02_20 Survey Data and Input Sheet.xlsx")
+            self.survey_loc.survey_sheet = r"GW_ML_survey_inputs"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 2
+            self.survey_loc.track_col = 3
+            self.survey_loc.survey_kp_col = 6
             # -- Control Tables -- #
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables"
                                               r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_"
@@ -234,6 +245,7 @@ class ProjectDatabaseLoc:
                                                r"\ml4 tki_depot_ln01_object.xlsx",
                                                r"C:\Users\naderc\Desktop\ML4\SURVEY"
                                                r"\ML4_LN02 - Coni Zugna to Sforza AFS Object List.xlsx"]
+                self.survey_loc.all_sheets = [False, False, False, False, False]
                 self.survey_loc.survey_sheet = ["Foglio1", "Foglio1", "Import", "ML4 TKI_Depot_LN01_Object_List_",
                                                 "AFS Coni Zugna to Sforza"]
                 self.survey_loc.start_row = [4, 3, 3, 2, 2]
@@ -282,6 +294,7 @@ class ProjectDatabaseLoc:
                                            r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_B.xls",
                                            r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_C.xlsx"]
             self.survey_loc.survey_sheet = [r"TSK_Object_list_310720_ro", r"TSK_Object_list_REV.3", r"Φύλλο1"]
+            self.survey_loc.all_sheets = [False, False, False]
             self.survey_loc.start_row = [2, 2, 3]
             self.survey_loc.ref_col = [1, 1, 13]
             self.survey_loc.type_col = [2, 2, 14]

@@ -22,9 +22,9 @@ def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
 
         survey_name = _get_obj_names_in_survey(obj_name, obj_val, track, survey_info, objs_dict)
         survey_obj_info = survey_info.get(survey_name)
-
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
+
         obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
 
         res_dict[(obj_name, track)] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)

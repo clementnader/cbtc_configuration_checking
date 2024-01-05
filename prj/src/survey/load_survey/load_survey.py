@@ -106,7 +106,6 @@ def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_co
             "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
             "list_surveyed_values": surveyed_values
         }
-
     intermediate_survey_dict["SWP"].update(add_switch_center_points(intermediate_survey_dict["SWP"], survey_name))
     loaded_survey = _update_survey_dictionary(loaded_survey, intermediate_survey_dict)
 

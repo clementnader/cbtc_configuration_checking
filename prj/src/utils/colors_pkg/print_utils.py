@@ -38,7 +38,7 @@ def print_section_title(title: str):
     main_color = f"{Color.bold}{Color.underline}{Color.beige}"
     title = title.replace(Color.reset, f"{Color.reset}{main_color}")
     title = title.replace("\n", f"{Color.reset}\n{main_color}")
-    print(main_color + "\n" + title + Color.reset)
+    print("\n" + main_color + title + Color.reset)
 
 
 def print_error(*args, end: str = "\n", no_newline: bool = False):

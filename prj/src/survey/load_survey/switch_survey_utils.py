@@ -17,7 +17,8 @@ def add_switch_center_points(sw_survey_info: dict[str, dict[str]], survey_name: 
             get_corresponding_center_switch_point_track(obj_name))
         if center_point_name is None:
             continue
-        if center_point_name.upper() in sw_survey_info or center_point_other_name.upper() in sw_survey_info:
+        if (f"{center_point_name}__{center_point_track}".upper() in sw_survey_info
+                or f"{center_point_other_name}__{center_point_track}".upper() in sw_survey_info):
             continue  # center point already in survey
         heel_point_track = survey_obj_info["track"]
         if heel_point_track != center_point_track:

@@ -69,13 +69,13 @@ def get_obj_end_prefixes_order(obj_name: str, survey_info: dict[str],
 def _get_survey_obj_order_pattern(obj_name: str, survey_info: dict[str],
                                   track_smaller_kp: str, smaller_dc_sys_kp: float,
                                   track_larger_kp: str, larger_dc_sys_kp: float) -> tuple[str, bool]:
-    survey_obj_ends = _get_survey_obj_ends(obj_name, track_smaller_kp, track_larger_kp, survey_info)
+    survey_obj_ends, display_obj_ends = _get_survey_obj_ends(obj_name, track_smaller_kp, track_larger_kp, survey_info)
     if not survey_obj_ends:  # platform not surveyed
         return "left_and_right", True  # default order
     if len(survey_obj_ends) != 2:
         print_log(
             f"{'Only one platform end has' if len(survey_obj_ends) == 1 else 'More than two platform ends have'}"
-            f" been found in survey for {obj_name}:\n{survey_obj_ends}\n")
+            f" been found in survey for {obj_name}:\n{display_obj_ends}\n")
         return "left_and_right", True  # default order
 
     survey_name_1, survey_name_2 = survey_obj_ends
@@ -105,8 +105,9 @@ def _get_survey_obj_order_pattern(obj_name: str, survey_info: dict[str],
 
 
 def _get_survey_obj_ends(obj_name: str, track_smaller_kp: str, track_larger_kp: str, survey_info: dict[str]
-                         ) -> list[str]:
+                         ) -> tuple[list[str], list[str]]:
     obj_ends = list()
+    display_obj_ends = list()
     for survey_name in survey_info.keys():
         ordering_type, obj_end_type = _get_corresponding_prefix(survey_name)
         if ordering_type is None or obj_end_type is None:
@@ -114,7 +115,10 @@ def _get_survey_obj_ends(obj_name: str, track_smaller_kp: str, track_larger_kp: 
         if (survey_name.endswith(f"{obj_name}__{track_smaller_kp}".upper())
                 or survey_name.endswith(f"{obj_name}__{track_larger_kp}".upper())):
             obj_ends.append(survey_name)
-    return obj_ends
+            display_obj_ends.append(survey_name.removesuffix(f"__{track_smaller_kp}")
+                                    if f"__{track_smaller_kp}" in survey_name
+                                    else survey_name.removesuffix(f"__{track_larger_kp}"))
+    return obj_ends, display_obj_ends
 
 
 def _get_corresponding_prefix(survey_name: str) -> tuple[Optional[str], Optional[str]]:
