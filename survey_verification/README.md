@@ -27,7 +27,7 @@ The tool automates the verification for the following elements:
 - <ins>**CCTool-OO Schema**</ins>: It is an Excel file (.xls) provided in §3.1 of Core Data Preparation Format Specification (C_D413-2). It defines the schema of the DC_SYS_CORE file.
 - <ins>**DC_SYS**</ins>: It is an Excel filee (.xls) provided in the database C_D470.
 - <ins>**Survey file(s)**</ins>: They are Excel files (.xls, .xlsx or .xlsm) containing the surveyed information. As the template can differ, the user needs to specify to the tool:
-   - the survey sheet name,
+   - the survey sheet name, or you can specify to use all the sheets of the file to get the survey data,
    - the first row containing the surveyed information (after the header line),
    - and the different columns for the data the tool will use:
      - reference name: name of the surveyed element,
@@ -67,7 +67,7 @@ The tool automates the verification for the following elements:
 
 4. Then, another window will appear and ask for the **DC_SYS** and the **survey file(s)**. <br />
 Once the survey file has been selected, you need to specify:
-   - the **Survey Sheet** name,
+   - the **Survey Sheet** name, or you can select the checkbox so that the tool uses **All Sheets** of the survey file to get the survey data,
    - the **First Data Row** containing the surveyed information (after the header),
    - and the different columns for the data the tool will use (note that you can use either the letter of the column or the corresponding number):
      - **Reference Column**,
