@@ -48,9 +48,9 @@ The tool automates the verification for the following elements:
 ### 3.2. Steps to use the tool to compare the DC_SYS information with the survey file(s):
 
 0. A preliminary step to take once in order to install the required Python libraries:
-   - Modify the file "**installing_python_modules.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
+   - Modify the file "**install_python_modules.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
  (for python.exe -> "set PYTHON_EXE=python", for python39.exe -> "set PYTHON_EXE=python39", etc.)
-   - Launch "**installing_python_modules.bat**". This executable will **install the required Python libraries**. <br />
+   - Launch "**install_python_modules.bat**". This executable will **install the required Python libraries**. <br />
  If an error occurs telling that pip is not installed, try to launch the command "python39 -m ensurepip --default-pip" (to update with the name or your Python 3.9 executable). It will install the default version of pip. <br />
  If a proxy error occurs, try to modify the line "%PYTHON_EXE% -m pip install %%x --proxy http://z-proxy1.loc.global.sys" to remove the proxy argument at the end and try to use a local network (disconnect from the VPN or from office network). (The proxy address is working in Hitachi France network.)
 
