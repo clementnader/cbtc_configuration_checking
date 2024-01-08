@@ -17,7 +17,7 @@ def regen_cctool_oo_schema_wrapper(file_to_launch_full_address: str):
     cctool_schema_window()
     regenerate_cctool_oo_schema_info()
     python_exe = sys.executable
-    launch_cmd(f"{python_exe} {file_to_launch_full_address}")
+    launch_cmd(f"{python_exe} \"{file_to_launch_full_address}\"")
 
 
 def regenerate_cctool_oo_schema_info():
