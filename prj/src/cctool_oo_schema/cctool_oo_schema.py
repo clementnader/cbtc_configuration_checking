@@ -5,7 +5,8 @@
 # Automatically generated Python file defining a DCSYS class containing the column information of  #
 # sheets and attributes from the CCTool-OO Schema sheet of the CCTool-OO Schema file.              #
 # ------------------------------------------------------------------------------------------------ #
-# Compliant with Ref Sys 07-03-03-00                                                               #
+# Revision: 07/03/03                                                                               #
+# Comments: Compliant with Ref Sys 07-03-03-00                                                     #
 # ------------------------------------------------------------------------------------------------ #
 
 

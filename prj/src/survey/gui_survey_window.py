@@ -3,6 +3,7 @@
 
 import sys
 from ..utils import *
+from ..dc_sys import *
 from .gui_survey_utils import *
 
 
@@ -10,11 +11,14 @@ __all__ = ["survey_window"]
 
 
 def survey_window():
+    ga_version = get_ga_version_text()
     print_title(f"Survey Verification", color=Color.mint_green)
-    print(f"{Color.light_green}Select the DC_SYS and the Survey information to verify.{Color.reset}\n")
+    print(f"{Color.light_green}Select the DC_SYS "
+          f"{Color.cyan}{Color.underline}compatible with System Referential {ga_version}{Color.no_underline}"
+          f"{Color.light_green} and the Survey information to verify.{Color.reset}\n")
     # Root window
     window = tkinter.Tk()
-    window.title("Survey Verification")
+    window.title(f"Survey Verification (Sys. Ref. {ga_version})")
     window.resizable(False, False)
     window.attributes("-topmost", True)
 
@@ -28,7 +32,7 @@ def survey_window():
     top_left_frame.grid(column=0, row=0, sticky="nsew")
     sub_frame = tkinter.Frame(top_left_frame, bg=bg, padx=10, pady=10)
     sub_frame.grid(column=0, row=0, sticky="nsew")
-    dc_sys_directory, dc_sys_file_name = add_dc_sys_open_button(sub_frame, ref_row=0)
+    dc_sys_directory, dc_sys_file_name = add_dc_sys_open_button(sub_frame, ref_row=0, ga_version=ga_version)
 
     # Bottom Frame
     bg = f"#{XlBgColor.light_yellow}"

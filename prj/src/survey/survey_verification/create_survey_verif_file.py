@@ -3,6 +3,7 @@
 
 import os
 from ...utils import *
+from ...dc_sys import *
 from ..survey_types import *
 from ..survey_utils import *
 
@@ -40,6 +41,7 @@ def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
 def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
     wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE)
     update_header_sheet_for_verif_file(wb)
+    _update_menu_sheet(wb)
     for sheet_name, verif_dict in survey_verif_dict.items():
         ws = wb.get_sheet_by_name(sheet_name)
         _update_verif_sheet(sheet_name, ws, verif_dict)
@@ -49,6 +51,13 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]]):
     print_success(f"\"Correspondence with Site Survey\" verification file is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")
     return res_file_path
+
+
+def _update_menu_sheet(wb):
+    if get_ga_version() >= (7, 2, 0, 0):
+        return
+    ws = wb.get_sheet_by_name("Survey")
+    ws.delete_rows(17)  # for older GA versions, delete PSD line that was not verified here
 
 
 def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict]) -> None:
@@ -86,7 +95,7 @@ def _add_line_info(ws, row: int, obj_name: str, track: str, dc_sys_kp: float,
     create_cell(ws, survey_track, row=row, column=SURVEY_TRACK_COL, borders=True)
     if survey_track is not None:
         set_bg_color(ws, XlBgColor.light_green, row=row, column=SURVEY_TRACK_COL)
-    # Survey KP
+    # Surveyed KP
     create_cell(ws, surveyed_kp, row=row, column=SURVEYED_KP_COL, borders=True)
     if surveyed_kp is not None:
         set_bg_color(ws, XlBgColor.light_green, row=row, column=SURVEYED_KP_COL)

@@ -5,7 +5,8 @@
 # Automatically generated Python file defining classes for the enumerates from the EnumList sheet  #
 # the CCTool-OO Schema file.                                                                       #
 # ------------------------------------------------------------------------------------------------ #
-# Compliant with Ref Sys 07-03-03-00                                                               #
+# Revision: 07/03/03                                                                               #
+# Comments: Compliant with Ref Sys 07-03-03-00                                                     #
 # ------------------------------------------------------------------------------------------------ #
 
 

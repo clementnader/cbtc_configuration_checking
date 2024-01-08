@@ -127,10 +127,10 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
                                       bg=bg)
     track_col_comment.grid(column=2, row=current_row, sticky="w")
 
-    # Survey KP Column
+    # Surveyed KP Column
     current_row += 1
-    survey_kp_col_label = tkinter.Label(frame, text="Survey KP Column: ", font=tkinter.font.Font(size=9, weight="bold"),
-                                        bg=bg)
+    survey_kp_col_label = tkinter.Label(frame, text="Surveyed KP Column: ",
+                                        font=tkinter.font.Font(size=9, weight="bold"), bg=bg)
     survey_kp_col_label.grid(column=0, row=current_row, sticky="w")
     survey_kp_col_entry = tkinter.Entry(frame, textvariable=survey_kp_col, bg=entry_bg)
     survey_kp_col_entry.grid(column=1, row=current_row, sticky="w")

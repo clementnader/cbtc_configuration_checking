@@ -171,12 +171,12 @@ if __name__ == "__main__":
     skip_init = False
     # Initialization Commands
     if not skip_init:
-        current_cctool_oo_version = get_version_of_cctool_oo_schema_python_file()
+        current_cctool_oo_version = get_ga_version_text()
         print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}\n"
                     f"with CCTool-OO Schema version:\n"
                     f"{Color.pale_green}{current_cctool_oo_version}{Color.reset}")
         regenerate_cctool_oo_schema_info()
-        if get_version_of_cctool_oo_schema_python_file() != current_cctool_oo_version:
+        if get_ga_version_text() != current_cctool_oo_version:
             print_error(f"The compiled code is not in line with the current CCTool-OO Schema.")
             print(f"{Color.white}Relaunch the tool.{Color.reset}")
             sys.exit(1)

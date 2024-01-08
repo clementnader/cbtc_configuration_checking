@@ -25,7 +25,9 @@ def regenerate_cctool_oo_schema_info():
     if cctool_oo_file is None:
         return
     print_log("Regenerating the CCTool-OO Schema information files.")
-    print(f"{Color.yellow}{get_cctool_oo_version_info(cctool_oo_file)}{Color.reset}\n")
+    revision, comments = get_cctool_oo_version_info(cctool_oo_file)
+    print(f"{Color.yellow}{'Revision: ' + revision}{Color.reset}\n"
+          f"{Color.yellow}{'Comments: ' + comments}{Color.reset}\n")
 
     # Regenerate the CCTool-OO Schema Info class files to match the current version
     create_cctool_oo_schema_info_file()

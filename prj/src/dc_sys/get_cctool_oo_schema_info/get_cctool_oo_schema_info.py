@@ -48,14 +48,15 @@ def get_corresponding_cctool_oo_schema():
     sys.exit(1)
 
 
-def get_cctool_oo_version_info(cctool_oo_file):
+def get_cctool_oo_version_info(cctool_oo_file) -> tuple[str, str]:
     wb = load_cctool_oo_schema_wb(cctool_oo_file)
     revision_sh = wb.sheet_by_name(REVISION_SHEET)
     for row in range(get_xl_number_of_rows(revision_sh) + 1, 0, -1):
-        cell_value = get_xl_cell_value(revision_sh, row=row, column=4)
-        if cell_value is not None:
-            return cell_value
-    return ""
+        revision = get_xl_cell_value(revision_sh, row=row, column=1)
+        comments = get_xl_cell_value(revision_sh, row=row, column=4)
+        if revision is not None:
+            return revision, comments
+    return "", ""
 
 
 def create_header_for_the_generated_files(cctool_oo_file: str, file_description: str) -> str:
@@ -64,8 +65,10 @@ def create_header_for_the_generated_files(cctool_oo_file: str, file_description:
     header += "\n# " + "-" * max_len + " #\n# "
     header += " #\n# ".join(split_text_to_match_max_length(file_description, max_len))
     header += " #\n# " + "-" * max_len + " #\n# "
-    version_info = get_cctool_oo_version_info(cctool_oo_file)
-    header += " #\n# ".join(split_text_to_match_max_length(version_info, max_len))
+    revision, comments = get_cctool_oo_version_info(cctool_oo_file)
+    header += " #\n# ".join(split_text_to_match_max_length("Revision: " + revision, max_len))
+    header += " #\n# "
+    header += " #\n# ".join(split_text_to_match_max_length("Comments: " + comments, max_len))
     header += " #\n# " + "-" * max_len + " #\n"
     return header
 
