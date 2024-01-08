@@ -69,6 +69,7 @@ def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_co
         if not obj_name:
             continue
         key_name = obj_name.upper()
+        key_name = key_name.replace("-", "_").replace(" ", "")
 
         type_name = get_xl_cell_value(survey_ws, row=row, column=type_col)
         survey_type = _get_survey_type(type_name)
@@ -76,11 +77,6 @@ def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_co
             continue
 
         track = get_xl_cell_value(survey_ws, row=row, column=track_col).strip().upper().replace("-", "_")
-        # FOR MILAN ONLY
-        if PROJECT_NAME == Projects.Milan:
-            track = ("T1" if track == "TRACK_1"
-                     else "T2" if track == "TRACK_2"
-                     else track)
 
         surveyed_kp = get_xl_float_value(survey_ws, row=row, column=survey_kp_col)
         if surveyed_kp is None:
@@ -144,7 +140,7 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str]], intermediate_
 def _get_survey_type(name):
     if name is None:
         return None
-    name = name.upper()
+    name = name.strip().upper()
     for type_name, type_info in SURVEY_TYPES_DICT.items():
         if name == type_name:
             return type_name

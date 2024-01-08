@@ -20,7 +20,10 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
         track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
         track = track.upper()
 
-        survey_name = f"{obj_name}__{track}".upper()
+        test_names = [obj_name]
+        if obj_name.startswith("TAG_"):
+            test_names.append("PTSA_" + obj_name.removeprefix("TAG_"))
+        survey_name = test_other_track_name(test_names, track, survey_info)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)

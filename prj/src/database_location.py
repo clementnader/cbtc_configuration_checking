@@ -10,14 +10,16 @@ class Projects:
     Brussels = "Brussels"
     Copenhagen = "Copenhagen"
     Glasgow = "Glasgow"
+    Lima = "Lima"
     Milan = "Milan"
     Riyadh = "Riyadh"
     Thessaloniki = "Thessaloniki"
 
     Baltimore = "Baltimore"
     BART = "BART"
-    Kolkata = "Kolkata"
+    KMRC = "KMRC"
     MSH = "MSH"
+    NMML1 = "NMML1"
     Wenzhou = "Wenzhou"
     Mock_up = "Mock-up"
     Mock_up_2 = "Mock-up 2"
@@ -29,14 +31,16 @@ class Projects:
 # PROJECT_NAME = Projects.Brussels
 # PROJECT_NAME = Projects.Copenhagen
 # PROJECT_NAME = Projects.Glasgow
+# PROJECT_NAME = Projects.Lima
 # PROJECT_NAME = Projects.Milan
 # PROJECT_NAME = Projects.Riyadh
 PROJECT_NAME = Projects.Thessaloniki
 
 # PROJECT_NAME = Projects.Baltimore
 # PROJECT_NAME = Projects.BART
-# PROJECT_NAME = Projects.Kolkata
+# PROJECT_NAME = Projects.KMRC
 # PROJECT_NAME = Projects.MSH
+# PROJECT_NAME = Projects.NMML1
 # PROJECT_NAME = Projects.Wenzhou
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2
@@ -195,6 +199,19 @@ class ProjectDatabaseLoc:
                                                r"\GWISIGIXL0180-01.00 - ATT001_Depot Control tables_"
                                                r"Rev00-162-173-Overlap.pdf")
 
+        # ------------------------------- Lima -------------------------------#
+        elif project_name == Projects.Lima:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1\DC_SYS_0402RC1.xls"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\LIMA\Objects_List - v3 Rev 01.xlsx"
+            self.survey_loc.survey_sheet = r"Object List"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 3
+            self.survey_loc.track_col = 4
+            self.survey_loc.survey_kp_col = 7
+
         # ------------------------------- Milan -------------------------------#
         elif project_name == Projects.Milan:
             # ver = "TF3"
@@ -207,6 +224,7 @@ class ProjectDatabaseLoc:
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C_D470_01_02_RC2\ML4_DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C_D470_01_02_RC2\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\2. TF3\ML4_TF3_C11_D470_06_05_05_V04"
+                # -- Control Tables -- #
                 self.control_tables_route.line = (r"C:\Users\naderc\Desktop\ML4\2. TF3\Control Tables"
                                                   r"\M4-ST00PGRE-55634_01.00_Allegato_1-TF3-5-144 - Routes.pdf")
                 self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\ML4\2. TF3\Control Tables"
@@ -220,6 +238,7 @@ class ProjectDatabaseLoc:
                 self.dc_bop_addr = (r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C_D470_02_00_RC5"
                                     r"\DC_BOP.xls")
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\ML4_DEP_LN01_C11_D470_06_06_02_V02"
+                # -- Control Tables -- #
                 self.control_tables_route.line = (r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES"
                                                   r"\M4-ST00PGRE-55047_00.04_Allegato_1-5-168 - LINE - Routes.pdf")
                 self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\CONTROL TABLES"
@@ -261,7 +280,16 @@ class ProjectDatabaseLoc:
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\Riyadh\RL3_C_D470_09_01_RC1\DC_BOP_old.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\Riyadh\RL3_C11_D470_06_06_00_V07"
             self.kit_c121_d470_dir = r"C:\Users\naderc\Desktop\Riyadh\RL3_C121_D470_06_06_00_V04_20230327_165125"
-
+            # -- Survey -- #
+            self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\Riyadh\Appendix K - RL3_D932_ed14.xls"
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
+            # -- Control Tables -- #
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
                                               r"\MAIN LINE - CONTROL TABLES"
                                               r"\Appendix B_Routes.pdf")
@@ -300,7 +328,7 @@ class ProjectDatabaseLoc:
             self.survey_loc.type_col = [2, 2, 14]
             self.survey_loc.track_col = [3, 3, 15]
             self.survey_loc.survey_kp_col = [7, 7, 17]
-
+            # -- Control Tables -- #
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\TSK"
                                               r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3"
                                               r"\1G00LV601R721B_EN_ANNEX_B - IXL MAIN LINE CONTROL TABLES - "
@@ -327,20 +355,47 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr = (r"C:\Users\naderc\Desktop\BART"
                                 r"\BART_V2.3.0_SYS_1-DC_SYS-DRAGON_2.1.1 (RefSys 7.2.1.1).xls")
 
-        # ------------------------------- Kolkata -------------------------------#
-        elif project_name == Projects.Kolkata:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KMRC Kolkatta\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
+        # ------------------------------- KMRC Kolkata -------------------------------#
+        elif project_name == Projects.KMRC:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KMRC Kolkata\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\KMRC Kolkata"
+                                           r"\KMRC-76054_Rev01_C_D932 - Advanced field survey report.xlsm",
+                                           r"C:\Users\naderc\Desktop\KMRC Kolkata"
+                                           r"\KMRC-26054_Rev09_C_D932 - Advanced field survey report.xlsm"]
+            self.survey_loc.survey_sheet = [r"Result Final", r"KMRC-PH2A"]
+            self.survey_loc.all_sheets = [False, False]
+            self.survey_loc.start_row = [2, 2]
+            self.survey_loc.ref_col = [1, 2]
+            self.survey_loc.type_col = [4, 6]
+            self.survey_loc.track_col = [2, 4]
+            self.survey_loc.survey_kp_col = [3, 5]
 
         # ------------------------------- MSH -------------------------------#
         elif project_name == Projects.MSH:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\MSH\MSH_C_D470_V09_02_RC1\DC_SYS.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\MSH\Topo_V_06_00.xlsx"
+            self.survey_loc.survey_sheet = None
             self.survey_loc.all_sheets = True
             self.survey_loc.start_row = 4
             self.survey_loc.ref_col = 2
             self.survey_loc.type_col = 1
             self.survey_loc.track_col = 3
+            self.survey_loc.survey_kp_col = 5
+
+        # ------------------------------- NMML1 -------------------------------#
+        elif project_name == Projects.NMML1:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\NMML1\NMML1_PH2_C_D470_00_00_RC5\DC_SYS.xls"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\NMML1"
+                                           r"\NMML1_C_D932_Line1_Advanced_field_survey_report.xlsm")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
             self.survey_loc.survey_kp_col = 5
 
         # ------------------------------- Wenzhou -------------------------------#

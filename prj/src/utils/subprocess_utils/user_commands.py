@@ -22,7 +22,7 @@ def get_user_full_name() -> str:
     full_name = None
     for language, full_name_attr in FULL_NAME_ATTRIBUTES.items():
         cmd = cmd_to_get_full_name(full_name_attr)
-        out = catch_output_cmd(cmd)
+        out = catch_output_cmd(cmd, do_print=True)
         if out:
             full_name = out
             break

@@ -26,7 +26,7 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         track, dc_sys_kp = obj_val
         track = track.upper()
 
-        survey_name = f"{obj_name}__{track}".upper()
+        survey_name = _get_platform_survey_name(obj_name, track, survey_info)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
@@ -37,6 +37,18 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict
+
+
+def _get_platform_survey_name(obj_name: str, track: str, survey_info: dict[str]) -> str:
+    for test_track in get_test_tracks(track):
+        survey_name = f"{obj_name}__{test_track}".upper()
+        if survey_name in survey_info:
+            return survey_name
+        if obj_name.endswith("_1") and f"{obj_name.removesuffix('_1')}_T1__{test_track}".upper() in survey_info:
+            return f"{obj_name.removesuffix('_1')}_T1__{test_track}".upper()
+        if obj_name.endswith("_2") and f"{obj_name.removesuffix('_2')}_T2__{test_track}".upper() in survey_info:
+            return f"{obj_name.removesuffix('_2')}_T2__{test_track}".upper()
+    return f"{obj_name}__{track}".upper()
 
 
 def _get_dc_sys_platform_dict(survey_info: dict[str]):
@@ -112,12 +124,26 @@ def _get_survey_obj_ends(obj_name: str, track_smaller_kp: str, track_larger_kp: 
         ordering_type, obj_end_type = _get_corresponding_prefix(survey_name)
         if ordering_type is None or obj_end_type is None:
             continue
-        if (survey_name.endswith(f"{obj_name}__{track_smaller_kp}".upper())
-                or survey_name.endswith(f"{obj_name}__{track_larger_kp}".upper())):
+
+        test = False
+        for test_track_smaller_kp in get_test_tracks(track_smaller_kp):
+            if (survey_name.endswith(f"{obj_name}__{test_track_smaller_kp}".upper())
+                    or survey_name.endswith(f"{obj_name.removesuffix('_1')}_T1__{test_track_smaller_kp}".upper())
+                    or survey_name.endswith(f"{obj_name.removesuffix('_2')}_T2__{test_track_smaller_kp}".upper())):
+                test = True
+        for test_track_larger_kp in get_test_tracks(track_larger_kp):
+            if (survey_name.endswith(f"{obj_name}__{test_track_larger_kp}".upper())
+                    or survey_name.endswith(f"{obj_name.removesuffix('_1')}_T1__{test_track_larger_kp}".upper())
+                    or survey_name.endswith(f"{obj_name.removesuffix('_2')}_T2__{test_track_larger_kp}".upper())):
+                test = True
+        if test:
             obj_ends.append(survey_name)
-            display_obj_ends.append(survey_name.removesuffix(f"__{track_smaller_kp}")
-                                    if f"__{track_smaller_kp}" in survey_name
-                                    else survey_name.removesuffix(f"__{track_larger_kp}"))
+            display_name = survey_name
+            for test_track_smaller_kp in get_test_tracks(track_smaller_kp):
+                survey_name.removesuffix(f"__{test_track_smaller_kp}")
+            for test_track_larger_kp in get_test_tracks(track_larger_kp):
+                survey_name.removesuffix(f"__{test_track_larger_kp}")
+            display_obj_ends.append(survey_name)
     return obj_ends, display_obj_ends
 
 

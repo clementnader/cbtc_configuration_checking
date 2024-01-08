@@ -35,19 +35,37 @@ def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
 
 def _get_obj_names_in_survey(obj_name: str, obj_val: dict[str], track: str, survey_info: dict[str],
                              objs_dict: dict[str, dict[str]],
-                             second_try: bool = False) -> Optional[str]:
+                             second_try: bool = False, third_try: bool = False, fourth_try: bool = False
+                             ) -> Optional[str]:
     other_names = obj_val["other_names"]
-    for test_name in _get_list_of_joint_test_names(obj_name, other_names):
-        if test_name is None:
-            continue
-        test_name = test_name.upper()
-        if second_try:
-            test_name = _remove_leading_zeros_and_trailing_letters(test_name)
-        exist_flag, survey_name = _is_name_in_survey(test_name, track, survey_info)
-        if exist_flag:
+    for test_track in get_test_tracks(track):
+        for test_name in _get_list_of_joint_test_names(obj_name, other_names):
+            if test_name is None:
+                continue
+            test_name = test_name.upper()
+            if second_try:
+                test_name = _remove_leading_zeros_and_trailing_letters(test_name)
+            elif third_try:
+                test_name = _remove_trigram(test_name)
+            elif fourth_try:
+                test_name = _remove_pl(test_name)
+            exist_flag, survey_name = _is_name_in_survey(test_name, test_track, survey_info)
+            if exist_flag:
+                return survey_name
+
+    if fourth_try:
+        return None
+
+    if third_try:
+        survey_name = _get_obj_names_in_survey(obj_name, obj_val, track, survey_info, objs_dict, fourth_try=True)
+        if survey_name is not None:
             return survey_name
+        return None
 
     if second_try:
+        survey_name = _get_obj_names_in_survey(obj_name, obj_val, track, survey_info, objs_dict, third_try=True)
+        if survey_name is not None:
+            return survey_name
         return None
 
     survey_name = _get_obj_names_in_survey(obj_name, obj_val, track, survey_info, objs_dict, second_try=True)
@@ -62,10 +80,12 @@ def _get_obj_names_in_survey(obj_name: str, obj_val: dict[str], track: str, surv
 
 
 def _get_list_of_joint_test_names(obj_name: str, other_names: list[str]) -> list[str]:
-    # in some older surveys, joint prefix is "JOINT_" instead of "JOI_"
     list_test_names = [obj_name] + other_names
+    # in some older surveys, joint prefix is "JOINT_" instead of "JOI_"
     other_prefix_list = ["JOINT_" + name.removeprefix("JOI_") for name in list_test_names if name is not None]
-    return list_test_names + other_prefix_list
+    # in some older surveys, joint prefix is "TC_JOINT_" instead of "JOI_"
+    other_prefix_list_2 = ["TC_JOINT_" + name.removeprefix("JOI_") for name in list_test_names if name is not None]
+    return list_test_names + other_prefix_list + other_prefix_list_2
 
 
 def _test_one_obj_on_track(obj_name: str, track: str, objs_dict: dict[str, dict[str]], survey_info: dict[str]
@@ -77,6 +97,16 @@ def _test_one_obj_on_track(obj_name: str, track: str, objs_dict: dict[str, dict[
     if len(list_obj_on_track) == 1 and len(list_survey_obj_on_track) == 1 and list_obj_on_track[0] == obj_name:
         return list_survey_obj_on_track[0]
     return None
+
+
+def _remove_trigram(test_name: str) -> str:
+    res_name = re.sub("_[A-Z]{3}_", "_", test_name)
+    return res_name
+
+
+def _remove_pl(test_name: str) -> str:
+    res_name = re.sub("PL[0-9]+_", "", test_name)
+    return res_name
 
 
 def _remove_leading_zeros_and_trailing_letters(test_name: str) -> str:
@@ -161,6 +191,7 @@ def _survey_name_matching(survey_name: str, obj_name: str) -> bool:
     suffix = re.sub("_SWP?[A-Z0-9]+_[0-9]+", "", suffix)  # some switches are named SWP and others SW
     suffix = re.sub("_SWP?[A-Z0-9]+", "", suffix)  # some switches are named SWP and others SW
     suffix = suffix.removesuffix("_LEFT").removesuffix("_RIGHT").removesuffix("_DIRECT").removesuffix("_DIVERT")
+    suffix = suffix.removesuffix("_END").removesuffix("_BUFFER")
     if not suffix:
         return True
     return False

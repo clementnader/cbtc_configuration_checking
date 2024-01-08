@@ -128,7 +128,7 @@ def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, rever
         if comments is None:
             comments = '= '
         else:
-            comments = f'= "{comments}"\n\n'
+            comments = f'= "{comments}\n\n" & '
         comments += (f'"Opposite sign in survey.\n'
                      f'Difference with absolute signs makes " & '
                      f'ROUND(ABS({DC_SYS_KP_COL}{row}) - ABS({SURVEYED_KP_COL}{row}), 4) & ",\nwhich is "'

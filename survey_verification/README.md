@@ -33,11 +33,11 @@ The tool automates the verification for the following elements:
      - reference name: name of the surveyed element,
      - type: type of the surveyed element:
        - for switches, type shall be **SWP**, **SWITCH** or **SWITCH POINT**.
-       - for platform ends, type shall be **PLATFORM** or **PLATFORM END**.
-       - for blocks, type shall be **TC**, **AXLE COUNTER** or **INSULATED JOINT**.
+       - for platform ends, type shall be **PLATFORM**, **PLATFORM END** or **PLATFORM EXTREMITY**.
+       - for blocks, type shall be **TC**, **TRACK CIRCUITS JOINT**, **AXLE COUNTER** or **INSULATED JOINT**.
        - for signals, type shall be **SIGNAL**.
        - for buffers, type shall be **SIGNAL_BUFFER** or **BUFFER**.
-       - for tags, type shall be **TAG**;
+       - for tags, type shall be **TAG** or **BALISE**;
        - for flood gates, type shall be **FLOOD_GATE** or **FLOODGATE**.
      - track: track of the element,
      - surveyed KP: kilometer point surveyed by a geometer.

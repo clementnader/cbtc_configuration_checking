@@ -30,7 +30,7 @@ def launch_cmd(cmd: str, shell: bool = True, cwd: str = None, env: dict[str] = N
 def catch_output_cmd(cmd: str, do_print: bool = False) -> str:
     global G_ENCODING
     if G_ENCODING is None:
-        get_language_encoding()
+        get_language_encoding(do_print=do_print)
     if do_print:
         print_log(f" > {cmd}")
     instance = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, encoding=G_ENCODING, universal_newlines=True)
