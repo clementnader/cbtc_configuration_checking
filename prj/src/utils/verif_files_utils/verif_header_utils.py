@@ -14,7 +14,7 @@ __all__ = ["update_header_sheet_for_verif_file"]
 HEADER_SHEET_NAME = "Header"
 
 AUTHOR_CELL = "C24"
-FILES_FIRST_CELL = "D28"
+FILES_FIRST_CELL = "D27"
 
 
 def update_header_sheet_for_verif_file(wb: openpyxl.workbook.Workbook) -> None:
@@ -50,8 +50,7 @@ def update_sa_versions(ws: xl_ws.Worksheet) -> Optional[tuple[int, int]]:
             create_cell(ws, get_c121_d470_version(), row=row, column=info_column, borders=True)
         elif title.startswith(DATE):
             return row, info_column
-        else:
-            return None
+    return None
 
 
 def update_date(ws: xl_ws.Worksheet, date_cell: Optional[tuple[int, int]]) -> None:
