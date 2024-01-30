@@ -86,6 +86,7 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Brussels -------------------------------#
         elif project_name == Projects.Brussels:
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS_old.xls"
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_SYS.xls"
             self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\C64_D413\DC_BOP.xls"

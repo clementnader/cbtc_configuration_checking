@@ -7,8 +7,8 @@ from string import ascii_uppercase
 
 
 __all__ = ["DESKTOP_DIRECTORY", "Optional", "Union", "Generator", "Callable",
-           "ascii_uppercase", "columns_from_to", "sort_dict", "pretty_print_dict",
-           "get_file_directory_path", "get_full_path", "get_class_attr_dict", "get_print_prefix"]
+           "ascii_uppercase", "columns_from_to", "sort_dict",
+           "get_file_directory_path", "get_full_path", "get_class_attr_dict"]
 
 
 DESKTOP_DIRECTORY = os.path.join(os.getenv("UserProfile"), r"Desktop")
@@ -59,25 +59,3 @@ def columns_from_to(first: str, last: str) -> list[str]:
 
 def sort_dict(in_dict: dict) -> dict:
     return {key: in_dict[key] for key in sorted(in_dict)}
-
-
-def pretty_print_dict(in_dict: Union[dict, list], lvl: int = 0, max_lvl: int = None) -> None:
-    lvl += 1
-    if isinstance(in_dict, list):
-        for key in in_dict:
-            print(key)
-        return
-    if not isinstance(in_dict, dict):
-        print(in_dict)
-        return
-    for key, val in in_dict.items():
-        print(f"{get_print_prefix(lvl)}> {key}")
-        if isinstance(val, dict):
-            if max_lvl is None or lvl <= max_lvl:
-                pretty_print_dict(val, lvl)
-        else:
-            print(f"{get_print_prefix(lvl)}\t{val}")
-
-
-def get_print_prefix(lvl: int) -> str:
-    return '\t'*lvl

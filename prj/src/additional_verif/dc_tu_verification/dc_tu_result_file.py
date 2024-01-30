@@ -9,11 +9,11 @@ from .dc_tu_utils import *
 __all__ = ["create_dc_tu_verif_file"]
 
 
-DC_TU_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_add_verif_014_dc_tu.xlsx")
+DC_TU_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_dc_tu_verification.xlsx")
 DC_TU_VERIF_TEMPLATE = get_full_path(__file__, DC_TU_VERIF_TEMPLATE_RELATIVE_PATH)
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
-VERIF_FILE_NAME = "Analysis of ADD_VERIF_014.xlsx"
+VERIF_FILE_NAME = "Analysis of ADD_VERIF_XXX - DC_TU Verification.xlsx"
 
 MONO_CC = "MonoCC"
 BI_CC = "BiCC"
@@ -50,7 +50,7 @@ def _create_verif_file(ip_address_dict: dict, ssh_key_dict: dict) -> str:
     verif_file_name = f" - {get_c11_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
     res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
     save_xl_file(wb, res_file_path)
-    print_success(f"ADD_VERIF_014 analysis file is available at:\n"
+    print_success(f"Verification of DC_TU files is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")
     return res_file_path
 

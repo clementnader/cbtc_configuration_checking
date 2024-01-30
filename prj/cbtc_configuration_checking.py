@@ -37,7 +37,7 @@ def cc():
 
 
 def additional_verif():
-    # dc_tu_verification()  # TODO: trier les Train Units par ordre
+    # dc_tu_verification()
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
@@ -128,6 +128,7 @@ def constraints():
     #     et pourquoi pas laisser le choix d'utiliser CDV ou IVB
     #     et aussi mettre la possibilité d'ajouter un tableau en entrée
     #     avec les IVB de l'APZ
+    # verif_calib_distance()
     # ixl_overlap_platform_related()
     return
 

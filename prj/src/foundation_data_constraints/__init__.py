@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .block import r_cdv_5
+from .calib import verif_calib_distance
 from .check_offset import check_offset_correctness
 from .dyn_tag import r_dyntag_3
 from .general_data import cf_dg_1, cf_dg_2

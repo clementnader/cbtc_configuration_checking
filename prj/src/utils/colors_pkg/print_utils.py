@@ -4,11 +4,12 @@
 import numpy.random
 from .colored_output import *
 from ..time_utils import *
+from ..common_utils import *
 
 
 __all__ = ["print_bar", "print_title", "print_section_title", "print_error", "print_warning", "print_success",
            "print_log", "progress_bar", "print_sub_variables", "print_variables", "print_final_value",
-           "test_moving_progress_bar", "ask_question_yes_or_no"]
+           "test_moving_progress_bar", "ask_question_yes_or_no", "pretty_print_dict", "get_print_prefix"]
 
 
 def print_bar(length: int = 100):
@@ -166,3 +167,25 @@ def _modify_variables_to_print(variables: dict[str, str]):
 def ask_question_yes_or_no(question: str) -> bool:
     return input(f"{Color.yellow}{question}{Color.reset} "
                  f"{Color.light_yellow}(Y/N){Color.reset} ").upper() in ["Y", "YES"]
+
+
+def pretty_print_dict(in_dict: Union[dict, list], lvl: int = 0, max_lvl: int = None) -> None:
+    lvl += 1
+    if isinstance(in_dict, list):
+        for key in in_dict:
+            print(key)
+        return
+    if not isinstance(in_dict, dict):
+        print(in_dict)
+        return
+    for key, val in in_dict.items():
+        print(f"{get_print_prefix(lvl)}> {key}")
+        if isinstance(val, dict):
+            if max_lvl is None or lvl <= max_lvl:
+                pretty_print_dict(val, lvl, max_lvl)
+        else:
+            print(f"{get_print_prefix(lvl)}\t{val}")
+
+
+def get_print_prefix(lvl: int) -> str:
+    return '\t'*lvl

@@ -32,7 +32,12 @@ def load_dc_tu_information() -> dict[int, dict[int, dict[str, str]]]:
             if line_number not in dc_tu_dict:
                 dc_tu_dict[line_number] = dict()
             dc_tu_dict[line_number].update(sub_dict)
-    return dc_tu_dict
+    return re_order_dict(dc_tu_dict)
+
+
+def re_order_dict(in_dict: dict[int, dict[int]]) -> dict[int, dict[int]]:
+    # Sort train units by increasing order
+    return {key: {sub_key: in_dict[key][sub_key] for sub_key in sorted(in_dict[key])} for key in sorted(in_dict)}
 
 
 def analyze_train_unit(train_unit_path: str, num_train_unit: int) -> Optional[dict[int, dict[int, dict[str, str]]]]:

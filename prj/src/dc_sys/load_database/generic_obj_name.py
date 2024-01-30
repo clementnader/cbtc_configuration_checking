@@ -19,6 +19,7 @@ GENERIC_OBJ_NAME = {
         {"attr": DCSYS.Flux_Variant_BF.Troncon, "type": str}
     ]},
     "Calib": {"cols": [
+        {"attr": DCSYS.Calib.DistanceCalib, "type": float},
         {"attr": DCSYS.Calib.BaliseDeb, "type": str},
         {"attr": DCSYS.Calib.BaliseFin, "type": str}
     ]},
