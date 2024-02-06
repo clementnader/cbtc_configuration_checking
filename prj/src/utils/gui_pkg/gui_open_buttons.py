@@ -5,7 +5,7 @@ from ..common_utils import *
 from .gui_utils import *
 
 
-__all__ = ["add_dc_sys_open_button", "add_cctool_oo_open_button"]
+__all__ = ["add_dc_sys_open_button", "add_cctool_oo_open_button", "add_c11_open_button"]
 
 
 def add_dc_sys_open_button(frame: tkinter.Frame, ref_row: int, bg: str = None, ga_version: str = None
@@ -37,3 +37,14 @@ def add_cctool_oo_open_button(frame: Union[tkinter.Tk, tkinter.Frame], ref_row: 
                                      title_text, open_text, file_types, bg=bg, extra_func=extra_func)
 
     return cctool_oo_directory_string_var, cctool_oo_file_name_string_var
+
+
+def add_c11_open_button(frame: tkinter.Frame, ref_row: int, bg: str = None) -> tkinter.StringVar:
+    title_text = "C11_D470: "
+    open_text = "Open C11_D470"
+
+    c11_d470_directory_string_var = tkinter.StringVar()
+
+    gui_add_dir_open_button(frame, ref_row, c11_d470_directory_string_var, title_text, open_text, bg=bg)
+
+    return c11_d470_directory_string_var

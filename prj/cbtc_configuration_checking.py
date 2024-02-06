@@ -27,9 +27,9 @@ def compare_dc_sys():
 
 
 def cc():
+    # verification_of_the_md5_checksum()
     # get_mtor_ccte_ko()
     # patch_cc_mtor_ccte()
-    # verification_of_the_md5_checksum()
     # checksum_compare_parser()
     # check_diff_cc_param()
     # convert_cc_param()
@@ -37,6 +37,7 @@ def cc():
 
 
 def additional_verif():
+    # dc_tu_window()
     # dc_tu_verification()
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())

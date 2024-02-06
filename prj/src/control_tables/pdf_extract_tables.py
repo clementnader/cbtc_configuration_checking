@@ -44,9 +44,9 @@ def pdf_reader_extract_tables(pdf_file: str, table_type: str, line_part: str, ve
             if page_dict:
                 res_dict[page_dict["Name"]] = page_dict
         print_log(f"\r{progress_bar(nbpages, nbpages, end=True)} "
-                  f"{Color.blue}{Color.underline}{table_type.title()}{Color.no_underline} "
-                  f"Control Tables{Color.reset} conversion "
-                  f"for {Color.blue}{line_part}{Color.reset} finished.")
+                  f"{Color.black}{csi_bg_color(Color.mint_green)}{table_type.title()}{Color.reset} "
+                  f"{Color.mint_green}Control Tables{Color.reset} conversion "
+                  f"for {Color.yellow}{line_part}{Color.reset} finished.")
     return res_dict
 
 
@@ -92,9 +92,19 @@ def _extract_info(list_info: list[dict[str]], table_type: str, num_page: int, ve
     res_dict = {key: "" for key in loc_dict if key != "Name_Title"}
     verbose_dict = {key: None for key in loc_dict}
     list_info = _add_pos_list_info(list_info)
-    useful_page, verbose_dict = _check_useful_page(list_info, num_page, loc_dict["Name_Title"], verbose_dict)
+    useful_page, verbose_dict, left_name = _check_useful_page(list_info, num_page, loc_dict["Name_Title"], verbose_dict)
     if not useful_page:
         return {}
+    if left_name is not None:
+        key = "Name"
+        loc = verbose_dict["Name_Title"]["loc"][0]
+        text: str = left_name
+        res_dict[key] += " " + text
+        if verbose_dict[key] is not None:
+            verbose_dict[key]["loc"].append(loc)
+            verbose_dict[key]["text"] += " " + text
+        else:
+            verbose_dict[key] = {"loc": [loc], "text": text}
     for info in list_info:
         loc: dict[str, float] = info["loc"]
         text: str = info["text"]
@@ -188,12 +198,17 @@ def _check_useful_page(list_info: list[dict[str]], num_page: int, loc_ref: dict[
             if text.strip() in NAME_TITLES:
                 loc = {key: round(loc[key]) for key in loc}
                 verbose_dict["Name_Title"] = {"loc": [loc], "text": text}
-                return True, verbose_dict
+                return True, verbose_dict, None
+            for name_title in NAME_TITLES:
+                if text.strip().startswith(name_title):
+                    loc = {key: round(loc[key]) for key in loc}
+                    verbose_dict["Name_Title"] = {"loc": [loc], "text": text}
+                    return True, verbose_dict, text.strip().removeprefix(name_title).lstrip()
         if text.strip() in NAME_TITLES:
             print()
             print_warning(f"Name information does not seem to be at the correct place "
                           f"for page {Color.beige}{num_page}{Color.reset}.")
-    return False, verbose_dict
+    return False, verbose_dict, None
 
 
 def _does_pos_correspond(loc: dict[str, float], loc_ref: dict[str, float]):

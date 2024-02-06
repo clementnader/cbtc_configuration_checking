@@ -87,9 +87,9 @@ class ProjectDatabaseLoc:
         # ------------------------------- Brussels -------------------------------#
         elif project_name == Projects.Brussels:
             # self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS_old.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\C64_D413\DC_BOP.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R5\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R5\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R5\C64_D413\DC_BOP.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R4"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
@@ -107,19 +107,16 @@ class ProjectDatabaseLoc:
             #                                   r"rev00.02_ERASME-ANTENNA LINE.pdf")
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\BXL\control tables new"
                                               r"\90000536.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES "
-                                              r"ITINÉRAIRES_FR_rev00.03_ERASME-ANTENNA LINE.pdf")
-            # self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
-            #                                  r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
-            #                                  r"rev01.00_ERASME DEPOT.pdf")
-            self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\BXL\control tables new"
+                                              r"ITINÉRAIRES_FR_rev01.00_ERASME-ANTENNA LINE.pdf")
+            self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
                                              r"\BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_"
-                                             r"rev01.01_ERASME DEPOT.pdf")
+                                             r"rev01.00_ERASME DEPOT.pdf")
             # self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
             #                                     r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_"
             #                                     r"rev00.02_ERASME-ANTENNA LINE.pdf")
             self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\BXL\control tables new"
                                                 r"\90000537.L02.FR-BXL_IXL_ LISTE DES OVERLAP + PARAMÈTRES "
-                                                r"OVERLAP_FR_rev00.03_ERASME-ANTENNA LINE.pdf")
+                                                r"OVERLAP_FR_rev01.00_ERASME-ANTENNA LINE.pdf")
             self.control_tables_overlap.cmc = (r"C:\Users\naderc\Desktop\BXL\Control Tables"
                                                r"\BXL_IXL_LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_"
                                                r"rev01.00_ERASME DEPOT.pdf")

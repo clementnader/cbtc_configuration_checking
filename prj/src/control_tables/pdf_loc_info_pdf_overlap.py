@@ -15,7 +15,7 @@ if PROJECT_NAME == Projects.Brussels:
         "[2] Destination Point locked": {"x": 220, "y": 684},
         "[3] Incompatibilities":        {"x": 309, "y": 699, "y_tol": 50},
         "[5] Overlap path":             {"x": 233, "y": 587},
-        "[6] Flank protections":        {"x": 343, "y": 587},
+        "[6] Flank protections":        {"x": 343, "y": 567, "y_tol": 40},
         "[7]  External Conditions":     {"x": 468, "y": 608},
         "[8]  Overlap path":            {"x": 237, "y": 471},
         "[9]  Flank protections":       {"x": 397, "y": 471},

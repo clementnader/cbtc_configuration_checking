@@ -85,7 +85,7 @@ You will also have the possibility to add another survey files (some projects ha
 
 ---
 ### 3.3 Results
-The tool generates a verification file. Sheet **"Survey"** contains the exhaustive list of objects to verify given in the attached file in §3.2 of the System DPSA. The aim is to use this file directly as the verification result file to add to the DPSR.
+The tool generates an Excel verification file. Sheet **"Survey"** contains the exhaustive list of objects to verify given in the attached file in §3.2 of the System DPSA. The aim is to use this file directly as the verification result file to add to the DPSR.
 
 For each type of objects that is automated, there is **a dedicated sheet** containing the results of the verification.
 
