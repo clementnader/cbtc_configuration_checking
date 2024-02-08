@@ -124,10 +124,10 @@ class ProjectDatabaseLoc:
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
             # self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_SYS.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04\C64_D413\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\KCR\KCR_C11_D470_06_06_01_V04"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R2\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R2\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R2\C64_D413\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\KCR\KCR_C11_D470_06_06_01_V04_R2"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\KCR"
                                            r"\CR-ASTS-042189 - 15.00_ATT002 - ATC- KCR C_D932 - "
