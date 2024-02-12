@@ -10,10 +10,20 @@ __all__ = ["create_check_survey_dict"]
 def create_check_survey_dict(survey_info):
     survey_verif_dict = dict()
     for survey_type, survey_type_value in SURVEY_TYPES_DICT.items():
+        if survey_type in ["OSP", "VERSION TAG"]:
+            continue
         res_sheet = survey_type_value["res_sheet"]
         dcsys_sh = survey_type_value["dcsys_sh"]
         func = survey_type_value["func"]
-        survey_verif_dict[res_sheet] = _order_survey_verif_dict(func(dcsys_sh, res_sheet, survey_info.get(survey_type)))
+        if survey_type == "PLATFORM":
+            survey_verif_dict[res_sheet] = _order_survey_verif_dict(
+                func(dcsys_sh, res_sheet, survey_info.get("PLATFORM"), survey_info.get("OSP")))
+        elif survey_type == "TAG":
+            survey_verif_dict[res_sheet] = _order_survey_verif_dict(
+                func(dcsys_sh, res_sheet, survey_info.get("TAG"), survey_info.get("VERSION TAG")))
+        else:
+            survey_verif_dict[res_sheet] = _order_survey_verif_dict(
+                func(dcsys_sh, res_sheet, survey_info.get(survey_type)))
     return survey_verif_dict
 
 
@@ -26,7 +36,7 @@ def _order_survey_verif_dict(verif_dict: dict):
 
 def _get_track_to_order_dict(x, verif_dict):
     """ Get track name inside the verif dict dictionary, according to which one exists. """
-    return (verif_dict[x]["track"].lower() if verif_dict[x]["track"] is not None
+    return (verif_dict[x]["dc_sys_track"].lower() if verif_dict[x]["dc_sys_track"] is not None
             else verif_dict[x]["survey_track"].lower())
 
 

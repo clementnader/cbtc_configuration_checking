@@ -6,6 +6,7 @@ from ....cctool_oo_schema import *
 from ....dc_sys import *
 from ...survey_utils import *
 from .common_utils import *
+from .check_platform_osp import *
 
 
 PLT_PREFIX = {
@@ -15,29 +16,109 @@ PLT_PREFIX = {
 
 
 # Switch
-def check_platform(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
+def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp_survey_info: dict):
     assert dc_sys_sheet == DCSYS.Quai
     assert res_sheet_name == "Platform"
 
-    obj_dict = _get_dc_sys_platform_dict(survey_info)
+    # plt_dict = load_sheet(DCSYS.Quai)
+    obj_dict = _get_dc_sys_platform_dict(plt_survey_info)
     list_used_obj_names = list()
     res_dict = dict()
-    for obj_name, obj_val in obj_dict.items():
-        track, dc_sys_kp = obj_val
-        track = track.upper()
+    # for plt_name, plt_val in plt_dict.items():
+    #     plt_limits = _get_plt_limits(plt_val)
+    #     (lim1_track, lim1_kp), (lim2_track, lim2_kp) = plt_limits
+    #     objects = [[plt_name + "__Limit_1", lim1_track, lim1_kp],
+    #                [plt_name + "__Limit_2", lim2_track, lim2_kp]]
 
-        survey_name = _get_platform_survey_name(obj_name, track, survey_info)
-        survey_obj_info = survey_info.get(survey_name)
+    for obj_name, obj_val in obj_dict.items():
+        dc_sys_track, dc_sys_kp = obj_val
+        # survey_name = _get_platform_survey_name(obj_name, dc_sys_track, plt_survey_info)
+        # survey_obj_info = plt_survey_info.get(survey_name)
+        dc_sys_track = dc_sys_track.upper()
+
+        survey_name = _get_platform_survey_name(obj_name, dc_sys_track, plt_survey_info)
+        survey_obj_info = plt_survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
 
         obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
+        res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
+                                                                dc_sys_track, dc_sys_kp)
 
-        res_dict[(obj_name, track)] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
+    res_dict.update(add_extra_info_from_survey(list_used_obj_names, plt_survey_info))
 
-    res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
+    # Add platform OSP on same sheet
+    res_dict.update(check_platform_osp(dc_sys_sheet.PointDArret, res_sheet_name, osp_survey_info))
     return res_dict
 
+
+def _get_plt_limits(plt_val: dict) -> list[tuple[str, float]]:
+    limits = list(get_dc_sys_zip_values(plt_val, DCSYS.Quai.ExtremiteDuQuai.Voie, DCSYS.Quai.ExtremiteDuQuai.Pk))
+    return limits
+
+
+# def _get_corresponding_survey_extremities(plt_name: str, plt_limits: list[tuple[str, float]],
+#                                           plt_survey_info: dict[str]):
+#     survey_name_dict = {1: None, 2: None}
+#     (lim1_track, lim1_kp), (lim2_track, lim2_kp) = plt_limits
+#
+#     list_survey_limits = _get_survey_limits(plt_name, plt_survey_info)
+#     if not list_survey_limits:  # platform not surveyed
+#         return survey_name_dict
+#     if len(list_survey_limits) != 2:
+#         print_log(
+#             f"{'Only one platform end has' if len(list_survey_limits) == 1 else 'More than two platform ends have'}"
+#             f" been found in survey for {plt_name}:\n{list_survey_limits}\n")
+#         return None  # TODO
+#
+#     (survey_lim1_name, survey_lim1_track), (survey_lim2_name, survey_lim2_track) = list_survey_limits
+#     survey_lim1_kp = plt_survey_info[survey_lim1_name]["surveyed_kp"]
+#     survey_lim2_kp = plt_survey_info[survey_lim2_name]["surveyed_kp"]
+#     if lim1_track == lim2_track and survey_lim1_track == survey_lim2_track:
+#         if lim1_track != survey_lim1_track:
+#             survey_name_dict
+#         return _get_corresponding_survey_same_track(lim1_kp, lim2_kp, survey_lim1_name, survey_lim1_kp,
+#                                                     survey_lim2_name, survey_lim2_kp)
+
+
+# def _get_corresponding_survey_same_track(lim1_kp, lim2_kp, survey_lim1_name, survey_lim1_kp,
+#                                          survey_lim2_name, survey_lim2_kp):
+#     smaller_dc_sys_kp = min(lim1_kp, lim2_kp)
+#     larger_dc_sys_kp = max(lim1_kp, lim2_kp)
+#     is_1_smaller = True if lim1_kp == smaller_dc_sys_kp else False
+#
+#     (smaller_survey_name, smaller_survey_kp), (larger_survey_name, larger_survey_kp) = (
+#         sorted([(survey_lim1_name, survey_lim1_kp), (survey_lim2_name, survey_lim2_kp)],
+#                key=lambda x: x[1])
+#     )
+#     reversed_polarity = (check_polarity(smaller_dc_sys_kp, smaller_survey_kp)
+#                          and check_polarity(larger_dc_sys_kp, larger_survey_kp))
+#
+#     return
+
+
+# def _clean_platform_extremity_name(plt_lim_name: str) -> str:
+#     plt_name = plt_lim_name.upper()
+#     plt_name = plt_lim_name.removeprefix("LEFT_END_").removeprefix("RIGHT_END_")
+#     plt_name = plt_lim_name.removeprefix("BEGIN_").removeprefix("END_")
+#     plt_name = plt_lim_name.removeprefix("QUAI1_").removeprefix("QUAI2_")
+#     plt_name = plt_lim_name.removesuffix("_START").removeprefix("_END")
+#     return plt_name
+
+
+# def _get_survey_limits(plt_name: str, plt_survey_info: dict[str]) -> list[tuple[str, str]]:
+#     list_survey_limits = list()
+#     for survey_name in plt_survey_info.keys():
+#         survey_plt_lim_name, survey_track = survey_name.split("__", 1)
+#         survey_plt_name = _clean_platform_extremity_name(survey_plt_lim_name)
+#         if (survey_plt_name == plt_name.upper()
+#                 or survey_plt_name.removesuffix("_1") + "_T1" == plt_name.upper()
+#                 or survey_plt_name.removesuffix("_2") + "_T2" == plt_name.upper()):
+#             list_survey_limits.append((survey_name, survey_track))
+#     return list_survey_limits
+
+
+# to remove
 
 def _get_platform_survey_name(obj_name: str, track: str, survey_info: dict[str]) -> str:
     for test_track in get_test_tracks(track):

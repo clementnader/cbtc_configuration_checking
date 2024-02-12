@@ -6,7 +6,8 @@ __all__ = ["Projects", "PROJECT_NAME", "DATABASE_LOC"]
 
 
 class Projects:
-    Ankara = "Ankara"
+    Ankara_L1 = "Ankara_L1"
+    Ankara_L2 = "Ankara_L2"
     Brussels = "Brussels"
     Copenhagen = "Copenhagen"
     Glasgow = "Glasgow"
@@ -21,27 +22,36 @@ class Projects:
     MSH = "MSH"
     NMML1 = "NMML1"
     Wenzhou = "Wenzhou"
+    Shenyang = "Shenyang"
     Mock_up = "Mock-up"
     Mock_up_2 = "Mock-up 2"
     Mock_up_3 = "Mock-up 3"
     Mock_up_4 = "Mock-up 4"
 
 
-# PROJECT_NAME = Projects.Ankara
+# PROJECT_NAME = Projects.Ankara_L1  # TODO: JOI ne pas merge les noms, suffix WXXXX
+# PROJECT_NAME = Projects.Ankara_L2  # TODO: dupliquer les switches aussi dans l'autre sens : les _R _L à partir de _C,
+#                                       et mettre en colonne nom leur vrai nom
+#                                       platforms -> prefix Quai1, Quai2
 # PROJECT_NAME = Projects.Brussels
 # PROJECT_NAME = Projects.Copenhagen
-# PROJECT_NAME = Projects.Glasgow
-# PROJECT_NAME = Projects.Lima
-# PROJECT_NAME = Projects.Milan
-# PROJECT_NAME = Projects.Riyadh
+# PROJECT_NAME = Projects.Glasgsow
+# PROJECT_NAME = Projects.Lima  # TODO: Survey plt -> suffix et pas prefix, refaire plt et floodgate
+# PROJECT_NAME = Projects.Milan  # TODO: Manage TRACK_1/2 vs T1/2 -> crée un pb sur la duplication des switches aussi
+# PROJECT_NAME = Projects.Riyadh  # TODO: joint [MF]BS{0-9}+ ou LCP{0-9}+ -> track end, TRACK_02W ?, Middle Platform ?
 PROJECT_NAME = Projects.Thessaloniki
 
+# --- USA --- #
 # PROJECT_NAME = Projects.Baltimore
 # PROJECT_NAME = Projects.BART
-# PROJECT_NAME = Projects.KMRC
 # PROJECT_NAME = Projects.MSH
+# --- India --- #
+# PROJECT_NAME = Projects.KMRC
 # PROJECT_NAME = Projects.NMML1
+# --- China --- #
+# PROJECT_NAME = Projects.Shenyang  # TODO: STOP_SIG -> STOP, joint -> BLOCK_DEF file
 # PROJECT_NAME = Projects.Wenzhou
+# --- Mock-up --- #
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2
 # PROJECT_NAME = Projects.Mock_up_3
@@ -77,12 +87,37 @@ class ProjectDatabaseLoc:
 
     def __init__(self, project_name: str):
 
-        # ------------------------------- Ankara -------------------------------#
-        if project_name == Projects.Ankara:
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\ANK_L2_C_D470_V06_00_RC3\DC_SYS.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L2_C_D470_V06_00_RC4\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L2_C_D470_V06_00_RC4\DC_PAR.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\Ank\ANK_L2_C11_D470_06_05_03_V07"
+        # ------------------------------- Ankara_L1 -------------------------------#
+        if project_name == Projects.Ankara_L1:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L1\ANK_L1_C_D470_V12_05_RC2\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L1\ANK_L1_C_D470_V12_05_RC2\DC_PAR.xls"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\Ank\SURVEY"
+                                           r"\ANK_L1_C_D932_14_00_RC1.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 6
+
+        # ------------------------------- Ankara_L2 -------------------------------#
+        if project_name == Projects.Ankara_L2:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L2\ANK_L2_C_D470_V06_00_RC4\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L2\ANK_L2_C_D470_V06_00_RC4\DC_PAR.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\Ank\ANK_L2\ANK_L2_C11_D470_06_05_03_V07"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Ank\SURVEY\ANK_L2_C_D932_01_00_RC2.xlsx",
+                                           r"C:\Users\naderc\Desktop\Ank\SURVEY"
+                                           r"\Metro_gzrgh_KM_SON_BufferAdded_FoulingPadded_JointAdded_rev01.xlsx"]
+            self.survey_loc.survey_sheet = [r"Result Final", r"Survey_Template"]
+            self.survey_loc.all_sheets = [False, False]
+            self.survey_loc.start_row = [2, 2]
+            self.survey_loc.ref_col = [1, 1]
+            self.survey_loc.type_col = [4, 2]
+            self.survey_loc.track_col = [2, 3]
+            self.survey_loc.survey_kp_col = [3, 5]
 
         # ------------------------------- Brussels -------------------------------#
         elif project_name == Projects.Brussels:
@@ -182,7 +217,7 @@ class ProjectDatabaseLoc:
             self.survey_loc.ref_col = 1
             self.survey_loc.type_col = 2
             self.survey_loc.track_col = 3
-            self.survey_loc.survey_kp_col = 6
+            self.survey_loc.survey_kp_col = 4
             # -- Control Tables -- #
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables"
                                               r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_"
@@ -396,9 +431,32 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = 2
             self.survey_loc.survey_kp_col = 5
 
+        # ------------------------------- Shenyang -------------------------------#
+        elif project_name == Projects.Shenyang:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA V4\Shenyang\SHYL1_10_00\DC_SYS_SHYL1_10_00.xls"
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\CHINA V4\Shenyang"
+                                           r"\SY_L1_SIG_DB_D932_1409_V3.3_2016_5_11.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 6
+
         # ------------------------------- Wenzhou -------------------------------#
         elif project_name == Projects.Wenzhou:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_04\DC_SYS_0804.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_01\DC_SYS_0801.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_04\DC_SYS_0804.xls"
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\WENZHOU"
+                                           r"\WZ_S1P1_SIG_DB_D932_1409_D932_V1.8_modified.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 6
 
         # ------------------------------- Mock-up -------------------------------#
         elif project_name == Projects.Mock_up:

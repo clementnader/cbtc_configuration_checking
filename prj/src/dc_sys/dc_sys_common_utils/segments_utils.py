@@ -47,6 +47,19 @@ def are_points_matching(seg1: str, x1: float, seg2: str, x2: float, tolerance: f
         if seg1 in next_segs:
             return True
         return False
+    # Manage depolarization points
+    if x1 == len_seg1 and x2 == len_seg2:
+        next_segs1 = get_linked_segs(seg1, downstream=True)
+        next_segs2 = get_linked_segs(seg2, downstream=True)
+        if seg2 in next_segs1 and seg1 in next_segs2:
+            return True
+        return False
+    if x1 == 0 and x2 == 0:
+        next_segs1 = get_linked_segs(seg1, downstream=False)
+        next_segs2 = get_linked_segs(seg2, downstream=False)
+        if seg2 in next_segs1 and seg1 in next_segs2:
+            return True
+        return False
     return False
 
 

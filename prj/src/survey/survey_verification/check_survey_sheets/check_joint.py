@@ -9,7 +9,7 @@ from .common_utils import *
 
 
 # Block_Joint
-def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]]):
+def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]]):
     assert dc_sys_sheet == DCSYS.CDV
     assert res_sheet_name == "Block_Joint"
 
@@ -17,17 +17,16 @@ def check_joints(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
     list_used_obj_names = list()
     res_dict = dict()
     for obj_name, obj_val in objs_dict.items():
-        track, dc_sys_kp = obj_val["position"]
-        track = track.upper()
+        dc_sys_track, dc_sys_kp = obj_val["position"]
+        dc_sys_track = dc_sys_track.upper()
 
-        survey_name = _get_obj_names_in_survey(obj_name, obj_val, track, survey_info, objs_dict)
+        survey_name = _get_obj_names_in_survey(obj_name, obj_val, dc_sys_track, survey_info, objs_dict)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
 
-        obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
-
-        res_dict[(obj_name, track)] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
+        res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
+                                                                dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict
@@ -93,7 +92,7 @@ def _test_one_obj_on_track(obj_name: str, track: str, objs_dict: dict[str, dict[
     list_obj_on_track = [obj for obj, obj_val in objs_dict.items()
                          if obj_val["position"][0] == track]
     list_survey_obj_on_track = [survey_name for survey_name, survey_obj_info in survey_info.items()
-                                if survey_obj_info["track"] == track]
+                                if survey_obj_info["survey_track"] == track]
     if len(list_obj_on_track) == 1 and len(list_survey_obj_on_track) == 1 and list_obj_on_track[0] == obj_name:
         return list_survey_obj_on_track[0]
     return None
@@ -177,7 +176,7 @@ def _get_matching_objs_in_survey(obj_name: str, track: str, survey_info: dict[st
     for survey_name, survey_obj_info in survey_info.items():
         test_name = survey_name.split("__", 1)[0]  # remove the track in the survey_name,
         # tracks are directly tested here
-        survey_track = survey_obj_info["track"]
+        survey_track = survey_obj_info["survey_track"]
         if track == survey_track and _survey_name_matching(test_name, obj_name):
             list_matching_objs.append(survey_name)
     return list_matching_objs

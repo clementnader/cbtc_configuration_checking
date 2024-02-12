@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
 from .common_utils import *
 
 
-# Tag, Signal and Buffer
+# Signal and Buffer, and Version Tag
 def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]]):
-    assert dc_sys_sheet in [DCSYS.Bal, DCSYS.Sig]
-    assert res_sheet_name in ["Tag", "Signal", "Buffer"]
+    assert dc_sys_sheet in [DCSYS.Sig, DCSYS.IATPM_Version_Tags]
+    assert res_sheet_name in ["Signal", "Buffer", "Tag"]
 
     dc_sys_dict = load_sheet(dc_sys_sheet)
     list_used_obj_names = list()
@@ -17,20 +18,19 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
     for obj_name, obj_val in dc_sys_dict.items():
         if not obj_condition(res_sheet_name, obj_val):
             continue
-        track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
-        track = track.upper()
+        dc_sys_track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
+        dc_sys_track = dc_sys_track.upper()
 
         test_names = [obj_name]
-        if obj_name.startswith("TAG_"):
-            test_names.append("PTSA_" + obj_name.removeprefix("TAG_"))
-        survey_name = test_other_track_name(test_names, track, survey_info)
+        if obj_name.startswith("STOP_SIG"):
+            test_names.append("SIG_" + obj_name.removeprefix("STOP_SIG"))
+        survey_name = test_other_track_name(test_names, dc_sys_track, survey_info)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
 
-        obj_name = survey_obj_info["obj_name"] if survey_obj_info is not None else obj_name
-
-        res_dict[(obj_name, track)] = add_info_to_survey(survey_obj_info, track, dc_sys_kp)
+        res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
+                                                                dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict
@@ -49,19 +49,9 @@ def obj_condition(res_sheet, obj_val):
 
 
 def _get_dc_sys_position(dc_sys_sheet, obj_val) -> tuple[str, float]:
-    track = get_dc_sys_value(obj_val, dc_sys_sheet.Voie)
-    kp = get_dc_sys_value(obj_val, dc_sys_sheet.Pk)
+    if "Voie" in get_class_attr_dict(dc_sys_sheet):
+        track, kp = get_dc_sys_values(obj_val, dc_sys_sheet.Voie, dc_sys_sheet.Pk)
+    else:
+        seg, x = get_dc_sys_values(obj_val, dc_sys_sheet.Seg, dc_sys_sheet.X)
+        track, kp = from_seg_offset_to_kp(seg, x)
     return track, kp
-
-
-def _add_extra_info_from_survey(list_obj_names: list[str], survey_info: dict[str, dict[str]]):
-    extra_dict = dict()
-    for obj_val in survey_info.values():
-        obj_name = obj_val["obj_name"]
-        if obj_name in list_obj_names:
-            continue
-        extra_dict[obj_name] = {"track": None, "dc_sys_kp": None}
-        extra_dict[obj_name].update({"survey_track": obj_val["track"], "surveyed_kp": obj_val["surveyed_kp"]})
-        extra_dict[obj_name].update({"surveyed_kp_comment": obj_val["surveyed_kp_comment"],
-                                     "comments": obj_val["comments"]})
-    return extra_dict

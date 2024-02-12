@@ -14,19 +14,31 @@ def get_joints_dict() -> dict[str, dict[str]]:
     block_dict = load_sheet(DCSYS.CDV)
     for block_name, block_val in block_dict.items():
         matching_blocks = _find_associated_blocks(block_name, block_val)
-        for limit_position, matching_block_name in matching_blocks.items():
-            joint_name, joint_name2, list_matching_ivb = _get_corresponding_ivb_joint(matching_block_name,
-                                                                                      limit_position)
-            joint_name, joint_name2 = _get_new_joint_names(joints_dict, joint_name, joint_name2, limit_position)
-            if joint_name is not None:
-                tc_joint_name, tc_joint_name2 = _get_corresponding_tc_joint(block_name, matching_block_name)
-                ivb_other_name, ivb_other_name2 = _get_ivb_other_names_limit_of_track(limit_position, list_matching_ivb)
-                tc_other_name, tc_other_name2 = _get_tc_other_names_limit_of_track(limit_position, block_name,
-                                                                                   tc_joint_name2)
-                joints_dict[joint_name] = {"other_names": [joint_name2, tc_joint_name, tc_joint_name2,
-                                                           ivb_other_name, ivb_other_name2,
-                                                           tc_other_name, tc_other_name2],
-                                           "position": limit_position}
+        if "IVB" in get_class_attr_dict(DCSYS):
+            for limit_position, matching_block_name in matching_blocks.items():
+                joint_name, joint_name2, list_matching_ivb = _get_corresponding_ivb_joint(matching_block_name,
+                                                                                          limit_position)
+                joint_name, joint_name2 = _get_new_joint_names(joints_dict, joint_name, joint_name2, limit_position)
+                if joint_name is not None:
+                    tc_joint_name, tc_joint_name2 = _get_corresponding_tc_joint(block_name, matching_block_name)
+                    ivb_other_name, ivb_other_name2 = _get_ivb_other_names_limit_of_track(limit_position,
+                                                                                          list_matching_ivb)
+                    tc_other_name, tc_other_name2 = _get_tc_other_names_limit_of_track(limit_position, block_name,
+                                                                                       tc_joint_name2)
+                    joints_dict[joint_name] = {"other_names": [joint_name2, tc_joint_name, tc_joint_name2,
+                                                               ivb_other_name, ivb_other_name2,
+                                                               tc_other_name, tc_other_name2],
+                                               "position": limit_position}
+        else:  # for V4 projects
+            for limit_position, matching_block_name in matching_blocks.items():
+                joint_name, joint_name2 = _get_corresponding_tc_joint(block_name, matching_block_name)
+                joint_name, joint_name2 = _get_new_joint_names(joints_dict, joint_name, joint_name2, limit_position)
+                if joint_name is not None:
+                    tc_other_name, tc_other_name2 = _get_tc_other_names_limit_of_track(limit_position, block_name,
+                                                                                       joint_name2)
+                    joints_dict[joint_name] = {"other_names": [joint_name2, tc_other_name, tc_other_name2],
+                                               "position": limit_position}
+
     return joints_dict
 
 

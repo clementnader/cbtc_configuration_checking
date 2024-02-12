@@ -183,13 +183,14 @@ def enable_line_wrap(ws: openpyxl.worksheet.worksheet.Worksheet,
 
 
 def adjust_fixed_row_height(ws: openpyxl.worksheet.worksheet.Worksheet,
-                            cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+                            cell: str = None, row: int = None, column: Union[str, int] = None,
+                            extra_row: int = 0) -> None:
     row, column = get_row_and_column_from_cell(cell, row, column)
     value = get_xlsx_value(ws, row, column)
     if value is None:
         return
     line_feed_count = value.count("\n")
-    ws.row_dimensions[row].height = 15 * (line_feed_count + 1)
+    ws.row_dimensions[row].height = 15 * (line_feed_count + 1 + extra_row)
 
 
 # ------ Cell Borders ------ #

@@ -44,6 +44,7 @@ def add_obj_attrs(info_dict: dict[str, list[str]]):
 
 
 def get_clean_value(value: str):
+    value = value.replace(' ', "_")  # remove special char
     value = value.replace('?', "Question_Mark")  # remove special char
     value = value.replace("->", "_")  # remove special chars
     return value

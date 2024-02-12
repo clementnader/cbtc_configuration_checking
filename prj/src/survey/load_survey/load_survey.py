@@ -20,6 +20,7 @@ def load_survey() -> dict:
     if not LOADED_SURVEY:
         for (survey_addr, survey_sheet, all_sheets, start_row,
              ref_col, type_col, track_col, survey_kp_col) in get_survey_loc_info():
+            missing_types = list()
             if all_sheets:
                 print_log(f"\nLoading all sheets of "
                           f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
@@ -36,7 +37,9 @@ def load_survey() -> dict:
                 survey_ws = get_xl_sheet_by_name(wb, sheet_name)
                 LOADED_SURVEY.update(
                     get_survey(LOADED_SURVEY, survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
-                               os.path.split(survey_addr)[-1]))
+                               os.path.split(survey_addr)[-1], missing_types))
+            if missing_types:
+                print_log(f"\tThe following survey types are not loaded: {', '.join(missing_types)}.")
     return LOADED_SURVEY
 
 
@@ -61,7 +64,7 @@ def get_survey_loc_info():
 
 
 def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
-               survey_name: str) -> dict[str, dict[str]]:
+               survey_name: str, missing_types: list[str]) -> dict[str, dict[str]]:
     intermediate_survey_dict = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
 
     for row in range(start_row, get_xl_number_of_rows(survey_ws) + 1):
@@ -72,7 +75,7 @@ def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_co
         key_name = key_name.replace("-", "_").replace(" ", "")
 
         type_name = get_xl_cell_value(survey_ws, row=row, column=type_col)
-        survey_type = _get_survey_type(type_name)
+        survey_type = _get_survey_type(type_name, missing_types)
         if survey_type is None:
             continue
 
@@ -98,11 +101,13 @@ def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_co
             comments = None
             surveyed_values = [surveyed_kp]
         intermediate_survey_dict[survey_type][f"{key_name}__{track}"] = {
-            "obj_name": obj_name, "track": track, "surveyed_kp": surveyed_kp,
+            "survey_type": type_name,
+            "obj_name": obj_name, "survey_track": track, "surveyed_kp": surveyed_kp,
             "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
             "list_surveyed_values": surveyed_values
         }
     intermediate_survey_dict["SWP"].update(add_switch_center_points(intermediate_survey_dict["SWP"], survey_name))
+    intermediate_survey_dict["SWP"].update(add_switch_heel_points(intermediate_survey_dict["SWP"], survey_name))
     loaded_survey = _update_survey_dictionary(loaded_survey, intermediate_survey_dict)
 
     return loaded_survey
@@ -128,7 +133,9 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str]], intermediate_
                     else:
                         comments = new_comment
             loaded_survey[survey_type][key_name] = {
-                "obj_name": intermediate_survey_value["obj_name"], "track": intermediate_survey_value["track"],
+                "survey_type": intermediate_survey_value["survey_type"],
+                "obj_name": intermediate_survey_value["obj_name"],
+                "survey_track": intermediate_survey_value["survey_track"],
                 "surveyed_kp": intermediate_survey_value["surveyed_kp"],
                 "surveyed_kp_comment": intermediate_survey_value["surveyed_kp_comment"],
                 "comments": comments
@@ -137,13 +144,15 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str]], intermediate_
     return loaded_survey
 
 
-def _get_survey_type(name):
+def _get_survey_type(name: Optional[str], missing_types: list[str]):
     if name is None:
         return None
-    name = name.strip().upper()
+    test_name = name.strip().upper()
     for type_name, type_info in SURVEY_TYPES_DICT.items():
-        if name == type_name:
+        if test_name == type_name:
             return type_name
-        if name in type_info["other_names"]:
+        if test_name in type_info["other_names"]:
             return type_name
+    if name not in missing_types:
+        missing_types.append(name)
     return None

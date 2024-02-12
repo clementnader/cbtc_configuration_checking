@@ -37,8 +37,8 @@ def cc():
 
 
 def additional_verif():
+    # dc_tu_verification()  # v1_0_1
     # dc_tu_window()
-    # dc_tu_verification()
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
@@ -90,7 +90,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()
+    # check_survey()  # v1_5
     # survey_window()
     # cctool_schema_window()
     return
