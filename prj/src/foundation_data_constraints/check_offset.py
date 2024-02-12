@@ -6,6 +6,9 @@ from ..dc_sys.load_database.load_xl import *
 from ..dc_sys import get_seg_len, get_track_limits, from_kp_to_seg_offset, from_seg_offset_to_kp, are_points_matching
 
 
+__all__ = ["check_offset_correctness"]
+
+
 START_LINE = 3
 
 
@@ -63,7 +66,11 @@ def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name)
                           f"uses a dot \'.\' as the decimal separator"
                           f"\n{x = }")
             success = False
-        x = float(x.replace(',', '.'))
+        try:
+            x = float(x.replace(',', '.'))
+        except ValueError:
+            print_error("Actually, it is not a number!")
+            return False
     x = round(x, 3)
     len_seg = get_seg_len(seg)
     if not (0 <= x):
@@ -127,6 +134,8 @@ def find_seg_x_cols(ws: xlrd.sheet) -> tuple[list[tuple], list[tuple]]:
     track_kp_cols = list()
     for j in range(1, nb_cols+1):
         cell1 = get_xl_cell_value(ws, row=1, column=j)
+        if not cell1:
+            break
         try:
             cell2 = get_xl_cell_value(ws, row=2, column=j)
             cell = cell1 if not cell2 else cell2

@@ -17,6 +17,7 @@ def r_dyntag_3():
     block_laying_uncertainty = get_param_value("block_laying_uncertainty")
 
     progress_bar(1, 1, end=True)  # reset progress_bar
+    i: int
     for i, (dyn_tag, dyn_tag_val) in enumerate(dyn_tag_dict.items()):
         print_log(f"\r{progress_bar(i, nb_dyn_tags)} processing DMC timeout distance of {dyn_tag}...", end="")
         res_dict[dyn_tag] = get_tag_to_last_route_distance(dyn_tag_val)
@@ -62,6 +63,7 @@ def get_dist_dyn_tag_to_joint(dyn_tag, ivb):
     dyn_tag_x = get_dc_sys_value(dyn_tag, DCSYS.IATPM_tags.X)
 
     dist_list = list()
+    i: int
     for i, (seg, x) in enumerate(get_dc_sys_zip_values(ivb_dict[ivb], DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X), start=1):
         if is_seg_downstream(dyn_tag_seg, seg, dyn_tag_x, x, downstream):
             dist = get_dist_downstream(dyn_tag_seg, dyn_tag_x, seg, x, downstream)

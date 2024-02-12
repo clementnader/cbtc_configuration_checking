@@ -11,7 +11,7 @@ __all__ = ["DESKTOP_DIRECTORY", "Optional", "Union", "Generator", "Callable",
            "get_file_directory_path", "get_full_path", "get_class_attr_dict"]
 
 
-DESKTOP_DIRECTORY = os.path.join(os.getenv("UserProfile"), r"Desktop")
+DESKTOP_DIRECTORY = os.path.join(os.getenv("UserProfile"), "Desktop")
 
 
 def get_full_path(file: str, relative_path: str) -> str:

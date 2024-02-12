@@ -15,6 +15,7 @@ def get_walkways_track_kp_pos():
     csv = str()
     for ww_name, ww in ww_dict.items():
         csv += f"{ww_name};"
+        i: int
         for i, (seg, x, direction) in enumerate(get_dc_sys_zip_values(ww, DCSYS.Walkways_Area.Limit.Seg,
                                                 DCSYS.Walkways_Area.Limit.X, DCSYS.Walkways_Area.Limit.Direction),
                                                 start=1):

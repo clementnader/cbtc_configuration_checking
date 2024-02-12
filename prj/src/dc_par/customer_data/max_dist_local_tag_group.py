@@ -25,6 +25,7 @@ def max_dist_local_tag_group(in_cbtc: bool = False):
         return {}
     dict_max_dist = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
+    n: int
     for n, (tag_gr, tag_gr_value) in enumerate(tag_gr_dict.items()):
         print_log(f"\r{progress_bar(n, nb_tag_gr)} processing distances inside local tag group {tag_gr}...", end="")
         tags = get_dc_sys_value(tag_gr_value, DCSYS.StaticTag_Group.TagList.Tag)

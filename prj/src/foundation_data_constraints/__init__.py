@@ -3,7 +3,7 @@
 
 from .block import r_cdv_5
 from .calib import verif_calib_distance
-from .check_offset import check_offset_correctness
+from .check_offset import *
 from .dyn_tag import r_dyntag_3
 from .general_data import cf_dg_1, cf_dg_2
 from .interface_zc_ixl import *

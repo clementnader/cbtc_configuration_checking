@@ -31,15 +31,22 @@ class XlFontColor:
 
 
 class XlBgColor:
+    # status colors
     ko = "FFC7CE"
     ok = "C6EFCE"
     na = "FFEB9C"
+    # main colors
     yellow = "FFE699"
     light_yellow = "FFF2CC"
     green = "C6E0B4"
     light_green = "E2EFDA"
     blue = "BDD7EE"
     light_blue = "DDEBF7"
+    # other colors
+    light_orange = "F8CBAD"
+    light_pink = "FFCCFF"
+    light_blue2 = "AFFFFF"
+    light_blue3 = "99CCFF"
 
 
 def get_xl_bg_dimmer_color(bg: str):

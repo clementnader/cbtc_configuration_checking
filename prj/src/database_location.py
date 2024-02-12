@@ -29,16 +29,18 @@ class Projects:
     Mock_up_4 = "Mock-up 4"
 
 
+# TODO: faire en sorte de restaurer le GUI à la fin de l'exécution, même en cas d'erreur, réfléchir à pourquoi pas
+#  lancer une nouvelle instance de python, et du coup réduire la priorité de la fenêtre (ou la cacher pendant l'exec)
+#  et la rétablir après
+# --- Main projects --- #
 # PROJECT_NAME = Projects.Ankara_L1  # TODO: JOI ne pas merge les noms, suffix WXXXX
-# PROJECT_NAME = Projects.Ankara_L2  # TODO: dupliquer les switches aussi dans l'autre sens : les _R _L à partir de _C,
-#                                       et mettre en colonne nom leur vrai nom
-#                                       platforms -> prefix Quai1, Quai2
+# PROJECT_NAME = Projects.Ankara_L2
 # PROJECT_NAME = Projects.Brussels
 # PROJECT_NAME = Projects.Copenhagen
-# PROJECT_NAME = Projects.Glasgsow
-# PROJECT_NAME = Projects.Lima  # TODO: Survey plt -> suffix et pas prefix, refaire plt et floodgate
+# PROJECT_NAME = Projects.Glasgow
+# PROJECT_NAME = Projects.Lima  # TODO: Survey refaire floodgate comme plt
 # PROJECT_NAME = Projects.Milan  # TODO: Manage TRACK_1/2 vs T1/2 -> crée un pb sur la duplication des switches aussi
-# PROJECT_NAME = Projects.Riyadh  # TODO: joint [MF]BS{0-9}+ ou LCP{0-9}+ -> track end, TRACK_02W ?, Middle Platform ?
+# PROJECT_NAME = Projects.Riyadh  # TODO: joint _[MF]BS{0-9}+ ou _LCP{0-9}+ -> track end, TRACK_02W ?, Middle Platform ?
 PROJECT_NAME = Projects.Thessaloniki
 
 # --- USA --- #
@@ -49,8 +51,8 @@ PROJECT_NAME = Projects.Thessaloniki
 # PROJECT_NAME = Projects.KMRC
 # PROJECT_NAME = Projects.NMML1
 # --- China --- #
-# PROJECT_NAME = Projects.Shenyang  # TODO: STOP_SIG -> STOP, joint -> BLOCK_DEF file
-# PROJECT_NAME = Projects.Wenzhou
+# PROJECT_NAME = Projects.Shenyang  # TODO: STOP_SIG_ -> SIG_, joint -> BLOCK_DEF file
+# PROJECT_NAME = Projects.Wenzhou  # TODO: Middle Platform ?
 # --- Mock-up --- #
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2

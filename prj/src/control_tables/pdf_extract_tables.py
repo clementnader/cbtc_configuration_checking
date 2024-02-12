@@ -122,6 +122,7 @@ def _extract_info(list_info: list[dict[str]], table_type: str, num_page: int, ve
                             verbose_dict[key] = {"loc": [loc], "text": text}
     if verbose:
         print()
+        i: int
         for i, (key, val) in enumerate(verbose_dict.items()):
             if val:
                 loc = val["loc"]

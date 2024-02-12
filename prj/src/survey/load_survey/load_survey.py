@@ -149,9 +149,7 @@ def _get_survey_type(name: Optional[str], missing_types: list[str]):
         return None
     test_name = name.strip().upper()
     for type_name, type_info in SURVEY_TYPES_DICT.items():
-        if test_name == type_name:
-            return type_name
-        if test_name in type_info["other_names"]:
+        if test_name in type_info["survey_type_names"]:
             return type_name
     if name not in missing_types:
         missing_types.append(name)

@@ -75,6 +75,7 @@ def compare_sub_dict(key: str, dict1: dict, dict2: dict, dict1_name: str, dict2_
         list_of_obj_2 = list(zip(*dict2.values()))
         list_of_obj_1 = sorted([x for x in list_of_obj_1 if x[0] is not None], key=lambda x: _sort_function(x, sub_key))
         list_of_obj_2 = sorted([x for x in list_of_obj_2 if x[0] is not None], key=lambda x: _sort_function(x, sub_key))
+        i: int
         for i, (elem1, elem2) in enumerate(zip(list_of_obj_1, list_of_obj_2)):
             if elem1 != elem2:
                 print("\n".join(x for x in s if x is not None))
@@ -91,6 +92,7 @@ def compare_sub_dict(key: str, dict1: dict, dict2: dict, dict1_name: str, dict2_
                              + [x for x in dict1[sub_key] if x is None])
             list_of_obj_2 = (sorted([x for x in dict2[sub_key] if x is not None])
                              + [x for x in dict2[sub_key] if x is None])
+            i: int
             for i, (elem1, elem2) in enumerate(zip(list_of_obj_1, list_of_obj_2)):
                 if elem1 != elem2:
                     print("\n".join(x for x in s if x is not None))

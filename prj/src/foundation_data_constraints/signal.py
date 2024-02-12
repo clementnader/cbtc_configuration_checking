@@ -32,6 +32,7 @@ def cf_signal_12(no_overshoot: bool = False, apz_with_tc: bool = False, apz_from
     sig_dict = load_sheet(DCSYS.Sig)
     nb_sigs = len(sig_dict.keys())
     progress_bar(1, 1, end=True)  # reset progress_bar
+    i: int
     for i, (sig_name, sig) in enumerate(sig_dict.items()):
         print_log(f"\r{progress_bar(i, nb_sigs)} processing verification of DLT distance of {sig_name}...", end="")
         sig_type = get_dc_sys_value(sig, DCSYS.Sig.Type)
@@ -131,6 +132,7 @@ def _get_entrance_points_of_approach_zone(sig_name: str, list_ivb: list[str], ap
                                                           DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)))
 
     list_points_without_double = list()
+    i: int
     for i, (entrance_seg, entrance_x) in enumerate(list_points):
         list_points_reduced = list_points[:i] + list_points[i+1:]
         if any(are_points_matching(entrance_seg, entrance_x, seg, x) for seg, x in list_points_reduced):
