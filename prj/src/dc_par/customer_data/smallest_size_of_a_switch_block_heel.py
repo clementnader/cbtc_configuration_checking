@@ -11,7 +11,7 @@ __all__ = ["smallest_size_of_a_switch_block_heel"]
 
 def smallest_size_of_a_switch_block_heel(in_cbtc: bool = False):
     if in_cbtc:
-        sw_dict = get_switches_in_cbtc_ter()
+        sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
     else:
         sw_dict = load_sheet(DCSYS.Aig)
     nb_sw = len(sw_dict)

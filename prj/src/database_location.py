@@ -29,9 +29,6 @@ class Projects:
     Mock_up_4 = "Mock-up 4"
 
 
-# TODO: faire en sorte de restaurer le GUI à la fin de l'exécution, même en cas d'erreur, réfléchir à pourquoi pas
-#  lancer une nouvelle instance de python, et du coup réduire la priorité de la fenêtre (ou la cacher pendant l'exec)
-#  et la rétablir après
 # --- Main projects --- #
 # PROJECT_NAME = Projects.Ankara_L1  # TODO: JOI ne pas merge les noms, suffix WXXXX
 # PROJECT_NAME = Projects.Ankara_L2
@@ -346,10 +343,10 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Thessaloniki -------------------------------#
         elif project_name == Projects.Thessaloniki:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_SYS.xls"
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V01_RC3\DC_SYS_old.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_BOP.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_SYS_old.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_BOP.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V03"
             self.kit_c121_d470_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C121_D470_07_03_03_V04\20230619_122002\ZC\Export"
             # -- Survey -- #
@@ -380,6 +377,10 @@ class ProjectDatabaseLoc:
                                                r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3"
                                                r"\1G00LV601R722B_EN_ANNEX_D - IXL PYLEA DEPOT CONTROL TABLES - "
                                                r"Overlaps.pdf")
+
+# -------------------------------------------------------------------------------------------------------------------- #
+# -------------------------------------------------- Other projects -------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------- #
 
         # ------------------------------- Baltimore -------------------------------#
         elif project_name == Projects.Baltimore:

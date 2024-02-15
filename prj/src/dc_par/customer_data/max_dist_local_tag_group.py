@@ -11,7 +11,7 @@ __all__ = ["max_dist_local_tag_group"]
 
 def max_dist_local_tag_group(in_cbtc: bool = False):
     if in_cbtc:
-        tag_gr_dict = get_tag_gr_in_cbtc_ter()
+        tag_gr_dict = get_objects_in_cbtc_ter(DCSYS.StaticTag_Group)
     else:
         tag_gr_dict = load_sheet(DCSYS.StaticTag_Group)
     tag_dict = load_sheet(DCSYS.Bal)

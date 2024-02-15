@@ -43,7 +43,7 @@ def initialize_res_dict():
 
 def get_zsm_limits():
     res_dict = initialize_res_dict()
-    zsm_dict = get_zsm_in_cbtc_ter()
+    zsm_dict = get_objects_in_cbtc_ter(DCSYS.ZSM_CBTC)
 
     for zsm_value in zsm_dict.values():
         seg1, seg2 = get_dc_sys_value(zsm_value, DCSYS.ZSM_CBTC.ExtZsm.Seg)

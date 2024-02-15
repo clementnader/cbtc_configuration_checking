@@ -8,15 +8,15 @@ The Verification of the DC_TU files activity is described in ADD_VERIF_014 (for 
 The objective to verify the unicity of PMC encryption keys and PMC addresses, and that these addresses are in the CBTC network (meaning that they correspond to the IP Addressing Plan).
 
 **ADD_VERIF_XXX**:
-> All “DC_TU.csv” delivered files (under Delivery directory\CC_PARAMETERS\TrainUnit_x) shall be checked by the Specific Application RAMS DATA review versus [CC STS] expressed need REQ_C11_D411_11813 regarding the use the TCP/IP of SSL based protocol:
+> All "DC_TU.csv" delivered files (under Delivery directory\CC_PARAMETERS\TrainUnit_x) shall be checked by the Specific Application RAMS DATA review versus [CC STS] expressed need REQ_C11_D411_11813 regarding the use the TCP/IP of SSL based protocol:
 > - Each PMC shall have an address on the CBTC network.
-> - Each PMC shall have an unique encryption key. The key shall be diversified according:
+> - Each PMC shall have a unique encryption key. The key shall be diversified according:
 >   - The line, town and project where the CC is running,
 >   - The CC ID,
 >   - The CC hardware version,
 >   - The PMC number (that means there is 3 keys per CC unit),
 > 
-> That means especially that for each “DC_TU.csv” delivered files, for each CC’x’_ID to be installed, and for each PMC’y’ with y = 1 or 2 or 3, then each CC’x’_PMC’y’_SSH_RSA_PUBLIC_KEY shall have an unique value, with no noticed collision with others CC’x’_PMC’y’_SSH_RSA_PUBLIC_KEY.
+> That means especially that for each "DC_TU.csv" delivered files, for each CC'x'_ID to be installed, and for each PMC'y' with y = 1 or 2 or 3, then each CC'x'_PMC'y'_SSH_RSA_PUBLIC_KEY shall have a unique value, with no noticed collision with others CC'x'_PMC'y'_SSH_RSA_PUBLIC_KEY.
 
 ---
 ## 2. Tool behavior

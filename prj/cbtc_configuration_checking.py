@@ -90,7 +90,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()  # v1_6
+    # check_survey()  # v1_7
     # survey_window()
     # cctool_schema_window()
     return
@@ -113,6 +113,7 @@ def constraints():
     # cf_dg_2()
     # r_mes_pas_itf_1(in_cbtc=False)  # TODO: find info to check if ZC receiving the Signal information
     #                                    PR_ASPECT, AP_CAN_RQ and IL_SET is correct in ZC Overlay
+    #                                    il faut pas que le signal ait son VSP sur la limite du ZC, cf TSK
     # r_mes_pas_itf_3(in_cbtc=False)  # TODO: find a way to avoid raising KO if signal is at limit, cf KCR et TSK
     #                                    for Signal information X_RQ, STOP_ASSURE and CBTC_APZ,
     #                                       when checking ZC is correct in ZC Overlay

@@ -39,8 +39,8 @@ def r_mes_pas_itf_1(in_cbtc: bool = False):
     _rule_1_check_flood_gate(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.FLOOD_GATE), in_cbtc)
     _rule_1_check_traffic_stop(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.TRAFFIC_STOP), in_cbtc)
     _rule_1_check_asr(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.ASR), in_cbtc)
-    # if "TSR_PREDEFINED_AREA" in get_class_attr_dict(TypeClasseObjetMESPAS):
-    #     _rule_1_check_tsr_area(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.TSR_PREDEFINED_AREA), in_cbtc)
+    if "TSR_PREDEFINED_AREA" in get_class_attr_dict(TypeClasseObjetMESPAS):
+        _rule_1_check_tsr_area(get_sub_dict_ixl_zc_itf(TypeClasseObjetMESPAS.TSR_PREDEFINED_AREA), in_cbtc)
 
 
 # ------- Rule 1 (IXL -> ZC) Sub Functions ------- #
@@ -49,7 +49,7 @@ def _rule_1_check_plt(plt_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         plt_dict = load_sheet(DCSYS.Quai)
     else:
-        plt_dict = get_platforms_in_cbtc_ter()
+        plt_dict = get_objects_in_cbtc_ter(DCSYS.Quai)
     success = True
     ws_eqpt_dict = load_sheet(DCSYS.Wayside_Eqpt)
     for plt_name, plt in plt_dict.items():
@@ -109,7 +109,7 @@ def _rule_1_check_signal(sig_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         sig_dict = load_sheet(DCSYS.Sig)
     else:
-        sig_dict = get_sigs_in_cbtc_ter()
+        sig_dict = get_objects_in_cbtc_ter(DCSYS.Sig)
     success = True
     for sig_name, sig in sig_dict.items():
         is_not_buffer_or_pr = get_dc_sys_value(sig, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
@@ -148,7 +148,7 @@ def _rule_1_check_switch(sw_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         sw_dict = load_sheet(DCSYS.Aig)
     else:
-        sw_dict = get_switches_in_cbtc_ter()
+        sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
     success = True
     for sw_name, sw in sw_dict.items():
         if check_obj_msgs(DCSYS.Aig, sw_msg_dict, sw_name, True, "shall exist for all switches",
@@ -164,7 +164,7 @@ def _rule_1_check_block(block_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         block_dict = load_sheet(DCSYS.CDV)
     else:
-        block_dict = get_blocks_in_cbtc_ter()
+        block_dict = get_objects_in_cbtc_ter(DCSYS.CDV)
     success = True
     for block_name, block in block_dict.items():
         if check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, True,
@@ -195,7 +195,7 @@ def _rule_1_check_ivb(ivb_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         ivb_dict = load_sheet(DCSYS.IVB)
     else:
-        ivb_dict = get_ivb_in_cbtc_ter()
+        ivb_dict = get_objects_in_cbtc_ter(DCSYS.IVB)
     success = True
     for ivb_name, ivb in ivb_dict.items():
         direction_locking_block = get_dc_sys_value(ivb, DCSYS.IVB.DirectionLockingBlock) == YesOrNo.O
@@ -214,7 +214,7 @@ def _rule_1_check_dd(dd_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         dd_dict = load_sheet(DCSYS.DP)
     else:
-        dd_dict = get_dd_in_cbtc_ter()
+        dd_dict = get_objects_in_cbtc_ter(DCSYS.DP)
     success = True
     for dd_name, dd in dd_dict.items():
         if check_obj_msgs(DCSYS.DP, dd_msg_dict, dd_name, True, "shall exist for all Discrete Detectors",
@@ -229,7 +229,7 @@ def _rule_1_check_passage_detector(pass_det_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         pass_det_dict = load_sheet(DCSYS.Passage_Detector)
     else:
-        pass_det_dict = get_passage_detectors_in_cbtc_ter()
+        pass_det_dict = get_objects_in_cbtc_ter(DCSYS.Passage_Detector)
     success = True
     for pass_det_name, pass_det in pass_det_dict.items():
         if check_obj_msgs(DCSYS.Passage_Detector, pass_det_msg_dict, pass_det_name, True,
@@ -245,7 +245,7 @@ def _rule_1_check_tpz(tpz_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         tpz_dict = load_sheet(DCSYS.SS)
     else:
-        tpz_dict = get_traction_power_zones_in_cbtc_ter()
+        tpz_dict = get_objects_in_cbtc_ter(DCSYS.SS)
     success = True
     target_msg_types = (TypeNomLogiqueInfoMESPAS.TRACTION_PWR_REGEN_AUTH
                         if ("MVT_AUTH" not in get_class_attr_dict(TypeNomLogiqueInfoMESPAS)
@@ -268,7 +268,7 @@ def _rule_1_check_ovl(ovl_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         ovl_dict = load_sheet(DCSYS.IXL_Overlap)
     else:
-        ovl_dict = get_overlaps_in_cbtc_ter()
+        ovl_dict = get_objects_in_cbtc_ter(DCSYS.IXL_Overlap)
     sig_dict = load_sheet(DCSYS.Sig)
     success = True
     for ovl_name, ovl in ovl_dict.items():
@@ -289,7 +289,7 @@ def _rule_1_check_ges(ges_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         ges_dict = load_sheet(DCSYS.GES)
     else:
-        ges_dict = get_ges_in_cbtc_ter()
+        ges_dict = get_objects_in_cbtc_ter(DCSYS.GES)
     success = True
     for ges_name, ges in ges_dict.items():
         if check_obj_msgs(DCSYS.GES, ges_msg_dict, ges_name, True, "shall exist for all GES",
@@ -304,7 +304,7 @@ def _rule_1_check_protection_zone(pz_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         pz_dict = load_sheet(DCSYS.Protection_Zone)
     else:
-        pz_dict = get_protection_zones_in_cbtc_ter()
+        pz_dict = get_objects_in_cbtc_ter(DCSYS.Protection_Zone)
     success = True
     for pz_name, pz in pz_dict.items():
         if check_obj_msgs(DCSYS.Protection_Zone, pz_msg_dict, pz_name, True,
@@ -321,7 +321,7 @@ def _rule_1_check_flood_gate(fg_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         fg_dict = load_sheet(DCSYS.Flood_Gate)
     else:
-        fg_dict = get_flood_gates_in_cbtc_ter()
+        fg_dict = get_objects_in_cbtc_ter(DCSYS.Flood_Gate)
     success = True
     for fg_name, fg in fg_dict.items():
         if check_obj_msgs(DCSYS.Flood_Gate, fg_msg_dict, fg_name, True,
@@ -338,7 +338,7 @@ def _rule_1_check_traffic_stop(stop_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         stop_dict = load_sheet(DCSYS.Traffic_Stop)
     else:
-        stop_dict = get_traffic_stops_in_cbtc_ter()
+        stop_dict = get_objects_in_cbtc_ter(DCSYS.Traffic_Stop)
     success = True
     for stop_name, stop in stop_dict.items():
         if check_obj_msgs(DCSYS.Traffic_Stop, stop_msg_dict, stop_name, True,
@@ -355,7 +355,7 @@ def _rule_1_check_asr(asr_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         asr_dict = load_sheet(DCSYS.ASR)
     else:
-        asr_dict = get_asr_in_cbtc_ter()
+        asr_dict = get_objects_in_cbtc_ter(DCSYS.ASR)
     success = True
     for asr_name, asr in asr_dict.items():
         if check_obj_msgs(DCSYS.ASR, asr_msg_dict, asr_name, True,
@@ -374,7 +374,7 @@ def _rule_1_check_tsr_area(tsr_area_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         tsr_area_dict = load_sheet(DCSYS.TSR_Area)
     else:
-        tsr_area_dict = get_tsr_area_in_cbtc_ter()
+        tsr_area_dict = get_objects_in_cbtc_ter(DCSYS.TSR_Area)
     missing_speeds_dict = {key: {speed: False for speed in LIST_OF_TSR_SPEEDS} for key in tsr_area_dict}
     tsr_speed_dict = load_sheet(DCSYS.TSR_Possible_Speeds)
     wayside_eqpt_dict = load_sheet(DCSYS.Wayside_Eqpt)

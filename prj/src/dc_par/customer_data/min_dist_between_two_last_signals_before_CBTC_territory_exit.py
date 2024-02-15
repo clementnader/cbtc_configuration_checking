@@ -19,7 +19,7 @@ def get_sig_before_cbtc_exit(sig_dict: dict) -> list[str]:
 
 
 def min_dist_between_two_last_signals_before_cbtc_territory_exit(same_dir: bool = True):
-    sig_dict = get_sigs_in_cbtc_ter()
+    sig_dict = get_objects_in_cbtc_ter(DCSYS.Sig)
     sig_before_cbtc_exit = get_sig_before_cbtc_exit(sig_dict)
     nb_sig_before_exit = len(sig_before_cbtc_exit)
 

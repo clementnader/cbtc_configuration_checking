@@ -10,7 +10,6 @@ from prj.src import *
 
 def main():
     survey_window()
-    check_survey()
 
 
 if __name__ == "__main__":

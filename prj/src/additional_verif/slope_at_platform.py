@@ -10,7 +10,7 @@ __all__ = ["get_slope_at_plt"]
 
 def get_slope_at_plt(in_cbtc: bool = True):
     if in_cbtc:
-        plt_dict = get_platforms_in_cbtc_ter()
+        plt_dict = get_objects_in_cbtc_ter(DCSYS.Quai)
     else:
         plt_dict = load_sheet(DCSYS.Quai)
 

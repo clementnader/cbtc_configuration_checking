@@ -26,3 +26,4 @@ def check_survey():
         print_warning(f"GA version is older than v6:"
                       f"\nVerify that the objects to verify in Correspondence with Site Survey activity "
                       f"asked by the System DPSA effectively correspond to sheet \"Survey\" of the result file.")
+    return True

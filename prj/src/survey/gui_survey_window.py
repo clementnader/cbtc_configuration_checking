@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 from ..utils import *
 from ..dc_sys import *
 from .gui_survey_utils import *
@@ -59,12 +58,6 @@ def survey_window():
     sep_bottom_right.grid(column=4, row=5, sticky="ns")
 
     window.mainloop()
-
-    if is_everything_ready(dc_sys_directory, dc_sys_file_name, survey_loc_dict):
-        update_database_loc(dc_sys_directory, dc_sys_file_name, survey_loc_dict)
-    else:
-        print_error("Execution aborted.")
-        sys.exit(1)
 
 
 def add_survey_tab_control(frame: tkinter.Frame, bg: str = None) -> dict[str, dict[str, tkinter.StringVar]]:

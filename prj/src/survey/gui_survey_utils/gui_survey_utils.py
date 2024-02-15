@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import traceback
+import logging
 from ...utils import *
+from ...survey import *
+from .update_database_location import *
 
 
 __all__ = ["add_survey_open_button", "launch_function", "is_everything_ready", "delete_tab"]
@@ -158,7 +162,21 @@ def delete_tab(tab_control: tkinter.ttk.Notebook, tab_frame: tkinter.Frame, tabs
 def launch_function(window: tkinter.Tk, dc_sys_directory: tkinter.StringVar, dc_sys_file_name: tkinter.StringVar,
                     survey_loc_dict: dict[str, dict[str, tkinter.StringVar]]):
     if is_everything_ready(dc_sys_directory, dc_sys_file_name, survey_loc_dict):
-        window.destroy()
+        success = False
+        window.withdraw()  # hide window
+        try:
+            update_database_loc(dc_sys_directory, dc_sys_file_name, survey_loc_dict)
+            success = check_survey()
+        except Exception as error:
+            logging.error(traceback.format_exc())
+            if f"{error = }" == "error = UnableToSaveFileException()":
+                print_error(f"Unable to save file.")
+            else:
+                print_error(f"Error during process, verify your inputs.")
+            window.deiconify()  # unhide window
+        if success:
+            window.deiconify()  # unhide window
+            window.wm_state("iconic")  # minimize window
     else:
         tkinter.messagebox.showinfo(title="Missing Information", message="Information is missing to launch the tool.")
 

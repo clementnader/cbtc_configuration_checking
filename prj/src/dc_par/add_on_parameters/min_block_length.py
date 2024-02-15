@@ -7,7 +7,7 @@ from ...dc_sys import *
 
 def get_block_min_length(in_cbtc: bool = True):
     if in_cbtc:
-        block_dict = get_blocks_in_cbtc_ter()
+        block_dict = get_objects_in_cbtc_ter(DCSYS.CDV)
     else:
         block_dict = load_sheet(DCSYS.CDV)
 

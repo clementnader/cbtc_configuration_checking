@@ -4,10 +4,11 @@
 from ..utils import *
 from ..dc_sys import *
 from ..dc_par import *
+from ..cctool_oo_schema import *
 
 
 def r_cdv_5(print_ok: bool = False):
-    sw_dict = get_switches_in_cbtc_ter()
+    sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
 
     error_counts = [0, 0]
     for sw_name, sw_value in sw_dict.items():
@@ -78,7 +79,7 @@ def get_min_dist(local_slope, is_danger_point_a_switch: bool = False):
     # at_deshunt_max_dist shall not be considered but only tag_accurate_laying_uncertainty
     # 2. If the danger point is a fouling point,
     # and the block not locking the switch is part of the IXL flank protection area, rule is not applicable.
-    is_danger_point_a_switch = False
+    is_danger_point_a_switch = False  # TODO
     at_deshunt_max_dist = get_param_value("at_deshunt_max_dist")
     tag_accurate_laying_uncertainty = get_param_value("tag_accurate_laying_uncertainty")
     additional_value = at_deshunt_max_dist if not is_danger_point_a_switch else tag_accurate_laying_uncertainty

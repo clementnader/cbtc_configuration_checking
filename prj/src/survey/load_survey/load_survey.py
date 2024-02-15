@@ -12,35 +12,31 @@ from .switch_survey_utils import *
 __all__ = ["load_survey"]
 
 
-LOADED_SURVEY = dict()
-
-
 def load_survey() -> dict:
-    global LOADED_SURVEY
-    if not LOADED_SURVEY:
-        for (survey_addr, survey_sheet, all_sheets, start_row,
-             ref_col, type_col, track_col, survey_kp_col) in get_survey_loc_info():
-            missing_types = list()
-            if all_sheets:
-                print_log(f"\nLoading all sheets of "
-                          f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
-            else:
-                print_log(f"\nLoading sheet {Color.blue}{survey_sheet}{Color.reset} of "
-                          f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
-            wb = load_survey_wb(survey_addr)
-            if all_sheets:
-                sheet_names = get_xl_sheet_names(wb)
-            else:
-                sheet_names = [survey_sheet]
+    survey_info = dict()
+    for (survey_addr, survey_sheet, all_sheets, start_row,
+         ref_col, type_col, track_col, survey_kp_col) in get_survey_loc_info():
+        missing_types = list()
+        if all_sheets:
+            print_log(f"\nLoading {Color.blue}all sheets{Color.reset} of "
+                      f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
+        else:
+            print_log(f"\nLoading sheet {Color.blue}{survey_sheet}{Color.reset} of "
+                      f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
+        wb = load_survey_wb(survey_addr)
+        if all_sheets:
+            sheet_names = get_xl_sheet_names(wb)
+        else:
+            sheet_names = [survey_sheet]
 
-            for sheet_name in sheet_names:
-                survey_ws = get_xl_sheet_by_name(wb, sheet_name)
-                LOADED_SURVEY.update(
-                    get_survey(LOADED_SURVEY, survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
-                               os.path.split(survey_addr)[-1], missing_types))
-            if missing_types:
-                print_log(f"\tThe following survey types are not loaded: {', '.join(missing_types)}.")
-    return LOADED_SURVEY
+        for sheet_name in sheet_names:
+            survey_ws = get_xl_sheet_by_name(wb, sheet_name)
+            survey_info.update(
+                get_survey(survey_info, survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
+                           os.path.split(survey_addr)[-1], missing_types))
+        if missing_types:
+            print_log(f"\tThe following survey types are not loaded: {', '.join(missing_types)}.")
+    return survey_info
 
 
 def get_survey_loc_info():

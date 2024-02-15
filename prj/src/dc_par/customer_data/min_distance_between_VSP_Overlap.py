@@ -11,7 +11,7 @@ __all__ = ["min_distance_between_vsp_overlap"]
 
 def min_distance_between_vsp_overlap(in_cbtc: bool = False, same_dir: bool = True):
     if in_cbtc:
-        sig_dict = get_sigs_in_cbtc_ter()
+        sig_dict = get_objects_in_cbtc_ter(DCSYS.Sig)
     else:
         sig_dict = load_sheet(DCSYS.Sig)
     home_sigs_with_overlap_list = get_home_signals_with_overlap(sig_dict)

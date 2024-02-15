@@ -7,7 +7,7 @@ from ...dc_sys import *
 
 def get_max_slope(in_cbtc: bool = True, verbose: bool = True):
     if in_cbtc:
-        slope_dict = get_slopes_in_cbtc_ter()
+        slope_dict = get_objects_in_cbtc_ter(DCSYS.Profil)
     else:
         slope_dict = load_sheet(DCSYS.Profil)
 

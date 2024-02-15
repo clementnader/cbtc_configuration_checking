@@ -8,7 +8,7 @@ from ..dc_sys import *
 
 def min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc: bool = True):
     if in_cbtc:
-        plt_dict = get_platforms_in_cbtc_ter()
+        plt_dict = get_objects_in_cbtc_ter(DCSYS.Quai)
     else:
         plt_dict = load_sheet(DCSYS.Quai)
     dict_min_dist = dict()

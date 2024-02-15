@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 from ..xl_pkg import *
 from ..colors_pkg import *
+from ..exception_utils import *
 
 
 __all__ = ["save_xl_file"]
@@ -15,7 +15,7 @@ def save_xl_file(wb: openpyxl.workbook.Workbook, res_file_path: str):
         print_error(f"res_file_path = \"{res_file_path}\" already exists.")
         if not ask_question_yes_or_no("Do you want to overwrite it?"):
             print_error("Execution aborted.")
-            sys.exit(1)
+            raise UnableToSaveFileException
     try:
         wb.save(res_file_path)
     except PermissionError:
@@ -23,5 +23,5 @@ def save_xl_file(wb: openpyxl.workbook.Workbook, res_file_path: str):
                     f"\nYou have to close it if you want it to be overwritten.")
         if not ask_question_yes_or_no("Do you want to retry?"):
             print_error("Execution aborted.")
-            sys.exit(1)
+            raise UnableToSaveFileException
         wb.save(res_file_path)

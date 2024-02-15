@@ -12,6 +12,7 @@ __all__ = ["r_mes_pas_itf_3"]
 LIST_OF_TSR_SPEEDS = ["Speed_0", "Speed_5", "Speed_10",
                       "Speed_20", "Speed_25", "Speed_30", "Speed_35", "Speed_40", "Speed_45",
                       "Speed_50", "Speed_55", "Speed_60", "Speed_65", "Speed_70", "Speed_75", "Speed_80"]
+# TODO si c'est possible, précharger cette liste avec les infos de TSR_Possible_Speeds
 
 
 def r_mes_pas_itf_3(in_cbtc: bool = False):
@@ -28,8 +29,8 @@ def r_mes_pas_itf_3(in_cbtc: bool = False):
         _rule_3_check_protection_zone(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.PROTECTION_ZONE), in_cbtc)
     _rule_3_check_tpz(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.SS), in_cbtc)
     _rule_3_check_cross_call(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.CROSSING_CALLING_AREA), in_cbtc)
-    # if "TSR_PREDEFINED_AREA_SPEED" in get_class_attr_dict(TypeClasseObjetPASMES):
-    #     _rule_3_check_tsr_area_speed(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.TSR_PREDEFINED_AREA_SPEED), in_cbtc)
+    if "TSR_PREDEFINED_AREA_SPEED" in get_class_attr_dict(TypeClasseObjetPASMES):
+        _rule_3_check_tsr_area_speed(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.TSR_PREDEFINED_AREA_SPEED), in_cbtc)
 
 
 # ------- Rule 3 (ZC -> IXL) Sub Functions ------- #
@@ -38,7 +39,7 @@ def _rule_3_check_plt(plt_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         plt_dict = load_sheet(DCSYS.Quai)
     else:
-        plt_dict = get_platforms_in_cbtc_ter()
+        plt_dict = get_objects_in_cbtc_ter(DCSYS.Quai)
     success = True
     for plt_name, plt in plt_dict.items():
         is_psd_msg_routed = get_dc_sys_value(plt, DCSYS.Quai.PsdMessagesRouted) == YesOrNo.O
@@ -60,7 +61,7 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         sig_dict = load_sheet(DCSYS.Sig)
     else:
-        sig_dict = get_sigs_in_cbtc_ter()
+        sig_dict = get_objects_in_cbtc_ter(DCSYS.Sig)
     success = True
     for sig_name, sig in sig_dict.items():
         is_not_buffer_or_pr = get_dc_sys_value(sig, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
@@ -140,7 +141,7 @@ def _rule_3_check_block(block_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         block_dict = load_sheet(DCSYS.CDV)
     else:
-        block_dict = get_blocks_in_cbtc_ter()
+        block_dict = get_objects_in_cbtc_ter(DCSYS.CDV)
     success = True
     for block_name, block in block_dict.items():
         overriden = get_dc_sys_value(block, DCSYS.CDV.AFiabiliser) == YesOrNo.O
@@ -156,7 +157,7 @@ def _rule_3_check_ivb(ivb_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         ivb_dict = load_sheet(DCSYS.IVB)
     else:
-        ivb_dict = get_ivb_in_cbtc_ter()
+        ivb_dict = get_objects_in_cbtc_ter(DCSYS.IVB)
     success = True
     for ivb_name, ivb in ivb_dict.items():
         sent_ixl = get_dc_sys_value(ivb, DCSYS.IVB.SentToIxl) == YesOrNo.O
@@ -193,7 +194,7 @@ def _rule_3_check_switch(sw_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         sw_dict = load_sheet(DCSYS.Aig)
     else:
-        sw_dict = get_switches_in_cbtc_ter()
+        sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
     success = True
     for sw_name, sw in sw_dict.items():
         free_to_move = get_dc_sys_value(sw, DCSYS.Aig.FreeToMove) == YesOrNo.O
@@ -209,7 +210,7 @@ def _rule_3_check_cbtc_protection_zone(cbtc_pz_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         cbtc_pz_dict = load_sheet(DCSYS.CBTC_Protection_Zone)
     else:
-        cbtc_pz_dict = get_cbtc_protection_zones_in_cbtc_ter()
+        cbtc_pz_dict = get_objects_in_cbtc_ter(DCSYS.CBTC_Protection_Zone)
     success = True
     for cbtc_pz_name, cbtc_pz in cbtc_pz_dict.items():
         if check_obj_msgs(DCSYS.CBTC_Protection_Zone, cbtc_pz_msg_dict, cbtc_pz_name, True,
@@ -226,7 +227,7 @@ def _rule_3_check_protection_zone(pz_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         pz_dict = load_sheet(DCSYS.Protection_Zone)
     else:
-        pz_dict = get_protection_zones_in_cbtc_ter()
+        pz_dict = get_objects_in_cbtc_ter(DCSYS.Protection_Zone)
     success = True
     for pz_name, pz in pz_dict.items():
         cbtc_controlled = get_dc_sys_value(pz, DCSYS.Protection_Zone.CbtcControlledFlag) == YesOrNo.O
@@ -243,7 +244,7 @@ def _rule_3_check_tpz(tpz_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         tpz_dict = load_sheet(DCSYS.SS)
     else:
-        tpz_dict = get_traction_power_zones_in_cbtc_ter()
+        tpz_dict = get_objects_in_cbtc_ter(DCSYS.SS)
     success = True
     for tpz_name, tpz in tpz_dict.items():
         if "POWER_AUTHORIZED" in get_class_attr_dict(TypeNomLogiqueInfoPASMES):
@@ -259,7 +260,7 @@ def _rule_3_check_cross_call(cross_call_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         cross_call_dict = load_sheet(DCSYS.Crossing_Calling_Area)
     else:
-        cross_call_dict = get_crossing_calling_areas_in_cbtc_ter()
+        cross_call_dict = get_objects_in_cbtc_ter(DCSYS.Crossing_Calling_Area)
     success = True
     for cross_call_name, cross_call in cross_call_dict.items():
         if "CROSSING_AUTH_REQUEST" in get_class_attr_dict(TypeNomLogiqueInfoPASMES):
@@ -277,7 +278,7 @@ def _rule_3_check_tsr_area_speed(tsr_area_speed_msg_dict: dict, in_cbtc: bool):
     if not in_cbtc:
         tsr_area_dict = load_sheet(DCSYS.TSR_Area)
     else:
-        tsr_area_dict = get_tsr_area_in_cbtc_ter()
+        tsr_area_dict = get_objects_in_cbtc_ter(DCSYS.TSR_Area)
     missing_speeds_dict = {key: {speed: False for speed in LIST_OF_TSR_SPEEDS} for key in tsr_area_dict}
     tsr_speed_dict = load_sheet(DCSYS.TSR_Possible_Speeds)
     wayside_eqpt_dict = load_sheet(DCSYS.Wayside_Eqpt)

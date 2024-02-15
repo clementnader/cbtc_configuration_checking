@@ -11,7 +11,7 @@ __all__ = ["min_dist_between_tags"]
 
 def min_dist_between_tags(in_cbtc: bool = False):
     if in_cbtc:
-        tag_dict = get_tags_in_cbtc_ter()
+        tag_dict = get_objects_in_cbtc_ter(DCSYS.Bal)
     else:
         tag_dict = load_sheet(DCSYS.Bal)
     tag_list = list(tag_dict.keys())
