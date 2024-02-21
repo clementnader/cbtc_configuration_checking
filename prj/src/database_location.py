@@ -30,14 +30,15 @@ class Projects:
 
 
 # --- Main projects --- #
-# PROJECT_NAME = Projects.Ankara_L1  # TODO: JOI ne pas merge les noms, suffix WXXXX
+# PROJECT_NAME = Projects.Ankara_L1  # TODO: JOI ne pas merge les noms, suffix _WXXXX
 # PROJECT_NAME = Projects.Ankara_L2
 # PROJECT_NAME = Projects.Brussels
 # PROJECT_NAME = Projects.Copenhagen
 # PROJECT_NAME = Projects.Glasgow
 # PROJECT_NAME = Projects.Lima  # TODO: Survey refaire floodgate comme plt
 # PROJECT_NAME = Projects.Milan  # TODO: Manage TRACK_1/2 vs T1/2 -> crée un pb sur la duplication des switches aussi
-# PROJECT_NAME = Projects.Riyadh  # TODO: joint _[MF]BS{0-9}+ ou _LCP{0-9}+ -> track end, TRACK_02W ?, Middle Platform ?
+# PROJECT_NAME = Projects.Riyadh  # TODO: joint _[MF]BS{0-9}+ ou _LCP{0-9}+ -> track end,
+#                                       TRACK_02W ?, Middle Platform ?
 PROJECT_NAME = Projects.Thessaloniki
 
 # --- USA --- #
@@ -361,20 +362,16 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = [3, 3, 15]
             self.survey_loc.survey_kp_col = [7, 7, 17]
             # -- Control Tables -- #
-            self.control_tables_route.line = (r"C:\Users\naderc\Desktop\TSK"
-                                              r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3"
+            self.control_tables_route.line = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 04.00"
                                               r"\1G00LV601R721B_EN_ANNEX_B - IXL MAIN LINE CONTROL TABLES - "
                                               r"Routes.pdf")
-            self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\TSK"
-                                             r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3"
+            self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 04.00"
                                              r"\1G00LV601R722B_EN_ANNEX_B - IXL PYLEA DEPOT CONTROL TABLES - "
                                              r"Routes.pdf")
-            self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\TSK"
-                                                r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3"
+            self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 04.00"
                                                 r"\1G00LV601R721B_EN_ANNEX_D - IXL MAIN LINE CONTROL TABLES - "
                                                 r"Overlaps.pdf")
-            self.control_tables_overlap.cmc = (r"C:\Users\naderc\Desktop\TSK"
-                                               r"\CONTROL TABLES TSK_C_D470_07_03_03_V02_RC3"
+            self.control_tables_overlap.cmc = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 04.00"
                                                r"\1G00LV601R722B_EN_ANNEX_D - IXL PYLEA DEPOT CONTROL TABLES - "
                                                r"Overlaps.pdf")
 
@@ -449,8 +446,8 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Wenzhou -------------------------------#
         elif project_name == Projects.Wenzhou:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_01\DC_SYS_0801.xls"
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_04\DC_SYS_0804.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_01\DC_SYS_0801.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_04\DC_SYS_0804.xls"
             self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\WENZHOU"
                                            r"\WZ_S1P1_SIG_DB_D932_1409_D932_V1.8_modified.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"

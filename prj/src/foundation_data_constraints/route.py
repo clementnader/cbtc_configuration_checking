@@ -154,7 +154,7 @@ def _check_route_sw(route: str, route_val: dict[str], route_sw: str, table_name:
                     f"number of switches {Color.yellow}({len(dc_sys_route_sw)}){Color.reset} as in the Control Table "
                     f"{Color.green}{table_name}{Color.reset} {Color.yellow}({len(route_sw_list)}){Color.reset}.\n"
                     f"DC_SYS Route Switch: {Color.white}{', '.join(dc_sys_route_sw)}{Color.reset}\n"
-                    f"Control Table Switch Route Path: {Color.white}{route_sw}{Color.reset}")
+                    f"Control Table Switch Route Path: {Color.beige}{route_sw}{Color.reset}")
         result = False
 
     for dc_sys_sw, control_table_sw in zip(dc_sys_route_sw, route_sw_list):
@@ -172,13 +172,13 @@ def _check_route_sw(route: str, route_val: dict[str], route_sw: str, table_name:
                               f"{Color.blue}{dc_sys_sw = }{Color.reset} does not correspond to "
                               f"{Color.blue}{control_table_sw = }{Color.reset}.\n"
                               f"DC_SYS Route Switch: {Color.white}{dc_sys_route_sw_str}{Color.reset}\n"
-                              f"Control Table Switch Route Path: {Color.white}{route_sw_str}{Color.reset}")
+                              f"Control Table Switch Route Path: {Color.beige}{route_sw_str}{Color.reset}")
             else:
                 print_error(f"For Route {Color.green}{route}{Color.reset}, switch {Color.blue}{dc_sys_sw = }"
                             f"{Color.reset} does not correspond to switch {Color.blue}{control_table_sw = }"
                             f"{Color.reset} in the Control Table {Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Route Switch: {Color.white}{dc_sys_route_sw_str}{Color.reset}\n"
-                            f"Control Table Switch Route Path: {Color.white}{route_sw_str}{Color.reset}")
+                            f"Control Table Switch Route Path: {Color.beige}{route_sw_str}{Color.reset}")
             result = False
 
     return result
@@ -201,7 +201,7 @@ def _check_route_path(route: str, route_val: dict[str], route_path: str, table_n
                     f"number of IVBs {Color.yellow}({len(dc_sys_route_ivb)}){Color.reset} as in the Control Table "
                     f"{Color.green}{table_name}{Color.reset} {Color.yellow}({len(route_path_list)}){Color.reset}.\n"
                     f"DC_SYS Route IVB: {Color.white}{', '.join(dc_sys_route_ivb)}{Color.reset}\n"
-                    f"Control Table Route Path: {Color.white}{route_path}{Color.reset}\n"
+                    f"Control Table Route Path: {Color.beige}{route_path}{Color.reset}\n"
                     f"{Color.default}DC_SYS Route Switch: {Color.white}{', '.join(dc_sys_route_sw)}{Color.reset}")
         result = False
 

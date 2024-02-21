@@ -36,10 +36,10 @@ def check_overlap_control_tables(use_csv_file: bool = False):
         print_success("Overlaps in DC_SYS correspond to the Control Tables.\n")
         return True
     if not list_missing_ovl_in_dc_sys and list_missing_ovl:
-        print(f"{Color.orange}All overlaps from the Control Tables are implemented,"
+        print(f"{Color.orange}All overlaps from the Control Tables are implemented, "
               f"but extra overlaps appear in the DC_SYS.{Color.reset}\n")
     elif list_missing_ovl_in_dc_sys and not list_missing_ovl:
-        print(f"{Color.orange}All overlaps in the DC_SYS appear in the Control Tables,"
+        print(f"{Color.orange}All overlaps in the DC_SYS appear in the Control Tables, "
               f"but extra overlaps in the Control Tables are missing in the DC_SYS.{Color.reset}\n")
     elif list_missing_ovl_in_dc_sys and list_missing_ovl:
         print(f"{Color.orange}Overlaps are missing between the DC_SYS and the Control Tables.{Color.reset}\n")
@@ -47,7 +47,7 @@ def check_overlap_control_tables(use_csv_file: bool = False):
         print(f"{Color.vivid_green}All overlaps have been found between the DC_SYS and the Control Tables."
               f"{Color.reset}\n")
     if list_missing_ovl:
-        print_section_title("Missing information for Overlap:")
+        print_section_title("Missing IXL information for Overlap:")
         print_warning(f"The following {Color.yellow}{len(list_missing_ovl)}{Color.reset} overlaps "
                       f"in the DC_SYS are missing in the Control Tables:\n"
                       f"\t{Color.yellow}" + "\n\t".join(list_missing_ovl) + f"{Color.reset}")
@@ -161,11 +161,12 @@ def _check_ovl_sw(ovl: str, ovl_val: dict[str], ovl_sw: str, table_name: str):
     result = True
 
     if len(ovl_sw_list) != len(dc_sys_ovl_sw):
+        dc_sys_ovl_sw_str = ', '.join(dc_sys_ovl_sw) if dc_sys_ovl_sw else "None"
         print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, DC_SYS Overlap Switch does not have the same "
                     f"number of switches {Color.yellow}({len(dc_sys_ovl_sw)}){Color.reset} as in the Control Table "
                     f"{Color.green}{table_name}{Color.reset} {Color.yellow}({len(ovl_sw_list)}){Color.reset}.\n"
-                    f"DC_SYS Overlap Switch: {Color.white}{', '.join(dc_sys_ovl_sw)}{Color.reset}\n"
-                    f"Control Table Switch Overlap Path: {Color.white}{ovl_sw}{Color.reset}")
+                    f"DC_SYS Overlap Switch: {Color.white}{dc_sys_ovl_sw_str}{Color.reset}\n"
+                    f"Control Table Switch Overlap Path: {Color.beige}{ovl_sw}{Color.reset}")
         result = False
 
     for dc_sys_sw, control_table_sw in zip(dc_sys_ovl_sw, ovl_sw_list):
@@ -180,63 +181,101 @@ def _check_ovl_sw(ovl: str, ovl_val: dict[str], ovl_sw: str, table_name: str):
                               f"{Color.blue}{dc_sys_sw = }{Color.reset} does not correspond to "
                               f"{Color.blue}{control_table_sw = }{Color.reset}.\n"
                               f"DC_SYS Overlap Switch: {Color.white}{dc_sys_ovl_sw_str}{Color.reset}\n"
-                              f"Control Table Switch Overlap Path: {Color.white}{ovl_sw_str}{Color.reset}")
+                              f"Control Table Switch Overlap Path: {Color.beige}{ovl_sw_str}{Color.reset}")
             else:
                 print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, switch {Color.blue}{dc_sys_sw = }"
                             f"{Color.reset} does not correspond to switch {Color.blue}{control_table_sw = }"
                             f"{Color.reset} in the Control Table {Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Overlap Switch: {Color.white}{dc_sys_ovl_sw_str}{Color.reset}\n"
-                            f"Control Table Switch Overlap Path: {Color.white}{ovl_sw_str}{Color.reset}")
+                            f"Control Table Switch Overlap Path: {Color.beige}{ovl_sw_str}{Color.reset}")
             result = False
 
     return result
 
 
-def _check_ovl_path(ovl: str, ovl_val: dict[str], ovl_path: str, table_name: str):
+def _check_ovl_path(ovl_name: str, ovl_val: dict[str], ovl_path: str, table_name: str):
+    result = True
     # dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]  # TODO use the switch to determine
     #                                                               which IVB limit is the correct one
-    vsp_seg = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg)[0]
-    vsp_x = round(get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.X)[0], 3)
-    vsp_direction = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)[0]
+    dc_sys_sig = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.DestinationSignal)
+    sig_dict = load_sheet(DCSYS.Sig)
+    sig_value = sig_dict[dc_sys_sig]
+    # dc_sys_upstream_ivb = get_dc_sys_value(sig_value, DCSYS.Sig.IvbJoint.UpstreamIvb)
+    # dc_sys_downstream_ivb = get_dc_sys_value(sig_value, DCSYS.Sig.IvbJoint.DownstreamIvb)
 
+    # Work on DC_SYS
+    vsp_seg = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg)
+    vsp_x = round(get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.X), 3)
+    vsp_direction = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
+    ivb_on_vsp = _get_ivb_on_vsp(ovl_name, vsp_seg, vsp_x, vsp_direction)
+
+    # Work on Control Table
     ovl_path_list = ovl_path.split(",")
     ovl_path_list = [ivb.strip() for ivb in ovl_path_list]
     last_ivb = ovl_path_list[-1]
-    dc_sys_last_ivb, ivb_limits = _get_ivb_limits(last_ivb)
-    if dc_sys_last_ivb is None:
-        print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, corresponding to Control Table "
-                    f"{Color.green}{table_name}{Color.reset}, last IVB of the path {Color.blue}{ovl_path = }"
-                    f"{Color.reset}: {Color.yellow}{last_ivb = }{Color.reset} is not found in the DC_SYS.")
-        return False
+    corresponding_last_ivb = _get_corresponding_ivb(last_ivb)
 
-    result = _check_ivb_corresponds_to_vsp(ivb_limits, vsp_seg, vsp_x, vsp_direction)
+    if ivb_on_vsp is None:
+        print_error(f"VSP of Overlap {Color.green}{ovl_name}{Color.reset} is not in an IVB.")
+        result = False
+        ivb_downstream_vsp = None
+    else:
+        ivb_downstream_vsp = _get_ivb_on_vsp(ovl_name, vsp_seg, vsp_x, get_reverse_direction(vsp_direction), other=True)
+        if ivb_downstream_vsp is None:  # end of track, VSP placed at end of last IVB
+            ivb_downstream_vsp = "End of track"
+        elif ivb_downstream_vsp == ivb_on_vsp:
+            print_error(f"VSP of Overlap {Color.green}{ovl_name}{Color.reset} is not on a joint between two IVBs.\n"
+                        f"It is inside {Color.white}{ivb_on_vsp}{Color.reset}.")
+            result = False
 
-    if result is False:
-        print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, VSP {Color.blue}({vsp_seg}, {vsp_x})"
-                    f"{Color.reset} does not correspond to the last IVB of the path {Color.blue}{ovl_path = }"
-                    f"{Color.reset}: {Color.yellow}{dc_sys_last_ivb = }{Color.reset} "
-                    f"in the Control Table {Color.green}{table_name}{Color.reset}.\n"
-                    f"IVB limits: {Color.white}{ivb_limits}{Color.reset}")
+    if corresponding_last_ivb is None:
+        print_error(f"For Overlap {Color.green}{ovl_name}{Color.reset}, corresponding to Control Table "
+                    f"{Color.green}{table_name}{Color.reset},\n"
+                    f"last IVB of the path {Color.yellow}{ovl_path = }{Color.reset} is not found in the DC_SYS.\n"
+                    f"Control Table Overlap last IVB: {Color.beige}{last_ivb} -> {corresponding_last_ivb}{Color.reset}"
+                    f"\n{Color.default}DC_SYS Overlap last IVB: {Color.white}{ivb_on_vsp}{Color.reset} "
+                    f"{Color.default}(on joint with {ivb_downstream_vsp}){Color.reset}")
+        result = False
+
+    elif corresponding_last_ivb != ivb_on_vsp:
+        print_error(f"For Overlap {Color.green}{ovl_name}{Color.reset}, corresponding to Control Table "
+                    f"{Color.green}{table_name}{Color.reset},\n"
+                    f"VSP {Color.blue}({vsp_seg}, {vsp_x}){Color.reset} does not correspond to the last IVB of "
+                    f"the path {Color.yellow}{ovl_path = }{Color.reset} in the Control Table.\n"
+                    f"DC_SYS Overlap last IVB: {Color.white}{ivb_on_vsp}{Color.reset} "
+                    f"{Color.default}(on joint with {ivb_downstream_vsp}){Color.reset}\n"
+                    f"Control Table Overlap last IVB: {Color.beige}{last_ivb} -> {corresponding_last_ivb}{Color.reset}")
+        result = False
     return result
 
 
-def _check_ivb_corresponds_to_vsp(ivb_limits: list[dict[str]], vsp_seg: str, vsp_x: float, vsp_direction: str):
-    # TODO use vsp_direction to determine which ivb limit is the right one
-    for lim in ivb_limits:
-        seg, x = lim
-        if seg == vsp_seg and x == vsp_x:
-            return True
-    return False
+def _get_ivb_on_vsp(ovl_name: str, vsp_seg: str, vsp_x: float, vsp_direction: str,
+                    other: bool = False) -> Optional[str]:
+    list_ivb_on_vsp = get_zones_on_point(DCSYS.IVB, vsp_seg, vsp_x, direction=vsp_direction)
+    if not list_ivb_on_vsp:
+        if not other:
+            print_error(f"VSP of Overlap {ovl_name} is on no IVB.")
+        return None
+    if len(list_ivb_on_vsp) > 1:
+        print_error(f"VSP {'of' if not other else 'downstream'} Overlap {ovl_name} is on multiple IVBs: "
+                    f"{list_ivb_on_vsp}.")
+        return None
+    ivb_on_vsp = list_ivb_on_vsp[0]
+    return ivb_on_vsp
 
 
-def _get_ivb_limits(control_table_ivb: str) -> tuple[Optional[str], list[dict[str]]]:
+def _get_corresponding_ivb(control_table_ivb: str) -> Optional[str]:
     ivb_dict = load_sheet(DCSYS.IVB)
     for ivb_name, ivb_val in ivb_dict.items():
-        ivb_limits = list(get_dc_sys_zip_values(ivb_val, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X))
         ivb_test_name = ivb_name.split("_")[-1]
         if ivb_test_name.upper() == control_table_ivb.upper():
-            return ivb_name, ivb_limits
-    return None, []
+            return ivb_name
+    for ivb_name, ivb_val in ivb_dict.items():
+        ivb_test_name = ivb_name.split("_")[-1]
+        ivb_test_name = ivb_test_name.removeprefix("Ts").removeprefix("vTs")
+        if ivb_test_name.upper() == control_table_ivb.upper():
+            return ivb_name
+    return None
 
 
 def _check_ovl_exist_in_dc_sys(ovl_dict: dict[str], ovl_control_tables: dict[str]):
