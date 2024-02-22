@@ -27,9 +27,14 @@ def add_survey_open_button(frame: tkinter.Frame, ref_row: int, extra_func: Calla
     track_col = tkinter.StringVar()
     survey_kp_col = tkinter.StringVar()
 
+    bottom_frame = tkinter.Frame(frame, bg=bg)
+    bottom_frame.grid(column=0, row=2, columnspan=100, sticky="nswe")
+    sub_frame = tkinter.Frame(bottom_frame, bg=bg, padx=5, pady=5)
+    sub_frame.grid(column=0, row=0, sticky="nswe")
+
     gui_add_dir_and_file_open_button(frame, ref_row, survey_directory, survey_file_name, title_text, open_text,
                                      file_types, bg=bg,
-                                     extra_func=lambda: add_survey_info(frame, ref_row, survey_sheet, all_sheets,
+                                     extra_func=lambda: add_survey_info(sub_frame, ref_row, survey_sheet, all_sheets,
                                                                         start_row, ref_col, type_col,
                                                                         track_col, survey_kp_col,
                                                                         bg=bg, extra_func=extra_func))
@@ -73,10 +78,11 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
     survey_sheet_label = tkinter.Label(frame, text="Survey Sheet: ", font=tkinter.font.Font(size=9, weight="bold"),
                                        bg=bg)
     survey_sheet_label.grid(column=0, row=current_row, sticky="w")
-    survey_sheet_entry = tkinter.Entry(frame, textvariable=survey_sheet, bg=entry_bg)
-    survey_sheet_entry.grid(column=1, row=current_row, sticky="w")
-    survey_sheet_comment = tkinter.Label(frame, text="(name of the sheet)", font=tkinter.font.Font(size=8), bg=bg)
-    survey_sheet_comment.grid(column=2, row=current_row, sticky="w")
+    survey_sheet_entry = tkinter.Entry(frame, textvariable=survey_sheet, bg=entry_bg, width=22)
+    survey_sheet_entry.grid(column=1, row=current_row, columnspan=3, sticky="w")
+    survey_sheet_comment = tkinter.Label(frame, text="(name of the D932 result sheet)",
+                                         font=tkinter.font.Font(size=8), bg=bg)
+    survey_sheet_comment.grid(column=4, row=current_row, columnspan=1, sticky="w")
 
     # All Sheets Checkbox
     current_row += 1
@@ -84,10 +90,10 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
                                                  font=tkinter.font.Font(size=9, weight="bold"),
                                                  variable=all_sheets, bg=bg,
                                                  command=all_sheets_click)
-    all_sheets_checkbutton.grid(column=1, row=current_row, sticky="w")
+    all_sheets_checkbutton.grid(column=1, row=current_row, columnspan=2, sticky="w")
     all_sheets_comment = tkinter.Label(frame, text="(use all the sheets of the survey file)",
                                        font=tkinter.font.Font(size=8), bg=bg)
-    all_sheets_comment.grid(column=2, row=current_row, sticky="w")
+    all_sheets_comment.grid(column=3, row=current_row, columnspan=2, sticky="w")
     all_sheets_comment.config(state=tkinter.DISABLED)
 
     # First Data Row
@@ -95,52 +101,53 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
     start_row_label = tkinter.Label(frame, text="First Data Row: ", font=tkinter.font.Font(size=9, weight="bold"),
                                     bg=bg)
     start_row_label.grid(column=0, row=current_row, sticky="w")
-    start_row_entry = tkinter.Entry(frame, textvariable=start_row, bg=entry_bg)
+    start_row_entry = tkinter.Entry(frame, textvariable=start_row, bg=entry_bg, width=7)
     start_row_entry.grid(column=1, row=current_row, sticky="w")
-    start_row_comment = tkinter.Label(frame, text="(number of the row)", font=tkinter.font.Font(size=8), bg=bg)
-    start_row_comment.grid(column=2, row=current_row, sticky="w")
+    start_row_comment = tkinter.Label(frame, text="(number of the first row with survey information)",
+                                      font=tkinter.font.Font(size=8), bg=bg)
+    start_row_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
 
     # Reference Column
     current_row += 1
     ref_col_label = tkinter.Label(frame, text="Reference Column: ", font=tkinter.font.Font(size=9, weight="bold"),
                                   bg=bg)
     ref_col_label.grid(column=0, row=current_row, sticky="w")
-    ref_col_entry = tkinter.Entry(frame, textvariable=ref_col, bg=entry_bg)
+    ref_col_entry = tkinter.Entry(frame, textvariable=ref_col, bg=entry_bg, width=7)
     ref_col_entry.grid(column=1, row=current_row, sticky="w")
-    ref_col_comment = tkinter.Label(frame, text="(letter or number of the column)", font=tkinter.font.Font(size=8),
-                                    bg=bg)
-    ref_col_comment.grid(column=2, row=current_row, sticky="w")
+    ref_col_comment = tkinter.Label(frame, text="(letter or number of the column)",
+                                    font=tkinter.font.Font(size=8), bg=bg)
+    ref_col_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
 
     # Type Column
     current_row += 1
     type_col_label = tkinter.Label(frame, text="Type Column: ", font=tkinter.font.Font(size=9, weight="bold"), bg=bg)
     type_col_label.grid(column=0, row=current_row, sticky="w")
-    type_col_entry = tkinter.Entry(frame, textvariable=type_col, bg=entry_bg)
+    type_col_entry = tkinter.Entry(frame, textvariable=type_col, bg=entry_bg, width=7)
     type_col_entry.grid(column=1, row=current_row, sticky="w")
-    type_col_comment = tkinter.Label(frame, text="(letter or number of the column)", font=tkinter.font.Font(size=8),
-                                     bg=bg)
-    type_col_comment.grid(column=2, row=current_row, sticky="w")
+    type_col_comment = tkinter.Label(frame, text="(letter or number of the column)",
+                                     font=tkinter.font.Font(size=8), bg=bg)
+    type_col_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
 
     # Track Column
     current_row += 1
     track_col_label = tkinter.Label(frame, text="Track Column: ", font=tkinter.font.Font(size=9, weight="bold"), bg=bg)
     track_col_label.grid(column=0, row=current_row, sticky="w")
-    track_col_entry = tkinter.Entry(frame, textvariable=track_col, bg=entry_bg)
+    track_col_entry = tkinter.Entry(frame, textvariable=track_col, bg=entry_bg, width=7)
     track_col_entry.grid(column=1, row=current_row, sticky="w")
-    track_col_comment = tkinter.Label(frame, text="(letter or number of the column)", font=tkinter.font.Font(size=8),
-                                      bg=bg)
-    track_col_comment.grid(column=2, row=current_row, sticky="w")
+    track_col_comment = tkinter.Label(frame, text="(letter or number of the column)",
+                                      font=tkinter.font.Font(size=8), bg=bg)
+    track_col_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
 
     # Surveyed KP Column
     current_row += 1
     survey_kp_col_label = tkinter.Label(frame, text="Surveyed KP Column: ",
                                         font=tkinter.font.Font(size=9, weight="bold"), bg=bg)
     survey_kp_col_label.grid(column=0, row=current_row, sticky="w")
-    survey_kp_col_entry = tkinter.Entry(frame, textvariable=survey_kp_col, bg=entry_bg)
+    survey_kp_col_entry = tkinter.Entry(frame, textvariable=survey_kp_col, bg=entry_bg, width=7)
     survey_kp_col_entry.grid(column=1, row=current_row, sticky="w")
     survey_kp_col_comment = tkinter.Label(frame, text="(letter or number of the column)",
                                           font=tkinter.font.Font(size=8), bg=bg)
-    survey_kp_col_comment.grid(column=2, row=current_row, sticky="w")
+    survey_kp_col_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
 
     if extra_func is not None:
         extra_func()
@@ -160,12 +167,16 @@ def delete_tab(tab_control: tkinter.ttk.Notebook, tab_frame: tkinter.Frame, tabs
 
 
 def launch_function(window: tkinter.Tk, dc_sys_directory: tkinter.StringVar, dc_sys_file_name: tkinter.StringVar,
-                    survey_loc_dict: dict[str, dict[str, tkinter.StringVar]]):
-    if is_everything_ready(dc_sys_directory, dc_sys_file_name, survey_loc_dict):
+                    survey_loc_dict: dict[str, dict[str, tkinter.StringVar]],
+                    automatic_names: tkinter.BooleanVar,
+                    block_def_directory: tkinter.StringVar, block_def_file_name: tkinter.StringVar):
+    if is_everything_ready(dc_sys_directory, dc_sys_file_name, survey_loc_dict,
+                           automatic_names, block_def_directory, block_def_file_name):
         success = False
         window.withdraw()  # hide window
         try:
-            update_database_loc(dc_sys_directory, dc_sys_file_name, survey_loc_dict)
+            update_database_loc(dc_sys_directory, dc_sys_file_name, survey_loc_dict,
+                                automatic_names, block_def_directory, block_def_file_name)
             success = check_survey()
         except Exception as error:
             logging.error(traceback.format_exc())
@@ -182,18 +193,42 @@ def launch_function(window: tkinter.Tk, dc_sys_directory: tkinter.StringVar, dc_
 
 
 def is_everything_ready(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: tkinter.StringVar,
-                        survey_loc_dict: dict[str, dict[str, tkinter.StringVar]]):
+                        survey_loc_dict: dict[str, dict[str, tkinter.StringVar]],
+                        automatic_names: tkinter.BooleanVar,
+                        block_def_directory: tkinter.StringVar, block_def_file_name: tkinter.StringVar):
+    print_section_title(f"Checking if all information is provided...")
     test = True
 
     if dc_sys_directory.get() == "" or dc_sys_file_name.get() == "":
+        print_log(f"DC_SYS is not selected.")
+        test = False
+
+    if automatic_names.get() is False and (block_def_directory.get() == "" or block_def_file_name.get() == ""):
+        print_log(f"Option \"automatic joint names\" is unchecked but Block Def. is not selected.")
         test = False
 
     for survey_name, survey_info in survey_loc_dict.items():
-        if (survey_info["survey_directory"].get() == "" or survey_info["survey_file_name"].get() == ""
-                or (survey_info["all_sheets"].get() is False and survey_info["survey_sheet"].get() == "")
-                or survey_info["start_row"].get() == ""
-                or survey_info["ref_col"].get() == "" or survey_info["type_col"].get() == ""
-                or survey_info["track_col"].get() == "" or survey_info["survey_kp_col"].get() == ""):
+        if survey_info["survey_directory"].get() == "" or survey_info["survey_file_name"].get() == "":
+            print_log(f"For {survey_name}, Survey is not selected.")
+            test = False
+            continue
+        if survey_info["all_sheets"].get() is False and survey_info["survey_sheet"].get() == "":
+            print_log(f"For {survey_name}, Survey Sheet is not filled and option \"use all sheets\" is not selected.")
+            test = False
+        if survey_info["start_row"].get() == "":
+            print_log(f"For {survey_name}, First Data Row is not filled.")
+            test = False
+        if survey_info["ref_col"].get() == "":
+            print_log(f"For {survey_name}, Reference Column is not filled.")
+            test = False
+        if survey_info["type_col"].get() == "":
+            print_log(f"For {survey_name}, Type Column is not filled.")
+            test = False
+        if survey_info["track_col"].get() == "":
+            print_log(f"For {survey_name}, Track Column is not filled.")
+            test = False
+        if survey_info["survey_kp_col"].get() == "":
+            print_log(f"For {survey_name}, Surveyed KP Column is not filled.")
             test = False
 
     return test

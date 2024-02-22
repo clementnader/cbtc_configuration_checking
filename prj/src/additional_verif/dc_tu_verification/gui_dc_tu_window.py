@@ -25,17 +25,17 @@ def dc_tu_window():
     # Left Frame
     bg = f"#{XlBgColor.light_blue}"
     top_left_frame = tkinter.Frame(window, bg=bg)
-    top_left_frame.grid(column=0, row=0, sticky="nsew")
+    top_left_frame.grid(column=0, row=0, sticky="nswe")
     sub_frame = tkinter.Frame(top_left_frame, bg=bg, padx=10, pady=10)
-    sub_frame.grid(column=0, row=0, sticky="nsew")
+    sub_frame.grid(column=0, row=0, sticky="nswe")
     c11_d470_directory = add_c11_open_button(sub_frame, ref_row=0)
 
     # Right Frame
     bg = f"#{XlBgColor.light_green}"
     top_right_frame = tkinter.Frame(window, bg=bg)
-    top_right_frame.grid(column=5, row=0, sticky="nsew")
+    top_right_frame.grid(column=5, row=0, sticky="nswe")
     sub_frame = tkinter.Frame(top_right_frame, bg=bg, padx=10, pady=20)
-    sub_frame.grid(column=0, row=0, sticky="nsew")
+    sub_frame.grid(column=0, row=0, sticky="nswe")
     add_launch_dc_tu_button(window, sub_frame, c11_d470_directory)
 
     # Separators

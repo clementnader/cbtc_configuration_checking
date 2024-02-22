@@ -4,7 +4,7 @@
 from ...utils import *
 
 
-__all__ = ["load_survey_wb"]
+__all__ = ["load_survey_wb", "clean_loaded_survey"]
 
 
 SURVEY_WB = dict()
@@ -15,3 +15,8 @@ def load_survey_wb(survey_addr):
     if survey_addr not in SURVEY_WB:
         SURVEY_WB[survey_addr] = load_xl_file(survey_addr)
     return SURVEY_WB[survey_addr]
+
+
+def clean_loaded_survey():
+    global SURVEY_WB
+    SURVEY_WB = dict()

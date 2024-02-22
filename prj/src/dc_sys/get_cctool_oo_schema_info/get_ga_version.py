@@ -15,4 +15,4 @@ def get_ga_version() -> tuple[int]:
 
 
 def get_ga_version_text() -> str:
-    return ".".join([str(a) for a in get_ga_version()])
+    return "-".join([f"{a:02}" for a in get_ga_version()])

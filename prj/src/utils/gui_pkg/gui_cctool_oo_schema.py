@@ -26,7 +26,7 @@ def cctool_schema_window():
     bg = f"#{XlBgColor.light_blue}"
     window.configure(bg=bg)
     sub_frame = tkinter.Frame(window, bg=bg, padx=10, pady=10)
-    sub_frame.grid(column=0, row=0, sticky="nsew")
+    sub_frame.grid(column=0, row=0, sticky="nswe")
 
     cctool_oo_directory, cctool_oo_file_name = (
         add_cctool_oo_open_button(sub_frame, ref_row=0, extra_func=lambda: window.destroy()))

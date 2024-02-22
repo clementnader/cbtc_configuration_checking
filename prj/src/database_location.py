@@ -79,6 +79,7 @@ class ProjectDatabaseLoc:
     dc_sys_addr_old = r""
     dc_par_addr = r""
     dc_bop_addr = r""
+    block_def = None
     survey_loc = SurveyLoc()
     kit_c11_dir = r""
     kit_c121_d470_dir = r""

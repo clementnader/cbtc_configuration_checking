@@ -4,17 +4,30 @@
 import os
 from ...utils import *
 from ...database_location import *
+from ...dc_sys import *
+from ..load_survey import clean_loaded_survey
 
 
 __all__ = ["update_database_loc"]
 
 
 def update_database_loc(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: tkinter.StringVar,
-                        survey_loc_dict: dict[str, dict[str, tkinter.StringVar]]):
-    print_log(f"Setting user inputs...")
+                        survey_loc_dict: dict[str, dict[str, tkinter.StringVar]],
+                        automatic_names: tkinter.BooleanVar,
+                        block_def_directory: tkinter.StringVar, block_def_file_name: tkinter.StringVar):
+    print_section_title(f"Setting user inputs...")
 
-    DATABASE_LOC.dc_sys_addr = os.path.join(dc_sys_directory.get(), dc_sys_file_name.get()).replace("/", os.path.sep)
+    clean_loaded_dc_sys()
+    DATABASE_LOC.dc_sys_addr = os.path.join(dc_sys_directory.get(), dc_sys_file_name.get()
+                                            ).replace("/", os.path.sep)
 
+    if automatic_names.get():
+        DATABASE_LOC.block_def = None
+    else:
+        DATABASE_LOC.block_def = os.path.join(block_def_directory.get(), block_def_file_name.get()
+                                              ).replace("/", os.path.sep)
+
+    clean_loaded_survey()
     DATABASE_LOC.survey_loc.survey_addr = list()
     DATABASE_LOC.survey_loc.survey_sheet = list()
     DATABASE_LOC.survey_loc.all_sheets = list()
@@ -35,6 +48,8 @@ def update_database_loc(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
         DATABASE_LOC.survey_loc.type_col.append(get_col(survey_info["type_col"].get()))  # Type Column
         DATABASE_LOC.survey_loc.track_col.append(get_col(survey_info["track_col"].get()))  # Track Column
         DATABASE_LOC.survey_loc.survey_kp_col.append(get_col(survey_info["survey_kp_col"].get()))  # Surveyed KP Column
+
+    print_log(f"It is all set. Launching the verification...")
 
 
 def get_col(val: str):

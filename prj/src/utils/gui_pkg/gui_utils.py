@@ -11,31 +11,51 @@ from ..common_utils import *
 from ..xl_pkg import get_xl_bg_dimmer_color
 
 
-__all__ = ["tkinter", "default_gui_bg_color", "gui_add_dir_and_file_open_button", "gui_add_dir_open_button"]
+__all__ = ["tkinter", "default_gui_bg_color", "disable_frame", "enable_frame",
+           "gui_add_dir_and_file_open_button", "gui_add_dir_open_button"]
 
 
 G_INITIAL_DIRECTORY = DESKTOP_DIRECTORY
+
+
+def disable_frame(frame: Union[tkinter.Tk, tkinter.Frame]):
+    for child in frame.winfo_children():
+        wtype = child.winfo_class()
+        if wtype not in ("Frame", "Labelframe", "TFrame", "TLabelframe"):
+            child.configure(state=tkinter.DISABLED)
+        else:  # child is a frame
+            disable_frame(child)  # recursive call
+
+
+def enable_frame(frame: Union[tkinter.Tk, tkinter.Frame]):
+    for child in frame.winfo_children():
+        wtype = child.winfo_class()
+        if wtype not in ("Frame", "Labelframe", "TFrame", "TLabelframe"):
+            child.configure(state=tkinter.NORMAL)
+        else:  # child is a frame
+            enable_frame(child)  # recursive call
 
 
 def gui_add_dir_and_file_open_button(frame: Union[tkinter.Tk, tkinter.Frame], ref_row: int,
                                      directory_string_var: tkinter.StringVar, file_name_string_var: tkinter.StringVar,
                                      title_text: str, open_text: str,
                                      file_types: Union[tuple[str, str], list[tuple[str, str]]],
-                                     bg: str = None,
+                                     bg: str = None, size: int = 11,
                                      extra_func: Callable[None, None] = None) -> tkinter.Button:
     if bg is None:
         bg = default_gui_bg_color(frame)
 
-    frame.grid_columnconfigure(0, minsize=120)
-    title_label = tkinter.Label(frame, text=title_text, font=tkinter.font.Font(size=11, weight="bold"), bg=bg)
+    frame.grid_columnconfigure(0, minsize=80)
+    title_label = tkinter.Label(frame, text=title_text, font=tkinter.font.Font(size=size, weight="bold"), bg=bg)
     title_label.grid(column=0, row=ref_row, rowspan=2, sticky="w")
 
-    directory_label = tkinter.Label(frame, text="", textvariable=directory_string_var, bg=bg)
-    directory_label.grid(column=1, row=ref_row, sticky="w", columnspan=5, padx=(0, 5))
+    directory_label = tkinter.Label(frame, text="", textvariable=directory_string_var,
+                                    font=tkinter.font.Font(size=size-2), bg=bg)
+    directory_label.grid(column=1, row=ref_row, sticky="w", padx=(0, 5))
 
     file_name_label = tkinter.Label(frame, text="", textvariable=file_name_string_var,
-                                    font=tkinter.font.Font(size=9, weight="bold"), bg=bg)
-    file_name_label.grid(column=1, row=ref_row+1, sticky="w", columnspan=5, padx=(0, 5))
+                                    font=tkinter.font.Font(size=size-2, weight="bold"), bg=bg)
+    file_name_label.grid(column=1, row=ref_row+1, sticky="w", padx=(0, 5))
 
     # Open file button
     button_bg = "#" + get_xl_bg_dimmer_color(bg.removeprefix("#")) if bg.startswith("#") else bg
@@ -43,7 +63,8 @@ def gui_add_dir_and_file_open_button(frame: Union[tkinter.Tk, tkinter.Frame], re
         frame,
         text="select file",
         command=lambda: gui_select_file(open_text, file_types, directory_string_var, file_name_string_var, extra_func),
-        bg=button_bg
+        bg=button_bg,
+        font=tkinter.font.Font(size=size-2)
     )
     open_button.grid(column=6, row=ref_row, rowspan=2, sticky="w", padx=5, pady=5)
     return open_button

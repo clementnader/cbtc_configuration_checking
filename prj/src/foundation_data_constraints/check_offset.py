@@ -15,7 +15,7 @@ START_LINE = 3
 def check_offset_correctness():
     print_title(f"Verification of the offset correctness")
     success = True
-    wb = load_wb()
+    wb = load_dc_sys_wb()
     sheet_names = get_xl_sheet_names(wb)
     for sh_name in sheet_names:
         ws = get_xl_sheet_by_name(wb, sh_name)

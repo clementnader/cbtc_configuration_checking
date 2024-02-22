@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ..load_database.load_xl import load_wb
+from ..load_database.load_xl import load_dc_sys_wb
 
 
 __all__ = ["get_cctool_oo_name", "get_dc_sys_version", "get_line_name"]
@@ -26,7 +26,7 @@ def get_dc_sys_version() -> str:
 
 
 def open_menu_sheet():
-    wb = load_wb()
+    wb = load_dc_sys_wb()
     ws = wb.sheet_by_name("!")
     return ws
 
@@ -38,6 +38,6 @@ def get_line_name() -> str:
 
 
 def open_line_sheet():
-    wb = load_wb()
+    wb = load_dc_sys_wb()
     ws = wb.sheet_by_name("Ligne")
     return ws

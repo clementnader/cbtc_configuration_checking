@@ -9,7 +9,7 @@ from .gui_survey_utils import *
 __all__ = ["survey_window"]
 
 
-def survey_window():
+def survey_window() -> None:
     ga_version = get_ga_version_text()
     print_title(f"Survey Verification", color=Color.mint_green)
     print(f"{Color.light_green}Select the DC_SYS "
@@ -17,7 +17,7 @@ def survey_window():
           f"{Color.light_green} and the Survey information to verify.{Color.reset}\n")
     # Root window
     window = tkinter.Tk()
-    window.title(f"Survey Verification (Sys. Ref. {ga_version})")
+    window.title(f"Survey Verification (System Referential {ga_version})")
     window.resizable(False, False)
     window.attributes("-topmost", True)
 
@@ -28,36 +28,51 @@ def survey_window():
     # Top Frame
     bg = f"#{XlBgColor.light_blue}"
     top_left_frame = tkinter.Frame(window, bg=bg)
-    top_left_frame.grid(column=0, row=0, sticky="nsew")
+    top_left_frame.grid(column=0, row=0, sticky="nswe")
     sub_frame = tkinter.Frame(top_left_frame, bg=bg, padx=10, pady=10)
-    sub_frame.grid(column=0, row=0, sticky="nsew")
+    sub_frame.grid(column=0, row=0, sticky="nswe")
     dc_sys_directory, dc_sys_file_name = add_dc_sys_open_button(sub_frame, ref_row=0, ga_version=ga_version)
+
+    # Top Frame 2
+    bg = f"#{XlBgColor.light_blue}"
+    top_left_frame2 = tkinter.Frame(window, bg=bg)
+    top_left_frame2.grid(column=0, row=5, sticky="nswe")
+    sub_frame = tkinter.Frame(top_left_frame2, bg=bg, padx=10, pady=10)
+    sub_frame.grid(column=0, row=0, sticky="nswe")
+    automatic_names, block_def_directory, block_def_file_name = add_block_joint_def_frame(sub_frame, ref_row=0, bg=bg)
 
     # Bottom Frame
     bg = f"#{XlBgColor.light_yellow}"
     bottom_left_frame = tkinter.Frame(window, bg=bg)
-    bottom_left_frame.grid(column=0, row=5, sticky="nsew")
+    bottom_left_frame.grid(column=0, row=20, sticky="nswe")
     survey_loc_dict = add_survey_tab_control(bottom_left_frame)
 
     # Right Frame
     bg = f"#{XlBgColor.light_green}"
-    top_right_frame = tkinter.Frame(window, bg=bg)
-    top_right_frame.grid(column=5, row=0, sticky="nsew")
-    bottom_right_frame = tkinter.Frame(window, bg=bg)
-    bottom_right_frame.grid(column=5, row=5, sticky="nsew")
-    sub_frame = tkinter.Frame(bottom_right_frame, bg=bg, padx=10, pady=20)
-    sub_frame.grid(column=0, row=0, sticky="nsew")
-    add_launch_survey_button(window, sub_frame, dc_sys_directory, dc_sys_file_name, survey_loc_dict)
+    right_frame = tkinter.Frame(window, bg=bg)
+    right_frame.grid(column=10, row=0, rowspan=40, sticky="nswe")
+    sub_frame = tkinter.Frame(right_frame, bg=bg, padx=10, pady=10)
+    sub_frame.grid(column=0, row=0, sticky="nswe")
+    add_launch_survey_button(window, sub_frame, dc_sys_directory, dc_sys_file_name, survey_loc_dict,
+                             automatic_names, block_def_directory, block_def_file_name)
 
     # Separators
+    sep_top_top2 = tkinter.ttk.Separator(window, orient="horizontal")
+    sep_top_top2.grid(column=0, row=4, sticky="we")
     sep_top_bottom = tkinter.ttk.Separator(window, orient="horizontal")
-    sep_top_bottom.grid(column=0, row=4, sticky="we")
+    sep_top_bottom.grid(column=0, row=19, sticky="we")
+
     sep_top_right = tkinter.ttk.Separator(window, orient="vertical")
-    sep_top_right.grid(column=4, row=0, sticky="ns")
+    sep_top_right.grid(column=9, row=0, sticky="ns")
+    sep_top_right2 = tkinter.ttk.Separator(window, orient="vertical")
+    sep_top_right2.grid(column=9, row=5, sticky="ns")
     sep_bottom_right = tkinter.ttk.Separator(window, orient="vertical")
-    sep_bottom_right.grid(column=4, row=5, sticky="ns")
+    sep_bottom_right.grid(column=9, row=20, sticky="ns")
 
     window.mainloop()
+
+    print_log(f"Survey Verification Window was closed.")
+    return
 
 
 def add_survey_tab_control(frame: tkinter.Frame, bg: str = None) -> dict[str, dict[str, tkinter.StringVar]]:
@@ -65,12 +80,13 @@ def add_survey_tab_control(frame: tkinter.Frame, bg: str = None) -> dict[str, di
     notebook_style.theme_create("custom_theme", settings={
         "TNotebook": {
             "layout": [],
-            "configure": {"tabposition": "nw", "background": "white",
+            "configure": {"tabposition": "nw",
+                          "background": "white",  # background color of the tabs bar
                           "tabmargins": [0, 0, 10, 0]}},
         "TNotebook.Tab": {
             "configure": {"padding": [5, 1]},
-            "map": {"background": [("selected", f"#{XlBgColor.yellow}"),
-                                   ("!active", "gray60")]}}
+            "map": {"background": [("selected", f"#{XlBgColor.yellow}"),  # tab color when active
+                                   ("!active", "gray75")]}}  # tab color when not active
     })
     notebook_style.theme_use("custom_theme")
 
@@ -143,13 +159,16 @@ def add_delete_tab_button(tab_control: tkinter.ttk.Notebook, tab_frame: tkinter.
 
 def add_launch_survey_button(window: tkinter.Tk, frame: tkinter.Frame,
                              dc_sys_directory: tkinter.StringVar, dc_sys_file_name: tkinter.StringVar,
-                             survey_loc_dict: dict[str, dict[str, tkinter.StringVar]]) -> None:
+                             survey_loc_dict: dict[str, dict[str, Union[tkinter.StringVar, tkinter.BooleanVar]]],
+                             automatic_names: tkinter.BooleanVar,
+                             block_def_directory: tkinter.StringVar, block_def_file_name: tkinter.StringVar) -> None:
     launch_button = tkinter.Button(
         frame,
         text="Launch Survey Verification",
-        command=lambda: launch_function(window, dc_sys_directory, dc_sys_file_name, survey_loc_dict),
+        command=lambda: launch_function(window, dc_sys_directory, dc_sys_file_name, survey_loc_dict,
+                                        automatic_names, block_def_directory, block_def_file_name),
         wraplength=120,
         background="#A0FFA0",
         font=tkinter.font.Font(size=11, weight="bold")
     )
-    launch_button.grid(column=0, row=0, padx=5, pady=5)
+    launch_button.grid(column=0, row=0, padx=5, pady=(146, 5))
