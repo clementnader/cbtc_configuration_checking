@@ -27,6 +27,7 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
 
         obj_name, survey_name = get_joint_name_in_survey(tc1, tc2, dc_sys_track, survey_info, joint, joints_dict,
                                                          end_of_track_suffix)
+        obj_name = get_display_name(obj_name, tc1, tc2, dc_sys_track, joints_dict)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
@@ -36,3 +37,16 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict
+
+
+def get_display_name(obj_name: str, tc1: str, tc2: Optional[str], track: str,
+                     joints_dict: dict[tuple[str, Optional[str], str], tuple[str, float]]) -> str:
+    if tc2 is None:
+        return obj_name
+
+    same_name_joints = [(block1, block2) for (block1, block2, _) in joints_dict
+                        if (block1, block2) == (tc1, tc2)]
+    if len(same_name_joints) < 2:
+        return obj_name
+    # There are multiple joints with this name, we precise in the name the track to get the unicity
+    return obj_name + f"__on_{track}"

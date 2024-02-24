@@ -36,7 +36,7 @@ class Projects:
 # PROJECT_NAME = Projects.Copenhagen  # TODO: Survey: update floodgate verification as for platform
 # PROJECT_NAME = Projects.Glasgow
 # PROJECT_NAME = Projects.Lima
-# PROJECT_NAME = Projects.Milan  # TODO: Manage TRACK_1/2 vs T1/2
+# PROJECT_NAME = Projects.Milan  # TODO: Manage TRACK_1/2 vs T1/2, create a display track name attribute
 # PROJECT_NAME = Projects.Riyadh  # TODO: Manage TRACK_02W vs TRACK_02, Middle Platform ?
 PROJECT_NAME = Projects.Thessaloniki
 
