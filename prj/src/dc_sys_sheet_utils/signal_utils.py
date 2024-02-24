@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...utils import *
-from ...cctool_oo_schema import *
-from ..load_database import *
-from ..dc_sys_common_utils import *
-from ..dc_sys_get_zones import *
-from ..dc_sys_path_and_distances import *
+from ..utils import *
+from ..cctool_oo_schema import *
+from ..dc_sys import *
+from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream
+from ..dc_sys_draw_path.dc_sys_get_zones import get_zones_on_point
 from .ivb_utils import get_next_ivb_limits_from_point
 
 

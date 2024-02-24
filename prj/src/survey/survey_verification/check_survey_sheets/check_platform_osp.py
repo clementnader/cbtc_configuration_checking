@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 from ....cctool_oo_schema import *
 from ....dc_sys import *
 from .common_utils import *
@@ -23,7 +22,7 @@ def check_platform_osp(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str,
         dc_sys_track = dc_sys_track.upper()
 
         test_names = [obj_name]
-        survey_name = test_other_track_name(test_names, dc_sys_track, survey_info)
+        survey_name = test_names_in_survey(test_names, dc_sys_track, survey_info)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)

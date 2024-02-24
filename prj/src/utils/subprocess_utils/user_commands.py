@@ -29,10 +29,10 @@ def get_user_full_name() -> str:
     #         full_name = out
     #         break
     full_name = get_display_name()
-    print_log(f"\tFound display name is \"{full_name}\".")
     if not full_name:
         print_log(f"\tUnable to find the user name.")
         return ""
+    print_log(f"\tFound user name is {Color.default}\"{full_name}\"{Color.reset}.")
     if "(" in full_name:
         full_name = full_name.split("(", 1)[0].strip()
     if "," in full_name:

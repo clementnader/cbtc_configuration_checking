@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...fouling_points import fouling_points
-from ...cctool_oo_schema import *
-from ..load_database import *
-from ..dc_sys_common_utils import *
+from ..fouling_points import fouling_points
+from ..cctool_oo_schema import *
+from ..dc_sys import *
 
 
 def get_fouling_point_seg_offset(sw_name, fouling_point_kp, heel_direction):

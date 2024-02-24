@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 from ....cctool_oo_schema import *
 from ....dc_sys import *
 from .common_utils import *
@@ -27,7 +26,7 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
         test_names = [obj_name, other_name]
         if obj_name.startswith("TAG_"):
             test_names.append("PTSA_" + obj_name.removeprefix("TAG_"))
-        survey_name = test_other_track_name(test_names, dc_sys_track, tag_survey_info)
+        survey_name = test_names_in_survey(test_names, dc_sys_track, tag_survey_info)
         survey_obj_info = tag_survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)

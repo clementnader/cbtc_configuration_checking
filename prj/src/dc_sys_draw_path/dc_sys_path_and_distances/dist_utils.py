@@ -3,7 +3,7 @@
 
 from ...utils import *
 from ...cctool_oo_schema import *
-from ..dc_sys_common_utils import *
+from ...dc_sys import *
 from .path_utils import *
 
 

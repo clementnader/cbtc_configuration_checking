@@ -4,6 +4,7 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
+from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist_downstream
 
 
 def verif_calib_distance():

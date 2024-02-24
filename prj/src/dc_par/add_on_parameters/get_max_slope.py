@@ -3,6 +3,7 @@
 
 from ...cctool_oo_schema import *
 from ...dc_sys import *
+from ...dc_sys_get_cbtc_territory import *
 
 
 def get_max_slope(in_cbtc: bool = True, verbose: bool = True):

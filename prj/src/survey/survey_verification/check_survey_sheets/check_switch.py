@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ....cctool_oo_schema import *
-from ....dc_sys import *
+from ....dc_sys_sheet_utils.switch_utils import get_dc_sys_switch_points_dict
 from .common_utils import *
 
 
@@ -24,7 +24,7 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         if obj_name.endswith("_R"):
             test_names.append(obj_name.removesuffix("_R") + "_D")
 
-        survey_name = test_other_track_name(test_names, dc_sys_track, survey_info)
+        survey_name = test_names_in_survey(test_names, dc_sys_track, survey_info)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)

@@ -4,7 +4,7 @@
 from ....utils import *
 
 
-__all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_other_track_name", "get_test_tracks"]
+__all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_survey"]  # , "get_test_tracks"
 
 
 def add_info_to_survey(survey_obj_info: Optional[dict[str]], dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float):
@@ -35,24 +35,23 @@ def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info:
     return extra_dict
 
 
-def test_other_track_name(test_names: list[str], track: str, survey_info: dict[str]) -> str:
-    for test_track in get_test_tracks(track):
-        for test_name in test_names:
-            test_name_in_survey = _test_name_in_survey(test_name, test_track, survey_info)
-            if test_name_in_survey is not None:
-                return test_name_in_survey
+def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[str]) -> str:
+    for test_name in test_names:
+        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info)
+        if test_name_in_survey is not None:
+            return test_name_in_survey
     return f"{test_names[0]}__{track}".upper()  # default
 
 
-def get_test_tracks(track: str) -> list[str]:
-    test_tracks = [track]
-    if track == "T1":
-        test_tracks.append("TRACK_1")
-    elif track == "T2":
-        test_tracks.append("TRACK_2")
-    # elif track.endswith("_02W"):
-    #     test_tracks.append(track.removesuffix("_02W") + "_02")
-    return test_tracks
+# def get_test_tracks(track: str) -> list[str]:
+#     test_tracks = [track]
+#     if track == "T1":
+#         test_tracks.append("TRACK_1")
+#     elif track == "T2":
+#         test_tracks.append("TRACK_2")
+#     # elif track.endswith("_02W"):
+#     #     test_tracks.append(track.removesuffix("_02W") + "_02")
+#     return test_tracks
 
 
 def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str]):

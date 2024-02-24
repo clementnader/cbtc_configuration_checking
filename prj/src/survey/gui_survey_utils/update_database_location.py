@@ -5,7 +5,6 @@ import os
 from ...utils import *
 from ...database_location import *
 from ...dc_sys import *
-from ..load_survey import clean_loaded_survey
 
 
 __all__ = ["update_database_loc"]
@@ -27,7 +26,6 @@ def update_database_loc(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
         DATABASE_LOC.block_def = os.path.join(block_def_directory.get(), block_def_file_name.get()
                                               ).replace("/", os.path.sep)
 
-    clean_loaded_survey()
     DATABASE_LOC.survey_loc.survey_addr = list()
     DATABASE_LOC.survey_loc.survey_sheet = list()
     DATABASE_LOC.survey_loc.all_sheets = list()

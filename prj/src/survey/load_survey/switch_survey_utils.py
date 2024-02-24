@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...dc_sys import *
+from ...dc_sys_sheet_utils.switch_utils import (get_corresponding_center_switch_point_track,
+                                                get_corresponding_heels_switch_point_track)
 
 
 __all__ = ["add_switch_center_points", "add_switch_heel_points"]

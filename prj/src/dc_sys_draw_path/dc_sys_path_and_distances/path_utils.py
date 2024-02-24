@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ...cctool_oo_schema import *
-from ..load_database import *
-from ..dc_sys_common_utils import *
+from ...dc_sys import *
 
 
 __all__ = ["get_all_accessible_segments_from", "get_all_upstream_segments", "get_all_downstream_segments",

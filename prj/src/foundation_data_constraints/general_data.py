@@ -4,6 +4,8 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
+from ..dc_sys_sheet_utils.msg_itf_utils import get_sub_dict_hf_general_data, get_sub_dict_lf_general_data
+from ..dc_sys_sheet_utils.platform_utils import get_atb_zone_related_to_plt
 
 
 def cf_dg_1():

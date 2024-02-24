@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from ...dc_sys import *
 
 
 __all__ = ["add_block_joint_def_frame"]

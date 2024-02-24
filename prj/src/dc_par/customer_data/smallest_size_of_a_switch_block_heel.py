@@ -4,6 +4,8 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ...dc_sys import *
+from ...dc_sys_get_cbtc_territory import *
+from ...dc_sys_sheet_utils.virtual_block_utils import *
 
 
 __all__ = ["smallest_size_of_a_switch_block_heel"]

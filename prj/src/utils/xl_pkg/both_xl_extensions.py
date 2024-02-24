@@ -7,8 +7,8 @@ from ..colors_pkg import *
 from .xl_utils import *
 
 
-__all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_number_of_rows", "get_xl_sheet_names",
-           "get_xl_cell_value", "get_xl_float_value"]
+__all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_number_of_rows", "get_xl_number_of_columns",
+           "get_xl_sheet_names", "get_xl_cell_value", "get_xl_float_value"]
 
 
 def load_xl_file(xl_file_address: str) -> Optional[Union[xlrd.book.Book, openpyxl.workbook.Workbook]]:
@@ -46,6 +46,13 @@ def get_xl_number_of_rows(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> int:
         return ws.nrows
     elif isinstance(ws, xl_ws.Worksheet):
         return ws.max_row
+
+
+def get_xl_number_of_columns(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> int:
+    if isinstance(ws, xlrd.sheet.Sheet):
+        return ws.ncols
+    elif isinstance(ws, xl_ws.Worksheet):
+        return ws.max_column
 
 
 def get_xl_cell_value(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],

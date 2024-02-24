@@ -3,6 +3,10 @@
 
 from ..utils import *
 from ..dc_sys import *
+from ..dc_sys_get_cbtc_territory import *
+from ..dc_sys_sheet_utils.block_utils import get_block_associated_to_sw, find_upstream_n_downstream_limits
+from ..dc_sys_sheet_utils.slope_utils import *
+from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist
 from ..dc_par import *
 from ..cctool_oo_schema import *
 

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from ...utils import *
-from ...dc_sys_sheet_utils import *
+from ..utils import *
+from ..dc_sys_sheet_utils import *
 
 
 FOULING_POINT_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "Fouling Points template.xlsx")

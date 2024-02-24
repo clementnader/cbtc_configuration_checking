@@ -9,6 +9,10 @@ from .control_tables import *
 from .dc_bop import *
 from .dc_par import *
 from .dc_sys import *
+from .dc_sys_draw_path import *
+from .dc_sys_get_cbtc_territory import *
+from .dc_sys_sheet_utils import *
+from .fouling_points_utils import *
 from .foundation_data_constraints import *
 from .parameters_constraints import *
 from .survey import *

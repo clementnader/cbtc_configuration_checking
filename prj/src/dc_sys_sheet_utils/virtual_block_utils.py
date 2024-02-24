@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...utils import *
-from ...cctool_oo_schema import *
-from ..load_database import *
-from ..dc_sys_path_and_distances import *
+from ..utils import *
+from ..cctool_oo_schema import *
+from ..dc_sys import *
+from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream, get_dist, get_list_of_paths
 
 
 __all__ = ["give_point_seg_vb", "get_len_vb", "get_segs_in_vb", "is_seg_in_vb", "get_vb_associated_to_sw",

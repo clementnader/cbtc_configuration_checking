@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
 from ..survey_types import *
 
 
 __all__ = ["create_check_survey_dict"]
 
 
-def create_check_survey_dict(survey_info):
+def create_check_survey_dict(survey_info, block_def_dict: Optional[dict[str, list[str]]]):
     survey_verif_dict = dict()
     for survey_type, survey_type_value in SURVEY_TYPES_DICT.items():
         if survey_type in ["OSP", "VERSION TAG"]:
@@ -21,6 +22,9 @@ def create_check_survey_dict(survey_info):
         elif survey_type == "TAG":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
                 func(dcsys_sh, res_sheet, survey_info.get("TAG"), survey_info.get("VERSION TAG")))
+        elif survey_type == "TC":
+            survey_verif_dict[res_sheet] = _order_survey_verif_dict(
+                func(dcsys_sh, res_sheet, survey_info.get("TC"), block_def_dict, survey_info.get("SIGNAL_BUFFER")))
         else:
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
                 func(dcsys_sh, res_sheet, survey_info.get(survey_type)))

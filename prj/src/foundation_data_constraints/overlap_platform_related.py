@@ -4,6 +4,7 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
+from ..dc_sys_sheet_utils.platform_utils import is_platform_limit_1_upstream_limit_2
 
 
 def ixl_overlap_platform_related():

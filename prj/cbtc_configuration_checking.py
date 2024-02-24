@@ -90,7 +90,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()  # v2_0
+    # check_survey()  # v2_1
     # survey_window()
     # cctool_schema_window()
     return

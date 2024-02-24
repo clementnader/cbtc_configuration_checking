@@ -21,10 +21,10 @@ G_INITIAL_DIRECTORY = DESKTOP_DIRECTORY
 def disable_frame(frame: Union[tkinter.Tk, tkinter.Frame]):
     for child in frame.winfo_children():
         wtype = child.winfo_class()
-        if wtype not in ("Frame", "Labelframe", "TFrame", "TLabelframe"):
-            child.configure(state=tkinter.DISABLED)
-        else:  # child is a frame
+        if wtype in ("Frame", "Labelframe", "TFrame", "TLabelframe"):  # child is a frame
             disable_frame(child)  # recursive call
+        else:
+            child.configure(state=tkinter.DISABLED)
 
 
 def enable_frame(frame: Union[tkinter.Tk, tkinter.Frame]):

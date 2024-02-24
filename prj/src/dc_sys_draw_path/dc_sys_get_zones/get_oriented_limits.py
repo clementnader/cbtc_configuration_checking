@@ -3,8 +3,8 @@
 
 from ...utils import *
 from ...cctool_oo_schema import *
-from ..dc_sys_common_utils import *
-from ..dc_sys_path_and_distances import *
+from ...dc_sys import *
+from ..dc_sys_path_and_distances import is_seg_downstream
 
 
 __all__ = ["get_oriented_limits_of_obj"]

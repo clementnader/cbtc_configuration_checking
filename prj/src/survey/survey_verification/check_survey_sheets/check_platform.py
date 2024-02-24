@@ -84,8 +84,8 @@ def _get_corresponding_survey_same_track(plt_name: str, lim1_track: str, lim1_kp
     if not list_survey_limits:  # platform not surveyed
         return survey_name_dict
     elif len(list_survey_limits) == 1:
-        print_log(f"Only one platform end has been found in survey for {plt_name}:\n"
-                  f"{list_survey_limits[0].removesuffix(f'__{lim1_track}')}\n")
+        print_log(f"\nOnly one platform end has been found in survey for {Color.yellow}{plt_name}{Color.reset}:\n"
+                  f"{Color.default}{list_survey_limits[0].removesuffix(f'__{lim1_track}')}{Color.reset}")
         # Find for which DC_SYS limit the difference is the smallest
         survey_name = list_survey_limits[0]
         surveyed_kp = plt_survey_info[survey_name]["surveyed_kp"]

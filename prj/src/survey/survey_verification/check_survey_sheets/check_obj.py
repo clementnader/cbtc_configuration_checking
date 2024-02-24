@@ -22,9 +22,11 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
         dc_sys_track = dc_sys_track.upper()
 
         test_names = [obj_name]
-        if obj_name.startswith("STOP_SIG"):
-            test_names.append("SIG_" + obj_name.removeprefix("STOP_SIG"))
-        survey_name = test_other_track_name(test_names, dc_sys_track, survey_info)
+        if obj_name.startswith("STOP_SIG_"):
+            other_name = "SIG_" + obj_name.removeprefix("STOP_SIG_")
+            if other_name not in dc_sys_dict:  # if there is not already a signal called that
+                test_names.append(other_name)
+        survey_name = test_names_in_survey(test_names, dc_sys_track, survey_info)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)

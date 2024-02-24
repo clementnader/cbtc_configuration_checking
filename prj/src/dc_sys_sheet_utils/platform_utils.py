@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...cctool_oo_schema import *
-from ..load_database import *
-from ..dc_sys_path_and_distances import *
+from ..cctool_oo_schema import *
+from ..dc_sys import *
+from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream
 
 
 __all__ = ["get_atb_zone_related_to_plt", "is_platform_limit_1_upstream_limit_2"]

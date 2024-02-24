@@ -184,9 +184,9 @@ def launch_function(window: tkinter.Tk, dc_sys_directory: tkinter.StringVar, dc_
                 print_error(f"Unable to save file.")
             else:
                 print_error(f"Error during process, verify your inputs.")
-            window.deiconify()  # unhide window
+            window.deiconify()  # un-hide window
         if success:
-            window.deiconify()  # unhide window
+            window.deiconify()  # un-hide window
             window.wm_state("iconic")  # minimize window
     else:
         tkinter.messagebox.showinfo(title="Missing Information", message="Information is missing to launch the tool.")

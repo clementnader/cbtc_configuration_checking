@@ -5,7 +5,6 @@ import os
 from ...utils import *
 from ...database_location import *
 from ..survey_types import *
-from .load_xl import *
 from .switch_survey_utils import *
 
 
@@ -14,16 +13,19 @@ __all__ = ["load_survey"]
 
 def load_survey() -> dict:
     survey_info = dict()
-    for (survey_addr, survey_sheet, all_sheets, start_row,
-         ref_col, type_col, track_col, survey_kp_col) in get_survey_loc_info():
+    nb_of_survey = len(list(get_survey_loc_info()))
+    for i, (survey_addr, survey_sheet, all_sheets, start_row,
+            ref_col, type_col, track_col, survey_kp_col) in enumerate(get_survey_loc_info(), start=1):
         missing_types = list()
         if all_sheets:
-            print_log(f"\nLoading {Color.blue}all sheets{Color.reset} of "
-                      f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
+            print(f"\n {i}/{nb_of_survey} - "
+                  f"{Color.white}{Color.underline}Loading {Color.blue}all sheets{Color.white} of "
+                  f"survey file {Color.cyan}{survey_addr}{Color.white}...{Color.reset}")
         else:
-            print_log(f"\nLoading sheet {Color.blue}{survey_sheet}{Color.reset} of "
-                      f"survey file {Color.cyan}{survey_addr}{Color.reset}...")
-        wb = load_survey_wb(survey_addr)
+            print(f"\n {i}/{nb_of_survey} - "
+                  f"{Color.white}{Color.underline}Loading sheet {Color.blue}{survey_sheet}{Color.white} of "
+                  f"survey file {Color.cyan}{survey_addr}{Color.white}...{Color.reset}")
+        wb = load_xl_file(survey_addr)
         if all_sheets:
             sheet_names = get_xl_sheet_names(wb)
         else:
@@ -35,7 +37,9 @@ def load_survey() -> dict:
                 get_survey(survey_info, survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
                            os.path.split(survey_addr)[-1], missing_types))
         if missing_types:
-            print_log(f"\tThe following survey types are not loaded: {', '.join(missing_types)}.")
+            print(f"\n\t> The following type{'s' if len(missing_types) > 1 else ''} in the survey "
+                  f"{'are' if len(missing_types) > 1 else 'is'} not loaded: "
+                  f"{Color.yellow}{', '.join(missing_types)}{Color.reset}.")
     return survey_info
 
 
@@ -68,7 +72,8 @@ def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_co
         if not obj_name:
             continue
         key_name = obj_name.upper()
-        key_name = key_name.replace("-", "_").replace(" ", "")
+        key_name = key_name.replace("-", "_")
+        key_name = "".join(key_name.split())  # remove all spaces
 
         type_name = get_xl_cell_value(survey_ws, row=row, column=type_col)
         survey_type = _get_survey_type(type_name, missing_types)
@@ -81,8 +86,8 @@ def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_co
         if surveyed_kp is None:
             continue
         if not (isinstance(surveyed_kp, float) or isinstance(surveyed_kp, int)):
-            print_warning(f"Surveyed KP of {type_name} {key_name} in \"{survey_name}\" is not a number:\n"
-                          f"{type(surveyed_kp)} \"{surveyed_kp}\". Object is considered not surveyed.")
+            print_log(f"Surveyed KP of {type_name} {key_name} in \"{survey_name}\" is not a number:\n"
+                      f"\t{type(surveyed_kp)} \"{surveyed_kp}\". Object is considered not surveyed.")
             continue
 
         surveyed_kp_comment = f"From {survey_name}"

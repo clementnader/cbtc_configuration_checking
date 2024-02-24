@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..cctool_oo_schema import *
-from ..dc_sys import *
+from ...cctool_oo_schema import *
+from ..load_database import *
 
 
 __all__ = ["get_track_limits"]

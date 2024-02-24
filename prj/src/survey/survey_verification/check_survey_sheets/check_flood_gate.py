@@ -26,7 +26,7 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
         dc_sys_track, dc_sys_kp = obj_val
         dc_sys_track = dc_sys_track.upper()
 
-        survey_name = test_other_track_name([obj_name], dc_sys_track, survey_info)
+        survey_name = test_names_in_survey([obj_name], dc_sys_track, survey_info)
         survey_obj_info = survey_info.get(survey_name)
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
@@ -111,12 +111,10 @@ def _get_survey_obj_ends(obj_name: str, track_smaller_kp: str, track_larger_kp: 
             continue
 
         test = False
-        for test_track_smaller_kp in get_test_tracks(track_smaller_kp):
-            if survey_name.endswith(f"{obj_name}__{test_track_smaller_kp}".upper()):
-                test = True
-        for test_track_larger_kp in get_test_tracks(track_larger_kp):
-            if survey_name.endswith(f"{obj_name}__{test_track_larger_kp}".upper()):
-                test = True
+        if survey_name.endswith(f"{obj_name}__{track_smaller_kp}".upper()):
+            test = True
+        if survey_name.endswith(f"{obj_name}__{track_larger_kp}".upper()):
+            test = True
         if test:
             obj_ends.append(survey_name)
     return obj_ends

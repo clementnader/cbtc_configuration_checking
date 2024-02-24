@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...dc_bop import *
-from ...cctool_oo_schema import *
-from ..load_database import *
+from ..dc_bop import *
+from ..cctool_oo_schema import *
+from ..dc_sys import *
 
 
 __all__ = ["get_overlap"]

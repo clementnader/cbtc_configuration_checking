@@ -4,6 +4,8 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
+from ..dc_sys_get_cbtc_territory import *
+from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream
 
 
 def cf_zsm_cbtc_10():

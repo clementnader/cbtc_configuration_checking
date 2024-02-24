@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...utils import *
-from ...cctool_oo_schema import *
-from ..load_database import *
-from ..dc_sys_common_utils import *
+from ..utils import *
+from ..cctool_oo_schema import *
+from ..dc_sys import *
 from .cbtc_territory_utils import *
 
 
