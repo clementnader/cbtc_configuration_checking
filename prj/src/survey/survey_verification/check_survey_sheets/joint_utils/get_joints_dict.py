@@ -16,27 +16,34 @@ def get_joints_dict() -> dict[str, dict[str]]:
         matching_blocks = _find_associated_blocks(block_name, block_val)
         if "IVB" in get_class_attr_dict(DCSYS):
             for limit_position, matching_block_name in matching_blocks.items():
-                joint_name, joint_name2, list_matching_ivb = _get_corresponding_ivb_joint(matching_block_name,
-                                                                                          limit_position)
+                joint_name, joint_name2, joint_name3, joint_name4, list_matching_ivb = (
+                    _get_corresponding_ivb_joint(matching_block_name, limit_position))
                 joint_name, joint_name2 = _get_new_joint_names(joints_dict, joint_name, joint_name2, limit_position)
                 if joint_name is not None:
-                    tc_joint_name, tc_joint_name2 = _get_corresponding_tc_joint(block_name, matching_block_name)
-                    ivb_other_name, ivb_other_name2 = _get_ivb_other_names_limit_of_track(limit_position,
-                                                                                          list_matching_ivb)
-                    tc_other_name, tc_other_name2 = _get_tc_other_names_limit_of_track(limit_position, block_name,
-                                                                                       tc_joint_name2)
-                    joints_dict[joint_name] = {"other_names": [joint_name2, tc_joint_name, tc_joint_name2,
-                                                               ivb_other_name, ivb_other_name2,
-                                                               tc_other_name, tc_other_name2],
+                    tc_joint_name, tc_joint_name2, tc_joint_name3, tc_joint_name4 = (
+                        _get_corresponding_tc_joint(block_name, matching_block_name))
+                    # ivb_other_name, ivb_other_name2 = _get_ivb_other_names_limit_of_track(limit_position,
+                    #                                                                       list_matching_ivb)
+                    # tc_other_name, tc_other_name2, tc_other_name3, tc_other_name4 = (
+                    #     _get_tc_other_names_limit_of_track(limit_position, block_name, tc_joint_name2))
+                    joints_dict[joint_name] = {"other_names": [joint_name2, joint_name3, joint_name4, tc_joint_name,
+                                                               tc_joint_name2, tc_joint_name3, tc_joint_name4],
+                                               # "other_names": [joint_name2, tc_joint_name, tc_joint_name2,
+                                               #                 ivb_other_name, ivb_other_name2,
+                                               #                 tc_other_name, tc_other_name2,
+                                               #                 tc_other_name3, tc_other_name4],
                                                "position": limit_position}
         else:  # for V4 projects
             for limit_position, matching_block_name in matching_blocks.items():
-                joint_name, joint_name2 = _get_corresponding_tc_joint(block_name, matching_block_name)
+                joint_name, joint_name2, joint_name3, joint_name4 = (
+                    _get_corresponding_tc_joint(block_name, matching_block_name))
                 joint_name, joint_name2 = _get_new_joint_names(joints_dict, joint_name, joint_name2, limit_position)
                 if joint_name is not None:
-                    tc_other_name, tc_other_name2 = _get_tc_other_names_limit_of_track(limit_position, block_name,
-                                                                                       joint_name2)
-                    joints_dict[joint_name] = {"other_names": [joint_name2, tc_other_name, tc_other_name2],
+                    # tc_other_name, tc_other_name2, tc_other_name3, tc_other_name4 = (
+                    #     _get_tc_other_names_limit_of_track(limit_position, block_name, joint_name2))
+                    joints_dict[joint_name] = {"other_names": [joint_name2, joint_name3, joint_name4],
+                                               # "other_names": [joint_name2, tc_other_name, tc_other_name2,
+                                               #                 tc_other_name3, tc_other_name4],
                                                "position": limit_position}
 
     return joints_dict
@@ -48,44 +55,34 @@ def _get_new_joint_names(joints_dict: dict[str, dict[str]], joint_name: str, joi
     new_joint_name2 = joint_name2
     track = limit_position[0]
     if joint_name in joints_dict:
-        if limit_position != joints_dict[joint_name]["position"]:
-            old_track = joints_dict[joint_name]["position"][0]
-            if old_track == track:
-                print_warning(f"Joint {joint_name} is already in the dictionary of joints.")
-                print(f"Old position: {joints_dict[joint_name]['position']}")
-                print(f"New position: {limit_position}")
-                new_joint_name = joint_name + "_2"
-                new_joint_name2 = joint_name2 + "_2" if joint_name2 is not None else None
-            else:
-                joints_dict[f"{joint_name}__on_{old_track}"] = joints_dict[joint_name]
-                del joints_dict[joint_name]
-                new_joint_name = f"{joint_name}__on_{track}"
-                new_joint_name2 = f"{joint_name2}__on_{track}"
+        _add_new_joint_on_other_track(joint_name, joint_name2, track, limit_position, joints_dict)
+    elif joint_name2 is not None and joint_name2 in joints_dict:
+        _add_new_joint_on_other_track(joint_name2, joint_name, track, limit_position, joints_dict)
+    return new_joint_name, new_joint_name2
+
+
+def _add_new_joint_on_other_track(joint_name, joint_name2, track, limit_position, joints_dict):
+    if limit_position != joints_dict[joint_name]["position"]:
+        old_track = joints_dict[joint_name]["position"][0]
+        if old_track == track:
+            print_error(f"Joint {joint_name} is already in the dictionary of joints.")
+            print(f"Old position: {joints_dict[joint_name]['position']}")
+            print(f"New position: {limit_position}")
+            new_joint_name = joint_name + "_2"
+            new_joint_name2 = joint_name2 + "_2" if joint_name2 is not None else None
         else:
-            new_joint_name = None
-            new_joint_name2 = None
-    if joint_name2 is not None and joint_name2 in joints_dict:
-        if limit_position != joints_dict[joint_name2]["position"]:
-            old_track = joints_dict[joint_name2]["position"][0]
-            if old_track == track:
-                print_warning(f"Joint {joint_name2} is already in the dictionary of joints.")
-                print(f"Old position: {joints_dict[joint_name2]['position']}")
-                print(f"New position: {limit_position}")
-                new_joint_name = joint_name2 + "_2"
-                new_joint_name2 = joint_name + "_2"
-            else:
-                joints_dict[f"{joint_name2}__on_{old_track}"] = joints_dict[joint_name]
-                del joints_dict[joint_name2]
-                new_joint_name = f"{joint_name2}__on_{track}"
-                new_joint_name2 = f"{joint_name}__on_{track}"
-        else:
-            new_joint_name = None
-            new_joint_name2 = None
+            joints_dict[f"{joint_name}__on_{old_track}"] = joints_dict[joint_name]
+            del joints_dict[joint_name]
+            new_joint_name = f"{joint_name}__on_{track}"
+            new_joint_name2 = f"{joint_name2}__on_{track}" if joint_name2 is not None else None
+    else:
+        new_joint_name = None
+        new_joint_name2 = None
     return new_joint_name, new_joint_name2
 
 
 def _get_corresponding_ivb_joint(matching_block_name: str, limit_position: tuple[str, float]
-                                 ) -> tuple[str, Optional[str], list[str]]:
+                                 ) -> tuple[str, Optional[str], Optional[str], Optional[str], list[str]]:
     list_matching_ivb = _get_ivb_matching_limit(limit_position)
     if not list_matching_ivb:
         print_warning(f"No IVB has been found matching this limit {limit_position} of block {matching_block_name}.")
@@ -93,12 +90,16 @@ def _get_corresponding_ivb_joint(matching_block_name: str, limit_position: tuple
         ivb_name = list_matching_ivb[0]
         joint_name = "JOI_" + ivb_name.removeprefix("IVB_") + matching_block_name
         joint_name2 = None
+        joint_name3 = None
+        joint_name4 = None
     else:
         ivb_name = list_matching_ivb[0]
         ivb_name2 = list_matching_ivb[1]
         joint_name = _get_joint_name(ivb_name, ivb_name2)
         joint_name2 = _get_joint_name(ivb_name2, ivb_name)
-    return joint_name, joint_name2, list_matching_ivb
+        joint_name3 = _get_joint_name_other_way(ivb_name, ivb_name2)
+        joint_name4 = _get_joint_name_other_way(ivb_name2, ivb_name)
+    return joint_name, joint_name2, joint_name3, joint_name4, list_matching_ivb
 
 
 def _get_ivb_matching_limit(limit_position: tuple[str, float]) -> list[str]:
@@ -115,66 +116,75 @@ def _get_corresponding_tc_joint(block_name: str, matching_block_name: str) -> tu
     if matching_block_name.startswith("_"):
         joint_name = "JOI_" + block_name.removeprefix("TC_") + matching_block_name
         joint_name2 = None
+        joint_name3 = None
+        joint_name4 = None
     else:
         joint_name = _get_joint_name(matching_block_name, block_name)
         joint_name2 = _get_joint_name(block_name, matching_block_name)
-    return joint_name, joint_name2
+        joint_name3 = _get_joint_name_other_way(matching_block_name, block_name)
+        joint_name4 = _get_joint_name_other_way(block_name, matching_block_name)
+    return joint_name, joint_name2, joint_name3, joint_name4
 
 
-def _get_ivb_other_names_limit_of_track(limit_position: tuple[str, float], list_matching_ivb: list[str]
-                                        ) -> tuple[Optional[str], Optional[str]]:
-    if len(list_matching_ivb) == 2:
-        return None, None
-    ivb_name = list_matching_ivb[0]
-    ivb_dict = load_sheet(DCSYS.IVB)
-    ivb_track_kp_limits = get_dc_sys_zip_values(ivb_dict[ivb_name], DCSYS.IVB.Limit.Track, DCSYS.IVB.Limit.Kp)
-    ivb_seg_offset_limits = get_dc_sys_zip_values(ivb_dict[ivb_name], DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X)
-    ref_limit_seg, ref_limit_x = [(seg, x) for (seg, x), (track, kp) in zip(ivb_seg_offset_limits, ivb_track_kp_limits)
-                                  if (track, kp) == limit_position][0]
-    list_matching_ivb_2 = list()
-    for test_ivb, test_ivb_value in ivb_dict.items():
-        test_limits = get_dc_sys_zip_values(test_ivb_value, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X)
-        if any(are_points_matching(ref_limit_seg, ref_limit_x, test_seg, test_x) for test_seg, test_x in test_limits):
-            list_matching_ivb_2.append(test_ivb)
+# def _get_ivb_other_names_limit_of_track(limit_position: tuple[str, float], list_matching_ivb: list[str]
+#                                         ) -> tuple[Optional[str], Optional[str]]:
+#     if len(list_matching_ivb) == 2:
+#         return None, None
+#     ivb_name = list_matching_ivb[0]
+#     ivb_dict = load_sheet(DCSYS.IVB)
+#     ivb_track_kp_limits = get_dc_sys_zip_values(ivb_dict[ivb_name], DCSYS.IVB.Limit.Track, DCSYS.IVB.Limit.Kp)
+#     ivb_seg_offset_limits = get_dc_sys_zip_values(ivb_dict[ivb_name], DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X)
+#     ref_limit_seg, ref_limit_x = [(seg, x) for (seg, x), (track, kp) in zip(ivb_seg_offset_limits, ivb_track_kp_limits)
+#                                   if (track, kp) == limit_position][0]
+#     list_matching_ivb_2 = list()
+#     for test_ivb, test_ivb_value in ivb_dict.items():
+#         test_limits = get_dc_sys_zip_values(test_ivb_value, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X)
+#         if any(are_points_matching(ref_limit_seg, ref_limit_x, test_seg, test_x) for test_seg, test_x in test_limits):
+#             list_matching_ivb_2.append(test_ivb)
+#
+#     if len(list_matching_ivb_2) == 1:
+#         return None, None
+#
+#     ivb_name = list_matching_ivb_2[0]
+#     ivb_name2 = list_matching_ivb_2[1]
+#     joint_name = _get_joint_name(ivb_name, ivb_name2)
+#     joint_name2 = _get_joint_name(ivb_name2, ivb_name)
+#     return joint_name, joint_name2
 
-    if len(list_matching_ivb_2) == 1:
-        return None, None
 
-    ivb_name = list_matching_ivb_2[0]
-    ivb_name2 = list_matching_ivb_2[1]
-    joint_name = _get_joint_name(ivb_name, ivb_name2)
-    joint_name2 = _get_joint_name(ivb_name2, ivb_name)
-    return joint_name, joint_name2
-
-
-def _get_tc_other_names_limit_of_track(limit_position: tuple[str, float], block_name: str, tc_joint_name2: Optional[str]
-                                       ) -> tuple[Optional[str], Optional[str]]:
-    if tc_joint_name2 is not None:
-        return None, None
-    cdv_dict = load_sheet(DCSYS.CDV)
-    cdv_track_kp_limits = get_dc_sys_zip_values(cdv_dict[block_name], DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk)
-    cdv_seg_offset_limits = get_dc_sys_zip_values(cdv_dict[block_name], DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)
-    ref_limit_seg, ref_limit_x = [(seg, x) for (seg, x), (track, kp) in zip(cdv_seg_offset_limits, cdv_track_kp_limits)
-                                  if (track, kp) == limit_position][0]
-    list_matching_cdv_2 = list()
-    for test_cdv, test_cdv_value in cdv_dict.items():
-        test_limits = get_dc_sys_zip_values(test_cdv_value, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)
-        if any(are_points_matching(ref_limit_seg, ref_limit_x, test_seg, test_x) for test_seg, test_x in test_limits):
-            list_matching_cdv_2.append(test_cdv)
-
-    if len(list_matching_cdv_2) == 1:
-        return None, None
-
-    cdv_name = list_matching_cdv_2[0]
-    cdv_name2 = list_matching_cdv_2[1]
-    joint_name = _get_joint_name(cdv_name, cdv_name2)
-    joint_name2 = _get_joint_name(cdv_name2, cdv_name)
-    return joint_name, joint_name2
+# def _get_tc_other_names_limit_of_track(limit_position: tuple[str, float], block_name: str, tc_joint_name2: Optional[str]
+#                                        ) -> tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
+#     if tc_joint_name2 is not None:
+#         return None, None, None, None
+#     cdv_dict = load_sheet(DCSYS.CDV)
+#     cdv_track_kp_limits = get_dc_sys_zip_values(cdv_dict[block_name], DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk)
+#     cdv_seg_offset_limits = get_dc_sys_zip_values(cdv_dict[block_name], DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)
+#     ref_limit_seg, ref_limit_x = [(seg, x) for (seg, x), (track, kp) in zip(cdv_seg_offset_limits, cdv_track_kp_limits)
+#                                   if (track, kp) == limit_position][0]
+#     list_matching_cdv_2 = list()
+#     for test_cdv, test_cdv_value in cdv_dict.items():
+#         test_limits = get_dc_sys_zip_values(test_cdv_value, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X)
+#         if any(are_points_matching(ref_limit_seg, ref_limit_x, test_seg, test_x) for test_seg, test_x in test_limits):
+#             list_matching_cdv_2.append(test_cdv)
+#
+#     if len(list_matching_cdv_2) == 1:
+#         return None, None, None, None
+#
+#     cdv_name = list_matching_cdv_2[0]
+#     cdv_name2 = list_matching_cdv_2[1]
+#     joint_name = _get_joint_name(cdv_name, cdv_name2)
+#     joint_name2 = _get_joint_name(cdv_name2, cdv_name)
+#     return joint_name, joint_name2
 
 
 def _get_joint_name(block_name: str, matching_block_name: str) -> str:
     return ("JOI_" + block_name.removeprefix("IVB_").removeprefix("TC_")
             + _get_joint_suffix_name(block_name, matching_block_name))
+
+
+def _get_joint_name_other_way(block_name: str, matching_block_name: str) -> str:
+    return ("JOI_" + block_name.removeprefix("IVB_").removeprefix("TC_") + "_"
+            + matching_block_name.removeprefix("IVB_").removeprefix("TC_"))
 
 
 def _find_associated_blocks(ref_block_name: str, ref_block_val: dict) -> dict[tuple[str, float], str]:
