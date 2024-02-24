@@ -41,12 +41,20 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
 
 def get_display_name(obj_name: str, tc1: str, tc2: Optional[str], track: str,
                      joints_dict: dict[tuple[str, Optional[str], str], tuple[str, float]]) -> str:
-    if tc2 is None:
-        return obj_name
+    if tc2 is not None:
+        same_name_joints = [(block1, block2) for (block1, block2, _) in joints_dict
+                            if (block1, block2) == (tc1, tc2)]
+        if len(same_name_joints) < 2:
+            return obj_name
+        # There are multiple joints with this name, we precise in the name the track to get the unicity
+        return obj_name + f"__on_{track}"
 
-    same_name_joints = [(block1, block2) for (block1, block2, _) in joints_dict
-                        if (block1, block2) == (tc1, tc2)]
-    if len(same_name_joints) < 2:
-        return obj_name
-    # There are multiple joints with this name, we precise in the name the track to get the unicity
-    return obj_name + f"__on_{track}"
+    else:  # tc2 is None
+        same_name_joints = [(block1, block2) for (block1, block2, _) in joints_dict
+                            if (block1, block2) == (tc1, tc2)]
+        if len(same_name_joints) < 2:
+            return obj_name
+        if not obj_name.endswith("__end_of_track"):
+            return obj_name
+        # There are multiple joints with this name, we precise in the name the track to get the unicity
+        return obj_name.removesuffix("_track") + f"_{track}"  # joint is already called __end_of_track
