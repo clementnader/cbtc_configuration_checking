@@ -24,7 +24,22 @@ The tool automates the verification for the following elements:
 
 ### 3.1. Inputs to launch the tool
 - <ins>**CCTool-OO Schema**</ins>: It is an Excel file (.xls) provided in §3.1 of Core Data Preparation Format Specification (C_D413-2). It defines the schema of the DC_SYS_CORE file.
+
+
 - <ins>**DC_SYS**</ins>: It is an Excel file (.xls) provided in the project database C_D470.
+
+
+- *Optionally* <ins>**Block Def.**</ins>: It is an Excel file containing the denomination of the block limits (joints and buffers). It has to be formatted as follows:
+  - 2 lines of header.
+  - 1 column named CDV_ID (usually first column). It contains all blocks names from DC_SYS (sheet CDV).
+  - 2 columns LISTE EXTREMITES::LISTE SEGMENT_ID and LISTE EXTREMITES::LISTE EXT_ABS_SEG (usually the second and third columns). They contain respectively the list of limits segments and the list of the limits offsets. The element of the lists are separated with commas ';'.
+  - and multiple columns named OBJET EXTREMITE N, with N from 1 to the maximum number of block limits. Each column contains the name of the correspond limit that will appear in the survey. 
+  
+  The position of the columns is not relevant for the tool but the name of the columns is.
+
+If this file is not provided, the tool will automatically try to find the block limit names by mixing the two blocks of the limit (ex: JOI_AAA_MMM_BBB_NNN for joint between TC_AAA_MMM and TC_BBB_NNN). It will create various name patterns to try to adapt to the different projects.
+
+
 - <ins>**Survey file(s)**</ins>: They are Excel files (.xls, .xlsx or .xlsm) containing the surveyed information. As the template can differ, the user needs to specify to the tool:
    - the survey sheet name, or you can specify to use all the sheets of the file to get the survey data,
    - the first row containing the surveyed information (after the header line),
@@ -68,7 +83,8 @@ Tool will display to the user all other survey types that are not parsed by the 
 (It is used for the tool to read the DC_SYS in order to know the columns corresponding to each attribute.)
 
 
-4. Then, another window will appear and ask for the **DC_SYS** and the **survey file(s)**. <br />
+4. Then, another window will appear and ask for the **DC_SYS**, optionally the **Block Def.**, and the **survey file(s)**. <br />
+To select a Block Def. file, you need to uncheck **automatic joint names** and select the correspond file.<br />
 Once the survey file has been selected, you need to specify:
    - the **Survey Sheet** name, or you can select the checkbox so that the tool uses **All Sheets** of the survey file to get the survey data,
    - the **First Data Row** containing the surveyed information (after the header),
@@ -111,6 +127,9 @@ For each type of objects that is automated, there is **a dedicated sheet** conta
 
 
 - **<ins>Columns C and D</ins>** contain the **positioning (track, KP)** collected from the **DC_SYS**.
+
+
+- If a Block Def. is used, an extra column will appear in sheet "Block_Joint" containing the corresponding limit name from the file.
 
 
 - **<ins>Column E</ins>** contains the **reference name** from the **survey**.
