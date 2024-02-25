@@ -25,7 +25,7 @@ def check_survey():
     survey_verif_dict = create_check_survey_dict(survey_info, block_def_dict)
 
     print_section_title(f"Creating the result file...")
-    res_file_path = create_survey_verif_file(survey_verif_dict)
+    res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None)
     open_excel_file(res_file_path)
 
     if get_ga_version() < (6, 0, 0, 0):

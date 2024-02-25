@@ -32,7 +32,8 @@ SURVEY_TYPES_DICT = {
                       "func": check_joint,
                       "tol": "joint_tol",
                       "survey_type_names": ["TC", "TRACK CIRCUIT", "TRACK CIRCUITS JOINT",
-                                            "AXLE COUNTER", "INSULATED JOINT"]},
+                                            "AXLE COUNTER", "INSULATED JOINT"],
+                      "multiple_survey_objets": [("TC", None, None), ("SIGNAL_BUFFER", None, None)]},
 
     "SIGNAL":        {"res_sheet": "Signal",
                       "dcsys_sh": DCSYS.Sig,

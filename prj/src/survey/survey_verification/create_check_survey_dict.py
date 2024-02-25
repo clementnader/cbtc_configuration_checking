@@ -8,7 +8,7 @@ from ..survey_types import *
 __all__ = ["create_check_survey_dict"]
 
 
-def create_check_survey_dict(survey_info, block_def_dict: Optional[dict[str, list[str]]]):
+def create_check_survey_dict(survey_info, block_def_dict: Optional[dict[str, dict[tuple[str, float], str]]]):
     survey_verif_dict = dict()
     for survey_type, survey_type_value in SURVEY_TYPES_DICT.items():
         if survey_type in ["OSP", "VERSION TAG"]:

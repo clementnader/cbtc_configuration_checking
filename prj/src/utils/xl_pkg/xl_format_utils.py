@@ -47,6 +47,8 @@ class XlBgColor:
     light_pink = "FFCCFF"
     light_blue2 = "BBCCEE"
     light_blue3 = "BBFFFF"
+    # grey
+    light_grey = "D9D9D9"
 
 
 def get_xl_bg_dimmer_color(bg: str):

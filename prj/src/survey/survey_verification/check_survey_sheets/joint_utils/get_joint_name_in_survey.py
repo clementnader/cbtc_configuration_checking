@@ -10,19 +10,40 @@ __all__ = ["get_joint_name_in_survey"]
 
 
 def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_info:  dict[str],
-                             joint: tuple[str, Optional[str], str],
-                             joints_dict: dict[tuple[str, Optional[str], str], tuple[str, float]],
-                             end_of_track_suffix: str = ""
-                             ) -> tuple[str, Optional[str]]:
-    list_test_names = _get_list_of_joint_test_names_multiple_prefixes(tc1, tc2, joints_dict[joint], end_of_track_suffix)
+                             limit_position: tuple[str, float],
+                             end_of_track_suffix: str = "", block_def_limit_name: str = None,
+                             buffer_survey_info: dict[str, dict[str, float]] = None
+                             ) -> tuple[str, Optional[str], bool]:
+
+    list_test_names = _get_list_of_joint_test_names_multiple_prefixes(tc1, tc2, limit_position,
+                                                                      end_of_track_suffix)
     obj_name = list_test_names[0]
 
-    survey_name = _try_to_find_name_in_survey(obj_name, list_test_names, track, survey_info)
+    survey_name = None
+    use_buffer = False
+    if block_def_limit_name is not None:
+        survey_name, use_buffer = _find_survey_name_using_block_def(block_def_limit_name, track, survey_info,
+                                                                    buffer_survey_info)
+
+    if survey_name is None:
+        survey_name = _try_to_find_name_in_survey(obj_name, list_test_names, track, survey_info)
 
     # if survey_name is None:
     #     survey_name = _test_one_obj_on_track(joint, track, joints_dict, survey_info)
 
-    return obj_name, survey_name
+    return obj_name, survey_name, use_buffer
+
+
+def _find_survey_name_using_block_def(block_def_limit_name: str, track: str, survey_info:  dict[str],
+                                      buffer_survey_info: dict[str, dict[str, float]]
+                                      ) -> tuple[Optional[str], bool]:
+    if f"{block_def_limit_name.upper()}__{track}" in survey_info:
+        return f"{block_def_limit_name.upper()}__{track}", False
+
+    elif f"{block_def_limit_name.upper()}__{track}" in buffer_survey_info:
+        return f"{block_def_limit_name.upper()}__{track}", True
+
+    return None, False
 
 
 def _try_to_find_name_in_survey(obj_name: str, list_test_names: list[str], track: str, survey_info:  dict[str],

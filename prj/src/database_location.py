@@ -30,8 +30,8 @@ class Projects:
 
 
 # --- Main projects --- #
-# PROJECT_NAME = Projects.Ankara_L1  # TODO: joint -> BLOCK_DEF file
-# PROJECT_NAME = Projects.Ankara_L2  # TODO: joint -> BLOCK_DEF file
+# PROJECT_NAME = Projects.Ankara_L1  # TODO: verify joint -> BLOCK_DEF file
+# PROJECT_NAME = Projects.Ankara_L2  # TODO: verify joint -> BLOCK_DEF file
 # PROJECT_NAME = Projects.Brussels
 # PROJECT_NAME = Projects.Copenhagen  # TODO: Survey: update floodgate verification as for platform
 # PROJECT_NAME = Projects.Glasgow
@@ -45,11 +45,11 @@ PROJECT_NAME = Projects.Thessaloniki
 # PROJECT_NAME = Projects.BART
 # PROJECT_NAME = Projects.MSH
 # --- India --- #
-# PROJECT_NAME = Projects.KMRC  # TODO: joint -> BLOCK_DEF file
-# PROJECT_NAME = Projects.NMML1  # TODO: joint -> BLOCK_DEF file
+# PROJECT_NAME = Projects.KMRC  # TODO: verify joint -> BLOCK_DEF file
+# PROJECT_NAME = Projects.NMML1  # TODO: verify joint -> BLOCK_DEF file
 # --- China --- #
-# PROJECT_NAME = Projects.Shenyang  # TODO: joint -> BLOCK_DEF file
-# PROJECT_NAME = Projects.Wenzhou  # TODO: Middle Platform ?, joint -> BLOCK_DEF file
+# PROJECT_NAME = Projects.Shenyang
+# PROJECT_NAME = Projects.Wenzhou  # TODO: Middle Platform ?
 # --- Mock-up --- #
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2
