@@ -63,8 +63,9 @@ def get_survey_loc_info():
     return zip(survey_addr, survey_sheet, all_sheets, start_row, ref_col, type_col, track_col, survey_kp_col)
 
 
-def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
-               survey_name: str, missing_types: list[str]) -> dict[str, dict[str]]:
+def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
+               ref_col, type_col, track_col, survey_kp_col,
+               survey_name: str, missing_types: list[str]) -> dict[str, dict[str, Any]]:
     intermediate_survey_dict = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
 
     for row in range(start_row, get_xl_number_of_rows(survey_ws) + 1):
@@ -114,8 +115,9 @@ def get_survey(loaded_survey: dict[str, dict[str]], survey_ws, start_row, ref_co
     return loaded_survey
 
 
-def _update_survey_dictionary(loaded_survey: dict[str, dict[str]], intermediate_survey_dict: dict[str, dict[str]]
-                              ) -> dict[str, dict[str]]:
+def _update_survey_dictionary(loaded_survey: dict[str, dict[str, Any]],
+                              intermediate_survey_dict: dict[str, dict[str, Any]]
+                              ) -> dict[str, dict[str, Any]]:
     if not loaded_survey:
         loaded_survey = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
 

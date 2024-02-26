@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ...utils import *
+
 
 __all__ = ["get_dc_sys_value", "get_dc_sys_values", "get_dc_sys_zip_values"]
 
 
-def get_dc_sys_value(obj: dict[str], attr: dict[str]):
+def get_dc_sys_value(obj: dict[str, Any], attr: dict[str, Any]):
     if "col" in attr:
         return obj[attr["attr_name"]]
     else:
@@ -16,10 +18,10 @@ def get_dc_sys_value(obj: dict[str], attr: dict[str]):
         return list_attrs
 
 
-def get_dc_sys_values(obj: dict[str], *attrs):
+def get_dc_sys_values(obj: dict[str, Any], *attrs: dict[str, Any]):
     return (get_dc_sys_value(obj, attr) for attr in attrs)
 
 
-def get_dc_sys_zip_values(obj: dict[str], *attrs):
+def get_dc_sys_zip_values(obj: dict[str, Any], *attrs: dict[str, Any]):
     gen = get_dc_sys_values(obj, *attrs)
     return zip(*gen)

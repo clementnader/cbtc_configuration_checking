@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..utils import *
+from ..database_location import *
 from ..dc_sys import *
 from ..foundation_data_constraints.check_offset import *
 from .survey_verification import *
@@ -11,7 +12,7 @@ from .block_definition import *
 __all__ = ["check_survey"]
 
 
-SURVEY_CHECKING_VERSION = "v2.1"
+SURVEY_CHECKING_VERSION = "v2.1.1"
 
 
 def check_survey():
@@ -20,8 +21,10 @@ def check_survey():
     print_title(f"Correspondence with site survey for "
                 f"{Color.cyan}{get_c_d470_version()}{Color.reset}.")
 
-    print_section_title(f"Loading survey information...")
+    if DATABASE_LOC.block_def is not None:
+        print_section_title(f"Loading Block Def. information...")
     block_def_dict = get_block_definition()
+    print_section_title(f"Loading survey information...")
     survey_info = load_survey()
 
     print_section_title(f"Analyzing the survey information and comparing them to the DC_SYS...")

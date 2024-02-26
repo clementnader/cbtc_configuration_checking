@@ -69,7 +69,7 @@ def get_len_point_side(sw_block, sw_value):
     return {"len_point_side": dist, "path_len_point_side": associated_key, "dict_len_point_side": dict_len_point_side}
 
 
-def get_min_flank_area_length(sw: dict) -> dict[str]:
+def get_min_flank_area_length(sw: dict) -> dict[str, Any]:
     """ Return the minimal flank area length for a switch in left or right position """
     dict_min_flank_area_len = dict()
     dict_min_flank_area_len.update(get_right_or_left_flank_area_length(sw, right=True))

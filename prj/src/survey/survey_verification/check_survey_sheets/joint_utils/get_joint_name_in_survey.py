@@ -9,7 +9,7 @@ from .joint_names_utils import *
 __all__ = ["get_joint_name_in_survey"]
 
 
-def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_info:  dict[str],
+def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_info:  dict[str, Any],
                              limit_position: tuple[str, float],
                              end_of_track_suffix: str = "", block_def_limit_name: str = None,
                              buffer_survey_info: dict[str, dict[str, float]] = None
@@ -34,7 +34,7 @@ def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_in
     return obj_name, survey_name, use_buffer
 
 
-def _find_survey_name_using_block_def(block_def_limit_name: str, track: str, survey_info:  dict[str],
+def _find_survey_name_using_block_def(block_def_limit_name: str, track: str, survey_info:  dict[str, Any],
                                       buffer_survey_info: dict[str, dict[str, float]]
                                       ) -> tuple[Optional[str], bool]:
     if f"{block_def_limit_name.upper()}__{track}" in survey_info:
@@ -46,7 +46,7 @@ def _find_survey_name_using_block_def(block_def_limit_name: str, track: str, sur
     return None, False
 
 
-def _try_to_find_name_in_survey(obj_name: str, list_test_names: list[str], track: str, survey_info:  dict[str],
+def _try_to_find_name_in_survey(obj_name: str, list_test_names: list[str], track: str, survey_info: dict[str, Any],
                                 second_try: bool = False, third_try: bool = False, fourth_try: bool = False
                                 ) -> Optional[str]:
     for test_name in list_test_names:
@@ -96,7 +96,7 @@ def _get_list_of_joint_test_names_multiple_prefixes(tc1: str, tc2: Optional[str]
 
 # def _test_one_obj_on_track(joint: tuple[str, Optional[str], str], track: str,
 #                            objs_dict: dict[tuple[str, Optional[str], str], tuple[str, float]],
-#                            survey_info: dict[str]) -> Optional[str]:
+#                            survey_info: dict[str, Any]) -> Optional[str]:
 #     list_joints_on_track = [obj for obj, obj_val in objs_dict.items()
 #                             if obj_val[0] == track]
 #     list_survey_obj_on_track = [survey_name for survey_name, survey_obj_info in survey_info.items()
@@ -151,8 +151,8 @@ def _remove_trigrams(test_name: str) -> Optional[str]:
 LIST_OBJ_NAME_WITHOUT_ASSOCIATION = list()
 
 
-def _is_name_in_survey(obj_name: str, test_name: Optional[str], track, survey_info: dict[str], remove_trigrams: bool
-                       ) -> tuple[bool, Optional[str]]:
+def _is_name_in_survey(obj_name: str, test_name: Optional[str], track, survey_info: dict[str, Any],
+                       remove_trigrams: bool) -> tuple[bool, Optional[str]]:
     global LIST_OBJ_NAME_WITHOUT_ASSOCIATION
 
     if test_name is None:
@@ -187,8 +187,8 @@ def _is_name_in_survey(obj_name: str, test_name: Optional[str], track, survey_in
     return False, None
 
 
-def _get_matching_objs_in_survey(obj_name: str, track: str, survey_info: dict[str], single: bool, remove_trigrams: bool
-                                 ) -> list[str]:
+def _get_matching_objs_in_survey(obj_name: str, track: str, survey_info: dict[str, Any],
+                                 single: bool, remove_trigrams: bool) -> list[str]:
     list_matching_objs = list()
     for survey_name, survey_obj_info in survey_info.items():
         # remove the track in the survey_name, tracks are directly tested in this function

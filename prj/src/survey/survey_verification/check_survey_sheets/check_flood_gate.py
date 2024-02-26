@@ -38,7 +38,7 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
     return res_dict
 
 
-def _get_dc_sys_flood_gate_dict(survey_info: dict[str]):
+def _get_dc_sys_flood_gate_dict(survey_info: dict[str, Any]):
     res_dict = dict()
     obj_dict = load_sheet(DCSYS.Flood_Gate)
     for obj_name, obj_val in obj_dict.items():
@@ -55,7 +55,7 @@ def _get_dc_sys_flood_gate_dict(survey_info: dict[str]):
     return res_dict
 
 
-def get_fg_end_prefixes_order(obj_name: str, survey_info: dict[str],
+def get_fg_end_prefixes_order(obj_name: str, survey_info: dict[str, Any],
                               smaller_kp_lim: tuple[str, float], larger_kp_lim: tuple[str, float]) -> tuple[str, str]:
     track_smaller_kp, smaller_kp = smaller_kp_lim
     track_larger_kp, larger_kp = larger_kp_lim
@@ -68,7 +68,7 @@ def get_fg_end_prefixes_order(obj_name: str, survey_info: dict[str],
     return obj_prefix_1, obj_prefix_2
 
 
-def _get_survey_obj_order_pattern(obj_name: str, survey_info: dict[str],
+def _get_survey_obj_order_pattern(obj_name: str, survey_info: dict[str, Any],
                                   track_smaller_kp: str, smaller_dc_sys_kp: float,
                                   track_larger_kp: str, larger_dc_sys_kp: float) -> bool:
     survey_obj_ends = _get_survey_obj_ends(obj_name, track_smaller_kp, track_larger_kp, survey_info)
@@ -102,7 +102,7 @@ def _get_survey_obj_order_pattern(obj_name: str, survey_info: dict[str],
         return global_polarity
 
 
-def _get_survey_obj_ends(obj_name: str, track_smaller_kp: str, track_larger_kp: str, survey_info: dict[str]
+def _get_survey_obj_ends(obj_name: str, track_smaller_kp: str, track_larger_kp: str, survey_info: dict[str, Any]
                          ) -> list[str]:
     obj_ends = list()
     for survey_name in survey_info.keys():

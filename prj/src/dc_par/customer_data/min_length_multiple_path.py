@@ -111,7 +111,7 @@ def get_switch_on_path(path: list[str]):
     return list_sw
 
 
-def create_csv_file(multiple_path_len_dict: dict[str, dict[str]]):
+def create_csv_file(multiple_path_len_dict: dict[str, dict[str, Any]]):
     csv = str()
     for line in multiple_path_len_dict.values():
         if not csv:

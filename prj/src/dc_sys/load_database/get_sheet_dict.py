@@ -11,7 +11,7 @@ START_ROW = 3
 DEFAULT_NAME_COLUMN = 1
 
 
-def get_sh_dict(ws: xlrd.sheet, columns_dict: dict[str], generic_obj_name: dict) -> dict[str, dict]:
+def get_sh_dict(ws: xlrd.sheet, columns_dict: dict[str, Any], generic_obj_name: dict[str, Any]) -> dict[str, dict]:
     sh_dict = dict()
     if generic_obj_name is not None:
         return get_generic_sh_dict(ws, columns_dict, generic_obj_name)
@@ -26,7 +26,8 @@ def get_sh_dict(ws: xlrd.sheet, columns_dict: dict[str], generic_obj_name: dict)
     return sh_dict
 
 
-def get_generic_sh_dict(ws: xlrd.sheet, columns_dict: dict[str], generic_obj_name: dict) -> dict[str, dict]:
+def get_generic_sh_dict(ws: xlrd.sheet, columns_dict: dict[str, Any], generic_obj_name: dict[str, Any]
+                        ) -> dict[str, dict[str, Any]]:
     temp_dict = dict()
     cols: list = generic_obj_name["cols"]
     for row in range(START_ROW, ws.nrows + 1):
@@ -53,7 +54,7 @@ def get_generic_sh_object_key(cols: list, info_for_object):
     return tuple(keys)
 
 
-def get_info_for_object(ws: xlrd.sheet, row: int, columns_dict: dict[str]):
+def get_info_for_object(ws: xlrd.sheet, row: int, columns_dict: dict[str, Any]):
     info_dict = dict()
     for key, column in columns_dict.items():
         if isinstance(column, int):

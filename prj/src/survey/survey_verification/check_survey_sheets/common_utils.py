@@ -7,7 +7,8 @@ from ....utils import *
 __all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_survey"]  # , "get_test_tracks"
 
 
-def add_info_to_survey(survey_obj_info: Optional[dict[str]], dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float):
+def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
+                       dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float):
     survey_name = survey_obj_info["obj_name"] if survey_obj_info is not None else None
     survey_type = survey_obj_info["survey_type"] if survey_obj_info is not None else None
     survey_track = survey_obj_info["survey_track"] if survey_obj_info is not None else None
@@ -21,7 +22,7 @@ def add_info_to_survey(survey_obj_info: Optional[dict[str]], dc_sys_sheet: str, 
             "surveyed_kp_comment": surveyed_kp_comment, "comments": comments}
 
 
-def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info: dict[str, dict[str]]):
+def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info: dict[str, dict[str, Any]]):
     extra_dict = dict()
     for obj_name, obj_val in survey_info.items():
         if obj_name in used_objects_from_survey:
@@ -35,7 +36,7 @@ def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info:
     return extra_dict
 
 
-def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[str]) -> str:
+def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[str, Any]) -> str:
     for test_name in test_names:
         test_name_in_survey = _test_name_in_survey(test_name, track, survey_info)
         if test_name_in_survey is not None:
@@ -54,7 +55,7 @@ def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[st
 #     return test_tracks
 
 
-def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str]):
+def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str, Any]):
     if test_name is not None and f"{test_name}__{track}".upper() in survey_info:
         return f"{test_name}__{track}".upper()
     return None

@@ -42,25 +42,34 @@ def get_block_definition() -> Optional[dict[str, dict[tuple[str, float], str]]]:
         block_name = get_xl_cell_value(block_def_ws, row=row, column=block_name_column)
         if block_name is None:
             continue
-        segment_limits_list = get_xl_cell_value(block_def_ws, row=row, column=segment_limits_list_column).split(";")
-        segment_limits_list = [seg.strip() for seg in segment_limits_list]
-        offset_limits_list = get_xl_cell_value(block_def_ws, row=row, column=offset_limits_list_column).split(";")
-        offset_limits_list = [float(offset.strip().replace(",", ".")) for offset in offset_limits_list]
-        seg_x_limits_list = list(zip(segment_limits_list, offset_limits_list))
-
         limit_objects = list()
         for limit_column in joint_name_columns_list:
             limit_object = get_xl_cell_value(block_def_ws, row=row, column=limit_column)
             if limit_object is not None:
                 limit_objects.append(limit_object.strip())
+
+        segment_limits = get_xl_cell_value(block_def_ws, row=row, column=segment_limits_list_column)
+        offset_limits = get_xl_cell_value(block_def_ws, row=row, column=offset_limits_list_column)
+        if segment_limits is None or offset_limits is None:
+            block_def_dict[block_name.strip()] = list(zip([(None, None) for _ in range(len(limit_objects))],
+                                                          limit_objects))
+            continue
+
+        segment_limits_list = [seg.strip() for seg in segment_limits.split(";")]
+        offset_limits_list = [float(offset.strip().replace(",", ".")) for offset in offset_limits.split(";")]
+        seg_x_limits_list = list(zip(segment_limits_list, offset_limits_list))
+
         if len(seg_x_limits_list) != len(limit_objects):
             print_error(f"In Block Def. file, for block {block_name}, limit objects in columns "
                         f"{JOINT_NAME_COLUMN_TITLE_PREFIX}N do not correspond to the "
                         f"{LIMITS_LIST_COLUMN_TITLE}::{SEGMENT_LIMITS_LIST_COLUMN_TITLE}:\n"
                         f"{seg_x_limits_list = }\n"
                         f"{limit_objects = }")
+            block_def_dict[block_name.strip()] = list(zip([(None, None) for _ in range(len(limit_objects))],
+                                                          limit_objects))
+
         block_def_dict[block_name.strip()] = list(zip(seg_x_limits_list, limit_objects))
-    return add_tracks_to_block_def(block_def_dict)
+    return associate_block_def_to_dc_sys(block_def_dict)
 
 
 def _get_columns(block_def_ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]

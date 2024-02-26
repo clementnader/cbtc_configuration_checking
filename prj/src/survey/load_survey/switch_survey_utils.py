@@ -9,7 +9,7 @@ from ...dc_sys_sheet_utils.switch_utils import (get_corresponding_center_switch_
 __all__ = ["add_switch_center_points", "add_switch_heel_points"]
 
 
-def add_switch_center_points(sw_survey_info: dict[str, dict[str]], survey_name: str) -> dict[str, dict[str]]:
+def add_switch_center_points(sw_survey_info: dict[str, dict[str, Any]], survey_name: str) -> dict[str, dict[str, Any]]:
     res_dict = dict()
 
     for survey_obj_info in sw_survey_info.values():
@@ -40,7 +40,7 @@ def add_switch_center_points(sw_survey_info: dict[str, dict[str]], survey_name: 
     return res_dict
 
 
-def add_switch_heel_points(sw_survey_info: dict[str, dict[str]], survey_name: str) -> dict[str, dict[str]]:
+def add_switch_heel_points(sw_survey_info: dict[str, dict[str, Any]], survey_name: str) -> dict[str, dict[str, Any]]:
     res_dict = dict()
 
     for survey_obj_info in sw_survey_info.values():

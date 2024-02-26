@@ -11,8 +11,8 @@ from .generic_obj_name import *
 __all__ = ["load_sheet", "clean_loaded_dc_sys"]
 
 
-LOADED_SHEETS: dict[str, dict[str, dict]] = {ws: None for ws in get_all_sheet_names()}
-LOADED_SHEETS_OLD: dict[str, dict[str, dict]] = {ws: None for ws in get_all_sheet_names()}
+LOADED_SHEETS: dict[str, Optional[dict[str, dict[str, Any]]]] = {ws: None for ws in get_all_sheet_names()}
+LOADED_SHEETS_OLD: dict[str, Optional[dict[str, dict[str, Any]]]] = {ws: None for ws in get_all_sheet_names()}
 
 
 def clean_loaded_dc_sys():
@@ -22,7 +22,7 @@ def clean_loaded_dc_sys():
     LOADED_SHEETS_OLD = {ws: None for ws in get_all_sheet_names()}
 
 
-def load_sheet(ws, old: bool = False) -> dict[str, dict]:
+def load_sheet(ws, old: bool = False) -> dict[str, dict[str, Any]]:
     sh_name = get_sh_name(ws)
     if old:
         global LOADED_SHEETS_OLD

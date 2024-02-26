@@ -30,8 +30,8 @@ class Projects:
 
 
 # --- Main projects --- #
-# PROJECT_NAME = Projects.Ankara_L1  # TODO: verify joint -> BLOCK_DEF file
-# PROJECT_NAME = Projects.Ankara_L2  # TODO: verify joint -> BLOCK_DEF file
+# PROJECT_NAME = Projects.Ankara_L1
+# PROJECT_NAME = Projects.Ankara_L2
 # PROJECT_NAME = Projects.Brussels
 # PROJECT_NAME = Projects.Copenhagen  # TODO: Survey: update floodgate verification as for platform
 # PROJECT_NAME = Projects.Glasgow
@@ -91,6 +91,7 @@ class ProjectDatabaseLoc:
         if project_name == Projects.Ankara_L1:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L1\ANK_L1_C_D470_V12_05_RC2\DC_SYS.xls"
             self.dc_par_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L1\ANK_L1_C_D470_V12_05_RC2\DC_PAR.xls"
+            # self.block_def = r"C:\Users\naderc\Desktop\Ank\ANK_L1\circuitdevoie.xlsx"
             # -- Survey -- #
             self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\Ank\SURVEY"
                                            r"\ANK_L1_C_D932_14_00_RC1.xlsx")
@@ -107,6 +108,7 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L2\ANK_L2_C_D470_V06_00_RC4\DC_SYS.xls"
             self.dc_par_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L2\ANK_L2_C_D470_V06_00_RC4\DC_PAR.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\Ank\ANK_L2\ANK_L2_C11_D470_06_05_03_V07"
+            # self.block_def = r"C:\Users\naderc\Desktop\Ank\ANK_L2\CIRCUIT_DE_VOIE.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Ank\SURVEY\ANK_L2_C_D932_01_00_RC2.xlsx",
                                            r"C:\Users\naderc\Desktop\Ank\SURVEY"
@@ -163,6 +165,7 @@ class ProjectDatabaseLoc:
             self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R2\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R2\C64_D413\DC_BOP.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\KCR\KCR_C11_D470_06_06_01_V04_R2"
+            # self.block_def = r"C:\Users\naderc\Desktop\KCR\CIRCUIT_DE_VOIE_patch_12_01_RC2.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\KCR"
                                            r"\CR-ASTS-042189 - 15.00_ATT002 - ATC- KCR C_D932 - "
@@ -313,6 +316,7 @@ class ProjectDatabaseLoc:
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\Riyadh\RL3_C_D470_09_01_RC1\DC_BOP_old.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\Riyadh\RL3_C11_D470_06_06_00_V07"
             self.kit_c121_d470_dir = r"C:\Users\naderc\Desktop\Riyadh\RL3_C121_D470_06_06_00_V04_20230327_165125"
+            # self.block_def = r"C:\Users\naderc\Desktop\Riyadh\CIRCUIT_DE_VOIE RL3.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\Riyadh\Appendix K - RL3_D932_ed14.xls"
             self.survey_loc.survey_sheet = r"Result Final"

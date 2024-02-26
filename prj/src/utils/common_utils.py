@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Optional, Union, Generator, Callable
+from typing import Optional, Union, Generator, Callable, Any
 from string import ascii_uppercase
 
 
-__all__ = ["DESKTOP_DIRECTORY", "Optional", "Union", "Generator", "Callable",
+__all__ = ["DESKTOP_DIRECTORY", "Optional", "Union", "Generator", "Callable", "Any",
            "ascii_uppercase", "columns_from_to", "sort_dict",
            "get_file_directory_path", "get_full_path", "get_class_attr_dict"]
 
@@ -23,7 +23,7 @@ def get_file_directory_path(file: str) -> str:
     return os.path.dirname(os.path.realpath(file))
 
 
-def get_class_attr_dict(cl) -> dict[str]:
+def get_class_attr_dict(cl) -> dict[str, Any]:
     if isinstance(cl, type):
         return {key: val for key, val in cl.__dict__.items()
                 if not (key.startswith("__") and key.endswith("__"))}

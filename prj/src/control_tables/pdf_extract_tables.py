@@ -81,7 +81,8 @@ def _parse_text_line(line: str):
     return text
 
 
-def _extract_info(list_info: list[dict[str]], table_type: str, num_page: int, verbose: bool = False) -> dict[str, str]:
+def _extract_info(list_info: list[dict[str, Any]], table_type: str, num_page: int, verbose: bool = False
+                  ) -> dict[str, str]:
     if table_type == CONTROL_TABLE_TYPE.route:
         loc_dict = loc_info_pdf_route()
     elif table_type == CONTROL_TABLE_TYPE.overlap:
@@ -152,7 +153,7 @@ def _clean_res_dict(res_dict: dict[str, str]) -> dict[str, str]:
     return res_dict
 
 
-def _add_pos_list_info(list_info: list[dict[str]]):
+def _add_pos_list_info(list_info: list[dict[str, Any]]):
     for i, info in enumerate(list_info):
         loc = _get_loc_info(info)
         list_info[i]["loc"] = loc
@@ -189,7 +190,7 @@ def _get_loc_info(info) -> dict[str, float]:
     return {"x": x, "y": y}
 
 
-def _check_useful_page(list_info: list[dict[str]], num_page: int, loc_ref: dict[str, float], verbose_dict: dict):
+def _check_useful_page(list_info: list[dict[str, Any]], num_page: int, loc_ref: dict[str, float], verbose_dict: dict):
     for info in list_info:
         loc: dict[str, float] = info["loc"]
         text: str = info["text"]

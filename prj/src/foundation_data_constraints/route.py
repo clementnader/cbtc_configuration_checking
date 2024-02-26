@@ -116,7 +116,7 @@ def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys
         return False
 
 
-def _check_controlled_sig(route: str, route_val: dict[str], control_sig: str, table_name: str):
+def _check_controlled_sig(route: str, route_val: dict[str, Any], control_sig: str, table_name: str):
     dc_sys_origin_signal: str = get_dc_sys_value(route_val, DCSYS.Iti.SignalOrig)
     sig_nb = dc_sys_origin_signal.split("_")[-1]
     if PROJECT_NAME == Projects.Copenhagen:
@@ -131,7 +131,7 @@ def _check_controlled_sig(route: str, route_val: dict[str], control_sig: str, ta
     return False
 
 
-def _check_route_sw(route: str, route_val: dict[str], route_sw: str, table_name: str):
+def _check_route_sw(route: str, route_val: dict[str, Any], route_sw: str, table_name: str):
     dc_sys_route_sw: list[str] = route_val['Route Switch']
     if route_sw == "--":
         route_sw_list = []
@@ -185,7 +185,7 @@ def _check_route_sw(route: str, route_val: dict[str], route_sw: str, table_name:
     return result
 
 
-def _check_route_path(route: str, route_val: dict[str], route_path: str, table_name: str):
+def _check_route_path(route: str, route_val: dict[str, Any], route_path: str, table_name: str):
     dc_sys_route_sw: list[str] = route_val["Route Switch"]
     dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_val["Route IVB"]]
     if route_path == "--":
@@ -234,7 +234,7 @@ def _check_route_path(route: str, route_val: dict[str], route_path: str, table_n
     return result
 
 
-def _check_routes_exist_in_dc_sys(route_dict: dict[str], route_control_tables: dict[str]):
+def _check_routes_exist_in_dc_sys(route_dict: dict[str, Any], route_control_tables: dict[str, Any]):
     missing_routes_in_dc_sys = list()
     for route_control_table in route_control_tables.keys():
         if not _is_route_in_dc_sys(route_control_table, route_dict):
@@ -242,7 +242,7 @@ def _check_routes_exist_in_dc_sys(route_dict: dict[str], route_control_tables: d
     return missing_routes_in_dc_sys
 
 
-def _is_route_in_dc_sys(route_control_table: str, route_dict: dict[str]):
+def _is_route_in_dc_sys(route_control_table: str, route_dict: dict[str, Any]):
     for route_dc_sys in route_dict.keys():
         if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys):
             return True

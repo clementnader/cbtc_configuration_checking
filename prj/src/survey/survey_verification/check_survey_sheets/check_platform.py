@@ -60,7 +60,7 @@ def _get_plt_limits(plt_val: dict) -> list[tuple[str, float]]:
 
 
 def _get_corresponding_survey_extremities(plt_name: str, plt_limits: list[tuple[str, float]],
-                                          plt_survey_info: dict[str]) -> dict[int, Optional[str]]:
+                                          plt_survey_info: dict[str, Any]) -> dict[int, Optional[str]]:
     survey_name_dict = {1: None, 2: None}
     (lim1_track, lim1_kp), (lim2_track, lim2_kp) = plt_limits
     lim1_track = lim1_track.upper()
@@ -77,7 +77,8 @@ def _get_corresponding_survey_extremities(plt_name: str, plt_limits: list[tuple[
 
 def _get_corresponding_survey_same_track(plt_name: str, lim1_track: str, lim1_kp: float,
                                          lim2_track: str, lim2_kp: float,
-                                         survey_name_dict: dict[int, Optional[str]], plt_survey_info: dict[str]
+                                         survey_name_dict: dict[int, Optional[str]],
+                                         plt_survey_info: dict[str, Any]
                                          ) -> dict[int, Optional[str]]:
     assert lim1_track == lim2_track
     list_survey_limits = _get_survey_limits(plt_name, lim1_track, plt_survey_info)
@@ -124,7 +125,8 @@ def _get_corresponding_survey_same_track(plt_name: str, lim1_track: str, lim1_kp
 
 def _get_corresponding_survey_different_tracks(plt_name: str, lim1_track: str, lim1_kp: float,
                                                lim2_track: str, lim2_kp: float,
-                                               survey_name_dict: dict[int, Optional[str]], plt_survey_info: dict[str]
+                                               survey_name_dict: dict[int, Optional[str]],
+                                               plt_survey_info: dict[str, Any]
                                                ) -> dict[int, Optional[str]]:
     assert lim1_track != lim2_track
     i: int
@@ -150,7 +152,7 @@ def _get_corresponding_survey_different_tracks(plt_name: str, lim1_track: str, l
     return survey_name_dict
 
 
-def _get_survey_limits(plt_name: str, track: str, plt_survey_info: dict[str]) -> list[str]:
+def _get_survey_limits(plt_name: str, track: str, plt_survey_info: dict[str, Any]) -> list[str]:
     list_survey_limits = list()
     for survey_name in plt_survey_info.keys():
         survey_plt_lim_name, survey_track = survey_name.split("__", 1)

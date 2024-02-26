@@ -53,7 +53,7 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[
     return None
 
 
-def _get_ovl_pos(obj_val: dict[str]) -> list[tuple[str, float, str]]:
+def _get_ovl_pos(obj_val: dict[str, Any]) -> list[tuple[str, float, str]]:
     vsp_direction = get_dc_sys_value(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
     # The zone of the overlap is upstream the VSP and downstream the release point
     rp_seg, rp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.ReleasePoint.Seg,
@@ -63,7 +63,7 @@ def _get_ovl_pos(obj_val: dict[str]) -> list[tuple[str, float, str]]:
     return [(rp_seg, rp_x, get_reverse_direction(vsp_direction)), (vsp_seg, vsp_x, vsp_direction)]
 
 
-def _get_calib_pos(obj_val: dict[str]) -> list[tuple[str, float]]:
+def _get_calib_pos(obj_val: dict[str, Any]) -> list[tuple[str, float]]:
     start_tag, end_tag = get_dc_sys_values(obj_val, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
     return [get_obj_position(DCSYS.Bal, start_tag), get_obj_position(DCSYS.Bal, end_tag)]
 
@@ -140,14 +140,14 @@ def get_obj_oriented_zone_limits(obj_type, obj_name: str) -> Union[None, list[tu
     return None
 
 
-def get_obj_limits(obj_val: dict[str], obj_limit_attr) -> Union[list[tuple[str, float]], list[tuple[str, float, str]]]:
+def get_obj_limits(obj_val: dict[str, Any], obj_limit_attr) -> Union[list[tuple[str, float]], list[tuple[str, float, str]]]:
     limits = get_obj_oriented_limits(obj_val, obj_limit_attr)
     if limits is None:  # non-oriented limits
         limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X))
     return limits
 
 
-def get_obj_oriented_limits(obj_val: dict[str], obj_limit_attr) -> Union[None, list[tuple[str, float, str]]]:
+def get_obj_oriented_limits(obj_val: dict[str, Any], obj_limit_attr) -> Union[None, list[tuple[str, float, str]]]:
     limit_sub_attrs = get_class_attr_dict(obj_limit_attr).keys()
     if "Direction" in limit_sub_attrs:
         limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X, obj_limit_attr.Direction))
