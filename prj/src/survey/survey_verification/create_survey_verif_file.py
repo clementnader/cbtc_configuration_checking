@@ -33,23 +33,27 @@ STATUS_COL = "J"
 COMMENTS_COL = "K"
 MANUAL_VERIFICATION_COL = "L"
 
+TOOL_NAME = "Survey_Checking"
 
-def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool):
+
+def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
+                             tool_version: str):
     try:
-        res_file_path = _create_verif_file(survey_verif_dict, block_def_exists_bool)
+        res_file_path = _create_verif_file(survey_verif_dict, block_def_exists_bool, tool_version)
     except KeyboardInterrupt:
-        _create_verif_file(survey_verif_dict, block_def_exists_bool)
+        _create_verif_file(survey_verif_dict, block_def_exists_bool, tool_version)
         raise KeyboardInterrupt
     return res_file_path
 
 
-def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool):
+def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
+                       tool_version: str):
     if block_def_exists_bool:
         wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE.removesuffix(".xlsx") + "_block_def.xlsx")
     else:
         wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE)
 
-    update_header_sheet_for_verif_file(wb)
+    update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version)
     _update_menu_sheet(wb)
 
     for sheet_name, verif_dict in survey_verif_dict.items():

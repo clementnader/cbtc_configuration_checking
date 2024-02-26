@@ -11,6 +11,9 @@ from .block_definition import *
 __all__ = ["check_survey"]
 
 
+SURVEY_CHECKING_VERSION = "v2.1"
+
+
 def check_survey():
     check_offset_correctness()
 
@@ -25,7 +28,7 @@ def check_survey():
     survey_verif_dict = create_check_survey_dict(survey_info, block_def_dict)
 
     print_section_title(f"Creating the result file...")
-    res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None)
+    res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None, SURVEY_CHECKING_VERSION)
     open_excel_file(res_file_path)
 
     if get_ga_version() < (6, 0, 0, 0):

@@ -32,21 +32,25 @@ COMMENTS_COLUMN = 6
 IP_ADDRESS_STATUS2_COLUMN = 7
 IP_ADDRESS_COMMENTS2_COLUMN = 8
 
+TOOL_NAME = "DC_TU_Checking"
 
-def create_dc_tu_verif_file(ip_address_dict: dict, ssh_key_dict: dict):
+
+def create_dc_tu_verif_file(ip_address_dict: dict, ssh_key_dict: dict, tool_version: str):
     try:
-        res_file_path = _create_verif_file(ip_address_dict, ssh_key_dict)
+        res_file_path = _create_verif_file(ip_address_dict, ssh_key_dict, tool_version)
     except KeyboardInterrupt:
-        _create_verif_file(ip_address_dict, ssh_key_dict)
+        _create_verif_file(ip_address_dict, ssh_key_dict, tool_version)
         raise KeyboardInterrupt
     return res_file_path
 
 
-def _create_verif_file(ip_address_dict: dict, ssh_key_dict: dict) -> str:
+def _create_verif_file(ip_address_dict: dict, ssh_key_dict: dict, tool_version: str) -> str:
     wb = load_xlsx_wb(DC_TU_VERIF_TEMPLATE)
-    update_header_sheet_for_verif_file(wb)
+    update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version)
+
     _update_ip_addr_sheet(wb, ip_address_dict)
     _update_ssh_key_sheet(wb, ssh_key_dict)
+
     verif_file_name = f" - {get_c11_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
     res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
     save_xl_file(wb, res_file_path)
