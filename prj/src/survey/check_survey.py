@@ -19,7 +19,7 @@ def check_survey():
     check_offset_correctness()
 
     print_title(f"Correspondence with site survey for "
-                f"{Color.cyan}{get_c_d470_version()}{Color.reset}.")
+                f"{Color.cyan}{get_c_d470_version()}{Color.reset}")
 
     if DATABASE_LOC.block_def is not None:
         print_section_title(f"Loading Block Def. information...")

@@ -30,7 +30,7 @@ def print_title(title: str, color: str = Color.blue):
     for line in title.splitlines():
         len_line = len(remove_colors(line))
         empty_len = whole_len - len_line
-        print(" " * (empty_len//2) + main_color + line + Color.reset + " " * (empty_len - empty_len//2))
+        print(" " * (empty_len//2) + main_color + line + Color.reset + " " * (empty_len - empty_len//2) + NBSP)
     print()
     print_bar(whole_len)
 
@@ -38,8 +38,8 @@ def print_title(title: str, color: str = Color.blue):
 def print_section_title(title: str):
     main_color = f"{Color.bold}{Color.underline}{Color.beige}"
     title = title.replace(Color.reset, f"{Color.reset}{main_color}")
-    title = title.replace("\n", f"{Color.reset}\n{main_color}")
-    print("\n" + main_color + title + Color.reset)
+    title = title.replace("\n", f"{Color.reset}{NBSP}\n{main_color}")
+    print("\n" + main_color + title + Color.reset + NBSP)
 
 
 def print_error(*args, end: str = "\n", no_newline: bool = False):

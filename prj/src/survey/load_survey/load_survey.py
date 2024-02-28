@@ -21,11 +21,13 @@ def load_survey() -> dict:
         if all_sheets:
             print(f"\n {i}/{nb_of_survey} - "
                   f"{Color.white}{Color.underline}Loading {Color.blue}all sheets{Color.white} of "
-                  f"survey file {Color.cyan}{survey_addr}{Color.white}...{Color.reset}")
+                  f"survey file{Color.no_underline}{NBSP}\n{' '*len(f' {i}/{nb_of_survey} - ')}"
+                  f"{Color.underline}{Color.cyan}{survey_addr}{Color.white}...{Color.reset}{NBSP}")
         else:
             print(f"\n {i}/{nb_of_survey} - "
                   f"{Color.white}{Color.underline}Loading sheet {Color.blue}{survey_sheet}{Color.white} of "
-                  f"survey file {Color.cyan}{survey_addr}{Color.white}...{Color.reset}")
+                  f"survey file{Color.no_underline}{NBSP}\n{' '*len(f' {i}/{nb_of_survey} - ')}"
+                  f"{Color.underline}{Color.cyan}{survey_addr}{Color.white}...{Color.reset}{NBSP}")
         wb = load_xl_file(survey_addr)
         if all_sheets:
             sheet_names = get_xl_sheet_names(wb)

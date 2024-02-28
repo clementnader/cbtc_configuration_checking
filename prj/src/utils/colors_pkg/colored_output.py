@@ -8,7 +8,7 @@ from ..common_utils import *
 
 
 __all__ = ["Color", "csi_bg_color", "remove_colors", "print_all_colors", "print_named_colors", "test_rainbow",
-           "move_up", "move_down", "move_left", "move_right"]
+           "move_up", "move_down", "move_left", "move_right", "NBSP"]
 
 
 if sys.platform == "win32":  # for Windows
@@ -16,6 +16,7 @@ if sys.platform == "win32":  # for Windows
 
 
 ESCAPE_SEQ = "\x1B["  # "\x1B" is equivalent to "\033" or "\27" and gives ESC
+NBSP = "\xA0"  # non-breaking space
 
 
 # CSI: Control Sequence Introducer

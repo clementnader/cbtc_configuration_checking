@@ -104,7 +104,7 @@ def concatenate_zsm_limits(res_dict):
 
 
 def print_results(res_dict):
-    print(f"\n{Color.bold}{Color.blue}{Color.underline}Results for CF_ZSM_CBTC_10{Color.reset}\n")
+    print_title(f"Results for CF_ZSM_CBTC_10")
     sw_dict = get_sw_dict()
     for seg, seg_value in res_dict.items():
         zsm_coverage_limits = seg_value["list_limits"][0] if seg_value["list_limits"] else []
