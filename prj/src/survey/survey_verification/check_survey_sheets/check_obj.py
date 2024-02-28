@@ -18,8 +18,8 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
     for obj_name, obj_val in dc_sys_dict.items():
         if not obj_condition(res_sheet_name, obj_val):
             continue
-        dc_sys_track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
-        dc_sys_track = dc_sys_track.upper()
+        original_dc_sys_track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
+        dc_sys_track = original_dc_sys_track.upper()
 
         test_names = [obj_name]
         if obj_name.startswith("STOP_SIG_"):
@@ -32,7 +32,7 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
             list_used_obj_names.append(survey_name)
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                dc_sys_track, dc_sys_kp)
+                                                                original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict

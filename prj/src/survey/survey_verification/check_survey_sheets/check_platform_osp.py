@@ -18,8 +18,8 @@ def check_platform_osp(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str,
     list_used_obj_names = list()
     res_dict = dict()
     for obj_name, obj_val in objs_dict.items():
-        dc_sys_track, dc_sys_kp = obj_val
-        dc_sys_track = dc_sys_track.upper()
+        original_dc_sys_track, dc_sys_kp = obj_val
+        dc_sys_track = original_dc_sys_track.upper()
 
         test_names = [obj_name]
         survey_name = test_names_in_survey(test_names, dc_sys_track, survey_info)
@@ -28,7 +28,7 @@ def check_platform_osp(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str,
             list_used_obj_names.append(survey_name)
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                dc_sys_track, dc_sys_kp)
+                                                                original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict

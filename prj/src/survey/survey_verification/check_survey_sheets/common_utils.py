@@ -4,7 +4,7 @@
 from ....utils import *
 
 
-__all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_survey"]  # , "get_test_tracks"
+__all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_survey"]
 
 
 def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
@@ -12,13 +12,15 @@ def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
     survey_name = survey_obj_info["obj_name"] if survey_obj_info is not None else None
     survey_type = survey_obj_info["survey_type"] if survey_obj_info is not None else None
     survey_track = survey_obj_info["survey_track"] if survey_obj_info is not None else None
+    survey_original_track = survey_obj_info["survey_original_track"] if survey_obj_info is not None else None
     surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
     surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
     comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
     return {"dc_sys_sheet": dc_sys_sheet, "dc_sys_track": dc_sys_track, "dc_sys_kp": dc_sys_kp,
             "survey_name": survey_name, "survey_type": survey_type,
-            "survey_track": survey_track, "surveyed_kp": surveyed_kp,
+            "survey_track": survey_track, "survey_original_track": survey_original_track,
+            "surveyed_kp": surveyed_kp,
             "surveyed_kp_comment": surveyed_kp_comment, "comments": comments}
 
 
@@ -31,7 +33,8 @@ def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info:
         extra_dict[(obj_name, obj_val["survey_track"])] = \
             {"dc_sys_sheet": None, "dc_sys_track": None, "dc_sys_kp": None,
              "survey_name": obj_val["obj_name"], "survey_type": obj_val["survey_type"],
-             "survey_track": obj_val["survey_track"], "surveyed_kp": obj_val["surveyed_kp"],
+             "survey_track": obj_val["survey_track"], "survey_original_track": obj_val["survey_original_track"],
+             "surveyed_kp": obj_val["surveyed_kp"],
              "surveyed_kp_comment": obj_val["surveyed_kp_comment"], "comments": obj_val["comments"]}
     return extra_dict
 
@@ -42,17 +45,6 @@ def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[st
         if test_name_in_survey is not None:
             return test_name_in_survey
     return f"{test_names[0]}__{track}".upper()  # default
-
-
-# def get_test_tracks(track: str) -> list[str]:
-#     test_tracks = [track]
-#     if track == "T1":
-#         test_tracks.append("TRACK_1")
-#     elif track == "T2":
-#         test_tracks.append("TRACK_2")
-#     # elif track.endswith("_02W"):
-#     #     test_tracks.append(track.removesuffix("_02W") + "_02")
-#     return test_tracks
 
 
 def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str, Any]):

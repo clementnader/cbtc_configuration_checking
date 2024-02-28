@@ -20,10 +20,10 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
     for joint, obj_val in joints_dict.items():
         tc1, tc2, joint_track = joint
         limit_position, block_def_limit_name = obj_val
-        dc_sys_track, dc_sys_kp = limit_position
-        end_of_track_suffix = joint_track.removeprefix(dc_sys_track)
+        original_dc_sys_track, dc_sys_kp = limit_position
+        end_of_track_suffix = joint_track.removeprefix(original_dc_sys_track)
         # end_of_track_suffix is not null if a single block has two end-of-track limits on the same track
-        dc_sys_track = dc_sys_track.upper()
+        dc_sys_track = original_dc_sys_track.upper()
 
         obj_name, survey_name, use_buffer = get_joint_name_in_survey(tc1, tc2, dc_sys_track, survey_info,
                                                                      limit_position, end_of_track_suffix,
@@ -37,7 +37,7 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
             list_used_obj_names.append(survey_name)
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                dc_sys_track, dc_sys_kp)
+                                                                original_dc_sys_track, dc_sys_kp)
         res_dict[(obj_name, dc_sys_track)]["block_def_limit_name"] = block_def_limit_name
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))

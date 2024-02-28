@@ -18,11 +18,12 @@ class Projects:
 
     Baltimore = "Baltimore"
     BART = "BART"
-    KMRC = "KMRC"
     MSH = "MSH"
+    KMRC = "KMRC"
     NMML1 = "NMML1"
-    Wenzhou = "Wenzhou"
+    Noida = "Noida"
     Shenyang = "Shenyang"
+    Wenzhou = "Wenzhou"
     Mock_up = "Mock-up"
     Mock_up_2 = "Mock-up 2"
     Mock_up_3 = "Mock-up 3"
@@ -36,7 +37,7 @@ class Projects:
 # PROJECT_NAME = Projects.Copenhagen  # TODO: Survey: update floodgate verification as for platform
 # PROJECT_NAME = Projects.Glasgow
 # PROJECT_NAME = Projects.Lima
-# PROJECT_NAME = Projects.Milan  # TODO: Manage TRACK_1/2 vs T1/2, create a display track name attribute
+# PROJECT_NAME = Projects.Milan
 # PROJECT_NAME = Projects.Riyadh  # TODO: Manage TRACK_02W vs TRACK_02, Middle Platform ?
 PROJECT_NAME = Projects.Thessaloniki
 
@@ -45,8 +46,9 @@ PROJECT_NAME = Projects.Thessaloniki
 # PROJECT_NAME = Projects.BART
 # PROJECT_NAME = Projects.MSH
 # --- India --- #
-# PROJECT_NAME = Projects.KMRC  # TODO: verify joint -> BLOCK_DEF file
-# PROJECT_NAME = Projects.NMML1  # TODO: verify joint -> BLOCK_DEF file
+# PROJECT_NAME = Projects.KMRC
+# PROJECT_NAME = Projects.NMML1
+# PROJECT_NAME = Projects.Noida
 # --- China --- #
 # PROJECT_NAME = Projects.Shenyang
 # PROJECT_NAME = Projects.Wenzhou  # TODO: Middle Platform ?
@@ -161,10 +163,10 @@ class ProjectDatabaseLoc:
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
             # self.dc_sys_addr_old = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_15_00_RC5\DC_SYS.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R2\DC_SYS_og.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R2\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R2\C64_D413\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\KCR\KCR_C11_D470_06_06_01_V04_R2"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R3\DC_SYS_R3.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R3\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\KCR\KCR_C_D470_06_06_01_V04_R3\C64_D413\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\KCR\KCR_C11_D470_06_06_01_V04_R3"
             # self.block_def = r"C:\Users\naderc\Desktop\KCR\CIRCUIT_DE_VOIE_patch_12_01_RC2.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\KCR"
@@ -387,18 +389,18 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Baltimore -------------------------------#
         elif project_name == Projects.Baltimore:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Baltimore\DC_SYS MTAB 721 ++.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore\DC_SYS MTAB 721 ++.xls"
 
         # ------------------------------- BART -------------------------------#
         elif project_name == Projects.BART:
-            self.dc_sys_addr = (r"C:\Users\naderc\Desktop\BART"
+            self.dc_sys_addr = (r"C:\Users\naderc\Desktop\USA\BART"
                                 r"\BART_V2.3.0_SYS_1-DC_SYS-DRAGON_2.1.1 (RefSys 7.2.1.1).xls")
 
         # ------------------------------- MSH -------------------------------#
         elif project_name == Projects.MSH:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\MSH\MSH_C_D470_V09_02_RC1\DC_SYS.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\MSH\MSH_C_D470_V09_02_RC1\DC_SYS.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\MSH\Topo_V_06_00.xlsx"
+            self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\USA\MSH\Topo_V_06_00.xlsx"
             self.survey_loc.survey_sheet = None
             self.survey_loc.all_sheets = True
             self.survey_loc.start_row = 4
@@ -411,11 +413,11 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- KMRC Kolkata -------------------------------#
         elif project_name == Projects.KMRC:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\KMRC Kolkata\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\KMRC Kolkata"
+            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
                                            r"\KMRC-76054_Rev01_C_D932 - Advanced field survey report.xlsm",
-                                           r"C:\Users\naderc\Desktop\KMRC Kolkata"
+                                           r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
                                            r"\KMRC-26054_Rev09_C_D932 - Advanced field survey report.xlsm"]
             self.survey_loc.survey_sheet = [r"Result Final", r"KMRC-PH2A"]
             self.survey_loc.all_sheets = [False, False]
@@ -427,9 +429,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- NMML1 -------------------------------#
         elif project_name == Projects.NMML1:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\NMML1\NMML1_PH2_C_D470_00_00_RC5\DC_SYS.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\NMML1\NMML1_PH2_C_D470_00_00_RC5\DC_SYS.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\NMML1"
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\INDIA\NMML1"
                                            r"\NMML1_C_D932_Line1_Advanced_field_survey_report.xlsm")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
@@ -439,13 +441,28 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = 2
             self.survey_loc.survey_kp_col = 5
 
+        # ------------------------------- NOIDA -------------------------------#
+        elif project_name == Projects.Noida:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\NOIDA\NS01_C_D470_10_00_RC1\DC_SYS.xls"
+            self.block_def = r"C:\Users\naderc\Desktop\INDIA\NOIDA\CIRCUIT_DE_VOIE.xls"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\INDIA\NOIDA"
+                                           r"\NS01-L-SIG-9-0001 NS01_C_D932 - Advanced field survey report_06.00.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
+
         # --- China --- #
 
         # ------------------------------- Shenyang -------------------------------#
         elif project_name == Projects.Shenyang:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA V4\Shenyang\SHYL1_10_00\DC_SYS_SHYL1_10_00.xls"
-            self.block_def = r"C:\Users\naderc\Desktop\CHINA V4\Shenyang\SHYL1_10_00\CIRCUIT_DE_VOIE.xls"
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\CHINA V4\Shenyang"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA\CHINA V4\Shenyang\SHYL1_10_00\DC_SYS_SHYL1_10_00.xls"
+            self.block_def = r"C:\Users\naderc\Desktop\CHINA\CHINA V4\Shenyang\SHYL1_10_00\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\CHINA\CHINA V4\Shenyang"
                                            r"\SY_L1_SIG_DB_D932_1409_V3.3_2016_5_11.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
@@ -457,10 +474,10 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Wenzhou -------------------------------#
         elif project_name == Projects.Wenzhou:
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_01\DC_SYS_0801.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_04\DC_SYS_0804.xls"
-            self.block_def = r"C:\Users\naderc\Desktop\WENZHOU\WZS1_C_D470_08_01\CIRCUIT_DE_VOIE_Corrected.xls"
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\WENZHOU"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA\WENZHOU\WZS1_C_D470_08_01\DC_SYS_0801.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA\WENZHOU\WZS1_C_D470_08_04\DC_SYS_0804.xls"
+            self.block_def = r"C:\Users\naderc\Desktop\CHINA\WENZHOU\WZS1_C_D470_08_01\CIRCUIT_DE_VOIE_Corrected.xls"
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\CHINA\WENZHOU"
                                            r"\WZ_S1P1_SIG_DB_D932_1409_D932_V1.8_modified.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False

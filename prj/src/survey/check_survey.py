@@ -35,7 +35,7 @@ def check_survey():
     open_excel_file(res_file_path)
 
     if get_ga_version() < (6, 0, 0, 0):
-        print_warning(f"GA version is older than v6:"
+        print_warning(f"GA version is before v6:"
                       f"\nVerify that the objects to verify in Correspondence with Site Survey activity "
                       f"asked by the System DPSA effectively correspond to sheet \"Survey\" of the result file.")
 

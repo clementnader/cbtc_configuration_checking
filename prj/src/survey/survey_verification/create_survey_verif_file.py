@@ -89,7 +89,7 @@ def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict], extra_
         dc_sys_kp = obj_val["dc_sys_kp"]
         survey_name = obj_val["survey_name"]
         survey_type = obj_val["survey_type"]
-        survey_track = obj_val["survey_track"]
+        survey_track = obj_val["survey_original_track"]  # display the original track name
         surveyed_kp = obj_val["surveyed_kp"]
         surveyed_kp_comment = obj_val["surveyed_kp_comment"]
         comments = obj_val["comments"]

@@ -34,6 +34,7 @@ def add_switch_center_points(sw_survey_info: dict[str, dict[str, Any]], survey_n
         res_dict[f"{center_point_name}__{center_point_track}".upper()] = {
             "survey_type": survey_obj_info["survey_type"],
             "obj_name": obj_name, "survey_track": center_point_track.upper(),
+            "survey_original_track": survey_obj_info["survey_original_track"],
             "surveyed_kp": survey_obj_info["surveyed_kp"],
             "surveyed_kp_comment": survey_obj_info["surveyed_kp_comment"], "comments": comments
         }
@@ -66,6 +67,7 @@ def add_switch_heel_points(sw_survey_info: dict[str, dict[str, Any]], survey_nam
         res_dict[f"{heel_point_name}__{heel_point_track}".upper()] = {
             "survey_type": survey_obj_info["survey_type"],
             "obj_name": obj_name, "survey_track": heel_point_track.upper(),
+            "survey_original_track": survey_obj_info["survey_original_track"],
             "surveyed_kp": survey_obj_info["surveyed_kp"],
             "surveyed_kp_comment": survey_obj_info["surveyed_kp_comment"], "comments": comments
         }

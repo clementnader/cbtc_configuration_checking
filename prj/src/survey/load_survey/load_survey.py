@@ -6,6 +6,7 @@ from ...utils import *
 from ...database_location import *
 from ..survey_types import *
 from .switch_survey_utils import *
+from .track_survey_utils import *
 
 
 __all__ = ["load_survey"]
@@ -81,7 +82,9 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
         if survey_type is None:
             continue
 
-        track = get_xl_cell_value(survey_ws, row=row, column=track_col).strip().upper().replace("-", "_")
+        original_track = get_xl_cell_value(survey_ws, row=row, column=track_col)
+        track = original_track.strip().upper().replace("-", "_")
+        track = find_corresponding_dc_sys_track(track)
 
         surveyed_kp = get_xl_float_value(survey_ws, row=row, column=survey_kp_col)
         if surveyed_kp is None:
@@ -104,8 +107,8 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
             surveyed_values = [surveyed_kp]
         intermediate_survey_dict[survey_type][f"{key_name}__{track}"] = {
             "survey_type": type_name,
-            "obj_name": obj_name, "survey_track": track, "surveyed_kp": surveyed_kp,
-            "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
+            "obj_name": obj_name, "survey_track": track, "survey_original_track": original_track,
+            "surveyed_kp": surveyed_kp, "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
             "list_surveyed_values": surveyed_values
         }
     intermediate_survey_dict["SWP"].update(add_switch_center_points(intermediate_survey_dict["SWP"], survey_name))
@@ -139,6 +142,7 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str, Any]],
                 "survey_type": intermediate_survey_value["survey_type"],
                 "obj_name": intermediate_survey_value["obj_name"],
                 "survey_track": intermediate_survey_value["survey_track"],
+                "survey_original_track": intermediate_survey_value["survey_original_track"],
                 "surveyed_kp": intermediate_survey_value["surveyed_kp"],
                 "surveyed_kp_comment": intermediate_survey_value["surveyed_kp_comment"],
                 "comments": comments

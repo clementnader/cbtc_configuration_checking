@@ -19,9 +19,9 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
     for obj_name, obj_val in objs_dict.items():
         dc_sys_sheet = obj_val["dc_sys_sheet"]
         other_name = obj_val["other_name"]
-        dc_sys_track = obj_val["track"]
+        original_dc_sys_track = obj_val["track"]
         dc_sys_kp = obj_val["kp"]
-        dc_sys_track = dc_sys_track.upper()
+        dc_sys_track = original_dc_sys_track.upper()
 
         test_names = [obj_name, other_name]
         if obj_name.startswith("TAG_"):
@@ -31,7 +31,8 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
 
-        res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, dc_sys_sheet, dc_sys_track, dc_sys_kp)
+        res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, dc_sys_sheet,
+                                                                original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, tag_survey_info))
 
