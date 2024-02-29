@@ -13,7 +13,7 @@ START_LINE = 3
 
 
 def check_offset_correctness():
-    print_title(f"Verification of the offset correctness")
+    print_title(f"Verification of the Correspondence between (Segment, Offset) <-> (Track, KP)")
     success = True
     wb = load_dc_sys_wb()
     sheet_names = get_xl_sheet_names(wb)
@@ -22,7 +22,8 @@ def check_offset_correctness():
         if verify_sheet(ws) is False:
             success = False
     if success:
-        print_log("No KO has been raised in the offset correctness checking.")
+        print_log("No KO has been raised in the verification of the correspondence between "
+                  "(Segment, Offset) <-> (Track, KP).")
 
 
 def verify_sheet(ws: xlrd.sheet):
