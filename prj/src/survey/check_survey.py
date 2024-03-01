@@ -12,7 +12,7 @@ from .block_definition import *
 __all__ = ["check_survey"]
 
 
-SURVEY_CHECKING_VERSION = "v2.1.2"
+SURVEY_CHECKING_VERSION = "v2.1.3"
 
 
 def check_survey():
