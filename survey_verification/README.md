@@ -46,15 +46,31 @@ If this file is not provided, the tool will automatically try to find the block 
    - and the different columns for the data the tool will use:
      - reference name: name of the surveyed element,
      - type: type of the surveyed element:
-       - for switches, type shall be **SWP**, **SWITCH** or **SWITCH POINT**.
-       - for platform ends, type shall be **PLATFORM**, **PLATFORM END** or **PLATFORM EXTREMITY**.
-       - for platform OSPs, type shall be **OSP**, **PAE** or **PLATFORM_OSP**.
-       - for blocks, type shall be **TC**, **TRACK CIRCUIT**, **TRACK CIRCUITS JOINT**, **AXLE COUNTER** or **INSULATED JOINT**.
-       - for signals, type shall be **SIGNAL**.
-       - for buffers, type shall be **SIGNAL_BUFFER**, **BUFFER** or **BS**.
-       - for tags, type shall be **TAG**, **BAL**, **BALISE**, **TAGS** or **FIXED BAL**.
-       - for dynamic tags, type shall be **IATPM_TAG**, **IATPM TAG**, **IATPM TAGS** or **IATP BAL**.
-       - for flood gates, type shall be **FLOOD_GATE**, **FLOODGATE**,or **FLOOD GATE**.
+       - for switches, type shall be:<br />
+       **SWP**, **SWITCH**, **SWITCH_POINT** or **SWITCH POINT**.
+       - for platform ends, type shall be:<br />
+       **PLATFORM**, **PLATFORM_END**, **PLATFORM END**,<br />
+       **PLATFORM_EXTREMITY** or **PLATFORM EXTREMITY**.
+       - for platform OSPs, type shall be:<br />
+       **OSP**, **PAE**, **PLATFORM_OSP** or **PLATFORM OSP**.
+       - for blocks, type shall be:<br />
+       **TC**, **TRACK_CIRCUIT**, **TRACK CIRCUIT**, **TRACK CIRCUITS JOINT**,<br />
+       **AXLE COUNTER** or **INSULATED JOINT**.
+       - for signals, type shall be:<br />
+       **SIG** or **SIGNAL**.
+       - for buffers, type shall be:<br />
+       **SIGNAL_BUFFER**, **SIGNAL BUFFER**, **BUFFER** or **BS**.
+       - for tags, type shall be:<br />
+       **BAL**, **BALISE**, **TAG**, **TAGS**,<br />
+       **FIXED_BAL**, **FIXED BAL**, **FIXED_BALISE**, **FIXED BALISE**,<br />
+       **FIXED_TAG**, **FIXED TAG**, **FIXED_TAGS** or **FIXED TAGS**.
+       - for dynamic tags, type shall be:<br />
+       **IATPM_BAL**, **IATPM BAL**, **IATPM_BALISE**, **IATPM BALISE**,<br />
+       **IATPM_TAG**, **IATPM TAG**, **IATPM_TAGS**, **IATPM TAGS**,<br />
+       **IATP_BAL**, **IATP BAL**, **IATP_BALISE**, **IATP BALISE**,<br />
+       **IATP_TAG**, **IATP TAG**, **IATP_TAGS** or **IATP TAGS**.
+       - for flood gates, type shall be:<br />
+       **FLOOD_GATE**, **FLOOD GATE**, **FLOODGATE** or **FLOODGATES**.
      - track: track of the element,
      - surveyed KP: kilometer point surveyed by a geometer.
    
