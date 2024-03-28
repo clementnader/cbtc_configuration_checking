@@ -165,9 +165,9 @@ def _modify_variables_to_print(variables: dict[str, str]):
 
 
 def ask_question_yes_or_no(question: str) -> bool:
-    while answer := (input(f"{Color.yellow}{question}{Color.reset} "
-                           f"{Color.light_yellow}(Y/N){Color.reset} ").upper().strip()
-                     not in ["Y", "YES", "N", "NO"]):
+    while (answer := (input(f"{Color.yellow}{question}{Color.reset} "
+                            f"{Color.light_yellow}(Y/N){Color.reset} ").upper().strip())
+           ) not in ["Y", "YES", "N", "NO"]:
         pass
 
     return answer in ["Y", "YES"]
