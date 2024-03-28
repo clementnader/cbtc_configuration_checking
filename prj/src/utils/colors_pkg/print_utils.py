@@ -165,8 +165,12 @@ def _modify_variables_to_print(variables: dict[str, str]):
 
 
 def ask_question_yes_or_no(question: str) -> bool:
-    return input(f"{Color.yellow}{question}{Color.reset} "
-                 f"{Color.light_yellow}(Y/N){Color.reset} ").upper() in ["Y", "YES"]
+    while answer := (input(f"{Color.yellow}{question}{Color.reset} "
+                           f"{Color.light_yellow}(Y/N){Color.reset} ").upper().strip()
+                     not in ["Y", "YES", "N", "NO"]):
+        pass
+
+    return answer in ["Y", "YES"]
 
 
 def pretty_print_dict(in_dict: Union[dict, list], lvl: int = 0, max_lvl: int = None) -> None:

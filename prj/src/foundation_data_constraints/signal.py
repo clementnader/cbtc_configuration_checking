@@ -6,7 +6,7 @@ from ..cctool_oo_schema import *
 from ..dc_sys import *
 from ..dc_sys_sheet_utils.signal_utils import get_ivb_limit_of_a_signal
 from ..dc_sys_sheet_utils.ivb_utils import get_related_block_of_ivb
-from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist
+from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist_downstream
 from ..dc_par import *
 # from ..control_tables import *
 

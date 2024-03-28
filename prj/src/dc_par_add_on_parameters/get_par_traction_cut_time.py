@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...cc_param import *
+from ..cc_param import *
+
+
+__all__ = ["par_traction_cut_time"]
 
 
 def par_traction_cut_time(variables: dict = None):

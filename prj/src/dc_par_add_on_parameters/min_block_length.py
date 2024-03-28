@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...cctool_oo_schema import *
-from ...dc_sys import *
-from ...dc_sys_get_cbtc_territory import *
-from ...dc_sys_sheet_utils.block_utils import *
+from ..cctool_oo_schema import *
+from ..dc_sys import *
+from ..dc_sys_get_cbtc_territory import *
+from ..dc_sys_sheet_utils.block_utils import get_list_len_block
+
+
+__all__ = ["get_block_min_length"]
 
 
 def get_block_min_length(in_cbtc: bool = True):

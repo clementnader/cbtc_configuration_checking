@@ -38,7 +38,7 @@ class Projects:
 # PROJECT_NAME = Projects.Glasgow
 # PROJECT_NAME = Projects.Lima
 # PROJECT_NAME = Projects.Milan
-# PROJECT_NAME = Projects.Riyadh  # TODO: Manage TRACK_02W vs TRACK_02, Middle Platform ?
+# PROJECT_NAME = Projects.Riyadh
 PROJECT_NAME = Projects.Thessaloniki
 
 # --- USA --- #
@@ -51,7 +51,7 @@ PROJECT_NAME = Projects.Thessaloniki
 # PROJECT_NAME = Projects.Noida
 # --- China --- #
 # PROJECT_NAME = Projects.Shenyang
-# PROJECT_NAME = Projects.Wenzhou  # TODO: Middle Platform ?
+# PROJECT_NAME = Projects.Wenzhou
 # --- Mock-up --- #
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2
@@ -287,10 +287,10 @@ class ProjectDatabaseLoc:
                                                    r"\M4-ST00PGRE-55047_00.04_Allegato_1-833-847 - DEPOT - Overlap.pdf")
             # WHOLE
             elif ver == "WHOLE":
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_00_RC6\ML4_DC_SYS.xls"
-                self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_00_RC6\ML4_DC_PAR.xls"
-                self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_00_RC6\DC_BOP.xls"
-                self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C11_D470_06_06_02_V03"
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_01_RC3\ML4_DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_01_RC3\ML4_DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_01_RC3\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C11_D470_06_06_02_V04"
                 # -- Survey -- #
                 self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\ML4\SURVEY"
                                                r"\(ML4) LN04_Object_List_01.xlsx",
@@ -310,6 +310,19 @@ class ProjectDatabaseLoc:
                 self.survey_loc.type_col = [1, 1, 2, 2, 2]
                 self.survey_loc.track_col = [4, 4, 3, 3, 3]
                 self.survey_loc.survey_kp_col = [7, 7, 4, 5, 5]
+                # -- Control Tables -- #
+                self.control_tables_route.line = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE"
+                                                  r"\M4-ST00PGRE-55047_02.00_Allegato_1 WHOLE-6-167-Routes.pdf")
+                self.control_tables_route.cmc = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE"
+                                                 r"\M4-ST00PGRE-55047_02.00_Allegato_1 WHOLE-378-535-Routes.pdf")
+                self.control_tables_route.cmc2 = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE"
+                                                  r"\M4-ST00PGRE-55047_02.00_Allegato_1 WHOLE-814-955-Routes.pdf")
+                self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE"
+                                                    r"\M4-ST00PGRE-55047_02.00_Allegato_1 WHOLE-330-338-Overlap.pdf")
+                self.control_tables_overlap.cmc = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE"
+                                                   r"\M4-ST00PGRE-55047_02.00_Allegato_1 WHOLE-690-747-Overlap.pdf")
+                self.control_tables_overlap.cmc2 = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE"
+                                                    r"\M4-ST00PGRE-55047_02.00_Allegato_1 WHOLE-1098-1144-Overlap.pdf")
 
         # ------------------------------- Riyadh -------------------------------#
         elif project_name == Projects.Riyadh:
@@ -351,10 +364,12 @@ class ProjectDatabaseLoc:
         # ------------------------------- Thessaloniki -------------------------------#
         elif project_name == Projects.Thessaloniki:
             # self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_SYS_old.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_SYS.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_SYS.xls"
+            self.dc_sys_addr = (r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3"
+                                r"\DC_SYS_patched_sw_block_locking_area.xls")
             self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V03"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V06"
             self.kit_c121_d470_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C121_D470_07_03_03_V04\20230619_122002\ZC\Export"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_A.xlsx",

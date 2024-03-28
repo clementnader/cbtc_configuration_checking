@@ -31,7 +31,7 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[
 
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Aig):
         # a dedicated function for switches
-        return give_sw_pos(obj_val)
+        return get_sw_pos(obj_val)
     if "IXL_Overlap" in get_class_attr_dict(DCSYS) and get_sh_name(obj_type) == get_sh_name(DCSYS.IXL_Overlap):
         # a dedicated function for overlaps
         return _get_ovl_pos(obj_val)

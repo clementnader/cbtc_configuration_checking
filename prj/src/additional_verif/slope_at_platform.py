@@ -34,7 +34,7 @@ def get_slope_at_plt(in_cbtc: bool = True):
     return dict_plt_slopes
 
 
-def get_slope_plt(plt: dict):
+def get_slope_plt(plt: dict) -> tuple[float, float]:
     seg_lim1, seg_lim2 = get_dc_sys_value(plt, DCSYS.Quai.ExtremiteDuQuai.Seg)
     x_lim1, x_lim2 = get_dc_sys_value(plt, DCSYS.Quai.ExtremiteDuQuai.X)
     return get_min_and_max_slopes_on_virtual_seg(seg_lim1, x_lim1, seg_lim2, x_lim2)

@@ -9,12 +9,6 @@ from .common_utils import *
 from .check_platform_osp import *
 
 
-PLT_PREFIX = {
-    "left_and_right": {"left": "LEFT_END_", "right": "RIGHT_END_"},
-    "begin_and_end": {"left": "Begin_", "right": "End_"}
-}
-
-
 # Switch
 def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp_survey_info: dict):
     assert dc_sys_sheet == DCSYS.Quai
@@ -25,10 +19,9 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp
     res_dict = dict()
     for plt_name, plt_val in plt_dict.items():
         plt_limits = _get_plt_limits(plt_val)
-        (lim1_track, lim1_kp), (lim2_track, lim2_kp) = plt_limits
         survey_name_dict = _get_corresponding_survey_extremities(plt_name, plt_limits, plt_survey_info)
-        limits_survey_info = [[plt_name + "__Limit_1", lim1_track, lim1_kp, survey_name_dict[1]],
-                              [plt_name + "__Limit_2", lim2_track, lim2_kp, survey_name_dict[2]]]
+        limits_survey_info = [[plt_name + f"__Limit_{n}", lim_track, lim_kp, survey_name_dict[n]]
+                              for n, (lim_track, lim_kp) in enumerate(plt_limits, start=1)]
 
         for obj_name, dc_sys_track, dc_sys_kp, survey_name in limits_survey_info:
             survey_obj_info = plt_survey_info.get(survey_name)
@@ -46,8 +39,8 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp
 
 
 def _clean_platform_extremity_name(plt_lim_name: str) -> str:
-    plt_name = plt_lim_name.upper()
-    plt_name = plt_name.removeprefix("LEFT_END_").removeprefix("RIGHT_END_")
+    plt_lim_name = plt_lim_name.upper()
+    plt_name = plt_lim_name.removeprefix("LEFT_END_").removeprefix("RIGHT_END_")
     plt_name = plt_name.removeprefix("BEGIN_").removeprefix("END_")
     plt_name = plt_name.removeprefix("QUAI1_").removeprefix("QUAI2_")
     plt_name = plt_name.removesuffix("_START").removesuffix("_END")

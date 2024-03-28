@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...cctool_oo_schema import *
-from ...dc_sys import *
-from ...dc_sys_get_cbtc_territory import *
+from ..cctool_oo_schema import *
+from ..dc_sys import *
+from ..dc_sys_get_cbtc_territory import *
+
+
+__all__ = ["get_max_slope"]
 
 
 def get_max_slope(in_cbtc: bool = True, verbose: bool = True):

@@ -36,11 +36,11 @@ class XlBgColor:
     ok = "C6EFCE"
     na = "FFEB9C"
     # main colors
-    yellow = "FFE699"
+    yellow = "FFD966"
     light_yellow = "FFF2CC"
-    green = "C6E0B4"
+    green = "A9D08E"
     light_green = "E2EFDA"
-    blue = "BDD7EE"
+    blue = "9BC2E6"
     light_blue = "DDEBF7"
     # other colors
     light_orange = "F8CBAD"

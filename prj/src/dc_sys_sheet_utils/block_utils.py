@@ -89,7 +89,7 @@ def does_path_exist_within_block(seg1, seg2, block, downstream: bool = None):
 
 def get_block_associated_to_sw(sw: dict) -> Optional[tuple[str, dict]]:
     """ Get the block associated to a switch. """
-    point_seg, x = give_sw_pos(sw)
+    point_seg, x = get_sw_pos(sw)
     list_blocks = get_zones_on_point(DCSYS.CDV, point_seg, x)
     if not list_blocks:
         print_error(f"Unable to find block associated to switch:\n{sw}")

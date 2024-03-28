@@ -43,6 +43,7 @@ def additional_verif():
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
     # pretty_print_dict(get_slope_at_plt(in_cbtc=False))
+    # pretty_print_dict(get_slope_at_overshoot_recovery_area(in_cbtc=False))
     return
 
 
@@ -80,7 +81,7 @@ def route_and_overlap():
 
 
 def dc_par_customer_data():
-    # min_length_multiple_path(in_cbtc=True)
+    # min_length_multiple_path(in_cbtc=False)  # trapezoid_length
     # min_distance_between_vsp_overlap(in_cbtc=False)
     # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
     #                                                                    with a buffer just down the line
@@ -90,7 +91,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()  # v2.1.3
+    # check_survey()  # v2.1.4
     # survey_window()
     # cctool_schema_window()
     return
@@ -99,6 +100,7 @@ def survey():
 def constraints():
     # check_offset_correctness()
     # check_upstream_and_downstream_ivb_of_all_signals()
+    # check_cbtc_protecting_switch_area()
     #
     # r_cdv_5(print_ok=True)  # TODO for r_cdv_5:
     #                             regarder pour prendre un param plutôt avec le hardware/hardware reference

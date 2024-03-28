@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...utils import *
-from ...cctool_oo_schema import *
-from ...dc_sys import *
-from ...dc_sys_get_cbtc_territory import *
-from ...dc_sys_draw_path.dc_sys_path_and_distances import get_dist
+from ..utils import *
+from ..cctool_oo_schema import *
+from ..dc_sys import *
+from ..dc_sys_get_cbtc_territory import *
+from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist
 
 
 __all__ = ["min_dist_between_two_last_signals_before_cbtc_territory_exit"]

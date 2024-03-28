@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import numpy
-from ..load_parameters import *
-from ..customer_data import *
+from ..dc_par import *
+from ..dc_par_customer_data import par_gamma_traction_max
 from .get_gamma_slope import get_par_gamma_slope
 from .get_par_coast_time import par_coast_time
 from .get_par_traction_cut_time import par_traction_cut_time
+
+
+__all__ = ["get_at_rollback_dist"]
 
 
 def get_at_rollback_dist(local_slope, mtc: bool = False, variables: dict = None):

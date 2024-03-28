@@ -8,7 +8,7 @@ from .get_oriented_limits import *
 
 
 __all__ = ["get_segments_within_zone", "get_zone_limits", "get_all_segments_in_zone",
-           "is_point_in_zone", "get_zones_on_point", "get_zones_of_extremities"]
+           "is_point_in_zone", "get_zones_on_point", "get_zones_of_extremities"]  # TODO get_zones_of_zone
 
 
 ZONE_SEGMENTS = dict()

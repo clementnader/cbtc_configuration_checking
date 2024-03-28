@@ -32,7 +32,7 @@ def get_user_full_name() -> str:
     if not full_name:
         print_log(f"\tUnable to find the user name.")
         return ""
-    print_log(f"\tFound user name is {Color.default}\"{full_name}\"{Color.reset}.")
+    print_log(f"\tUser name is found to be {Color.default}\"{full_name}\"{Color.reset}.")
     if "(" in full_name:
         full_name = full_name.split("(", 1)[0].strip()
     if "," in full_name:

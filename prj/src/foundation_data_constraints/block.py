@@ -8,6 +8,8 @@ from ..dc_sys_sheet_utils.block_utils import get_block_associated_to_sw, find_up
 from ..dc_sys_sheet_utils.slope_utils import *
 from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist
 from ..dc_par import *
+from ..dc_par_add_on_parameters import get_at_rollback_dist
+from ..fouling_points_utils import *
 from ..cctool_oo_schema import *
 
 
@@ -43,7 +45,7 @@ def r_cdv_5(print_ok: bool = False):
 def test_sw_danger_point(sw_name, sw_value, sw_block, is_sw_upstream, upstream_limits, downstream_limits,
                          print_ok: bool):
     relative_limits = upstream_limits if is_sw_upstream else downstream_limits
-    sw_seg, sw_x = give_sw_pos(sw_value)
+    sw_seg, sw_x = get_sw_pos(sw_value)
     error_count = 0
     for seg, x in relative_limits:
         dist = get_dist(sw_seg, sw_x, seg, x)

@@ -26,8 +26,10 @@ SURVEY_TYPES_DICT = {
                           "PLATFORM", "PLATFORM_END", "PLATFORM END",
                           "PLATFORM_EXTREMITY", "PLATFORM EXTREMITY", "MPLATFORM"
                       ],
-                      "multiple_dc_sys_objets": [get_sh_name(DCSYS.Quai), get_sh_name(DCSYS.Quai.PointDArret)],
-                      "multiple_survey_objets": [("PLATFORM", None, None), ("OSP", None, None)]},
+                      "multiple_dc_sys_objets": [get_sh_name(DCSYS.Quai),
+                                                 get_sh_name(DCSYS.Quai.PointDArret)],
+                      "multiple_survey_objets": [("PLATFORM", None, None),
+                                                 ("OSP", None, None)]},
 
     "OSP":           {"res_sheet": None,
                       "survey_type_names": [
@@ -42,7 +44,8 @@ SURVEY_TYPES_DICT = {
                           "TC", "TRACK_CIRCUIT", "TRACK CIRCUIT", "TRACK CIRCUITS JOINT",
                           "AXLE COUNTER", "INSULATED JOINT"
                       ],
-                      "multiple_survey_objets": [("TC", None, None), ("SIGNAL_BUFFER", None, None)]},
+                      "multiple_survey_objets": [("TC", None, None),
+                                                 ("SIGNAL_BUFFER", None, None)]},
 
     "SIGNAL":        {"res_sheet": "Signal",
                       "dcsys_sh": DCSYS.Sig,

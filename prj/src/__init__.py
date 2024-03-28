@@ -8,6 +8,8 @@ from .cctool_oo_schema import *
 from .control_tables import *
 from .dc_bop import *
 from .dc_par import *
+from .dc_par_add_on_parameters import *
+from .dc_par_customer_data import *
 from .dc_sys import *
 from .dc_sys_draw_path import *
 from .dc_sys_get_cbtc_territory import *

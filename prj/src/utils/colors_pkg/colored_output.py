@@ -60,14 +60,14 @@ class Color:
     dark_turquoise = csi_color_seq(23)
     turquoise = csi_color_seq(30)
     cyan = csi_color_seq(51)
-    grey_blue = csi_color_seq(67)
+    grey_blue = csi_color_seq(110)
 
     dark_green = csi_color_seq(22)
     dark_green2 = csi_color_seq(28)
     forest_green = csi_color_seq(29)
     green = csi_color_seq(76)
     green2 = csi_color_seq(40)
-    mint_green = csi_color_seq(35)  # rename green -> mint_green
+    mint_green = csi_color_seq(35)
     classic_dark_green = csi_color_seq(2)
     classic_light_green = csi_color_seq(10)
     vivid_green = csi_color_seq(82)
@@ -88,11 +88,11 @@ class Color:
     pink = csi_color_seq(213)
     pale_pink = csi_color_seq(225)
 
-    orange_red = csi_color_seq(202)  # rename dark_orange -> orange_red
+    orange_red = csi_color_seq(202)
     dark_orange = csi_color_seq(172)
     orange = csi_color_seq(208)
     light_orange = csi_color_seq(214)
-    dark_brown = csi_color_seq(94)  # rename brown -> dark_brown
+    dark_brown = csi_color_seq(94)
     brown = csi_color_seq(130)
     light_brown = csi_color_seq(172)
     dark_yellow = csi_color_seq(3)

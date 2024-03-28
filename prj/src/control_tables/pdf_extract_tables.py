@@ -145,7 +145,9 @@ def _clean_res_dict(res_dict: dict[str, str]) -> dict[str, str]:
         val = re.sub("( )*[)]", ")", val)  # removing space inside parentheses
         val = re.sub("( )*,( )*", ", ", val)  # correctly format comma
         val = val.strip()
-        if val.endswith(","):
+        if (val.endswith(",") or val.endswith("_") or val.endswith(".")
+                or (val != "--" and val.endswith("-"))
+                or val.count("(") != val.count(")")):
             print_warning(f"Key {Color.blue}{key}{Color.reset} is on multiple lines "
                           f"and it was not completely parsed from the Control Tables:", end="")
             print(f"{val = }\n")
