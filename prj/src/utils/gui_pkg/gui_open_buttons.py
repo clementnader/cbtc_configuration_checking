@@ -12,7 +12,7 @@ def add_dc_sys_open_button(frame: tkinter.Frame, ref_row: int, bg: str = None, g
                            ) -> tuple[tkinter.StringVar, tkinter.StringVar]:
     title_text = "DC_SYS: "
     open_text = "Open DC_SYS" + (f" compatible with System Referential {ga_version}" if ga_version is not None else "")
-    file_types = ("XLS Excel file", "*.xls")
+    file_types = ("DC_SYS.xls", "*.xls")
 
     dc_sys_directory_string_var = tkinter.StringVar()
     dc_sys_file_name_string_var = tkinter.StringVar()
@@ -28,7 +28,7 @@ def add_cctool_oo_open_button(frame: Union[tkinter.Tk, tkinter.Frame], ref_row: 
                               bg: str = None) -> tuple[tkinter.StringVar, tkinter.StringVar]:
     title_text = "CCTool-OO Schema: "
     open_text = "Open CCTool-OO Schema"
-    file_types = ("XLS Excel file", "*.xls")
+    file_types = ("CCTool-OO Schema.xls", "*.xls")
 
     cctool_oo_directory_string_var = tkinter.StringVar()
     cctool_oo_file_name_string_var = tkinter.StringVar()
