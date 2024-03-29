@@ -12,25 +12,25 @@ from .block_definition import *
 __all__ = ["check_survey"]
 
 
-SURVEY_CHECKING_VERSION = "v2.1.4"
+SURVEY_CHECKING_VERSION = "v2.2"
 
 
 def check_survey():
     check_offset_correctness()
 
-    print_title(f"Correspondence with site survey for "
+    print_title(f"Correspondence with Site Survey for "
                 f"{Color.cyan}{get_c_d470_version()}{Color.reset}")
 
     if DATABASE_LOC.block_def is not None:
         print_section_title(f"Loading Block Def. information...")
     block_def_dict = get_block_definition()
-    print_section_title(f"Loading survey information...")
+    print_section_title(f"Loading Survey information...")
     survey_info = load_survey()
 
-    print_section_title(f"Analyzing the survey information and comparing them to the DC_SYS...")
+    print_section_title(f"Analyzing the Survey information and comparing them to the DC_SYS...")
     survey_verif_dict = create_check_survey_dict(survey_info, block_def_dict)
 
-    print_section_title(f"Creating the result file...")
+    print_section_title(f"Creating the Result File...")
     res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None, SURVEY_CHECKING_VERSION)
     open_excel_file(res_file_path)
 

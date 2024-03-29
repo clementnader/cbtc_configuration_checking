@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from ....utils import *
+from ...survey_utils import *
 
 
-__all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_survey"]
+__all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_survey",
+           "get_corresponding_survey_one_limit_on_track", "get_corresponding_survey_two_limits_on_track"]
 
 
 def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
@@ -51,3 +53,76 @@ def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str, Any]
     if test_name is not None and f"{test_name}__{track}".upper() in survey_info:
         return f"{test_name}__{track}".upper()
     return None
+
+
+def get_corresponding_survey_one_limit_on_track(dc_sys_limits_on_track: list[tuple[str, float]],
+                                                associated_survey_dict: dict[tuple[str, float], Optional[str]],
+                                                survey_limits_on_track: list[str],
+                                                survey_info: dict[str, Any]
+                                                ) -> dict[tuple[str, float], Optional[str]]:
+    for (lim_track, lim_kp) in dc_sys_limits_on_track:
+        if not survey_limits_on_track:  # extremity not surveyed
+            associated_survey_dict[(lim_track, lim_kp)] = None
+        elif len(survey_limits_on_track) == 1:  # only 1 extremity corresponding,
+            # we do the survey comparison with this one
+            survey_name = survey_limits_on_track[0]
+            associated_survey_dict[(lim_track, lim_kp)] = survey_name
+        else:  # multiple extremities corresponding,
+            # find for which survey limit the difference is the smallest
+            test_differences = list()
+            for survey_name in survey_limits_on_track:
+                surveyed_kp = survey_info[survey_name]["surveyed_kp"]
+                reversed_polarity = check_polarity(lim_kp, surveyed_kp)
+                if reversed_polarity:
+                    diff = abs(abs(lim_kp) - abs(surveyed_kp))
+                else:
+                    diff = abs(lim_kp - surveyed_kp)
+                test_differences.append((diff, survey_name))
+            closest_survey_name = sorted(test_differences, key=lambda x: x[0])[0][1]
+            associated_survey_dict[(lim_track, lim_kp)] = closest_survey_name
+    return associated_survey_dict
+
+
+def get_corresponding_survey_two_limits_on_track(dc_sys_limits_on_track: list[tuple[str, float]],
+                                                 survey_name_dict: dict[tuple[str, float], Optional[str]],
+                                                 survey_limits_on_track: list[str],
+                                                 survey_info: dict[str, Any]
+                                                 ) -> dict[tuple[str, float], Optional[str]]:
+    if not survey_limits_on_track:  # extremities not surveyed
+        pass
+    elif len(survey_limits_on_track) == 1:  # only 1 extremity corresponding,
+        # find for which DC_SYS limit the difference is the smallest
+        survey_name = survey_limits_on_track[0]
+        surveyed_kp = survey_info[survey_name]["surveyed_kp"]
+        test_differences = list()
+        for (lim_track, lim_kp) in dc_sys_limits_on_track:
+            reversed_polarity = check_polarity(lim_kp, surveyed_kp)
+            if reversed_polarity:
+                diff = abs(abs(lim_kp) - abs(surveyed_kp))
+            else:
+                diff = abs(lim_kp - surveyed_kp)
+            test_differences.append((diff, (lim_track, lim_kp)))
+        closest_dc_sys_limit = sorted(test_differences, key=lambda x: x[0])[0][1]
+        survey_name_dict[closest_dc_sys_limit] = survey_name
+    else:  # multiple extremities corresponding,
+        # find for which DC_SYS limits combination the difference is the smallest
+        (lim1_track, lim1_kp), (lim2_track, lim2_kp) = dc_sys_limits_on_track
+        test_differences = list()
+        for survey_name_corresponding_to_1 in survey_limits_on_track:
+            surveyed_kp_1 = survey_info[survey_name_corresponding_to_1]["surveyed_kp"]
+            for survey_name_corresponding_to_2 in [survey_name for survey_name in survey_limits_on_track
+                                                   if survey_name != survey_name_corresponding_to_1]:
+                surveyed_kp_2 = survey_info[survey_name_corresponding_to_2]["surveyed_kp"]
+                reversed_polarity = (check_polarity(lim1_kp, surveyed_kp_1) and check_polarity(lim2_kp, surveyed_kp_2))
+                if reversed_polarity:
+                    diff1 = abs(abs(lim1_kp) - abs(surveyed_kp_1))
+                    diff2 = abs(abs(lim2_kp) - abs(surveyed_kp_2))
+                else:
+                    diff1 = abs(lim1_kp - surveyed_kp_1)
+                    diff2 = abs(lim2_kp - surveyed_kp_2)
+                test_differences.append((diff1 + diff2,
+                                         {(lim1_track, lim1_kp): survey_name_corresponding_to_1,
+                                          (lim2_track, lim2_kp): survey_name_corresponding_to_2}))
+        closest_combination = sorted(test_differences, key=lambda x: x[0])[0][1]
+        survey_name_dict.update(closest_combination)
+    return survey_name_dict
