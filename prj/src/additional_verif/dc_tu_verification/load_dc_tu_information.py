@@ -35,7 +35,7 @@ def load_dc_tu_information() -> dict[int, dict[int, dict[str, str]]]:
     return re_order_dict(dc_tu_dict)
 
 
-def re_order_dict(in_dict: dict[int, dict[int]]) -> dict[int, dict[int]]:
+def re_order_dict(in_dict: dict[int, dict[int, Any]]) -> dict[int, dict[int, Any]]:
     # Sort train units by increasing order
     return {key: {sub_key: in_dict[key][sub_key] for sub_key in sorted(in_dict[key])} for key in sorted(in_dict)}
 

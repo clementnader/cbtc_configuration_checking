@@ -140,7 +140,8 @@ def get_obj_oriented_zone_limits(obj_type, obj_name: str) -> Union[None, list[tu
     return None
 
 
-def get_obj_limits(obj_val: dict[str, Any], obj_limit_attr) -> Union[list[tuple[str, float]], list[tuple[str, float, str]]]:
+def get_obj_limits(obj_val: dict[str, Any], obj_limit_attr
+                   ) -> Union[list[tuple[str, float]], list[tuple[str, float, str]]]:
     limits = get_obj_oriented_limits(obj_val, obj_limit_attr)
     if limits is None:  # non-oriented limits
         limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X))

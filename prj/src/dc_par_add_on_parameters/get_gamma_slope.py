@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ..dc_par_customer_data import cd_alpha
+from ..dc_par_customer_data import g
 
 
 __all__ = ["get_par_gamma_slope"]

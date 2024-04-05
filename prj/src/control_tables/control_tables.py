@@ -10,13 +10,14 @@ from .pdf_extract_tables import *
 
 __all__ = ["CONTROL_TABLE_TYPE", "CONTROL_TABLE_LINE_PART", "parse_control_tables",
            "ROUTE_CONTROL_SIG_CONTROL_TABLE", "ROUTE_SW_CONTROL_TABLE", "ROUTE_PATH_CONTROL_TABLE",
-           "ROUTE_APPROACH_AREA_CLEARANCE_CONTROL_TABLE",
+           "ROUTE_OVERLAP_SET_CONTROL_TABLE", "ROUTE_APPROACH_AREA_CLEARANCE_CONTROL_TABLE",
            "OVL_DESTINATION_POINT_CONTROL_TABLE", "OVL_PATH_CONTROL_TABLE", "OVL_SW_CONTROL_TABLE"]
 
 
 ROUTE_CONTROL_SIG_CONTROL_TABLE = ["[1]", "[1a]"]
 ROUTE_SW_CONTROL_TABLE = "[9]"
 ROUTE_PATH_CONTROL_TABLE = "[10]"
+ROUTE_OVERLAP_SET_CONTROL_TABLE = "[12]"
 ROUTE_APPROACH_AREA_CLEARANCE_CONTROL_TABLE = "[14]"
 
 OVL_DESTINATION_POINT_CONTROL_TABLE = "[1]"
@@ -26,8 +27,8 @@ OVL_SW_CONTROL_TABLE = "[8]"
 
 class CONTROL_TABLE_LINE_PART:
     line = "Main Line"
-    cmc = "Control and Maintenance Center (CMC)"
-    cmc2 = "CMC second part"
+    depot = "Depot"
+    depot2 = "Depot second part"
 
 
 class ControlTableInfo:
@@ -46,21 +47,21 @@ class ControlTableInfo:
 
         if line_part == CONTROL_TABLE_LINE_PART.line:
             self.control_tables_path = control_tables.line
-        elif line_part == CONTROL_TABLE_LINE_PART.cmc:
-            self.control_tables_path = control_tables.cmc
-        elif line_part == CONTROL_TABLE_LINE_PART.cmc2:
-            self.control_tables_path = control_tables.cmc2
+        elif line_part == CONTROL_TABLE_LINE_PART.depot:
+            self.control_tables_path = control_tables.depot
+        elif line_part == CONTROL_TABLE_LINE_PART.depot2:
+            self.control_tables_path = control_tables.depot2
         else:
             print(f"Unknown part of the line: {line_part}, it shall be \"{CONTROL_TABLE_LINE_PART.line}\", "
-                  f"\"{CONTROL_TABLE_LINE_PART.cmc}\" or \"{CONTROL_TABLE_LINE_PART.cmc2}\".")
+                  f"\"{CONTROL_TABLE_LINE_PART.depot}\" or \"{CONTROL_TABLE_LINE_PART.depot2}\".")
             return
 
         self.result_file = os.path.splitext(self.control_tables_path)[0] + ".csv"
 
 
 def parse_control_tables(table_type: str, use_csv_file: bool = False, verbose: bool = False, specific_page: int = None,
-                         line_parts: tuple = (CONTROL_TABLE_LINE_PART.line, CONTROL_TABLE_LINE_PART.cmc,
-                                              CONTROL_TABLE_LINE_PART.cmc2)) -> dict:
+                         line_parts: tuple = (CONTROL_TABLE_LINE_PART.line, CONTROL_TABLE_LINE_PART.depot,
+                                              CONTROL_TABLE_LINE_PART.depot2)) -> dict:
     res_dict = dict()
 
     for line_part in line_parts:
