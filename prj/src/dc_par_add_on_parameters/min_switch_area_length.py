@@ -21,7 +21,6 @@ def min_switch_area_length(in_cbtc: bool = False):
     nb_sw = len(sw_dict)
     dict_switch_area_length = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
-    i: int
     for i, (sw, sw_value) in enumerate(sw_dict.items()):
         print_log(f"\r{progress_bar(i, nb_sw)} processing length of switch area of {sw}...", end="")
         dict_switch_area_length[sw] = dict()

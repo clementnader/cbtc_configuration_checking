@@ -31,7 +31,6 @@ def create_fouling_points_file():
 def _make_file(sw_pos_dict):
     wb = load_xlsx_wb(FOULING_POINT_TEMPLATE)
     ws = wb.get_sheet_by_name(FOULING_POINT_SHEET)
-    row: int
     for row, (sw_name, sw_pos) in enumerate(sw_pos_dict.items(), start=FOULING_POINT_START_ROW):
         ws[f"{SW_NAME_COL}{row}"] = sw_name
         ws[f"{SW_KP_COL}{row}"] = sw_pos["kp"]

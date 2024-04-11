@@ -125,13 +125,9 @@ def constraints():
     #                                       and tool shall gives multiple ZC these times,
     #                                       re-work the way ZC is assigned.
     # cf_signal_12(no_overshoot=False, apz_with_tc=True)
-    # TODO: change the IVB limit upstream with the CDV
-    #     (no need to use the control tables)
-    #     en fait déjà oui pas besoin d'utiliser les control tables
-    #     mais prendre plutôt l'IVB en amont de base
-    #     et pourquoi pas laisser le choix d'utiliser CDV ou IVB
-    #     et aussi mettre la possibilité d'ajouter un tableau en entrée
-    #     avec les IVB de l'APZ
+    # TODO: - create a proper Excel result file with formulas and parameters values.
+    #       - adapt also r_zsm_3
+    # r_zsm_3(apz_with_tc=True)
     # verif_calib_distance()
     # ixl_overlap_platform_related()
     return

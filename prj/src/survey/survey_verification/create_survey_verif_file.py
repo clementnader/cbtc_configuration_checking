@@ -80,7 +80,6 @@ def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict], extra_
     tolerance_dict = _get_tolerance_dict(sheet_name)
     multiple_dc_sys_objets = _get_multiple_dc_sys_objets(sheet_name)
     multiple_survey_objets = _get_multiple_survey_objets(sheet_name)
-    row: int
     for row, (obj_full_name, obj_val) in enumerate(verif_dict.items(), start=START_ROW):
         obj_name = obj_full_name[0]
         dc_sys_sheet = obj_val["dc_sys_sheet"]

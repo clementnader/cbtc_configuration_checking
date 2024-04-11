@@ -34,7 +34,6 @@ def remove_common_limits(zone_limits: list[tuple[str, float]]) -> tuple[list[tup
                                                                         list[tuple[str, float, bool]]]:
     common_limits = list()
     oriented_limits = list()
-    i: int
     for i, (seg1, x1) in enumerate(zone_limits):
         if (seg1, x1) in zone_limits[i + 1:]:
             common_limits.append((seg1, x1))

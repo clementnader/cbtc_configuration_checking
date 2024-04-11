@@ -25,7 +25,6 @@ def min_length_multiple_path(in_cbtc: bool = False):
 
     multiple_path_len_dict = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
-    i: int
     for i, (start_seg, start_downstream) in enumerate(sw_point_segs):
         print_log(f"\r{progress_bar(i, nb_sw_point_segs)} processing length of multiple path "
                   f"from point segment {start_seg}...", end="")

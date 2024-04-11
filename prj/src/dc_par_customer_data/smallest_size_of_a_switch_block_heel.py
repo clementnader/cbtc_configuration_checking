@@ -21,7 +21,6 @@ def smallest_size_of_a_switch_block_heel(in_cbtc: bool = False):
 
     dict_min_heel = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
-    i: int
     for i, (sw, sw_value) in enumerate(sw_dict.items()):
         print_log(f"\r{progress_bar(i, nb_sw)} determining the heels virtual block of switch {sw}...", end="")
         point_vb = get_vb_associated_to_sw(sw_value)

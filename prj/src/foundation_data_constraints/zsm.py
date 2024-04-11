@@ -120,9 +120,10 @@ def print_results(res_dict):
         if zsm_mini > seg_mini:
             direction = check_seg_in_sw(seg, sw_dict)
             if direction in ["BIDIR", "INCREASING"] and round(zsm_mini - seg_mini, 3) <= .01:
-                print(f"{Color.green}OK on switch heels{Color.reset}\n"
-                      f"\t{zsm_mini = } not equal to {seg_mini = }"
-                      f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }\n")
+                pass
+                # print(f"{Color.green}OK on switch heels{Color.reset}\n"
+                #       f"\t{zsm_mini = } not equal to {seg_mini = }"
+                #       f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }\n")
             else:
                 print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
                             f"\n\t{zsm_mini = } not equal to {seg_mini = }"
@@ -130,9 +131,10 @@ def print_results(res_dict):
         if zsm_maxi < seg_maxi:
             direction = check_seg_in_sw(seg, sw_dict)
             if direction in ["BIDIR", "DECREASING"] and round(seg_maxi - zsm_maxi, 3) <= .01:
-                print(f"{Color.green}OK on switch heels{Color.reset}\n"
-                      f"\t{zsm_maxi = } not equal to {seg_maxi = }"
-                      f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }\n")
+                pass
+                # print(f"{Color.green}OK on switch heels{Color.reset}\n"
+                #       f"\t{zsm_maxi = } not equal to {seg_maxi = }"
+                #       f"\n\tfor {seg = }, {zsm_coverage_limits = }, {seg_limits = }\n")
             else:
                 print_error(f"ZSM not covering the whole \"within CBTC\" Territory"
                             f"\n\t{zsm_maxi = } not equal to {seg_maxi = }"

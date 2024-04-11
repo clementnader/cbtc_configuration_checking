@@ -62,7 +62,6 @@ def _get_joint_suffix_name(block1_name: str, block2_name: str, one_merge: bool =
         print_error(f"There is no underscore in block name {block1_name = } or {block2_name = }.")
         return "_" + block2_name
 
-    i: int
     for i, (t1, t2) in enumerate(zip(split1, split2)):
         if t1 != t2:
             split_diff_start = i

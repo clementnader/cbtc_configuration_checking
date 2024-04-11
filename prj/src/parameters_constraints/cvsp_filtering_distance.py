@@ -15,7 +15,6 @@ def min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc: bool = True)
         plt_dict = load_sheet(DCSYS.Quai)
     dict_min_dist = dict()
 
-    i: int
     for i, (plt, plt_value) in enumerate(plt_dict.items()):
         for osp_name, osp_seg, osp_x, osp_direction in get_dc_sys_zip_values(
                 plt_value, DCSYS.Quai.PointDArret.Name, DCSYS.Quai.PointDArret.Seg,

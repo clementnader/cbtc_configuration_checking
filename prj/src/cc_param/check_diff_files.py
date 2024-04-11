@@ -43,7 +43,6 @@ def check_diff_cc_param():
                 other_file = os.path.join(MAIN_DIRECTORY, train_unit_dir, cc_param_path)
                 with open(os.path.join(MAIN_DIRECTORY, other_file), 'r') as f:
                     lines = f.readlines()
-                    i: int
                     for i, (ref_line, line) in enumerate(zip(ref_lines, lines)):
                         ref_value = read_csv(ref_line)
                         ref_value[INFO_COLUMN] = ref_value[INFO_COLUMN].replace(",", ",<br />")

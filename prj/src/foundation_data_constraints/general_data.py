@@ -16,8 +16,10 @@ def cf_dg_1():
     _cf_1_check_maz(get_sub_dict_hf_general_data(TypeClasseObjetVariantHF.ZAUM))
     _cf_1_check_platform(get_sub_dict_hf_general_data(TypeClasseObjetVariantHF.QUAI))
     _cf_1_check_flood_gate(get_sub_dict_hf_general_data(TypeClasseObjetVariantHF.FLOOD_GATE))
-    _cf_1_check_block(get_sub_dict_hf_general_data(TypeClasseObjetVariantHF.BLOCK))
-    _cf_1_check_asr(get_sub_dict_hf_general_data(TypeClasseObjetVariantHF.ASR))
+    if "BLOCK" in get_class_attr_dict(TypeClasseObjetVariantHF):
+        _cf_1_check_block(get_sub_dict_hf_general_data(TypeClasseObjetVariantHF.BLOCK))
+    if "ASR" in get_class_attr_dict(TypeClasseObjetVariantHF):
+        _cf_1_check_asr(get_sub_dict_hf_general_data(TypeClasseObjetVariantHF.ASR))
 
 
 def cf_dg_2():
@@ -85,9 +87,14 @@ def _cf_1_check_maz(msg_dict: dict):
                            "shall exist for all MAZ",
                            [TypeNomLogiqueVariantHF.MVT_AUTH,
                             TypeNomLogiqueVariantHF.TRACTION_PWR_REGEN_AUTH,
-                            TypeNomLogiqueVariantHF.UTO_MVT_AUTH,
-                            TypeNomLogiqueVariantHF.AM_MVT_AUTH],
+                            TypeNomLogiqueVariantHF.UTO_MVT_AUTH],
                            shall_be_vital=True) is False:
+            success = False
+        if ("AM_MVT_AUTH" in get_class_attr_dict(TypeNomLogiqueVariantHF)
+                and _check_obj_msgs(DCSYS.Zaum, msg_dict, obj_name, True,
+                                    "shall exist for all MAZ",
+                                    TypeNomLogiqueVariantHF.AM_MVT_AUTH,
+                                    shall_be_vital=True) is False):
             success = False
     if success is True:
         print_log(f"No KO.")
@@ -212,11 +219,20 @@ def _cf_2_check_platform(msg_dict: dict):
                            [TypeNomLogiqueVariantBF.T_ATP_MD_PROHIB_NORMAL_DIR,
                             TypeNomLogiqueVariantBF.T_ATP_MD_PROHIB_REVERSE_DIR,
                             TypeNomLogiqueVariantBF.T_AD_PROHIB_NORMAL_DIR,
-                            TypeNomLogiqueVariantBF.T_AD_PROHIB_REVERSE_DIR,
-                            TypeNomLogiqueVariantBF.TRAIN_HOLD_NORMAL_DIR,
-                            TypeNomLogiqueVariantBF.TRAIN_HOLD_REVERSE_DIR,
-                            TypeNomLogiqueVariantBF.PLATFORM_SKIP_NORMAL_DIR,
-                            TypeNomLogiqueVariantBF.PLATFORM_SKIP_REVERSE_DIR],
+                            TypeNomLogiqueVariantBF.T_AD_PROHIB_REVERSE_DIR],
+                           shall_be_vital=False,
+                           is_hf=False) is False:
+            success = False
+        if _check_obj_msgs(DCSYS.Quai, msg_dict, obj_name, True,
+                           "shall exist for all Platforms",
+                           # [TypeNomLogiqueVariantBF.TRAIN_HOLD_NORMAL_DIR,
+                           #  TypeNomLogiqueVariantBF.TRAIN_HOLD_REVERSE_DIR,
+                           #  TypeNomLogiqueVariantBF.PLATFORM_SKIP_NORMAL_DIR,
+                           #  TypeNomLogiqueVariantBF.PLATFORM_SKIP_REVERSE_DIR]
+                           ["TRAIN_HOLD_NORMAL_DIR",
+                            "TRAIN_HOLD_REVERSE_DIR",
+                            "PLATFORM_SKIP_NORMAL_DIR",
+                            "PLATFORM_SKIP_REVERSE_DIR"],
                            shall_be_vital=False,
                            is_hf=False) is False:
             success = False

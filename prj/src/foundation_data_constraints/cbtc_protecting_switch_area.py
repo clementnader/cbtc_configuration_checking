@@ -18,8 +18,11 @@ def check_cbtc_protecting_switch_area() -> dict[str, dict[str, Any]]:
     sw_dict = load_sheet(DCSYS.Aig)
     ivb_dict = load_sheet(DCSYS.IVB)
 
+    nb_sw = len(sw_dict)
     info_dict = dict()
-    for sw_name, sw_val in sw_dict.items():
+    for i, (sw_name, sw_val) in enumerate(sw_dict.items()):
+        print_log(f"\r{progress_bar(i, nb_sw)} verification of CBTC protecting switch area "
+                  f"of {sw_name}...", end="")
         sw_block_locking_area = get_dc_sys_value(sw_val, DCSYS.Aig.SwitchBlockLockingArea.Ivb)
         cbtc_protecting_switch_area = get_dc_sys_value(sw_val, DCSYS.Aig.CbtcProtectingSwitchArea.Ivb)
         if not sw_block_locking_area:
@@ -35,7 +38,6 @@ def check_cbtc_protecting_switch_area() -> dict[str, dict[str, Any]]:
         nb_ite = 1
         while new_local_speed > local_speed:  # redo the computation
             nb_ite += 1
-            print_log(f"For {sw_name}, {nb_ite = }")
             local_speed = new_local_speed
             dist_to_protect = get_dist_to_protect(local_speed)
             for sw_locked_ivb in sw_block_locking_area:
@@ -52,7 +54,7 @@ def check_cbtc_protecting_switch_area() -> dict[str, dict[str, Any]]:
             "list_ivb_to_protect": list_ivb_to_protect,
         }
         if set(cbtc_protecting_switch_area) == list_ivb_to_protect:
-            print_func = print_success  # OK
+            continue  # OK
         elif list_ivb_to_protect.issubset(set(cbtc_protecting_switch_area)):
             # too many IVB defined inside CBTC -> no safety issue
             print_func = print_warning
@@ -77,6 +79,10 @@ def check_cbtc_protecting_switch_area() -> dict[str, dict[str, Any]]:
         print(f"{sw_block_locking_area = }")
         print(f"cbtc_protecting_switch_area = {cbtc_protecting_switch_area_to_print}")
         print(f"list_ivb_to_protect = {list_ivb_to_protect_to_print}")
+
+    print_log(f"\r{progress_bar(nb_sw, nb_sw, end=True)} verification of CBTC protecting switch area "
+              f"finished.")
+
     return info_dict
 
 
