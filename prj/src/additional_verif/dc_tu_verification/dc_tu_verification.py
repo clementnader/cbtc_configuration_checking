@@ -10,7 +10,7 @@ from .dc_tu_result_file import *
 __all__ = ["dc_tu_verification"]
 
 
-DC_TU_CHECKING_VERSION = "v1.0.1"
+DC_TU_CHECKING_VERSION = "v1.1"
 
 
 def dc_tu_verification():

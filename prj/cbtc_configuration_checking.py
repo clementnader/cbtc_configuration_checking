@@ -37,7 +37,7 @@ def cc():
 
 
 def additional_verif():
-    # dc_tu_verification()  # v1.0.1
+    # dc_tu_verification()  # v1.1
     # dc_tu_window()
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
