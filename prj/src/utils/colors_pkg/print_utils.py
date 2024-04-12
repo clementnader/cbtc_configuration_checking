@@ -123,7 +123,7 @@ def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
 
 
 def test_moving_progress_bar():
-    progress_bar(1, 1, end=True)  # init progress bar
+    progress_bar(1, 1, end=True)  # reset progress bar
     len_colors = len(Color.rainbow) if not G_COIN_FLIP else len(Color.progress_pride)
     initial_time = 1000 * time.perf_counter()
     delay = 80  # every 80 ms

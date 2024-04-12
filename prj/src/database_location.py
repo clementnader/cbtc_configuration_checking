@@ -410,9 +410,7 @@ class ProjectDatabaseLoc:
         # ------------------------------- Thessaloniki -------------------------------#
         elif project_name == Projects.Thessaloniki:
             # self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V02_RC3\DC_SYS_old.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_SYS.xls"
-            # self.dc_sys_addr = (r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3"
-            #                     r"\DC_SYS_patched_sw_block_locking_area.xls")
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_SYS.xls"
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\DC_SYS_V04_RC1.xls"
             self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_BOP.xls"

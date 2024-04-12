@@ -69,14 +69,15 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_
     return res_file_path
 
 
-def _update_menu_sheet(wb):
+def _update_menu_sheet(wb: openpyxl.workbook.Workbook):
     if get_ga_version() >= (7, 2, 0, 0):
         return
     ws = wb.get_sheet_by_name("Survey")
     ws.delete_rows(17)  # for older GA versions, delete PSD line that was not verified here
 
 
-def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict], extra_column: bool) -> None:
+def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
+                        verif_dict: dict[str, dict], extra_column: bool) -> None:
     tolerance_dict = _get_tolerance_dict(sheet_name)
     multiple_dc_sys_objets = _get_multiple_dc_sys_objets(sheet_name)
     multiple_survey_objets = _get_multiple_survey_objets(sheet_name)
@@ -111,7 +112,8 @@ def _update_verif_sheet(sheet_name: str, ws, verif_dict: dict[str, dict], extra_
         _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity, extra_column)
 
 
-def _add_line_info(ws, row: int, obj_name: str, dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float,
+def _add_line_info(ws: xl_ws.Worksheet, row: int,
+                   obj_name: str, dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float,
                    survey_name: str, survey_type: str, survey_track: float, surveyed_kp: float,
                    dc_sys_color: str, survey_color: str, extra_column: bool) -> None:
     # Name
@@ -148,20 +150,23 @@ def _add_line_info(ws, row: int, obj_name: str, dc_sys_sheet: str, dc_sys_track:
         set_bg_color(ws, survey_color, row=row, column=_get_column(SURVEYED_KP_COL, extra_column))
 
 
-def _add_block_def_info(ws, row: int, block_def_limit_name: str) -> None:
+def _add_block_def_info(ws: xl_ws.Worksheet, row: int,
+                        block_def_limit_name: str) -> None:
     # Block Def. Limit Name
     create_cell(ws, block_def_limit_name, row=row, column=BLOCK_DEF_LIMIT_NAME_COL, borders=True)
     if block_def_limit_name is not None:
         set_bg_color(ws, XlBgColor.light_grey, row=row, column=BLOCK_DEF_LIMIT_NAME_COL)
 
 
-def _add_line_cell_comments(ws, row: int, surveyed_kp_comment: str, extra_column: bool) -> None:
+def _add_line_cell_comments(ws: xl_ws.Worksheet, row: int,
+                            surveyed_kp_comment: str, extra_column: bool) -> None:
     # Comments on Surveyed KP cell to tell from which survey info comes
     if surveyed_kp_comment is not None:
         add_cell_comment(ws, surveyed_kp_comment, row=row, column=_get_column(SURVEYED_KP_COL, extra_column))
 
 
-def _add_line_calculations(ws, row: int, tolerance: str, extra_column: bool) -> None:
+def _add_line_calculations(ws: xl_ws.Worksheet, row: int,
+                           tolerance: str, extra_column: bool) -> None:
     # Difference
     difference_formula = (f'= IF(ISBLANK({NAME_COL}{row}), "Not in DC_SYS", '
                           f'IF(ISBLANK({_get_column(SURVEY_NAME_COL, extra_column)}{row}), "Not Surveyed", '
@@ -176,8 +181,8 @@ def _add_line_calculations(ws, row: int, tolerance: str, extra_column: bool) -> 
                 borders=True, center_horizontal=True)
 
 
-def _add_line_comments_column(ws, row: int, comments: str, tolerance: str, reverse_polarity: bool,
-                              extra_column: bool) -> None:
+def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
+                              comments: str, tolerance: str, reverse_polarity: bool, extra_column: bool) -> None:
     if reverse_polarity:
         if comments is None:
             full_comments = '= '

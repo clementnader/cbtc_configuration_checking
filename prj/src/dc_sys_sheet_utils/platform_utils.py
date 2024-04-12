@@ -18,7 +18,7 @@ def get_atb_zone_related_to_plt(plt_name):
     return related_atb_mvt
 
 
-def is_platform_limit_1_upstream_limit_2(plt_name):
+def is_platform_limit_1_upstream_limit_2(plt_name):  # corresponds to attribute SensExt
     plt_dict = load_sheet(DCSYS.Quai)
     plt = plt_dict[plt_name]
     (seg_lim1, x_lim1), (seg_lim2, x_lim2) = get_dc_sys_zip_values(plt, DCSYS.Quai.ExtremiteDuQuai.Seg,

@@ -4,7 +4,9 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
-from ..dc_sys_sheet_utils.platform_utils import is_platform_limit_1_upstream_limit_2
+
+
+__all__ = ["ixl_overlap_platform_related", "is_sig_downstream_a_plt"]
 
 
 def ixl_overlap_platform_related():
@@ -72,12 +74,12 @@ def plt_upstream_on_seg(ref_seg, ref_direction: str, ref_x: float = None):
     plt_dict = load_sheet(DCSYS.Quai)
     plt_ends_on_seg = list()
     for plt_name, plt in plt_dict.items():
-        limits = [(seg, x, f"Platform Limit {i}") for i, (seg, x) in (enumerate(get_dc_sys_zip_values(plt,
-                  DCSYS.Quai.ExtremiteDuQuai.Seg, DCSYS.Quai.ExtremiteDuQuai.X), start=1))]
-        if (ref_direction == Direction.CROISSANT) == is_platform_limit_1_upstream_limit_2(plt_name):
-            upstream_limit = limits[0]  # Upstream Limit is Limit 1 in the direction of the signal
-        else:
-            upstream_limit = limits[1]
+        upstream_limit = [
+            (lim_seg, lim_x, f"Limit {i}") for i, (lim_seg, lim_x, lim_dir) in (enumerate(
+                get_dc_sys_zip_values(plt, DCSYS.Quai.ExtremiteDuQuai.Seg, DCSYS.Quai.ExtremiteDuQuai.X,
+                                      DCSYS.Quai.ExtremiteDuQuai.SensExt), start=1))
+            if (lim_dir == LineRelatedDirection.SENS_LIGNE) == (ref_direction == Direction.CROISSANT)
+        ][0]
         test_seg, test_x, plt_limit = upstream_limit
         if test_seg == ref_seg:
             if (ref_x is None or (ref_direction == Direction.CROISSANT and test_x <= ref_x)

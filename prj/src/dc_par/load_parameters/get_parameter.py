@@ -30,13 +30,22 @@ def get_param_with_unit(param_name: str, keep_km_per_h: bool = False):
 def get_param_info(param_name: str):
     params_dict = load_params()
     param = params_dict[param_name.lower()]
-    value = param["value"]
+    value = _convert_bool(param["value"], param["unit"])
     unit = param["unit"]
     s_ns = param["s_ns"]
     fr_name = param["fr_name"]
     is_safety_related = (s_ns.upper() == 'S')
 
     if not is_safety_related:
-        print_warning(f"The parameter {param_name} is not safety-related.")
+        print_log(f"\tThe parameter {param_name} is not safety-related.")
 
     return value, unit, is_safety_related, fr_name
+
+
+def _convert_bool(value: Union[int, float, str], unit: str) -> Union[int, float, str, bool]:
+    if unit.upper() == "BOOLEEN":
+        if value == 0 or (isinstance(value, str) and value.upper() in ["FALSE", "FAUX"]):
+            return False
+        elif value == 1 or (isinstance(value, str) and value.upper() in ["TRUE", "VRAI"]):
+            return True
+    return value

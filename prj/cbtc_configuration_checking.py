@@ -124,9 +124,7 @@ def constraints():
     #                                       -> it seems multiple ZC can do the job sometimes,
     #                                       and tool shall gives multiple ZC these times,
     #                                       re-work the way ZC is assigned.
-    # cf_signal_12(no_overshoot=False, apz_with_tc=True)
-    # TODO: - create a proper Excel result file with formulas and parameters values.
-    #       - adapt also r_zsm_3
+    # cf_signal_12(apz_with_tc=True)
     # r_zsm_3(apz_with_tc=True)
     # verif_calib_distance()
     # ixl_overlap_platform_related()

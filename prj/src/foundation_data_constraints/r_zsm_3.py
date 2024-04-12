@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
@@ -13,42 +14,169 @@ from ..ixl_utils import get_distance_between_block_and_approach_zone
 __all__ = ["r_zsm_3"]
 
 
-def r_zsm_3(apz_with_tc: bool = False):
-    # In nominal case the IXL approach zone locking for a dedicated signal is configured
-    # to contain the first physical track circuit -> not always, see the corresponding ZC-IXL ICDD,
-    # an option is implemented to choose if using the first TC or the first IVB.
-    csv = ("Signal Name;Related ZSM;IXL Approach Zone;IVB Limit Downstream;;;;IVB Limit Upstream;;;;"
-           "IXL APZ Distance;train_to_home_signal_max_dist;Automatic Status\n")
-    csv += ";;;Seg;x;Track;KP;Seg;x;Track;KP;;;\n"
-    print_title(f"Verification of R_ZSM_3", color=Color.mint_green)
-    train_to_home_signal_max_dist = get_param_value("train_to_home_signal_max_dist")
+VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "templates", "template_r_zsm_3_verification.xlsx")
+VERIF_TEMPLATE = get_full_path(__file__, VERIF_TEMPLATE_RELATIVE_PATH)
 
+OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
+VERIF_FILE_NAME = "R_ZSM_3 Verification.xlsx"
+
+VERIF_SHEET = "R_ZSM_3"
+START_ROW = 3
+SIGNAL_NAME_COL = "A"
+RELATED_CDZ_COL = "B"
+IXL_APZ_COL = "C"
+DOWNSTREAM_LIM_SEG_COL = "D"
+DOWNSTREAM_LIM_X_COL = "E"
+DOWNSTREAM_LIM_TRACK_COL = "F"
+DOWNSTREAM_LIM_KP_COL = "G"
+UPSTREAM_LIM_SEG_COL = "H"
+UPSTREAM_LIM_X_COL = "I"
+UPSTREAM_LIM_TRACK_COL = "J"
+UPSTREAM_LIM_KP_COL = "K"
+IXL_APZ_LENGTH_COL = "L"
+TRAIN_TO_HOME_SIGNAL_MAX_DIST_COL = "M"
+STATUS_COL = "N"
+COMMENTS_COL = "O"
+
+
+def r_zsm_3(apz_with_tc: bool = False):
+    # See in the corresponding ZC-IXL ICDD, if the default IXL Approach Zone is the first physical track circuit
+    # or the first IVB. By default, the first IVB is taken as it is more conservative.
+    print_title(f"Verification of R_ZSM_3", color=Color.mint_green)
+
+    verif_dict = _compute_r_zsm_3_verif(apz_with_tc)
+
+    try:
+        _create_verif_file(verif_dict)
+    except KeyboardInterrupt:
+        _create_verif_file(verif_dict)
+        raise KeyboardInterrupt
+
+
+def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any]]:
+    res_dict = dict()
     sig_dict = load_sheet(DCSYS.Sig)
-    list_zsm_sigs = get_cbtc_direction_zone_related_signals()
-    nb_sigs = len(list_zsm_sigs)
+    zsm_sigs_dict = get_cbtc_direction_zone_related_signals()
+    nb_sigs = len(zsm_sigs_dict)
     progress_bar(1, 1, end=True)  # reset progress_bar
-    for i, (sig_name, related_zsm) in enumerate(list_zsm_sigs):
+    for i, (sig_name, related_zsm_list) in enumerate(zsm_sigs_dict.items()):
         print_log(f"\r{progress_bar(i, nb_sigs)} processing verification of R_ZSM_3 of {sig_name}...", end="")
-        csv += f"{sig_name};{related_zsm};"
+        res_dict[sig_name] = {"sig_name": sig_name, "related_zsm": ",".join(related_zsm_list)}
 
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig_dict[sig_name])
         ivb_lim_track, ivb_lim_kp = from_seg_offset_to_kp(ivb_lim_seg, ivb_lim_x)
+        res_dict[sig_name].update({"downstream_seg": ivb_lim_seg, "downstream_x": ivb_lim_x,
+                                   "downstream_track": ivb_lim_track, "downstream_kp": ivb_lim_kp})
 
         apz_dist, corresponding_entrance, ivb_names = (
             get_distance_between_block_and_approach_zone(sig_name, ivb_lim_seg, ivb_lim_x, apz_with_tc))
+        res_dict[sig_name]["ixl_apz"] = ivb_names
 
         if apz_dist is None:
-            csv += (f"{ivb_names};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};;;;;"
-                    f";{train_to_home_signal_max_dist};{'KO'}\n")
+            res_dict[sig_name]["status"] = "KO"
+            res_dict[sig_name]["comments"] = ("Tool was unable to find upstream IXL Approach Zone limit "
+                                              "and to compute a path.")
             continue
-        corresponding_entrance_track, corresponding_entrance_kp = from_seg_offset_to_kp(*corresponding_entrance)
-        success = train_to_home_signal_max_dist <= apz_dist
 
-        csv += (f"{ivb_names};{ivb_lim_seg};{ivb_lim_x};{ivb_lim_track};{ivb_lim_kp};"
-                f"{corresponding_entrance[0]};{corresponding_entrance[1]};"
-                f"{corresponding_entrance_track};{corresponding_entrance_kp};"
-                f"{apz_dist};{train_to_home_signal_max_dist};{'OK' if success else 'KO'}\n")
+        res_dict[sig_name]["ixl_apz_dist"] = apz_dist
+
+        corresponding_entrance_track, corresponding_entrance_kp = from_seg_offset_to_kp(*corresponding_entrance)
+        res_dict[sig_name].update({"upstream_seg": corresponding_entrance[0],
+                                   "upstream_x": corresponding_entrance[1],
+                                   "upstream_track": corresponding_entrance_track,
+                                   "upstream_kp": corresponding_entrance_kp})
 
     print_log(f"\r{progress_bar(nb_sigs, nb_sigs, end=True)} verification of R_ZSM_3 finished.\n")
-    print(csv)
-    return
+
+    return res_dict
+
+
+def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
+    wb = load_xlsx_wb(VERIF_TEMPLATE)
+
+    update_header_sheet_for_verif_file(wb)
+
+    _update_verif_sheet(wb, verif_dict)
+
+    verif_file_name = f" - {get_c_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
+    res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
+    save_xl_file(wb, res_file_path)
+    print_success(f"\"Verification of R_ZSM_3\" verification file is available at:\n"
+                  f"{Color.blue}{res_file_path}{Color.reset}")
+    open_excel_file(res_file_path)
+
+
+def _update_verif_sheet(wb: openpyxl.workbook.Workbook, verif_dict: dict[str, dict[str, Any]]) -> None:
+    ws = get_xl_sheet_by_name(wb, VERIF_SHEET)
+
+    for row, obj_val in enumerate(verif_dict.values(), start=START_ROW):
+        sig_name = obj_val.get("sig_name")
+        related_zsm = obj_val.get("related_zsm")
+        ixl_apz = obj_val.get("ixl_apz")
+        downstream_seg = obj_val.get("downstream_seg")
+        downstream_x = obj_val.get("downstream_x")
+        downstream_track = obj_val.get("downstream_track")
+        downstream_kp = obj_val.get("downstream_kp")
+        upstream_seg = obj_val.get("upstream_seg")
+        upstream_x = obj_val.get("upstream_x")
+        upstream_track = obj_val.get("upstream_track")
+        upstream_kp = obj_val.get("upstream_kp")
+        ixl_apz_dist = obj_val.get("ixl_apz_dist")
+        status = obj_val.get("status")
+        comments = obj_val.get("comments")
+
+        train_to_home_signal_max_dist = get_param_value("train_to_home_signal_max_dist")
+
+        _add_line_info(ws, row, sig_name, related_zsm, ixl_apz,
+                       downstream_seg, downstream_x, downstream_track, downstream_kp,
+                       upstream_seg, upstream_x, upstream_track, upstream_kp,
+                       ixl_apz_dist, train_to_home_signal_max_dist, comments)
+        _add_status(ws, row, status)
+
+
+def _add_line_info(ws: xl_ws.Worksheet, row: int, sig_name: str,
+                   related_zsm: str, ixl_apz: str,
+                   downstream_seg: str, downstream_x: float,
+                   downstream_track: str, downstream_kp: float,
+                   upstream_seg: Optional[str], upstream_x: Optional[float],
+                   upstream_track: Optional[str], upstream_kp: Optional[float],
+                   ixl_apz_dist: Optional[float],
+                   train_to_home_signal_max_dist: Optional[float], comments: Optional[str]) -> None:
+    # Signal Name
+    create_cell(ws, sig_name, row=row, column=SIGNAL_NAME_COL, borders=True)
+    # Related CDZ
+    create_cell(ws, related_zsm, row=row, column=RELATED_CDZ_COL, borders=True, line_wrap=True, center_horizontal=True)
+    # IXL Approach Zone
+    create_cell(ws, ixl_apz, row=row, column=IXL_APZ_COL, borders=True, line_wrap=True, center_horizontal=True)
+    # Downstream Seg
+    create_cell(ws, downstream_seg, row=row, column=DOWNSTREAM_LIM_SEG_COL, borders=True, center_horizontal=True)
+    # Downstream x
+    create_cell(ws, downstream_x, row=row, column=DOWNSTREAM_LIM_X_COL, borders=True, center_horizontal=True)
+    # Downstream Track
+    create_cell(ws, downstream_track, row=row, column=DOWNSTREAM_LIM_TRACK_COL, borders=True, center_horizontal=True)
+    # Downstream KP
+    create_cell(ws, downstream_kp, row=row, column=DOWNSTREAM_LIM_KP_COL, borders=True, center_horizontal=True)
+    # Upstream Seg
+    create_cell(ws, upstream_seg, row=row, column=UPSTREAM_LIM_SEG_COL, borders=True, center_horizontal=True)
+    # Upstream x
+    create_cell(ws, upstream_x, row=row, column=UPSTREAM_LIM_X_COL, borders=True, center_horizontal=True)
+    # Upstream Track
+    create_cell(ws, upstream_track, row=row, column=UPSTREAM_LIM_TRACK_COL, borders=True, center_horizontal=True)
+    # Upstream KP
+    create_cell(ws, upstream_kp, row=row, column=UPSTREAM_LIM_KP_COL, borders=True, center_horizontal=True)
+    # IXL APZ Length
+    create_cell(ws, ixl_apz_dist, row=row, column=IXL_APZ_LENGTH_COL, borders=True, center_horizontal=True)
+    # train_to_home_signal_max_dist
+    create_cell(ws, train_to_home_signal_max_dist, row=row, column=TRAIN_TO_HOME_SIGNAL_MAX_DIST_COL,
+                borders=True, center_horizontal=True)
+    # Comments
+    create_cell(ws, comments, row=row, column=COMMENTS_COL, borders=True, line_wrap=True)
+
+
+def _add_status(ws: xl_ws.Worksheet, row: int, status: Optional[str]) -> None:
+    if status is not None:
+        create_cell(ws, status, row=row, column=STATUS_COL, borders=True, center_horizontal=True)
+        return
+    # Status
+    status_formula = f'= IF({IXL_APZ_LENGTH_COL}{row} >= {TRAIN_TO_HOME_SIGNAL_MAX_DIST_COL}{row}, "OK", "KO")'
+    create_cell(ws, status_formula, row=row, column=STATUS_COL, borders=True, center_horizontal=True)

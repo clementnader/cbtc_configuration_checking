@@ -20,6 +20,7 @@ def check_cbtc_protecting_switch_area() -> dict[str, dict[str, Any]]:
 
     nb_sw = len(sw_dict)
     info_dict = dict()
+    progress_bar(1, 1, end=True)  # reset progress bar
     for i, (sw_name, sw_val) in enumerate(sw_dict.items()):
         print_log(f"\r{progress_bar(i, nb_sw)} verification of CBTC protecting switch area "
                   f"of {sw_name}...", end="")
