@@ -47,7 +47,8 @@ def print_error(*args, end: str = "\n", no_newline: bool = False):
     if not no_newline:
         print("\n", end="")
     print(f"{csi_bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
-    args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
+    args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") if isinstance(arg, str) else arg
+            for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)
 
@@ -57,7 +58,8 @@ def print_warning(*args, end: str = "\n", no_newline: bool = False):
     if not no_newline:
         print("\n", end="")
     print(f"{csi_bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
-    args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
+    args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") if isinstance(arg, str) else arg
+            for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)
 
@@ -65,7 +67,8 @@ def print_warning(*args, end: str = "\n", no_newline: bool = False):
 def print_success(*args, end: str = "\n"):
     main_color = Color.vivid_green
     print(f"\n{main_color}", end="")
-    args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
+    args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") if isinstance(arg, str) else arg
+            for arg in args)
     print(*args, end="")
     print(f"{Color.reset}\n", end=end)
 
@@ -73,7 +76,8 @@ def print_success(*args, end: str = "\n"):
 def print_log(*args, end: str = "\n"):
     main_color = Color.grey_blue
     print(main_color, end="")
-    args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") for arg in args)
+    args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") if isinstance(arg, str) else arg
+            for arg in args)
     print(*args, end="")
     print(Color.reset, end=end)
 

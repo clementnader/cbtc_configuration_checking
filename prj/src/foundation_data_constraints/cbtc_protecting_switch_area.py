@@ -13,7 +13,7 @@ from ..dc_sys_sheet_utils.psr_utils import get_max_psr_speed_on_zone
 __all__ = ["check_cbtc_protecting_switch_area"]
 
 
-def check_cbtc_protecting_switch_area() -> dict[str, dict[str, Any]]:
+def check_cbtc_protecting_switch_area(do_print_warning: bool = True) -> dict[str, dict[str, Any]]:
     max_speed = get_max_speed()
     sw_dict = load_sheet(DCSYS.Aig)
     ivb_dict = load_sheet(DCSYS.IVB)
@@ -58,6 +58,8 @@ def check_cbtc_protecting_switch_area() -> dict[str, dict[str, Any]]:
             continue  # OK
         elif list_ivb_to_protect.issubset(set(cbtc_protecting_switch_area)):
             # too many IVB defined inside CBTC -> no safety issue
+            if not do_print_warning:
+                continue
             print_func = print_warning
         else:
             print_func = print_error
@@ -115,9 +117,9 @@ def get_ivb_to_protect(sw_locked_ivb: str, sw_block_locking_area: list[str],
     for ivb_name in ivb_dict.keys():
         if ivb_name in sw_block_locking_area:  # block already protected
             continue
-        dist = get_dist_between_objects(DCSYS.IVB, sw_locked_ivb, DCSYS.IVB, ivb_name)
+        dist = get_dist_between_objects(DCSYS.IVB, ivb_name, DCSYS.IVB, sw_locked_ivb)
         if dist is not None and dist < dist_to_protect:
-            dist_to_sw = get_dist_between_objects(DCSYS.Aig, sw_name, DCSYS.IVB, ivb_name)
+            dist_to_sw = get_dist_between_objects(DCSYS.IVB, ivb_name, DCSYS.Aig, sw_name)
             if dist_to_sw is not None and dist_to_sw < 1000:  # taking into account only IVB that can lead to the switch
                 # the second test is to avoid taking account the ones accessible through a ring,
                 # 1000 m is large compared to the distance to protect and is often lower than the ring length

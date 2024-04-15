@@ -100,7 +100,7 @@ def survey():
 def constraints():
     # check_offset_correctness()
     # check_upstream_and_downstream_ivb_of_all_signals()
-    # check_cbtc_protecting_switch_area()
+    # check_cbtc_protecting_switch_area(do_print_warning=True)
     #
     # r_cdv_5(print_ok=True)  # TODO for r_cdv_5:
     #                             regarder pour prendre un param plutôt avec le hardware/hardware reference

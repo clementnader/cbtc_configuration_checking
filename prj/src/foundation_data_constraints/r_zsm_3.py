@@ -23,20 +23,22 @@ VERIF_FILE_NAME = "R_ZSM_3 Verification.xlsx"
 VERIF_SHEET = "R_ZSM_3"
 START_ROW = 3
 SIGNAL_NAME_COL = "A"
-RELATED_CDZ_COL = "B"
-IXL_APZ_COL = "C"
-DOWNSTREAM_LIM_SEG_COL = "D"
-DOWNSTREAM_LIM_X_COL = "E"
-DOWNSTREAM_LIM_TRACK_COL = "F"
-DOWNSTREAM_LIM_KP_COL = "G"
-UPSTREAM_LIM_SEG_COL = "H"
-UPSTREAM_LIM_X_COL = "I"
-UPSTREAM_LIM_TRACK_COL = "J"
-UPSTREAM_LIM_KP_COL = "K"
-IXL_APZ_LENGTH_COL = "L"
-TRAIN_TO_HOME_SIGNAL_MAX_DIST_COL = "M"
-STATUS_COL = "N"
-COMMENTS_COL = "O"
+TYPE_COL = "B"
+DIRECTION_COL = "C"
+RELATED_CDZ_COL = "D"
+IXL_APZ_COL = "E"
+DOWNSTREAM_LIM_SEG_COL = "F"
+DOWNSTREAM_LIM_X_COL = "G"
+DOWNSTREAM_LIM_TRACK_COL = "H"
+DOWNSTREAM_LIM_KP_COL = "I"
+UPSTREAM_LIM_SEG_COL = "J"
+UPSTREAM_LIM_X_COL = "K"
+UPSTREAM_LIM_TRACK_COL = "L"
+UPSTREAM_LIM_KP_COL = "M"
+IXL_APZ_LENGTH_COL = "N"
+TRAIN_TO_HOME_SIGNAL_MAX_DIST_COL = "O"
+STATUS_COL = "P"
+COMMENTS_COL = "Q"
 
 
 def r_zsm_3(apz_with_tc: bool = False):
@@ -61,7 +63,10 @@ def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (sig_name, related_zsm_list) in enumerate(zsm_sigs_dict.items()):
         print_log(f"\r{progress_bar(i, nb_sigs)} processing verification of R_ZSM_3 of {sig_name}...", end="")
-        res_dict[sig_name] = {"sig_name": sig_name, "related_zsm": ",".join(related_zsm_list)}
+        sig_type = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.Type)
+        sig_direction = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.Sens)
+        res_dict[sig_name] = {"sig_name": sig_name, "sig_type": sig_type, "sig_direction": sig_direction}
+        res_dict[sig_name]["related_zsm"] = ", ".join(related_zsm_list)
 
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig_dict[sig_name])
         ivb_lim_track, ivb_lim_kp = from_seg_offset_to_kp(ivb_lim_seg, ivb_lim_x)
@@ -111,6 +116,8 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, verif_dict: dict[str, di
 
     for row, obj_val in enumerate(verif_dict.values(), start=START_ROW):
         sig_name = obj_val.get("sig_name")
+        sig_type = obj_val.get("sig_type")
+        sig_direction = obj_val.get("sig_direction")
         related_zsm = obj_val.get("related_zsm")
         ixl_apz = obj_val.get("ixl_apz")
         downstream_seg = obj_val.get("downstream_seg")
@@ -127,7 +134,7 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, verif_dict: dict[str, di
 
         train_to_home_signal_max_dist = get_param_value("train_to_home_signal_max_dist")
 
-        _add_line_info(ws, row, sig_name, related_zsm, ixl_apz,
+        _add_line_info(ws, row, sig_name, sig_type, sig_direction, related_zsm, ixl_apz,
                        downstream_seg, downstream_x, downstream_track, downstream_kp,
                        upstream_seg, upstream_x, upstream_track, upstream_kp,
                        ixl_apz_dist, train_to_home_signal_max_dist, comments)
@@ -135,7 +142,7 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, verif_dict: dict[str, di
 
 
 def _add_line_info(ws: xl_ws.Worksheet, row: int, sig_name: str,
-                   related_zsm: str, ixl_apz: str,
+                   sig_type: str, sig_direction: str, related_zsm: str, ixl_apz: str,
                    downstream_seg: str, downstream_x: float,
                    downstream_track: str, downstream_kp: float,
                    upstream_seg: Optional[str], upstream_x: Optional[float],
@@ -144,6 +151,10 @@ def _add_line_info(ws: xl_ws.Worksheet, row: int, sig_name: str,
                    train_to_home_signal_max_dist: Optional[float], comments: Optional[str]) -> None:
     # Signal Name
     create_cell(ws, sig_name, row=row, column=SIGNAL_NAME_COL, borders=True)
+    # Type
+    create_cell(ws, sig_type, row=row, column=TYPE_COL, borders=True, center_horizontal=True)
+    # Direction
+    create_cell(ws, sig_direction, row=row, column=DIRECTION_COL, borders=True, center_horizontal=True)
     # Related CDZ
     create_cell(ws, related_zsm, row=row, column=RELATED_CDZ_COL, borders=True, line_wrap=True, center_horizontal=True)
     # IXL Approach Zone

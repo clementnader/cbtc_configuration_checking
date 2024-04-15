@@ -27,8 +27,8 @@ def get_distance_between_block_and_approach_zone(sig_name: str, ivb_lim_seg, ivb
     for entrance_seg, entrance_x in list_entrance_points:
         if are_points_matching(entrance_seg, entrance_x, ivb_lim_seg, ivb_lim_x):
             continue
-        dist = get_dist_downstream(entrance_seg, entrance_x, ivb_lim_seg, ivb_lim_x,
-                                   downstream=sig_direction == Direction.CROISSANT)
+        dist = get_dist_downstream(ivb_lim_seg, ivb_lim_x, entrance_seg, entrance_x,
+                                   downstream=sig_direction == Direction.DECROISSANT)  # get dist upstream
         if dist is None:
             continue
         if min_dist is None or dist < min_dist:

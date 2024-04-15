@@ -153,7 +153,8 @@ def get_min_path_downstream(start_seg: str, end_seg: str, downstream: bool
         nonlocal min_len, min_path, associated_upstream
         if min_len != -1 and path_len >= min_len:  # we reach a larger distance, we can stop
             return
-        if seg == end_seg:  # path_len will be inferior to min_len
+        if seg == end_seg and inner_downstream == upstream:  # destination segment is reached in the correct direction
+            # path_len will be inferior to min_len so no need to do the comparison
             min_len = path_len
             min_path = path
             associated_upstream = upstream
