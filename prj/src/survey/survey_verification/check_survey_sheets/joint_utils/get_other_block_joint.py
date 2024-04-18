@@ -11,10 +11,14 @@ __all__ = ["get_corresponding_ivb_joint", "get_other_corresponding_tc_joint_on_l
 
 
 def get_corresponding_ivb_joint(tc1: str, tc2: Optional[str], limit_position: tuple[str, float]
-                                ) -> tuple[str, Optional[str]]:
+                                ) -> tuple[Optional[str], Optional[str]]:
     list_matching_ivb = _get_ivb_matching_limit(limit_position)
     if not list_matching_ivb:
-        print_error(f"No IVB has been found matching this limit {limit_position} between {tc1} and {tc2}.")
+        if tc2 is None:
+            pass  # end of track TC joint can be different from IVB joint
+        else:
+            print_error(f"No IVB has been found matching this limit {limit_position} between {tc1} and {tc2}.")
+        return None, None
     if len(list_matching_ivb) > 2:
         print_error(f"More than 2 IVBs are matching this limit {limit_position} between {tc1} and {tc2}.")
     if len(list_matching_ivb) > len([tc for tc in (tc1, tc2) if tc is not None]):

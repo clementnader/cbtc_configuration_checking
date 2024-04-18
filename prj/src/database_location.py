@@ -457,7 +457,17 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Baltimore -------------------------------#
         elif project_name == Projects.Baltimore:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore\MTA_C_D470_02_00_RC10\DC_SYS.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore\MTA_C_D470_V_02_01_RC2\DC_SYS.xls"
+            # -- Survey -- #
+            self.block_def = r"C:\Users\naderc\Desktop\USA\Baltimore\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\USA\Baltimore\MTA_D932.xlsx"
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- BART -------------------------------#
         elif project_name == Projects.BART:

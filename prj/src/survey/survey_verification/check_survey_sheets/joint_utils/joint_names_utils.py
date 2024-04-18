@@ -18,7 +18,10 @@ def get_joint_possible_names(tc1: str, tc2: Optional[str], limit_position: tuple
         other_ivb1, other_ivb2 = None, None
     else:
         ivb1, ivb2 = get_corresponding_ivb_joint(tc1, tc2, limit_position)
-        other_ivb1, other_ivb2 = get_other_corresponding_ivb_joint_on_limit_of_track(ivb1, ivb2, limit_position)
+        if ivb1 is None:
+            other_ivb1, other_ivb2 = None, None
+        else:
+            other_ivb1, other_ivb2 = get_other_corresponding_ivb_joint_on_limit_of_track(ivb1, ivb2, limit_position)
 
     for block1, block2 in [[other_ivb1, other_ivb2], [ivb1, ivb2], [other_tc1, other_tc2], [tc1, tc2]]:
         if block1 is None:
