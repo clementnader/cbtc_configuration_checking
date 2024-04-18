@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..utils import *
-from ..cctool_oo_schema import *
-from ..dc_sys import *
-from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream, get_dist_downstream
-from ..dc_par import *
+from ...utils import *
+from ...cctool_oo_schema import *
+from ...dc_sys import *
+from ...dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream, get_dist_downstream
+from ...dc_par import *
+
+
+__all__ = ["r_dyntag_3"]
 
 
 def r_dyntag_3():

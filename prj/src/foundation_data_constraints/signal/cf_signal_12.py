@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-from ..utils import *
-from ..cctool_oo_schema import *
-from ..dc_sys import *
-from ..dc_sys_sheet_utils.signal_utils import get_ivb_limit_of_a_signal
-from ..dc_par import *
-from ..ixl_utils import get_distance_between_block_and_approach_zone
-from .overlap_platform_related import is_sig_downstream_a_plt
+from ...utils import *
+from ...cctool_oo_schema import *
+from ...dc_sys import *
+from ...dc_sys_sheet_utils.signal_utils import get_ivb_limit_of_a_signal
+from ...dc_par import *
+from ...ixl_utils import get_distance_between_block_and_approach_zone
+from ..ixl_overlap.overlap_platform_related import is_sig_downstream_a_plt
 
 
 __all__ = ["cf_signal_12"]

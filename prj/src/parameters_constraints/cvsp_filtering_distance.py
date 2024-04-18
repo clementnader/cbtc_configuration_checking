@@ -8,6 +8,9 @@ from ..dc_sys_get_cbtc_territory import *
 from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist_downstream
 
 
+__all__ = ["min_dist_between_platform_osp_and_end_of_next_platform"]
+
+
 def min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc: bool = True):
     if in_cbtc:
         plt_dict = get_objects_in_cbtc_ter(DCSYS.Quai)

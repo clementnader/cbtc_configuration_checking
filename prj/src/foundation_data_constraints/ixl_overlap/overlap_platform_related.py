@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..utils import *
-from ..cctool_oo_schema import *
-from ..dc_sys import *
+from ...utils import *
+from ...cctool_oo_schema import *
+from ...dc_sys import *
 
 
 __all__ = ["ixl_overlap_platform_related", "is_sig_downstream_a_plt"]

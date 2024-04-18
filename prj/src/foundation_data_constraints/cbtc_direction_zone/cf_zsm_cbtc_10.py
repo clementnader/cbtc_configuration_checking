@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..utils import *
-from ..cctool_oo_schema import *
-from ..dc_sys import *
-from ..dc_sys_get_cbtc_territory import *
-from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream
+from ...utils import *
+from ...cctool_oo_schema import *
+from ...dc_sys import *
+from ...dc_sys_get_cbtc_territory import *
+from ...dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream
+
+
+__all__ = ["cf_zsm_cbtc_10"]
 
 
 def cf_zsm_cbtc_10():

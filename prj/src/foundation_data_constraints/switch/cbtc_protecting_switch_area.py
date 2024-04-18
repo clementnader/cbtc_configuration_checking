@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..utils import *
-from ..cctool_oo_schema import *
-from ..dc_sys import *
-from ..dc_par import *
-from ..dc_par_add_on_parameters import *
-from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist_between_objects
-from ..dc_sys_sheet_utils.psr_utils import get_max_psr_speed_on_zone
+from ...utils import *
+from ...cctool_oo_schema import *
+from ...dc_sys import *
+from ...dc_par import *
+from ...dc_par_add_on_parameters import *
+from ...dc_sys_draw_path.dc_sys_path_and_distances import get_dist_between_objects
+from ...dc_sys_sheet_utils.psr_utils import get_max_psr_speed_on_zone
 
 
 __all__ = ["check_cbtc_protecting_switch_area"]

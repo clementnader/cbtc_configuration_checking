@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..utils import *
-from ..cctool_oo_schema import *
-from ..dc_sys import *
-from ..dc_sys_sheet_utils.route_utils import get_routes
-from ..control_tables import *
-from ..database_location import *
+from ...utils import *
+from ...cctool_oo_schema import *
+from ...dc_sys import *
+from ...dc_sys_sheet_utils.route_utils import get_routes
+from ...control_tables import *
+from ...database_location import *
+
+
+__all__ = ["check_route_control_tables"]
 
 
 def check_route_control_tables(use_csv_file: bool = False):
