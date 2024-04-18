@@ -134,6 +134,20 @@ def _get_zc_managing_maz(maz_name: str) -> tuple[str, str]:
     return zc, info
 
 
+def _get_zc_managing_sw(sw_name: str) -> tuple[Optional[str], str]:
+    ivb_on_switch = get_zones_on_point(DCSYS.IVB, *get_obj_position(DCSYS.Aig, sw_name))[0]
+    zc = _get_zc_managing_ivb(ivb_on_switch)
+    info = f"{sw_name} -> {ivb_on_switch} -> {zc}"
+    return zc, info
+
+
+def _get_zc_managing_platform_end(plt_name: str, plt_end: str) -> tuple[str, str]:
+    ls = get_line_section_of_obj(DCSYS.Quai, plt_name, plt_end=plt_end)[0]
+    zc = get_zc_managing_ls(ls)
+    info = f"{plt_name}::{plt_end.upper()} -> {ls} -> {zc}"
+    return zc, info
+
+
 def _get_zc_managing_maz_on_zone(obj_type, obj_name: str) -> tuple[list[str], str]:
     """ Function that shall work for both GES, CBTC Protection Zones, Protection Zones and Traction Power Zones. """
     zone_limits = get_obj_position(obj_type, obj_name)
@@ -149,8 +163,12 @@ def _get_zc_managing_maz_on_zone(obj_type, obj_name: str) -> tuple[list[str], st
     return zc_list, "\n\t".join(info_list)
 
 
-def get_zc_managing_obj(obj_type, obj_name: str, sig_upstream_ivb: bool = None
+def get_zc_managing_obj(obj_type, obj_name: str, sig_upstream_ivb: bool = None, plt_end: str = None
                         ) -> tuple[list[str], Optional[str]]:
+    # Platform End
+    if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai) and plt_end in ["normal", "reverse"]:
+        zc, info = _get_zc_managing_platform_end(obj_name, plt_end)
+        return [zc], info
     # Platform
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai):
         zc = _get_zc_managing_platform(obj_name)
@@ -159,6 +177,10 @@ def get_zc_managing_obj(obj_type, obj_name: str, sig_upstream_ivb: bool = None
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Sig):
         zc = _get_zc_managing_signal(obj_name, sig_upstream_ivb)
         return [zc], None
+    # Switch
+    if get_sh_name(obj_type) == get_sh_name(DCSYS.Aig):
+        zc, info = _get_zc_managing_sw(obj_name)
+        return [zc], info
     # IVB
     if get_sh_name(obj_type) == get_sh_name(DCSYS.IVB):
         zc = _get_zc_managing_ivb(obj_name)

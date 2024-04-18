@@ -6,7 +6,8 @@ from ..dc_sys import *
 
 
 __all__ = ["get_sub_dict_hf_general_data", "get_sub_dict_lf_general_data",
-           "get_sub_dict_ixl_zc_itf", "get_sub_dict_zc_ixl_itf"]
+           "get_sub_dict_ixl_zc_itf", "get_sub_dict_zc_ixl_itf",
+           "get_sub_dict_zc_ats_supervision"]
 
 
 def get_sub_dict_hf_general_data(attribute: str):
@@ -31,3 +32,9 @@ def get_sub_dict_zc_ixl_itf(attribute: str):
     itf_zc_ixl_dict = load_sheet(DCSYS.Flux_PAS_MES)
     return {key: val for key, val in itf_zc_ixl_dict.items()
             if get_dc_sys_value(val, DCSYS.Flux_PAS_MES.ClasseObjet) == attribute}
+
+
+def get_sub_dict_zc_ats_supervision(attribute: str):
+    zc_ats_supervision_dict = load_sheet(DCSYS.TM_PAS_ATS)
+    return {key: val for key, val in zc_ats_supervision_dict.items()
+            if get_dc_sys_value(val, DCSYS.TM_PAS_ATS.ClasseObjet) == attribute}

@@ -18,6 +18,7 @@ class Projects:
 
     Baltimore = "Baltimore"
     BART = "BART"
+    Hurontario = "Hurontario"
     MSH = "MSH"
     KMRC = "KMRC"
     NMML1 = "NMML1"
@@ -45,6 +46,7 @@ PROJECT_NAME = Projects.Thessaloniki
 # --- USA --- #
 # PROJECT_NAME = Projects.Baltimore
 # PROJECT_NAME = Projects.BART
+# PROJECT_NAME = Projects.Hurontario
 # PROJECT_NAME = Projects.MSH
 # --- India --- #
 # PROJECT_NAME = Projects.KMRC
@@ -136,11 +138,16 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Brussels -------------------------------#
         elif project_name == Projects.Brussels:
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS_old.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\C64_D413\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R4"
+            phase_2 = True
+            if not phase_2:
+                # self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS_old.xls"
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\C64_D413\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V07_P1B_R4"
+            else:
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2\DC_PAR.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
                                            r"C:\Users\naderc\Desktop\BXL\Project_BXL_survey 05-10-2023.xlsx"]
@@ -224,27 +231,16 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Glasgow -------------------------------#
         elif project_name == Projects.Glasgow:
-            iatp = True
+            iatp = False
             if iatp:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS_IATPM.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V05"
             else:
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_01_V01\DC_SYS.xls"
-                self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_01_V01\DC_PAR.xls"
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\DC_PAR.xls"
             # -- Survey -- #
-            # self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
-            #                                r"\2022_03_11_Inner_Circle_Features.xlsx",
-            #                                r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
-            #                                r"\2022_03_11_Outer_Circle_Features.xlsx"]
-            # self.survey_loc.survey_sheet = [r"Inner Circle", r"Outer Circle"]
-            # self.survey_loc.all_sheets = [False, False]
-            # self.survey_loc.start_row = [2, 2]
-            # self.survey_loc.ref_col = [1, 1]
-            # self.survey_loc.type_col = [2, 2]
-            # self.survey_loc.track_col = [3, 3]
-            # self.survey_loc.survey_kp_col = [4, 4]
             self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\Glasgow"
                                            r"\2023_02_20 Survey Data and Input Sheet.xlsx")
             self.survey_loc.survey_sheet = r"GW_ML_survey_inputs"
@@ -273,13 +269,13 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1\DC_SYS_0402RC1.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\LIMA\Objects_List - v3 Rev 01.xlsx"
-            self.survey_loc.survey_sheet = r"Object List"
+            self.survey_loc.survey_sheet = r"Dico"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
             self.survey_loc.ref_col = 1
-            self.survey_loc.type_col = 3
-            self.survey_loc.track_col = 4
-            self.survey_loc.survey_kp_col = 7
+            self.survey_loc.type_col = 8
+            self.survey_loc.track_col = 7
+            self.survey_loc.survey_kp_col = 10
 
         # ------------------------------- Milan -------------------------------#
         elif project_name == Projects.Milan:
@@ -461,12 +457,16 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Baltimore -------------------------------#
         elif project_name == Projects.Baltimore:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore\DC_SYS MTAB 721 ++.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore\MTA_C_D470_02_00_RC10\DC_SYS.xls"
 
         # ------------------------------- BART -------------------------------#
         elif project_name == Projects.BART:
             self.dc_sys_addr = (r"C:\Users\naderc\Desktop\USA\BART"
                                 r"\BART_V2.3.0_SYS_1-DC_SYS-DRAGON_2.1.1 (RefSys 7.2.1.1).xls")
+
+        # ------------------------------- Hurontario -------------------------------#
+        elif project_name == Projects.Hurontario:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Hurontario\HLR_C_D470_V_7_3_3_0_RC1\DC_SYS.xls"
 
         # ------------------------------- MSH -------------------------------#
         elif project_name == Projects.MSH:

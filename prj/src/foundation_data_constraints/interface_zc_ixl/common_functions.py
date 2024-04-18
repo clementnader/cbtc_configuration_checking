@@ -77,7 +77,6 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
                                  condition, condition_str, shall_be_vital, is_flux_pas_mes, only_one_zc,
                                  sig_upstream_ivb) is False:
                 success = False
-        # In ZC Overlay, there would be a message for each ZC
         for associated_msg_name, associated_msg_info in associated_msg.items():
             is_msg_vital = get_dc_sys_value(associated_msg_info, obj_class.TypeInfo) == VitalOrNotType.SECU
             if is_msg_vital != shall_be_vital:
@@ -149,7 +148,7 @@ def _check_message_zc(obj_type, obj_name: str, associated_msg, obj_type_str, tar
         if len(msg_zc_dict) > 1:
             print_error(f"The flows of {obj_type_str} of type {Color.yellow}{target_msg_type}{Color.reset} "
                         f"shall be sent by a sole ZC in ZC overlay.")
-            print(f"{expected_zc_list = }"
+            print(f"{expected_zc_list = }" + (f" <--> {related_obj}" if related_obj is not None else "") +
                   f"\nCurrent configuration:")
             for zc, msg in msg_zc_dict.items():
                 print(f"\tfor {Color.beige}{zc = }{Color.reset}: {msg}")

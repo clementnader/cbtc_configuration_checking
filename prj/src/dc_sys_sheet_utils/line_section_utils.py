@@ -9,9 +9,12 @@ from ..dc_sys import *
 __all__ = ["get_line_section_of_obj"]
 
 
-def get_line_section_of_obj(obj_type, obj_name: str) -> Optional[list[str]]:
+def get_line_section_of_obj(obj_type, obj_name: str, plt_end: str = None) -> Optional[list[str]]:
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Aig):  # a dedicated function for switches
         return _get_line_section_of_switch(obj_name)
+    if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai) and plt_end in ["normal", "reverse"]:
+        # a dedicated function for platform ends
+        return [_get_line_section_of_plt_end(obj_name, plt_end)]
 
     dedicated_ls = _get_dedicated_line_section_of_obj(obj_type, obj_name)
     if dedicated_ls is not None:
@@ -62,3 +65,17 @@ def _get_line_section_of_switch(obj_name: str) -> list[str]:
         if ls not in list_ls:
             list_ls.append(ls)
     return list_ls
+
+
+def _get_line_section_of_plt_end(obj_name: str, plt_end: str) -> str:
+    assert plt_end in ["normal", "reverse"]
+    plt_dict = load_sheet(DCSYS.Quai)
+    if plt_end == "normal":
+        plt_end_dir = LineRelatedDirection.SENS_LIGNE
+    else:
+        plt_end_dir = LineRelatedDirection.SENS_OPPOSE
+    plt_end_seg = [seg for (seg, direction) in get_dc_sys_zip_values(plt_dict[obj_name],
+                   DCSYS.Quai.ExtremiteDuQuai.Seg, DCSYS.Quai.ExtremiteDuQuai.SensExt)
+                   if direction == plt_end_dir][0]
+    ls = get_line_section_of_seg(plt_end_seg)
+    return ls
