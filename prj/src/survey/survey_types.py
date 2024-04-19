@@ -42,7 +42,7 @@ SURVEY_TYPES_DICT = {
                       "tol": "joint_tolerance",
                       "survey_type_names": [
                           "TC", "TRACK_CIRCUIT", "TRACK CIRCUIT", "TRACK CIRCUITS JOINT",
-                          "AXLE COUNTER", "INSULATED JOINT"
+                          "AXLE COUNTER", "INSULATED JOINT", "AXC"
                       ],
                       "multiple_survey_objets": [("TC", None, None),
                                                  ("SIGNAL_BUFFER", None, None)]},

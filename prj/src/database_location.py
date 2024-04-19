@@ -241,15 +241,15 @@ class ProjectDatabaseLoc:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\DC_SYS.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\DC_PAR.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\Glasgow"
-                                           r"\2023_02_20 Survey Data and Input Sheet.xlsx")
+            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
+                                           r"\2024_03_16 Survey Data and Input Sheet_FCB amendments.xlsx")
             self.survey_loc.survey_sheet = r"GW_ML_survey_inputs"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
             self.survey_loc.ref_col = 1
             self.survey_loc.type_col = 2
             self.survey_loc.track_col = 3
-            self.survey_loc.survey_kp_col = 4
+            self.survey_loc.survey_kp_col = 5
             # -- Control Tables -- #
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables"
                                               r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_"

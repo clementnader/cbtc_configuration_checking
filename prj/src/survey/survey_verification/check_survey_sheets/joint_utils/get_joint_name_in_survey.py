@@ -91,7 +91,9 @@ def _get_list_of_joint_test_names_multiple_prefixes(tc1: str, tc2: Optional[str]
     other_prefix_list = ["JOINT_" + name.removeprefix("JOI_") for name in list_test_names if name is not None]
     # in some surveys, joint prefix is "TC_JOINT_" instead of "JOI_"
     other_prefix_list_2 = ["TC_JOINT_" + name.removeprefix("JOI_") for name in list_test_names if name is not None]
-    return list_test_names + other_prefix_list + other_prefix_list_2
+    # in some surveys, joint prefix is "AXC_" instead of "JOI_"
+    other_prefix_list_3 = ["AXC_" + name.removeprefix("JOI_") for name in list_test_names if name is not None]
+    return list_test_names + other_prefix_list + other_prefix_list_2 + other_prefix_list_3
 
 
 # def _test_one_obj_on_track(joint: tuple[str, Optional[str], str], track: str,
