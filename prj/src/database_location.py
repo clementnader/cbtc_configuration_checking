@@ -138,7 +138,7 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Brussels -------------------------------#
         elif project_name == Projects.Brussels:
-            phase_2 = True
+            phase_2 = False
             if not phase_2:
                 # self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R3\DC_SYS_old.xls"
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V07_P1B_R4\DC_SYS.xls"
@@ -457,6 +457,7 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Baltimore -------------------------------#
         elif project_name == Projects.Baltimore:
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore\MTA_C_D470_02_00_RC10\DC_SYS.xls"
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore\MTA_C_D470_V_02_01_RC2\DC_SYS.xls"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\USA\Baltimore\CIRCUIT_DE_VOIE.xls"

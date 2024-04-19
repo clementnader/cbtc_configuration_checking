@@ -70,7 +70,7 @@ def _get_association_block_limits_dict(block_name: str,
                                   if track.upper() == test_track.upper()]
         block_def_limits_info_on_track = [((seg, x, track, dc_sys_kp), limit_name)
                                           for ((seg, x, track, dc_sys_kp), limit_name) in block_def_limits_info
-                                          if track != "Error" and track.upper() == test_track.upper()]
+                                          if track is not None and track.upper() == test_track.upper()]
         if len(dc_sys_limits_on_track) != len(block_def_limits_info_on_track):
             print_warning(f"In Block Def. file, for block {block_name}, there are not the same number of limits "
                           f"on track {test_track} as in the DC_SYS:\n"

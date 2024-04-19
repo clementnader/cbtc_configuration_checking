@@ -21,12 +21,6 @@ def get_corresponding_ivb_joint(tc1: str, tc2: Optional[str], limit_position: tu
         return None, None
     if len(list_matching_ivb) > 2:
         print_error(f"More than 2 IVBs are matching this limit {limit_position} between {tc1} and {tc2}.")
-    if len(list_matching_ivb) > len([tc for tc in (tc1, tc2) if tc is not None]):
-        print_warning(f"An extra IVB is defined matching limit {limit_position} between {tc1} and {tc2}:\n"
-                      f"{list_matching_ivb}")
-    if len(list_matching_ivb) < len([tc for tc in (tc1, tc2) if tc is not None]):
-        print_warning(f"An extra TC is defined matching limit {limit_position} between {tc1} and {tc2}:\n"
-                      f"{list_matching_ivb}")
 
     ivb_name = list_matching_ivb[0]
     ivb_name2 = list_matching_ivb[1] if len(list_matching_ivb) > 1 else None

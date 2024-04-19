@@ -100,10 +100,15 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
         if f"{key_name}__{track}" in intermediate_survey_dict[survey_type]:  # two values in the same survey file
             old_surveyed_values = intermediate_survey_dict[survey_type][f"{key_name}__{track}"]["list_surveyed_values"]
             surveyed_values = old_surveyed_values + [surveyed_kp]
-            surveyed_kp = round(sum(surveyed_values) / len(surveyed_values), 4)
-            comments = (f"Object appearing {len(surveyed_values)} times in same survey {survey_name}.\n"
-                        f"List of surveyed KPs is: {str(surveyed_values).removeprefix('[').removesuffix(']')}.\n"
-                        f"The average value is taken for the surveyed KP: {surveyed_kp}.")
+            if all(surveyed_kp == old_value for old_value in old_surveyed_values):
+                # object appearing multiple times in same survey but with the same surveyed KP value
+                comments = None
+            else:
+
+                surveyed_kp = round(sum(surveyed_values) / len(surveyed_values), 4)
+                comments = (f"Object appearing {len(surveyed_values)} times in same survey {survey_name}.\n"
+                            f"List of surveyed KPs is: {str(surveyed_values).removeprefix('[').removesuffix(']')}.\n"
+                            f"The average value is taken for the surveyed KP: {surveyed_kp}.")
         else:
             comments = None
             surveyed_values = [surveyed_kp]

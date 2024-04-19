@@ -40,8 +40,38 @@ def _order_survey_verif_dict(verif_dict: dict):
 
 def _get_track_to_order_dict(x, verif_dict):
     """ Get track name inside the verif dict dictionary, according to which one exists. """
-    return (verif_dict[x]["dc_sys_track"].lower() if verif_dict[x]["dc_sys_track"] is not None
-            else verif_dict[x]["survey_track"].lower())
+    return (order_track(verif_dict[x]["dc_sys_track"]) if verif_dict[x]["dc_sys_track"] is not None
+            else order_track(verif_dict[x]["survey_track"]))
+
+
+def order_track(track: str) -> tuple[Union[str, int], ...]:
+    if track.isalpha():
+        return (track.lower(),)
+    list_words = list()
+    pos = 0
+    char_type = "num" if track[pos].isnumeric() else "other"
+    if char_type == "num":
+        list_words.append("")
+    current_word = track[pos]
+    while pos < len(track) - 1:
+        pos += 1
+        new_char_type = "num" if track[pos].isnumeric() else "other"
+        if new_char_type == char_type:
+            current_word += track[pos]
+        else:
+            if char_type == "num":
+                current_word = int(current_word)
+            else:
+                current_word = current_word.lower()
+            list_words.append(current_word)
+            current_word = track[pos]
+        char_type = new_char_type
+    if char_type == "num":
+        current_word = int(current_word)
+    else:
+        current_word = current_word.lower()
+    list_words.append(current_word)
+    return tuple(list_words)
 
 
 def _get_kp_to_order_dict(x, verif_dict):
