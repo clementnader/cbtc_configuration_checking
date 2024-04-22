@@ -37,4 +37,5 @@ def cctool_schema_window():
         print_error("Execution aborted.")
         sys.exit(1)
 
-    DATABASE_LOC.cctool_oo_schema = os.path.join(cctool_oo_directory.get(), cctool_oo_file_name.get())
+    DATABASE_LOC.cctool_oo_schema = os.path.join(cctool_oo_directory.get(), cctool_oo_file_name.get()
+                                                 ).replace("/", os.path.sep)

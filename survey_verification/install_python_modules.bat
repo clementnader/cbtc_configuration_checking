@@ -11,9 +11,14 @@ echo. && echo ---------------------------------------------- && echo.
 
 for %%x in (numpy openpyxl xlrd Unidecode pdfreader tk) do (
     echo. && echo Install library %%x.
+    REM Uncomment next line if launching it while connected to Hitachi network, on site or with VPN
     %PYTHON_EXE% -m pip install %%x --proxy http://z-proxy1.loc.global.sys
+    REM Uncomment next line if launching it disconnected from VPN
     REM %PYTHON_EXE% -m pip install %%x
 )
 
-echo. && pause
+echo. && echo ---------------------------------------------- && echo.
+echo Process has finished.
+echo. && echo ---------------------------------------------- && echo.
 
+pause

@@ -105,7 +105,7 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
     start_row_entry.grid(column=1, row=current_row, sticky="w")
     start_row_comment = tkinter.Label(frame, text="(number of the first row with survey information)",
                                       font=tkinter.font.Font(size=8), bg=bg)
-    start_row_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
+    start_row_comment.grid(column=2, row=current_row, columnspan=7, sticky="w")
 
     # Reference Column
     current_row += 1
@@ -114,9 +114,10 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
     ref_col_label.grid(column=0, row=current_row, sticky="w")
     ref_col_entry = tkinter.Entry(frame, textvariable=ref_col, bg=entry_bg, width=7)
     ref_col_entry.grid(column=1, row=current_row, sticky="w")
-    ref_col_comment = tkinter.Label(frame, text="(letter or number of the column)",
+    ref_col_comment = tkinter.Label(frame, text="(letter or number of the column containing "
+                                                "the objects name)",
                                     font=tkinter.font.Font(size=8), bg=bg)
-    ref_col_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
+    ref_col_comment.grid(column=2, row=current_row, columnspan=7, sticky="w")
 
     # Type Column
     current_row += 1
@@ -124,9 +125,10 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
     type_col_label.grid(column=0, row=current_row, sticky="w")
     type_col_entry = tkinter.Entry(frame, textvariable=type_col, bg=entry_bg, width=7)
     type_col_entry.grid(column=1, row=current_row, sticky="w")
-    type_col_comment = tkinter.Label(frame, text="(letter or number of the column)",
+    type_col_comment = tkinter.Label(frame, text="(letter or number of the column containing "
+                                                 "the objects type (e.g. SWP, TC, TAG...))",
                                      font=tkinter.font.Font(size=8), bg=bg)
-    type_col_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
+    type_col_comment.grid(column=2, row=current_row, columnspan=7, sticky="w")
 
     # Track Column
     current_row += 1
@@ -134,9 +136,10 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
     track_col_label.grid(column=0, row=current_row, sticky="w")
     track_col_entry = tkinter.Entry(frame, textvariable=track_col, bg=entry_bg, width=7)
     track_col_entry.grid(column=1, row=current_row, sticky="w")
-    track_col_comment = tkinter.Label(frame, text="(letter or number of the column)",
+    track_col_comment = tkinter.Label(frame, text="(letter or number of the column containing "
+                                                  "the objects track)",
                                       font=tkinter.font.Font(size=8), bg=bg)
-    track_col_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
+    track_col_comment.grid(column=2, row=current_row, columnspan=7, sticky="w")
 
     # Surveyed KP Column
     current_row += 1
@@ -145,9 +148,10 @@ def add_survey_info(frame: tkinter.Frame, ref_row: int,
     survey_kp_col_label.grid(column=0, row=current_row, sticky="w")
     survey_kp_col_entry = tkinter.Entry(frame, textvariable=survey_kp_col, bg=entry_bg, width=7)
     survey_kp_col_entry.grid(column=1, row=current_row, sticky="w")
-    survey_kp_col_comment = tkinter.Label(frame, text="(letter or number of the column)",
+    survey_kp_col_comment = tkinter.Label(frame, text="(letter or number of the column containing "
+                                                      "the objects surveyed KP)",
                                           font=tkinter.font.Font(size=8), bg=bg)
-    survey_kp_col_comment.grid(column=2, row=current_row, columnspan=3, sticky="w")
+    survey_kp_col_comment.grid(column=2, row=current_row, columnspan=7, sticky="w")
 
     if extra_func is not None:
         extra_func()

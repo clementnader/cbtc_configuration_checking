@@ -9,7 +9,9 @@ echo. && echo ---------------------------------------------- && echo.
 echo Launching the Survey Verification tool...
 echo. && echo ---------------------------------------------- && echo.
 
+cd py_exec
 %PYTHON_EXE% launch_survey_verification.py
+cd ..
 
 echo. && echo ---------------------------------------------- && echo.
 echo Process has finished.

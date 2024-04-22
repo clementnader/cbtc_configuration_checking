@@ -37,7 +37,7 @@ The tool automates the verification for the following elements:
   
   The position of the columns is not relevant for the tool but the name of the columns is.
 
-If this file is not provided, the tool will automatically try to find the block limit names by mixing the two blocks of the limit (ex: JOI_AAA_MMM_BBB_NNN for joint between TC_AAA_MMM and TC_BBB_NNN). It will create various name patterns to try to adapt to the different projects.
+If this file is not provided, the tool will automatically try to find the block limit names by mixing the two blocks of the limit (e.g. JOI_AAA_MMM_BBB_NNN for joint between TC_AAA_MMM and TC_BBB_NNN). It will create various name patterns to try to adapt to the different projects.
 
 
 - <ins>**Survey file(s)**</ins>: They are Excel files (.xls, .xlsx or .xlsm) containing the surveyed information. As the template can differ, the user needs to specify to the tool:
@@ -82,14 +82,19 @@ Tool will display to the user all other survey types that are not parsed by the 
 ### 3.2. Steps to use the tool to compare the DC_SYS information with the survey file(s):
 
 0. A preliminary step to take once in order to install the required Python libraries:
-   - Modify the file "**install_python_modules.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
- (for python.exe -> "set PYTHON_EXE=python", for python39.exe -> "set PYTHON_EXE=python39", etc.)
+   - Modify the file "**install_python_modules.bat**" to add to the PATH your Python 3.9 executable (remove the “REM ” in front of a line to uncomment it) and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
+     (for python.exe -> "set PYTHON_EXE=python", for python39.exe -> "set PYTHON_EXE=python39", etc.) <br />
+     Or modify you environment variable PATH at user level to add the folder containing the python executable. And copy and rename the Python executable to be python39.exe.
    - Launch "**install_python_modules.bat**". This executable will **install the required Python libraries**. <br />
- If an error occurs saying that pip is not installed, try to launch the command "python39 -m ensurepip --default-pip" (to update with the name or your Python 3.9 executable). It will install the default version of pip. <br />
- If a proxy error occurs, try to modify the line "%PYTHON_EXE% -m pip install %%x --proxy http://z-proxy1.loc.global.sys" to remove the proxy argument at the end and try to use a local network (disconnect from the VPN or from office network). (The proxy address is working in Hitachi France network.)
+ If a proxy error occurs, comment (add a REM in front) the line<br />
+   "%PYTHON_EXE% -m pip install %%x --proxy http://z-proxy1.loc.global.sys"<br />
+   and uncomment (remove the REM in front) the line without the proxy argument at the end and use a local network (disconnect from the VPN or from office network).<br />
+   (The proxy address is working in Hitachi network.) <br />
+ If an error occurs saying that pip is not installed, try to launch the command "python39 -m ensurepip --default-pip" (to update with the name or your Python 3.9 executable). It will install the default version of pip.
 
 
-1. Modify the file "**survey_verification.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name.
+1. Modify the file "**survey_verification.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
+(Set it up in the same way as "install_python_modules.bat".)
 
 
 2. Launch "**survey_verification.bat**". It will launch the Python script to check the correspondence with the site survey.
@@ -105,15 +110,16 @@ Once the survey file has been selected, you need to specify:
    - the **Survey Sheet** name, or you can select the checkbox so that the tool uses **All Sheets** of the survey file to get the survey data,
    - the **First Data Row** containing the surveyed information (after the header),
    - and the different columns for the data the tool will use (note that you can use either the letter of the column or the corresponding number):
-     - **Reference Column**,
-     - **Type Column**,
-     - **Track Column**,
-     - **Surveyed KP Column**.
+     - **Reference Column** (the column containing the objects name),
+     - **Type Column** (the column containing the objects type (e.g. SWP, TC, TAG...)),
+     - **Track Column** (the column containing the objects track),
+     - **Surveyed KP Column** (the column containing the objects surveyed KP).
 
 You will also have the possibility to add another survey files (some projects have various files for the survey). If it is the case, you have to **add the survey files in chronological order**, with the oldest first and the most recent last. (The tool will consider that the newer values supersede the older ones. A comment is nevertheless written to inform the user of different values for a same object.)
 
 
-5. Once all the information has been specified, you can press the button **"Launch Survey Verification"**.
+5. Once all the information has been specified, you can press the button **"Launch Survey Verification"**. <br />
+Information can be provided in the command window during the execution.
 
 
 6. The result Excel file is placed into the Desktop and is opened automatically.
@@ -126,7 +132,7 @@ For each type of objects that is automated, there is **a dedicated sheet** conta
 
 - **<ins>Column A</ins>** contains the **data name**.
 
-    For signals, buffers and tags, it corresponds directly to the name in DC_SYS.
+    For signals, buffers, tags and platform OSPs, it corresponds directly to the name in DC_SYS.
 
     For switch, it is the switch name plus a suffix:
 
@@ -145,10 +151,10 @@ For each type of objects that is automated, there is **a dedicated sheet** conta
 - **<ins>Columns C and D</ins>** contain the **positioning (track, KP)** collected from the **DC_SYS**.
 
 
-- If a Block Def. is used, an extra column will appear in sheet "Block_Joint" containing the corresponding limit name from the file.
+- If a Block Def. is used, an extra column will appear in sheet "Block_Joint" containing the corresponding limit name from the block definition file.
 
 
-- **<ins>Column E</ins>** contains the **reference name** from the **survey**.
+- **<ins>Column E</ins>** contains the object **reference name** from the **survey**.
 
 
 - **<ins>Column F</ins>** contains the information set in the **type** column in the **survey**.
@@ -156,7 +162,7 @@ For each type of objects that is automated, there is **a dedicated sheet** conta
 
 - **<ins>Columns G and H</ins>** contain the **positioning (track, KP)** collected from the **survey file(s)**.
 
-    A comment is put on cells in column H to specify from which survey the information was collected.
+    A comment is put on cells in column H to specify from which survey the information was collected (can be useful in multiple survey files are used).
 
 The results are ordered by track and then KP from the DC_SYS if they exist, else from the survey.
 

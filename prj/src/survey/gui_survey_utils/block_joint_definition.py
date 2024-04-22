@@ -37,6 +37,9 @@ def add_block_joint_def_frame(frame: tkinter.Frame, ref_row: int, bg: str = None
     block_def_label = tkinter.Label(sub_frame, text="Dedicated Block Definition File",
                                     font=tkinter.font.Font(size=10), bg=bg)
     block_def_label.grid(column=0, row=0, columnspan=10, sticky="w")
+    block_def_label = tkinter.Label(sub_frame, text="(often called CIRCUIT_DE_VOIE.xls)",
+                                    font=tkinter.font.Font(size=10), bg=bg)
+    block_def_label.grid(column=0, row=1, columnspan=10, sticky="w")
     block_def_directory_string_var, block_def_file_name_string_var = _add_block_def_button(sub_frame, 2, bg=bg)
     disable_frame(right_frame)  # default state
 
@@ -75,7 +78,7 @@ def _add_automatic_names_button(frame: tkinter.Frame, ref_row: int, other_frame:
                                             font=tkinter.font.Font(size=10), bg=bg)
     automatic_names_comment.grid(column=0, row=ref_row, columnspan=3, sticky="w")
 
-    frame.grid_rowconfigure(ref_row+1, minsize=40)
+    frame.grid_rowconfigure(ref_row+1, minsize=60)
     automatic_names = tkinter.BooleanVar()
     automatic_names.set(True)
     automatic_names_checkbutton = tkinter.Checkbutton(frame, text="automatic joint names",
