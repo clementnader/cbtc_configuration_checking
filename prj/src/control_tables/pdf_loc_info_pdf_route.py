@@ -68,10 +68,10 @@ elif PROJECT_NAME == Projects.Glasgow:
         "[13] Permanent Replacement T.C.":        {"x": 234, "y": 325},
         "[14] Approach Area clearance":           {"x": 370, "y": 329},
         "[15] External Conditions":               {"x": 467, "y": 362},
-        "[16] Route path (T.C. clearance)":       {"x": 232, "y": 208},
+        "[16] Route path (T.C. clearance)":       {"x": 232, "y": 198, "y_tol": 30},
         "[17] Flank protection (T.C. clearance)": {"x": 364, "y": 203},
         "[18] Track Circuit clearance":           {"x": 488, "y": 203},
-        "[19] External Conditions":               {"x":  49, "y": 313, "y_tol": 50},
+        "[19] External Conditions":               {"x":  49, "y": 273, "y_tol": 90},
     }
 elif PROJECT_NAME == Projects.Milan:
     LOC_DICT = {
@@ -139,7 +139,7 @@ elif PROJECT_NAME == Projects.Thessaloniki:
         "[11] Functions not activated":           {"x":  47, "y": 511},
         "[12] Overlap set":                       {"x":  48, "y": 424},
         "[13] Permanent Replacement T.C.":        {"x": 227, "y": 325, "y_tol": 15},
-        "[14] Approach Area clearance":           {"x": 360, "y": 342, "y_tol": 10},
+        "[14] Approach Area clearance":           {"x": 360, "y": 342, "y_tol": 15},
         "[15] External Conditions":               {"x": 455, "y": 362, "y_tol": 30},
         "[16] Route path (T.C. clearance)":       {"x": 225, "y": 211, "y_tol": 50},
         "[17] Flank protection (T.C. clearance)": {"x": 355, "y": 216, "y_tol": 40},

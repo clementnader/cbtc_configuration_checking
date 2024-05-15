@@ -14,7 +14,7 @@ from ..ixl_overlap.overlap_platform_related import is_sig_downstream_a_plt
 __all__ = ["cf_signal_12"]
 
 
-VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "templates", "template_cf_signal_12_verification.xlsx")
+VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_cf_signal_12_verification.xlsx")
 VERIF_TEMPLATE = get_full_path(__file__, VERIF_TEMPLATE_RELATIVE_PATH)
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY

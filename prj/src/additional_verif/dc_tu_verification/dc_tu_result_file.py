@@ -218,4 +218,5 @@ def _rewrite_status_of_previous_cells(ws: xl_ws.Worksheet, duplicate_cells: list
 
 def _set_up_conditional_formatting(ws: xl_ws.Worksheet, list_of_ranges: list[str]):
     whole_range = " ".join(list_of_ranges).strip()
+    add_unique_values_conditional_formatting(ws, whole_range, XlFontColor.ok, XlBgColor.ok)
     add_duplicate_values_conditional_formatting(ws, whole_range, XlFontColor.ko, XlBgColor.ko)

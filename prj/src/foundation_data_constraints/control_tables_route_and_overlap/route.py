@@ -94,20 +94,17 @@ def _find_route_control_table(route_dc_sys: str, route_control_tables: dict[str,
 
 
 def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, with_zero: bool = False):
-    route_dc_sys = "_".join([sig for sig in route_dc_sys.split("_")][-2:])
-    route_control_table = "_".join([sig for sig in route_control_table.split("-")])
-    if PROJECT_NAME == Projects.Copenhagen:
-        route_dc_sys = "_".join([sig.removeprefix("0") for sig in route_dc_sys.split("_")])
-        route_control_table = "_".join([sig.removeprefix("0") for sig in route_control_table.split("_")])
-    if route_dc_sys == route_control_table:
-        return True
-    # in some projects, the route in DC_SYS is named with 'f' or 'F' in at the end of route name
-    route_dc_sys = "_".join([sig.removesuffix("f").removesuffix("F") for sig in route_dc_sys.split("_")])
+    route_dc_sys = "_".join([sig.upper() for sig in route_dc_sys.split("_")][-2:])
+    route_control_table = "_".join([sig.upper() for sig in route_control_table.split("-")]).replace(" ", "")
     if route_dc_sys == route_control_table:
         return True
     # in some projects, the route in DC_SYS is named with 'S' in front of signals name
-    route_control_table = "_".join(['S' + sig for sig in route_control_table.split("_")])
-    if route_dc_sys == route_control_table:
+    test_route_control_table = "_".join(['S' + sig for sig in route_control_table.split("_")])
+    if route_dc_sys == test_route_control_table:
+        return True
+    # in some projects, the route in DC_SYS is named with 'f' or 'F' in at the end of route name
+    route_dc_sys = "_".join([sig.removesuffix("F") for sig in route_dc_sys.split("_")])
+    if route_dc_sys == route_control_table or route_dc_sys == test_route_control_table:
         return True
 
     # try now removing leading 0 in sig names
@@ -160,6 +157,7 @@ def _check_route_sw(route: str, route_val: dict[str, Any], route_sw: str, table_
                     f"DC_SYS Route Switch: {Color.white}{', '.join(dc_sys_route_sw)}{Color.reset}\n"
                     f"Control Table Switch Route Path: {Color.beige}{route_sw}{Color.reset}")
         result = False
+        return result
 
     for dc_sys_sw, control_table_sw in zip(dc_sys_route_sw, route_sw_list):
         if not dc_sys_sw.endswith(control_table_sw):

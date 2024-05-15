@@ -37,7 +37,7 @@ def cc():
 
 
 def additional_verif():
-    # dc_tu_verification()  # v1.1
+    # dc_tu_verification()  # v1.2
     # dc_tu_window()
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
@@ -65,7 +65,7 @@ def route_and_overlap():
     #     CONTROL_TABLE_TYPE.route, use_csv_file=False,
     #     # verbose=True,
     #     # specific_page=10,
-    #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
+    #     # line_parts=(CONTROL_TABLE_LINE_PART.depot,)
     # )
     # parse_control_tables(
     #     CONTROL_TABLE_TYPE.overlap, use_csv_file=False,
@@ -100,7 +100,7 @@ def survey():
 def constraints():
     # check_offset_correctness()
     # check_upstream_and_downstream_ivb_of_all_signals()
-    # check_cbtc_protecting_switch_area(do_print_warning=True)
+    # check_cbtc_protecting_switch_area(do_print_warning=False)
     #
     # r_cdv_5(print_ok=True)  # TODO for r_cdv_5:
     #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
@@ -125,6 +125,8 @@ def constraints():
     #                                       and tool shall gives multiple ZC these times,
     #                                       re-work the way ZC is assigned.
     # r_tm_ats_itf_1(in_cbtc=False)
+    # ats_atc_sheet_verif(in_cbtc=True)  # TODO: Check if extra flows exist for object that does not exist per type,
+    #                                           and if extra object type exists.
     # cf_signal_12(apz_with_tc=True)
     # r_zsm_3(apz_with_tc=True)
     # verif_calib_distance()

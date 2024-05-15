@@ -14,7 +14,7 @@ from ...ixl_utils import get_distance_between_block_and_approach_zone
 __all__ = ["r_zsm_3"]
 
 
-VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "templates", "template_r_zsm_3_verification.xlsx")
+VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_r_zsm_3_verification.xlsx")
 VERIF_TEMPLATE = get_full_path(__file__, VERIF_TEMPLATE_RELATIVE_PATH)
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY

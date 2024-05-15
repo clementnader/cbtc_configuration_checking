@@ -21,7 +21,8 @@ __all__ = ["XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comme
            "adjust_fixed_row_height",
            "draw_exterior_borders", "draw_all_borders_of_a_range",
            "draw_exterior_borders_of_a_range",
-           "add_duplicate_values_conditional_formatting", "add_formula_conditional_formatting"]
+           "add_unique_values_conditional_formatting", "add_duplicate_values_conditional_formatting",
+           "add_formula_conditional_formatting"]
 
 
 class XlFontColor:
@@ -266,6 +267,15 @@ def draw_exterior_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet,
 # 'between', 'notBetween', 'containsText', 'notContains', 'beginsWith', 'endsWith']
 #   rule formula: list[str]
 #   rule dxf: DifferentialStyle
+
+def add_unique_values_conditional_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str,
+                                             font_color: str, bg_color: str) -> None:
+    font = xl_styles.Font(color=font_color)
+    fill = xl_styles.PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
+    dxf = xl_diff_styles.DifferentialStyle(font=font, fill=fill)
+    rule = xl_format.Rule(type="uniqueValues", priority=1, dxf=dxf)
+    ws.conditional_formatting.add(cell_range, rule)
+
 
 def add_duplicate_values_conditional_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str,
                                                 font_color: str, bg_color: str) -> None:
