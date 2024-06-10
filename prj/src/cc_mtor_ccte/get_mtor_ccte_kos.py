@@ -9,7 +9,8 @@ __all__ = ["get_mtor_ccte_ko"]
 
 
 # MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Riyadh\Verification of MTOR and CCTE Plugs"
-MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Glasgow\Verification of MTOR and CCTE Plugs"
+# MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\Glasgow\Verification of MTOR and CCTE Plugs"
+MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\results ml4 mtor ccte"
 # MTOR_CCTE_PATH = r"C:\Users\naderc\Desktop\ML4\3. DEP_LN01\Verification of MTOR and CCTE Plugs"
 
 
@@ -29,6 +30,8 @@ def get_mtor_ccte_ko():
         first_ko = True
         print_log(f"\r{progress_bar(i, nb_files)} analyzing {file}...", end="")
         temp_dict, mtor = _analyze_mtor_ccte_file(file)
+        if temp_dict is None:
+            continue
         sub_dict_name = "ccte" if not mtor else "mtor"
         for key, val in temp_dict.items():
             if key not in dict_of_kos[sub_dict_name]:
@@ -59,9 +62,11 @@ def _analyze_mtor_ccte_file(file):
     if RES_SHEETS["ccte"] in list_of_sheets:
         ws = get_xl_sheet_by_name(wb, RES_SHEETS["ccte"])
         mtor = False
-    else:
+    elif RES_SHEETS["mtor"] in list_of_sheets:
         ws = get_xl_sheet_by_name(wb, RES_SHEETS["mtor"])
         mtor = True
+    else:
+        return None, None
     dict_of_kos = _get_kos_res_sheet(ws)
     return dict_of_kos, mtor
 
