@@ -96,7 +96,7 @@ def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
 
         obj_name = None if dc_sys_sheet is None else obj_name
 
-        tolerance = _get_tolerance(tolerance_dict, dc_sys_sheet)
+        tolerance = _get_tolerance(tolerance_dict, dc_sys_sheet, survey_type)
         dc_sys_color = _get_dc_sys_color(multiple_dc_sys_objets, dc_sys_sheet)
         survey_color = _get_survey_color(multiple_survey_objets, survey_type)
 
@@ -221,12 +221,22 @@ def _get_tolerance_dict(sheet_name: str) -> Optional[Union[str, dict[str, str]]]
     return None
 
 
-def _get_tolerance(tolerance_dict: Optional[Union[str, dict[str, str]]], dc_sys_sheet: str) -> Optional[str]:
+def _get_tolerance(tolerance_dict: Optional[Union[str, dict[str, str]]], dc_sys_sheet: Optional[str],
+                   survey_type: Optional[str]) -> Optional[str]:
     if tolerance_dict is None:
         return None
     if isinstance(tolerance_dict, str):
         return tolerance_dict
-    return tolerance_dict.get(dc_sys_sheet)
+
+    for (test_sh_name, corresponding_key), tol in tolerance_dict.items():
+        if dc_sys_sheet is not None:
+            if dc_sys_sheet == test_sh_name:
+                return tol
+        else:
+            test_survey_type_names = SURVEY_TYPES_DICT[corresponding_key]["survey_type_names"]
+            if survey_type in test_survey_type_names:
+                return tol
+    return None
 
 
 def _get_multiple_dc_sys_objets(sheet_name: str) -> Optional[list]:

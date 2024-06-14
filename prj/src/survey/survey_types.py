@@ -20,8 +20,8 @@ SURVEY_TYPES_DICT = {
     "PLATFORM":      {"res_sheet": "Platform",
                       "dcsys_sh": DCSYS.Quai,
                       "func": check_platform,
-                      "tol": {get_sh_name(DCSYS.Quai): "platform_end_tolerance",
-                              get_sh_name(DCSYS.Quai.PointDArret): "platform_osp_tolerance"},
+                      "tol": {(get_sh_name(DCSYS.Quai), "PLATFORM"): "platform_end_tolerance",
+                              (get_sh_name(DCSYS.Quai.PointDArret), "OSP"): "platform_osp_tolerance"},
                       "survey_type_names": [
                           "PLATFORM", "PLATFORM_END", "PLATFORM END",
                           "PLATFORM_EXTREMITY", "PLATFORM EXTREMITY", "MPLATFORM"

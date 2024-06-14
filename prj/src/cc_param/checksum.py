@@ -13,8 +13,10 @@ __all__ = ["verification_of_the_md5_checksum", "checksum_compare_parser"]
 
 
 ORIGINAL_FILE = "md5sum.txt"
+ORDERED_ORIGINAL_FILE = "_ordered".join(os.path.splitext(ORIGINAL_FILE))
 REGEN_FILE = "RAMSmd5sum.txt"
-BASH_CMD = f"find -type f -print0 | sort | xargs -r0 md5sum > \"{REGEN_FILE}\""
+BASH_CMD = f"find -type f | sort -f | xargs -d \"\\n\" md5sum -t > \"{REGEN_FILE}\""
+SORT_BASH_CMD = f"sort -k2f \"{ORIGINAL_FILE}\" > \"{ORDERED_ORIGINAL_FILE}\""
 
 
 def get_software_location(sw):
@@ -55,7 +57,7 @@ def checksum_compare_parser():
     compare_checksums(input_dir)
 
 
-def regen_checksum(path_kit_c11):
+def regen_checksum_and_sort_old(path_kit_c11):
     if sys.platform == "win32" and "SHELL" not in os.environ.keys():  # For Windows when not using git-bash
         if GIT_PATH is None:
             print_error(f"\nGit is not installed.")
@@ -63,39 +65,14 @@ def regen_checksum(path_kit_c11):
                   f"\t{Color.light_orange}{BASH_CMD}{Color.reset}\n"
                   f"needs to be launched on your side.")
             return
-        new_env = {"PATH": os.path.join(GIT_PATH, "usr", "bin")}
+        new_env = {"PATH": os.path.join(GIT_PATH, "usr", "bin"), "LC_ALL": "C"}
     else:
-        new_env = None
+        new_env = {"LC_ALL": "C"}
     print_section_title(f"Generating MD5 checksums in file \"{REGEN_FILE}\"...")
     launch_cmd(BASH_CMD, cwd=path_kit_c11, env=new_env)
-
-
-def sort_md5_lines(lines: list[str]):
-    return sorted(lines, key=lambda x: x.split(" ", 1)[1].casefold())
-
-
-def order_original_checksum(path_kit_c11):
-    print_section_title(f"Reordering the original checksum file to be able to do the comparison...")
-    original_file_path = os.path.join(path_kit_c11, ORIGINAL_FILE)
-    with open(original_file_path, 'r') as og_file:
-        lines = sort_md5_lines(og_file.readlines())
-        ordered_original = os.path.join(path_kit_c11, "_ordered".join(os.path.splitext(ORIGINAL_FILE)))
-        with open(ordered_original, 'w') as new_file:
-            new_file.writelines(lines)
-            return ordered_original
-
-
-def order_regen_checksum(path_kit_c11):
-    print_section_title(f"Reordering the regenerated checksum file to be able to do the comparison...")
-    regen_file_path = os.path.join(path_kit_c11, REGEN_FILE)
-    with open(regen_file_path, 'r') as og_file:
-        lines = sort_md5_lines(og_file.readlines())
-        for i, line in enumerate(lines):
-            lines[i] = line.replace(" *./", "  ./")
-        ordered_regen = os.path.join(path_kit_c11, "_ordered".join(os.path.splitext(REGEN_FILE)))
-        with open(ordered_regen, 'w') as new_file:
-            new_file.writelines(lines)
-            return ordered_regen
+    print_section_title(f"Sorting existing MD5 checksum \"{ORIGINAL_FILE}\" into file \"{ORDERED_ORIGINAL_FILE}\" "
+                        f"to do the comparison...")
+    launch_cmd(SORT_BASH_CMD, cwd=path_kit_c11, env=new_env)
 
 
 def launch_beyond_compare(ordered_original, ordered_regen):
@@ -108,12 +85,12 @@ def launch_beyond_compare(ordered_original, ordered_regen):
 
 def compare_checksums(path_kit_c11):
     print_title(f"Verification of the Delivery Chain MD5 Checksum\n")
-    regen_checksum(path_kit_c11)
-    ordered_original = order_original_checksum(path_kit_c11)
+    regen_checksum_and_sort_old(path_kit_c11)
+    ordered_original = os.path.join(path_kit_c11, ORDERED_ORIGINAL_FILE)
     if not os.path.exists(os.path.join(path_kit_c11, REGEN_FILE)):
         print_error(f"\nCannot find the regenerated file.")
         return
-    ordered_regen = order_regen_checksum(path_kit_c11)
+    ordered_regen = os.path.join(path_kit_c11, REGEN_FILE)
     print(f"\nThe files to compare are located:\n"
           f"\tfor the original file: {Color.light_green}{ordered_original}{Color.reset}\n"
           f"\tand for the regenerated file: {Color.light_green}{ordered_regen}{Color.reset}")

@@ -91,7 +91,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()  # v2.3
+    # check_survey()  # v2.3.1
     # survey_window()
     # cctool_schema_window()
     return
@@ -143,12 +143,12 @@ def main():
     # test_moving_progress_bar()
 
     # get_walkways_track_kp_pos()
-    # pretty_print_dict(get_track_in_cbtc_ter(), max_lvl=0)
-    # pretty_print_dict(get_sigs_in_cbtc_ter(), max_lvl=0)
-    # pretty_print_dict(get_maz_in_cbtc_ter(), max_lvl=0)
-    # pretty_print_dict(get_tags_in_cbtc_ter(), max_lvl=0)
-    # pretty_print_dict(get_switches_in_cbtc_ter(), max_lvl=0)
-    # pretty_print_dict(get_platforms_in_cbtc_ter(), max_lvl=0)
+    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Voie), max_lvl=0)
+    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Sig), max_lvl=0)
+    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Zaum), max_lvl=0)
+    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Bal), max_lvl=0)
+    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Aig), max_lvl=0)
+    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Quai), max_lvl=0)
 
     # create_fouling_points_file()
 

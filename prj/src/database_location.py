@@ -157,6 +157,13 @@ class ProjectDatabaseLoc:
             self.survey_loc.type_col = [2, 2]
             self.survey_loc.track_col = [3, 3]
             self.survey_loc.survey_kp_col = [4, 11]
+            # -- IXL Approach Zone -- #
+            self.ixl_apz.ixl_apz_file = r"C:\Users\naderc\Desktop\BXL\BXL_IXL_APZ.xlsx"
+            self.ixl_apz.ixl_apz_sheet_name = r"IXL_APZ"
+            self.ixl_apz.start_line = 2
+            self.ixl_apz.sig_column = 'A'
+            self.ixl_apz.apz_start_column = 9
+            self.ixl_apz.apz_nb_columns = 5
             # -- Control Tables -- #
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables rev 02.00\MAIN LINE"
                                               r"\90000536.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES "
@@ -401,15 +408,15 @@ class ProjectDatabaseLoc:
                 r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_A.xlsx",
                 r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_B.xls",
                 r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_C.xlsx",
-                r"C:\Users\naderc\Desktop\TSK\SURVEY\survey_report_TSK_Aktor_additional.xlsx"]
+                r"C:\Users\naderc\Desktop\TSK\SURVEY\1G00LV615R808A_EN_Annex_D.xlsx"]
             self.survey_loc.survey_sheet = [r"TSK_Object_list_310720_ro", r"TSK_Object_list_REV.3",
-                                            r"Φύλλο1", r"Feuil1"]
+                                            r"Φύλλο1", r"Φύλλο1"]
             self.survey_loc.all_sheets = [False, False, False, False]
-            self.survey_loc.start_row = [2, 2, 3, 2]
-            self.survey_loc.ref_col = [1, 1, 13, 2]
-            self.survey_loc.type_col = [2, 2, 14, 3]
-            self.survey_loc.track_col = [3, 3, 15, 4]
-            self.survey_loc.survey_kp_col = [7, 7, 17, 6]
+            self.survey_loc.start_row = [2, 2, 3, 3]
+            self.survey_loc.ref_col = [1, 1, 13, 13]
+            self.survey_loc.type_col = [2, 2, 14, 14]
+            self.survey_loc.track_col = [3, 3, 15, 15]
+            self.survey_loc.survey_kp_col = [7, 7, 17, 17]
             # -- Control Tables -- #
             self.control_tables_route.line = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00"
                                               r"\1G00LV601R721B_EN_ANNEX_B.pdf")
