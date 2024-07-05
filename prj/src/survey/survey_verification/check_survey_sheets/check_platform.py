@@ -16,13 +16,15 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp
     plt_dict = load_sheet(DCSYS.Quai)
     list_used_obj_names = list()
     res_dict = dict()
+    first_try_dict = dict()
     for plt_name, plt_val in plt_dict.items():
         plt_limits = _get_plt_limits(plt_val)
-        associated_survey_dict = _get_corresponding_survey_extremities(plt_name, plt_limits, plt_survey_info)
+        associated_survey_dict = get_corresponding_plt_survey_extremities(plt_name, plt_limits, plt_survey_info)
 
         limits_survey_info = [[plt_name + f"__Limit_{n}", lim_track, lim_kp, survey_name]
                               for n, ((lim_track, lim_kp), survey_name)
                               in enumerate(associated_survey_dict.items(), start=1)]
+        first_try_dict[plt_name] = limits_survey_info
 
         for obj_name, dc_sys_track, dc_sys_kp, survey_name in limits_survey_info:
             survey_obj_info = plt_survey_info.get(survey_name)
@@ -53,27 +55,60 @@ def _get_plt_limits(plt_val: dict) -> list[tuple[str, float]]:
     return limits
 
 
+UNIQUE_PREFIX_PLT_NAMES_DICT = None
+
+
+def _get_unique_prefix_plt_names_dict() -> dict[str, dict[str, str]]:
+    global UNIQUE_PREFIX_PLT_NAMES_DICT
+    if UNIQUE_PREFIX_PLT_NAMES_DICT is None:
+        res_dict = dict()
+        plt_dict = load_sheet(DCSYS.Quai)
+        set_of_tracks = set([track.upper() for test_plt_info in plt_dict.values()
+                             for track in get_dc_sys_value(test_plt_info, DCSYS.Quai.ExtremiteDuQuai.Voie)])
+        for track in set_of_tracks:
+            plt_names_dict = {test_plt_name: test_plt_name.upper().removeprefix("PLATFORM_").removeprefix("PLT_")
+                              for test_plt_name, test_plt_info in plt_dict.items()
+                              if track in [plt_lim_track.upper() for plt_lim_track
+                                           in get_dc_sys_value(test_plt_info, DCSYS.Quai.ExtremiteDuQuai.Voie)]}
+            res_dict[track] = get_smallest_unique_prefix_dict(plt_names_dict)
+        UNIQUE_PREFIX_PLT_NAMES_DICT = res_dict
+    return UNIQUE_PREFIX_PLT_NAMES_DICT
+
+
 def _get_survey_limits_on_track(plt_name: str, track: str, plt_survey_info: dict[str, Any]) -> list[str]:
+    list_all_survey_limits = list()
     list_survey_limits = list()
     for survey_name in plt_survey_info.keys():
         survey_plt_lim_name, survey_track = survey_name.split("__", 1)
         survey_plt_name = _clean_platform_extremity_name(survey_plt_lim_name)
         if survey_track.upper() == track:
-            if (survey_plt_name == plt_name.upper()
-                    or survey_plt_name == plt_name.upper().removeprefix("PLATFORM_")
-                    or survey_plt_name == plt_name.upper().removeprefix("PLT_")
-                    or survey_plt_name.removeprefix("PLATFORM_") == plt_name.upper().removeprefix("PLT_")
-                    or survey_plt_name.removeprefix("PLT_") == plt_name.upper().removeprefix("PLATFORM_")
-                    or survey_plt_name.removesuffix("_1") + "_T1" == plt_name.upper()
-                    or survey_plt_name.removesuffix("_2") + "_T2" == plt_name.upper()
-                    or survey_plt_name.removesuffix("_T1") + "_1" == plt_name.upper()
-                    or survey_plt_name.removesuffix("_T2") + "_2" == plt_name.upper()):
+            survey_plt_name = survey_plt_name.removeprefix("PLATFORM_").removeprefix("PLT_")
+            clean_plt_name = plt_name.upper().removeprefix("PLATFORM_").removeprefix("PLT_")
+            list_all_survey_limits.append((survey_name, survey_plt_name))
+            if (survey_plt_name == clean_plt_name
+                    or survey_plt_name.removesuffix("_1") + "_T1" == clean_plt_name
+                    or survey_plt_name.removesuffix("_2") + "_T2" == clean_plt_name
+                    or survey_plt_name.removesuffix("_T1") + "_1" == clean_plt_name
+                    or survey_plt_name.removesuffix("_T2") + "_2" == clean_plt_name):
                 list_survey_limits.append(survey_name)
+
+    if not list_survey_limits:
+        unique_prefix = _get_unique_prefix_plt_names_dict()[track][plt_name]
+        for survey_name, survey_plt_name in list_all_survey_limits:
+            survey_plt_name = survey_plt_name[:len(unique_prefix)]
+            if (survey_plt_name == unique_prefix
+                    or survey_plt_name.removesuffix("_1") + "_T1" == unique_prefix
+                    or survey_plt_name.removesuffix("_2") + "_T2" == unique_prefix
+                    or survey_plt_name.removesuffix("_T1") + "_1" == unique_prefix
+                    or survey_plt_name.removesuffix("_T2") + "_2" == unique_prefix):
+                list_survey_limits.append(survey_name)
+
     return list_survey_limits
 
 
-def _get_corresponding_survey_extremities(plt_name: str, plt_limits: list[tuple[str, float]],
-                                          plt_survey_info: dict[str, Any]) -> dict[tuple[str, float], Optional[str]]:
+def get_corresponding_plt_survey_extremities(plt_name: str, plt_limits: list[tuple[str, float]],
+                                             plt_survey_info: dict[str, Any],
+                                             ) -> dict[tuple[str, float], Optional[str]]:
     associated_survey_dict = {(lim_track, lim_kp): None for (lim_track, lim_kp) in plt_limits}
 
     dc_sys_limit_tracks = set([track.upper() for (track, _) in plt_limits])

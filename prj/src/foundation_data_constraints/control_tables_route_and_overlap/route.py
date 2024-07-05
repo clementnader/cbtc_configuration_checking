@@ -90,10 +90,18 @@ def _find_route_control_table(route_dc_sys: str, route_control_tables: dict[str,
     for route_control_table, route_val in route_control_tables.items():
         if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys):
             return route_val, route_control_table
+    for route_control_table, route_val in route_control_tables.items():
+        if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, remove_zero=True):
+            return route_val, route_control_table
     return {}, ""
 
 
-def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, with_zero: bool = False):
+def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, remove_zero: bool = False):
+    if remove_zero is True:
+        # try removing leading 0 in sig names
+        route_dc_sys = "_".join([sig.removeprefix("0") for sig in route_dc_sys.split("_")])
+        route_control_table = "_".join([sig.removeprefix("0") for sig in route_control_table.split("-")])
+
     route_dc_sys = "_".join([sig.upper() for sig in route_dc_sys.split("_")][-2:])
     route_control_table = "_".join([sig.upper() for sig in route_control_table.split("-")]).replace(" ", "")
     if route_dc_sys == route_control_table:
@@ -107,13 +115,7 @@ def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys
     if route_dc_sys == route_control_table or route_dc_sys == test_route_control_table:
         return True
 
-    # try now removing leading 0 in sig names
-    route_dc_sys = "_".join([sig.removeprefix("0") for sig in route_dc_sys.split("_")])
-    route_control_table = "_".join([sig.removeprefix("0") for sig in route_control_table.split("-")])
-    if with_zero is False:
-        return _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, with_zero=True)
-    else:
-        return False
+    return False
 
 
 def _check_controlled_sig(route: str, route_val: dict[str, Any], control_sig: str, table_name: str):
@@ -246,5 +248,8 @@ def _check_routes_exist_in_dc_sys(route_dict: dict[str, Any], route_control_tabl
 def _is_route_in_dc_sys(route_control_table: str, route_dict: dict[str, Any]):
     for route_dc_sys in route_dict.keys():
         if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys):
+            return True
+    for route_dc_sys in route_dict.keys():
+        if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, remove_zero=True):
             return True
     return False

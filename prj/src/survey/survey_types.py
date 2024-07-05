@@ -12,7 +12,7 @@ SURVEY_TYPES_DICT = {
     "SWP":           {"res_sheet": "Switch",
                       "dcsys_sh": DCSYS.Aig,
                       "func": check_switch,
-                      "tol": "switch_tolerance",
+                      "tol": ("switches", "switch_tolerance", 0.006),
                       "survey_type_names": [
                           "SWP", "SWITCH", "SWITCH_POINT", "SWITCH POINT"
                       ]},
@@ -20,8 +20,12 @@ SURVEY_TYPES_DICT = {
     "PLATFORM":      {"res_sheet": "Platform",
                       "dcsys_sh": DCSYS.Quai,
                       "func": check_platform,
-                      "tol": {(get_sh_name(DCSYS.Quai), "PLATFORM"): "platform_end_tolerance",
-                              (get_sh_name(DCSYS.Quai.PointDArret), "OSP"): "platform_osp_tolerance"},
+                      "tol": {(get_sh_name(DCSYS.Quai), "PLATFORM"): ("platform ends",
+                                                                      "platform_end_tolerance",
+                                                                      0.006),
+                              (get_sh_name(DCSYS.Quai.PointDArret), "OSP"): ("platform OSPs",
+                                                                             "platform_osp_tolerance",
+                                                                             0.006)},
                       "survey_type_names": [
                           "PLATFORM", "PLATFORM_END", "PLATFORM END",
                           "PLATFORM_EXTREMITY", "PLATFORM EXTREMITY", "MPLATFORM"
@@ -39,7 +43,7 @@ SURVEY_TYPES_DICT = {
     "TC":            {"res_sheet": "Block_Joint",
                       "dcsys_sh": DCSYS.CDV,
                       "func": check_joint,
-                      "tol": "joint_tolerance",
+                      "tol": ("joints", "joint_tolerance", 0.006),
                       "survey_type_names": [
                           "TC", "TRACK_CIRCUIT", "TRACK CIRCUIT", "TRACK CIRCUITS JOINT",
                           "AXLE COUNTER", "INSULATED JOINT", "AXC"
@@ -50,7 +54,7 @@ SURVEY_TYPES_DICT = {
     "SIGNAL":        {"res_sheet": "Signal",
                       "dcsys_sh": DCSYS.Sig,
                       "func": check_object,
-                      "tol": "signal_tolerance",
+                      "tol": ("signals", "signal_tolerance", 0.006),
                       "survey_type_names": [
                           "SIG", "SIGNAL"
                       ]},
@@ -58,7 +62,7 @@ SURVEY_TYPES_DICT = {
     "SIGNAL_BUFFER": {"res_sheet": "Buffer",
                       "dcsys_sh": DCSYS.Sig,
                       "func": check_object,
-                      "tol": "buffer_tolerance",
+                      "tol": ("buffers", "buffer_tolerance", 0.006),
                       "survey_type_names": [
                           "SIGNAL_BUFFER", "SIGNAL BUFFER", "BUFFER", "BS"
                       ]},
@@ -66,7 +70,7 @@ SURVEY_TYPES_DICT = {
     "TAG":           {"res_sheet": "Tag",
                       "dcsys_sh": [DCSYS.Bal, DCSYS.IATPM_tags],
                       "func": check_tag,
-                      "tol": "tag_tolerance",
+                      "tol": ("tags", "tag_tolerance", 0.006),
                       "survey_type_names": [
                           # ----- Static Tags ----- #
                           "BAL", "BALISE", "TAG", "TAGS",
@@ -97,8 +101,21 @@ SURVEY_TYPES_DICT = {
     "FLOOD_GATE":    {"res_sheet": "FloodGate",
                       "dcsys_sh": DCSYS.Flood_Gate,
                       "func": check_flood_gate,
-                      "tol": "flood_gate_tolerance",
+                      "tol": ("flood gates", "flood_gate_tolerance", 0.006),
                       "survey_type_names": [
                           "FLOOD_GATE", "FLOOD GATE", "FLOODGATE", "FLOODGATES"
                       ]},
+
+    # "WALKWAY":    {"res_sheet": "Walkway",
+    #                "dcsys_sh": DCSYS.Walkways_Area,
+    #                "func": check_walkway,
+    #                "tol": ("walkway ends", "walkway_tolerance", 0.006),
+    #                "survey_type_names": [
+    #                    "WALKWAY", "WALKWAYS", "WALKWAYS AREA", "WALKWAYS_AREA",
+    #                    "TURNBACK_PLATFORM", "TURNBACK PLATFORM"
+    #                ],
+    #                "multiple_survey_objets": [("WALKWAY", None, 4),  # WALKWAY
+    #                                           ("PLATFORM", None, None),  # PLATFORM
+    #                                           ("WALKWAY", 4, None)]  # TURNBACK_PLATFORM
+    #                },
 }

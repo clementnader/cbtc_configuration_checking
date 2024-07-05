@@ -25,6 +25,9 @@ def create_check_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
         elif survey_type == "TC":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
                 func(dcsys_sh, res_sheet, survey_info.get("TC"), block_def_dict, survey_info.get("SIGNAL_BUFFER")))
+        elif survey_type == "WALKWAY":
+            survey_verif_dict[res_sheet] = _order_survey_verif_dict(
+                func(dcsys_sh, res_sheet, survey_info.get("WALKWAY"), survey_info.get("PLATFORM")))
         else:
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
                 func(dcsys_sh, res_sheet, survey_info.get(survey_type)))

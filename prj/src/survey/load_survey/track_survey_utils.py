@@ -23,9 +23,9 @@ def find_corresponding_dc_sys_track(survey_track: str) -> str:
         if f"T{track_number.removeprefix('0')}" in list_dc_sys_tracks:
             return f"T{track_number.removeprefix('0')}"
 
-    # if re.search("^TRACK_[0-9]+[EWSN]$", test_survey_track) is not None:
-    #     test_survey_track_without_letter = test_survey_track[:-1]  # without E, W, S, N
-    #     if test_survey_track_without_letter in list_dc_sys_tracks:
-    #         return test_survey_track_without_letter
+    if re.search("_[VT]?[0-9]+[A-Z]$", test_survey_track) is not None:
+        test_survey_track_without_letter = test_survey_track[:-1]  # without the last letter
+        if test_survey_track_without_letter in list_dc_sys_tracks:
+            return test_survey_track_without_letter
 
     return test_survey_track

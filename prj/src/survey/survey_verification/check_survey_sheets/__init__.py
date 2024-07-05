@@ -7,3 +7,4 @@ from .check_obj import check_object
 from .check_platform import check_platform
 from .check_switch import check_switch
 from .check_tag import check_tag
+from .check_walkway import check_walkway

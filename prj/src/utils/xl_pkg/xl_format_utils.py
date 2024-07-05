@@ -8,12 +8,12 @@ import openpyxl.styles.borders as xl_borders
 import openpyxl.formatting as xl_format
 import openpyxl.formatting.rule as xl_format_rule
 import openpyxl.worksheet.worksheet
-
+import openpyxl.workbook.defined_name as xl_defined_name
 from .xl_utils import *
 from ..common_utils import *
 
 
-__all__ = ["XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comment",
+__all__ = ["xl_borders", "XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comment",
            "create_cell", "create_merged_cell",
            "set_fixed_number_of_digits",
            "set_font_size", "set_bold_font", "set_bg_color",
@@ -22,13 +22,18 @@ __all__ = ["XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comme
            "draw_exterior_borders", "draw_all_borders_of_a_range",
            "draw_exterior_borders_of_a_range",
            "add_unique_values_conditional_formatting", "add_duplicate_values_conditional_formatting",
-           "add_formula_conditional_formatting"]
+           "add_is_equal_conditional_formatting", "add_formula_conditional_formatting",
+           "create_defined_name"]
 
 
 class XlFontColor:
+    # status colors
     ko = "9C0006"
     ok = "006100"
     na = "9C5700"
+    # other colors
+    dark_red = "9C0006"
+    orange = "E97132"
 
 
 class XlBgColor:
@@ -48,7 +53,9 @@ class XlBgColor:
     light_pink = "FFCCFF"
     light_blue2 = "BBCCEE"
     light_blue3 = "BBFFFF"
+    special_blue = "9999FF"
     # grey
+    grey = "BFBFBF"
     light_grey = "D9D9D9"
 
 
@@ -96,7 +103,7 @@ def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
                        font_size: int = None, bold: bool = False, italic: bool = False, bg_color: str = None,
                        center_vertical: bool = True, center_horizontal: bool = False,
                        line_wrap: bool = True,
-                       borders: bool = False) -> None:
+                       borders: bool = False, border_style: str = xl_borders.BORDER_THIN) -> None:
     start_row, start_column = get_row_and_column_from_cell(start_cell, start_row, start_column)
     end_row, end_column = get_row_and_column_from_cell(end_cell, end_row, end_column)
 
@@ -109,7 +116,7 @@ def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
     # Cell Borders
     if borders:
         draw_all_borders_of_a_range(ws, start_row=start_row, end_row=end_row, start_column=start_column,
-                                    end_column=end_column)
+                                    end_column=end_column, border_style=border_style)
 
 
 def _update_cell_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, row: int, column: int,
@@ -206,18 +213,20 @@ def adjust_fixed_row_height(ws: openpyxl.worksheet.worksheet.Worksheet,
 # ------ Cell Borders ------ #
 
 def draw_exterior_borders(ws: openpyxl.worksheet.worksheet.Worksheet,
-                          cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+                          cell: str = None, row: int = None, column: Union[str, int] = None,
+                          border_style: str = xl_borders.BORDER_THIN) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
-    side = xl_borders.Side(border_style="thin")
+    side = xl_borders.Side(border_style=border_style)
     border = xl_borders.Border(left=side, right=side, top=side, bottom=side)
     ws[cell].border = border
 
 
 def draw_all_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str = None,
                                 start_row: int = None, end_row: int = None,
-                                start_column: Union[int, str] = None, end_column: Union[int, str] = None) -> None:
+                                start_column: Union[int, str] = None, end_column: Union[int, str] = None,
+                                border_style: str = xl_borders.BORDER_THIN) -> None:
     cell_range = get_cell_range(cell_range, start_row, end_row, start_column, end_column)
-    side = xl_borders.Side(border_style="thin")
+    side = xl_borders.Side(border_style=border_style)
     border = xl_borders.Border(left=side, right=side, top=side, bottom=side)
     for row in ws[cell_range]:
         for cell in row:
@@ -226,7 +235,9 @@ def draw_all_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet, cell
 
 def draw_exterior_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str = None,
                                      start_row: int = None, end_row: int = None,
-                                     start_column: Union[int, str] = None, end_column: Union[int, str] = None) -> None:
+                                     start_column: Union[int, str] = None, end_column: Union[int, str] = None,
+                                     exterior_border_style: str = xl_borders.BORDER_MEDIUM,
+                                     interior_border_style: str = xl_borders.BORDER_THIN) -> None:
     cell_range = get_cell_range(cell_range, start_row, end_row, start_column, end_column)
     # Remove all borders
     no_border = xl_borders.Border()
@@ -234,11 +245,11 @@ def draw_exterior_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet,
         for cell in row:
             cell.border = no_border
     # Add exterior borders
-    side = xl_borders.Side(border_style="thin")
-    left_border = xl_borders.Border(left=side)
-    right_border = xl_borders.Border(right=side)
-    top_border = xl_borders.Border(top=side)
-    bottom_border = xl_borders.Border(bottom=side)
+    ext_side = xl_borders.Side(border_style=exterior_border_style)
+    left_border = xl_borders.Border(left=ext_side)
+    right_border = xl_borders.Border(right=ext_side)
+    top_border = xl_borders.Border(top=ext_side)
+    bottom_border = xl_borders.Border(bottom=ext_side)
     # Add top border on first row
     first_row = ws[cell_range][0]
     for cell in first_row:
@@ -253,6 +264,12 @@ def draw_exterior_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet,
         first_cell.border += left_border
         last_cell = row[-1]
         last_cell.border += right_border
+    # Interior borders
+    int_side = xl_borders.Side(border_style=interior_border_style)
+    interior_border = xl_borders.Border(left=int_side, right=int_side, top=int_side, bottom=int_side)
+    for row in ws[cell_range]:
+        for cell in row:
+            cell.border += interior_border  # add interior borders everywhere else
 
 
 # ------ Conditional Formatting ------ #
@@ -269,26 +286,79 @@ def draw_exterior_borders_of_a_range(ws: openpyxl.worksheet.worksheet.Worksheet,
 #   rule dxf: DifferentialStyle
 
 def add_unique_values_conditional_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str,
-                                             font_color: str, bg_color: str) -> None:
-    font = xl_styles.Font(color=font_color)
-    fill = xl_styles.PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
-    dxf = xl_diff_styles.DifferentialStyle(font=font, fill=fill)
+                                             font_color: str, bg_color: str, bold: bool = False) -> None:
+    dxf = _get_differential_style(font_color, bg_color, bold)
+    if dxf is None:
+        return
     rule = xl_format.Rule(type="uniqueValues", priority=1, dxf=dxf)
     ws.conditional_formatting.add(cell_range, rule)
 
 
 def add_duplicate_values_conditional_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str,
-                                                font_color: str, bg_color: str) -> None:
-    font = xl_styles.Font(color=font_color)
-    fill = xl_styles.PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
-    dxf = xl_diff_styles.DifferentialStyle(font=font, fill=fill)
+                                                font_color: str, bg_color: str, bold: bool = False) -> None:
+    dxf = _get_differential_style(font_color, bg_color, bold)
+    if dxf is None:
+        return
     rule = xl_format.Rule(type="duplicateValues", priority=1, dxf=dxf)
     ws.conditional_formatting.add(cell_range, rule)
 
 
-def add_formula_conditional_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str, formula: str,
-                                       font_color: str, bg_color: str) -> None:
-    font = xl_styles.Font(color=font_color)
-    fill = xl_styles.PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
-    formula_rule = xl_format_rule.FormulaRule(formula=[formula], stopIfTrue=True, font=font, fill=fill)
+def add_is_equal_conditional_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str,
+                                        value: Union[str, float, int],
+                                        font_color: str = None, bg_color: str = None, bold: bool = False) -> None:
+    dxf = _get_differential_style(font_color, bg_color, bold)
+    if dxf is None:
+        return
+    formula_rule = xl_format.Rule(type="cellIs", operator="equal", formula=[value], dxf=dxf)
     ws.conditional_formatting.add(cell_range, formula_rule)
+
+
+def _get_font_n_fill(font_color: str = None, bg_color: str = None, bold: bool = False):
+    if font_color is not None and bold:
+        font = xl_styles.Font(color=font_color, bold=True)
+    elif font_color is not None:
+        font = xl_styles.Font(color=font_color)
+    elif bold:
+        font = xl_styles.Font(bold=True)
+    else:
+        font = None
+    if bg_color is not None:
+        fill = xl_styles.PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
+    else:
+        fill = None
+    return font, fill
+
+
+def _get_differential_style(font_color: str = None, bg_color: str = None, bold: bool = False):
+    font, fill = _get_font_n_fill(font_color, bg_color, bold)
+    if font is not None and fill is not None:
+        dxf = xl_diff_styles.DifferentialStyle(font=font, fill=fill)
+    elif font is not None:
+        dxf = xl_diff_styles.DifferentialStyle(font=font)
+    elif fill is not None:
+        dxf = xl_diff_styles.DifferentialStyle(fill=fill)
+    else:
+        dxf = None
+    return dxf
+
+
+def add_formula_conditional_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, cell_range: str, formula: str,
+                                       font_color: str, bg_color: str, bold: bool = False) -> None:
+    font, fill = _get_font_n_fill(font_color, bg_color, bold)
+    if font is not None and fill is not None:
+        formula_rule = xl_format_rule.FormulaRule(formula=[formula], stopIfTrue=True, font=font, fill=fill)
+    elif font is not None:
+        formula_rule = xl_format_rule.FormulaRule(formula=[formula], stopIfTrue=True, font=font)
+    elif fill is not None:
+        formula_rule = xl_format_rule.FormulaRule(formula=[formula], stopIfTrue=True, fill=fill)
+    else:
+        return
+    ws.conditional_formatting.add(cell_range, formula_rule)
+
+
+# ------ Conditional Formatting ------ #
+
+def create_defined_name(wb: openpyxl.workbook.Workbook, sheet_name: str, cell_range: str, name: str):
+    ref = f"{xl_ut.quote_sheetname(sheet_name)}!{xl_ut.absolute_coordinate(cell_range)}"
+    defined_name = xl_defined_name.DefinedName(name, attr_text=ref)
+    wb.defined_names.add(defined_name)

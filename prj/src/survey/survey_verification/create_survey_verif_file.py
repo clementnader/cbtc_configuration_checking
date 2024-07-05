@@ -6,6 +6,7 @@ from ...utils import *
 from ...dc_sys import *
 from ..survey_types import *
 from ..survey_utils import *
+from .file_format_utils import *
 
 
 __all__ = ["create_survey_verif_file"]
@@ -17,21 +18,6 @@ SURVEY_VERIF_TEMPLATE = get_full_path(__file__, SURVEY_VERIF_TEMPLATE_RELATIVE_P
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 # OUTPUT_DIRECTORY = os.path.join(DESKTOP_DIRECTORY, "Correspondence with Site Survey")
 VERIF_FILE_NAME = "Correspondence with Site Survey.xlsx"
-
-START_ROW = 6
-NAME_COL = "A"
-DC_SYS_SHEET_COL = "B"
-DC_SYS_TRACK_COL = "C"
-DC_SYS_KP_COL = "D"
-BLOCK_DEF_LIMIT_NAME_COL = "E"
-SURVEY_NAME_COL = "E"
-SURVEY_TYPE_COL = "F"
-SURVEY_TRACK_COL = "G"
-SURVEYED_KP_COL = "H"
-DIFFERENCE_COL = "I"
-STATUS_COL = "J"
-COMMENTS_COL = "K"
-MANUAL_VERIFICATION_COL = "L"
 
 TOOL_NAME = "Survey_Checking"
 
@@ -48,18 +34,15 @@ def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], bloc
 
 def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
                        tool_version: str):
-    if block_def_exists_bool:
-        wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE.removesuffix(".xlsx") + "_block_def.xlsx")
-    else:
-        wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE)
+    wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE)
 
     update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version)
     _update_menu_sheet(wb)
 
     for sheet_name, verif_dict in survey_verif_dict.items():
-        ws = wb.get_sheet_by_name(sheet_name)
         extra_column = (sheet_name == "Block_Joint") and block_def_exists_bool
-        _update_verif_sheet(sheet_name, ws, verif_dict, extra_column)
+        ws, start_row = create_verif_sheet(wb, sheet_name, extra_column)
+        _update_verif_sheet(sheet_name, ws, verif_dict, extra_column, start_row)
 
     verif_file_name = f" - {get_c_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
     res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
@@ -74,14 +57,15 @@ def _update_menu_sheet(wb: openpyxl.workbook.Workbook):
         return
     ws = wb.get_sheet_by_name("Survey")
     ws.delete_rows(17)  # for older GA versions, delete PSD line that was not verified here
+    ws.row_dimensions[17].height = 15  # restore default height
 
 
 def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
-                        verif_dict: dict[str, dict], extra_column: bool) -> None:
-    tolerance_dict = _get_tolerance_dict(sheet_name)
+                        verif_dict: dict[str, dict], extra_column: bool, start_row: int) -> None:
+    tolerance_dict = get_tolerance_dict(sheet_name)
     multiple_dc_sys_objets = _get_multiple_dc_sys_objets(sheet_name)
     multiple_survey_objets = _get_multiple_survey_objets(sheet_name)
-    for row, (obj_full_name, obj_val) in enumerate(verif_dict.items(), start=START_ROW):
+    for row, (obj_full_name, obj_val) in enumerate(verif_dict.items(), start=start_row):
         obj_name = obj_full_name[0]
         dc_sys_sheet = obj_val["dc_sys_sheet"]
         dc_sys_track = obj_val["dc_sys_track"]
@@ -133,21 +117,21 @@ def _add_line_info(ws: xl_ws.Worksheet, row: int,
     if dc_sys_kp is not None:
         set_bg_color(ws, dc_sys_color, row=row, column=DC_SYS_KP_COL)
     # Survey Name
-    create_cell(ws, survey_name, row=row, column=_get_column(SURVEY_NAME_COL, extra_column), borders=True)
+    create_cell(ws, survey_name, row=row, column=get_column(SURVEY_NAME_COL, extra_column), borders=True)
     if survey_name is not None:
-        set_bg_color(ws, survey_color, row=row, column=_get_column(SURVEY_NAME_COL, extra_column))
+        set_bg_color(ws, survey_color, row=row, column=get_column(SURVEY_NAME_COL, extra_column))
     # Survey Type
-    create_cell(ws, survey_type, row=row, column=_get_column(SURVEY_TYPE_COL, extra_column), borders=True)
+    create_cell(ws, survey_type, row=row, column=get_column(SURVEY_TYPE_COL, extra_column), borders=True)
     if survey_type is not None:
-        set_bg_color(ws, survey_color, row=row, column=_get_column(SURVEY_TYPE_COL, extra_column))
+        set_bg_color(ws, survey_color, row=row, column=get_column(SURVEY_TYPE_COL, extra_column))
     # Survey Track
-    create_cell(ws, survey_track, row=row, column=_get_column(SURVEY_TRACK_COL, extra_column), borders=True)
+    create_cell(ws, survey_track, row=row, column=get_column(SURVEY_TRACK_COL, extra_column), borders=True)
     if survey_track is not None:
-        set_bg_color(ws, survey_color, row=row, column=_get_column(SURVEY_TRACK_COL, extra_column))
+        set_bg_color(ws, survey_color, row=row, column=get_column(SURVEY_TRACK_COL, extra_column))
     # Surveyed KP
-    create_cell(ws, surveyed_kp, row=row, column=_get_column(SURVEYED_KP_COL, extra_column), borders=True)
+    create_cell(ws, surveyed_kp, row=row, column=get_column(SURVEYED_KP_COL, extra_column), borders=True)
     if surveyed_kp is not None:
-        set_bg_color(ws, survey_color, row=row, column=_get_column(SURVEYED_KP_COL, extra_column))
+        set_bg_color(ws, survey_color, row=row, column=get_column(SURVEYED_KP_COL, extra_column))
 
 
 def _add_block_def_info(ws: xl_ws.Worksheet, row: int,
@@ -162,22 +146,22 @@ def _add_line_cell_comments(ws: xl_ws.Worksheet, row: int,
                             surveyed_kp_comment: str, extra_column: bool) -> None:
     # Comments on Surveyed KP cell to tell from which survey info comes
     if surveyed_kp_comment is not None:
-        add_cell_comment(ws, surveyed_kp_comment, row=row, column=_get_column(SURVEYED_KP_COL, extra_column))
+        add_cell_comment(ws, surveyed_kp_comment, row=row, column=get_column(SURVEYED_KP_COL, extra_column))
 
 
 def _add_line_calculations(ws: xl_ws.Worksheet, row: int,
                            tolerance: str, extra_column: bool) -> None:
     # Difference
     difference_formula = (f'= IF(ISBLANK({NAME_COL}{row}), "Not in DC_SYS", '
-                          f'IF(ISBLANK({_get_column(SURVEY_NAME_COL, extra_column)}{row}), "Not Surveyed", '
-                          f'{DC_SYS_KP_COL}{row} - {_get_column(SURVEYED_KP_COL, extra_column)}{row}))')
-    create_cell(ws, difference_formula, row=row, column=_get_column(DIFFERENCE_COL, extra_column), borders=True)
-    set_fixed_number_of_digits(ws, 4, row=row, column=_get_column(DIFFERENCE_COL, extra_column))
+                          f'IF(ISBLANK({get_column(SURVEY_NAME_COL, extra_column)}{row}), "Not Surveyed", '
+                          f'{DC_SYS_KP_COL}{row} - {get_column(SURVEYED_KP_COL, extra_column)}{row}))')
+    create_cell(ws, difference_formula, row=row, column=get_column(DIFFERENCE_COL, extra_column), borders=True)
+    set_fixed_number_of_digits(ws, 4, row=row, column=get_column(DIFFERENCE_COL, extra_column))
     # Status
-    status_formula = (f'= IF({_get_column(DIFFERENCE_COL, extra_column)}{row} = "Not in DC_SYS", "Not in DC_SYS", '
-                      f'IF({_get_column(DIFFERENCE_COL, extra_column)}{row} = "Not Surveyed", "Not Surveyed", '
-                      f'IF(ABS({_get_column(DIFFERENCE_COL, extra_column)}{row}) <= {tolerance}, "OK", "KO")))')
-    create_cell(ws, status_formula, row=row, column=_get_column(STATUS_COL, extra_column),
+    status_formula = (f'= IF({get_column(DIFFERENCE_COL, extra_column)}{row} = "Not in DC_SYS", "Not in DC_SYS", '
+                      f'IF({get_column(DIFFERENCE_COL, extra_column)}{row} = "Not Surveyed", "Not Surveyed", '
+                      f'IF(ABS({get_column(DIFFERENCE_COL, extra_column)}{row}) <= {tolerance}, "OK", "KO")))')
+    create_cell(ws, status_formula, row=row, column=get_column(STATUS_COL, extra_column),
                 borders=True, center_horizontal=True)
 
 
@@ -191,51 +175,42 @@ def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
         full_comments += (f'"Opposite sign in survey.\n'
                           f'Difference with absolute signs makes " & '
                           f'ROUND(ABS({DC_SYS_KP_COL}{row}) - '
-                          f'ABS({_get_column(SURVEYED_KP_COL, extra_column)}{row}), 4) & ",\nwhich is "'
+                          f'ABS({get_column(SURVEYED_KP_COL, extra_column)}{row}), 4) & ",\nwhich is "'
                           f' & IF(ABS(ABS({DC_SYS_KP_COL}{row}) - '
-                          f'ABS({_get_column(SURVEYED_KP_COL, extra_column)}{row})) <= {tolerance},'
+                          f'ABS({get_column(SURVEYED_KP_COL, extra_column)}{row})) <= {tolerance},'
                           f' "lower", "larger") & " than the tolerance " & {tolerance}'
                           f' & IF(ABS(ABS({DC_SYS_KP_COL}{row}) - '
-                          f'ABS({_get_column(SURVEYED_KP_COL, extra_column)}{row})) <= {tolerance},'
+                          f'ABS({get_column(SURVEYED_KP_COL, extra_column)}{row})) <= {tolerance},'
                           f' " -> OK", " -> KO") & "."')
     else:
         full_comments = comments
     # Comments
-    create_cell(ws, full_comments, row=row, column=_get_column(COMMENTS_COL, extra_column),
+    create_cell(ws, full_comments, row=row, column=get_column(COMMENTS_COL, extra_column),
                 borders=True, line_wrap=True)
     if reverse_polarity:
         # line feeds inside a formula are not directly taken into account by the line wrap to autofit the row height
         extra_row = 1 if comments else 0
-        adjust_fixed_row_height(ws, row=row, column=_get_column(COMMENTS_COL, extra_column), extra_row=extra_row)
+        adjust_fixed_row_height(ws, row=row, column=get_column(COMMENTS_COL, extra_column), extra_row=extra_row)
     # Manual Verification
-    create_cell(ws, None, row=row, column=_get_column(MANUAL_VERIFICATION_COL, extra_column),
+    create_cell(ws, None, row=row, column=get_column(MANUAL_VERIFICATION_COL, extra_column),
                 borders=True, center_horizontal=True)
 
 
-def _get_tolerance_dict(sheet_name: str) -> Optional[Union[str, dict[str, str]]]:
-    for val in SURVEY_TYPES_DICT.values():
-        if val["res_sheet"] == sheet_name:
-            return val["tol"]
-    print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
-                f"{SURVEY_TYPES_DICT = }")
-    return None
-
-
-def _get_tolerance(tolerance_dict: Optional[Union[str, dict[str, str]]], dc_sys_sheet: Optional[str],
-                   survey_type: Optional[str]) -> Optional[str]:
+def _get_tolerance(tolerance_dict: Optional[Union[tuple[str, str, float], dict[str, tuple[str, str, float]]]],
+                   dc_sys_sheet: Optional[str], survey_type: Optional[str]) -> Optional[str]:
     if tolerance_dict is None:
         return None
-    if isinstance(tolerance_dict, str):
-        return tolerance_dict
+    if isinstance(tolerance_dict, tuple):
+        return tolerance_dict[1]
 
     for (test_sh_name, corresponding_key), tol in tolerance_dict.items():
         if dc_sys_sheet is not None:
             if dc_sys_sheet == test_sh_name:
-                return tol
+                return tol[1]
         else:
             test_survey_type_names = SURVEY_TYPES_DICT[corresponding_key]["survey_type_names"]
             if survey_type in test_survey_type_names:
-                return tol
+                return tol[1]
     return None
 
 
@@ -287,10 +262,3 @@ def _get_survey_color(multiple_survey_objets: Optional[list[tuple]], survey_type
                   f"{multiple_survey_objets = }\n"
                   f"{list_colors = }")
     return list_colors[0]
-
-
-def _get_column(default_col: str, extra_col: bool = False) -> str:
-    if not extra_col or default_col < BLOCK_DEF_LIMIT_NAME_COL:
-        return default_col
-    else:
-        return get_xl_column_letter(get_xl_column_number(default_col) + 1)

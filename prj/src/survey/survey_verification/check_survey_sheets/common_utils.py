@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
 from ....utils import *
+from ....cctool_oo_schema import *
+from ....dc_sys import *
 from ...survey_utils import *
 
 
 __all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_survey",
-           "get_corresponding_survey_one_limit_on_track", "get_corresponding_survey_two_limits_on_track"]
+           "get_corresponding_survey_one_limit_on_track", "get_corresponding_survey_two_limits_on_track",
+           "get_smallest_unique_prefix_dict"]
 
 
 def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
@@ -42,15 +46,34 @@ def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info:
 
 
 def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[str, Any]) -> str:
+    test_names = _get_unique_list(test_names)
     for test_name in test_names:
         test_name_in_survey = _test_name_in_survey(test_name, track, survey_info)
+        if test_name_in_survey is not None:
+            return test_name_in_survey
+    # try removing leading zeros
+    for test_name in test_names:
+        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, remove_leading_zeros=True)
         if test_name_in_survey is not None:
             return test_name_in_survey
     return f"{test_names[0]}__{track}".upper()  # default
 
 
-def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str, Any]):
-    if test_name is not None and f"{test_name}__{track}".upper() in survey_info:
+def _get_unique_list(i_list: list[Optional[str]]):
+    new_list = list()
+    for x in i_list:
+        if x is not None and x not in new_list:
+            new_list.append(x)
+    return new_list
+
+
+def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str, Any], remove_leading_zeros: bool = False):
+    if remove_leading_zeros:
+        test_name = "_".join(re.sub("^0*", "", x) for x in test_name.split("_"))
+        test_list = ["_".join(re.sub("^0*", "", x) for x in survey_name.split("_")) for survey_name in survey_info]
+    else:
+        test_list = survey_info.keys()
+    if test_name is not None and f"{test_name}__{track}".upper() in test_list:
         return f"{test_name}__{track}".upper()
     return None
 
@@ -126,3 +149,23 @@ def get_corresponding_survey_two_limits_on_track(dc_sys_limits_on_track: list[tu
         closest_combination = sorted(test_differences, key=lambda x: x[0])[0][1]
         survey_name_dict.update(closest_combination)
     return survey_name_dict
+
+
+def get_smallest_unique_prefix_dict(input_dict: dict[str, str]) -> dict[str, str]:
+    res_dict = dict()
+    list_of_splits = [value.split("_") for value in input_dict.values()]
+
+    for key, split in zip(input_dict.keys(), list_of_splits):
+        other_splits = [other_split for other_split in list_of_splits if other_split != split]
+        level = 1
+        prefix = "_".join(split[:level])
+
+        while level < len(split):
+            other_prefixes = ["_".join(other_split[:level]) for other_split in other_splits]
+            if prefix not in other_prefixes:  # unique prefix
+                break
+            level += 1
+            prefix = "_".join(split[:level])
+
+        res_dict[key] = prefix
+    return res_dict

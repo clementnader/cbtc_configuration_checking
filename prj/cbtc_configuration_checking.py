@@ -91,7 +91,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()  # v2.3.1
+    # check_survey()  # v2.4
     # survey_window()
     # cctool_schema_window()
     return
@@ -109,6 +109,7 @@ def constraints():
     #                               vérifier l'histoire de tag_accurate_laying_uncertainty:
     #                                   ce n'est pas du tout marqué dans la contrainte donc peut-être à désactiver;
     #                               faire R_IVB_1 aussi.
+    # check_psr_41_42()
     # r_dyntag_3()
     # cf_zsm_cbtc_10()
     # cf_dg_1()  # TODO: check correct Line Section
