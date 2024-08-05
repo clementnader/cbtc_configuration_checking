@@ -9,7 +9,7 @@ from ..dc_sys_get_cbtc_territory import *
 __all__ = ["get_max_slope"]
 
 
-def get_max_slope(in_cbtc: bool = True, verbose: bool = True):
+def get_max_slope(in_cbtc: bool = False, verbose: bool = True):
     if in_cbtc:
         slope_dict = get_objects_in_cbtc_ter(DCSYS.Profil)
     else:

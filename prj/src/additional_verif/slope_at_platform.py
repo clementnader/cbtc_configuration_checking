@@ -10,7 +10,7 @@ from ..dc_sys_sheet_utils import *
 __all__ = ["get_slope_at_plt"]
 
 
-def get_slope_at_plt(in_cbtc: bool = True):
+def get_slope_at_plt(in_cbtc: bool = False):
     if in_cbtc:
         plt_dict = get_objects_in_cbtc_ter(DCSYS.Quai)
     else:

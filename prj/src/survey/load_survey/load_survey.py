@@ -99,27 +99,40 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
         surveyed_kp_comment = f"From {survey_name}"
         if f"{key_name}__{track}" in intermediate_survey_dict[survey_type]:  # two values in the same survey file
             old_surveyed_values = intermediate_survey_dict[survey_type][f"{key_name}__{track}"]["list_surveyed_values"]
-            surveyed_values = old_surveyed_values + [surveyed_kp]
+            surveyed_values = sorted(old_surveyed_values + [surveyed_kp])
             if all(surveyed_kp == old_value for old_value in old_surveyed_values):
                 # object appearing multiple times in same survey but with the same surveyed KP value
                 comments = None
+                to_delete = False
             else:
-
-                surveyed_kp = round(sum(surveyed_values) / len(surveyed_values), 4)
-                comments = (f"Object appearing {len(surveyed_values)} times in same survey {survey_name}.\n"
-                            f"List of surveyed KPs is: {str(surveyed_values).removeprefix('[').removesuffix(']')}.\n"
-                            f"The average value is taken for the surveyed KP: {surveyed_kp}.")
+                comments = (f"Object appearing {len(surveyed_values)} times in same survey: {survey_name}.\n"
+                            f"List of surveyed KPs is: {str(surveyed_values).removeprefix('[').removesuffix(']')}.")
+                to_delete = True
+                for i, i_surveyed_kp in enumerate(surveyed_values, start=1):
+                    intermediate_survey_dict[survey_type][f"{key_name}_{i}__{track}"] = {
+                        "survey_type": type_name,
+                        "obj_name": obj_name, "survey_track": track, "survey_original_track": original_track,
+                        "surveyed_kp": i_surveyed_kp, "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
+                        "list_surveyed_values": surveyed_values
+                    }
         else:
             comments = None
+            to_delete = False
             surveyed_values = [surveyed_kp]
         intermediate_survey_dict[survey_type][f"{key_name}__{track}"] = {
             "survey_type": type_name,
             "obj_name": obj_name, "survey_track": track, "survey_original_track": original_track,
             "surveyed_kp": surveyed_kp, "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
-            "list_surveyed_values": surveyed_values
+            "list_surveyed_values": surveyed_values, "to_delete": to_delete
         }
-    intermediate_survey_dict["SWP"].update(add_switch_center_points(intermediate_survey_dict["SWP"], survey_name))
-    intermediate_survey_dict["SWP"].update(add_switch_heel_points(intermediate_survey_dict["SWP"], survey_name))
+
+    set_of_survey_tracks = {info["survey_track"] for sub_dict in intermediate_survey_dict.values()
+                            for info in sub_dict.values()}
+
+    intermediate_survey_dict["SWP"].update(add_switch_center_points(intermediate_survey_dict["SWP"], survey_name,
+                                                                    set_of_survey_tracks))
+    intermediate_survey_dict["SWP"].update(add_switch_heel_points(intermediate_survey_dict["SWP"], survey_name,
+                                                                  set_of_survey_tracks))
     loaded_survey = _update_survey_dictionary(loaded_survey, intermediate_survey_dict)
 
     return loaded_survey
@@ -133,6 +146,8 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str, Any]],
 
     for survey_type, sub_dict in intermediate_survey_dict.items():
         for key_name, intermediate_survey_value in sub_dict.items():
+            if intermediate_survey_value.get("to_delete", False):
+                continue
             comments = intermediate_survey_value["comments"]
             if key_name in loaded_survey[survey_type]:  # object already surveyed in another survey file
                 old_surveyed_kp = loaded_survey[survey_type][key_name]["surveyed_kp"]

@@ -63,7 +63,7 @@ def get_cctool_oo_schema(ws: xlrd.sheet) -> dict:
 
 
 def get_list_attr_names(title: str):
-    title = re.sub("[1-9][0-9]*", "", title)
+    title = re.sub(r"[1-9][0-9]*", "", title)
     list_attr_name, sub_attr_name = title.split("::", 1)
     if sub_attr_name == "":
         sub_attr_name = "Cell"

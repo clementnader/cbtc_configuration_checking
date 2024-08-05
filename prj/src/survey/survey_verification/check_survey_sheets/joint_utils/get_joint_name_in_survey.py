@@ -111,8 +111,8 @@ def _get_list_of_joint_test_names_multiple_prefixes(tc1: str, tc2: Optional[str]
 
 def _remove_leading_zeros_and_trailing_letters(test_name: str) -> Optional[str]:
     res_name = "_".join(word.removeprefix("0") for word in test_name.split("_"))
-    res_name = delete_middle_capture_group(res_name, re.compile("(_[0-9]+)([A-Z]+)(_)"))
-    res_name = delete_middle_capture_group(res_name, re.compile("(_[0-9]+)([A-Z]+)($)"))
+    res_name = re.sub(r"(_[0-9]+)([A-Z]+)(_)", r"\1\3", res_name)
+    res_name = re.sub(r"(_[0-9]+)([A-Z]+)($)", r"\1\3", res_name)
 
     if res_name == test_name:  # work already done with this name with no success
         return None
@@ -125,8 +125,8 @@ def _remove_specific_patterns(test_name: str) -> Optional[str]:
     if end_of_track:
         test_name, suffix = test_name.split("__END_OF_TRACK", 1)
 
-    res_name = re.sub("_[A-Z]{3}_", "_", test_name)
-    res_name = re.sub("PL[0-9]+_", "", res_name)
+    res_name = re.sub(r"_[A-Z]{3}_", "_", test_name)
+    res_name = re.sub(r"PL[0-9]+_", "", res_name)
 
     if end_of_track:
         res_name += "__END_OF_TRACK" + suffix
@@ -142,12 +142,14 @@ def _remove_trigrams(test_name: str) -> Optional[str]:
     if end_of_track:
         test_name, suffix = test_name.split("__END_OF_TRACK", 1)
 
-    res_name = re.sub("_[A-Z]{3}_", "_", test_name)
-    res_name = re.sub("_[A-Z]{2}[1-9]{0,2}_", "_", res_name)
+    for _ in range(2):
+        test_name = re.sub(r"_[A-Z]{3}_", "_", test_name)
+        test_name = re.sub(r"_[A-Z]{2}[0-9]{0,2}_", "_", test_name)
+        test_name = re.sub(r"_[A-Z][0-9]{1,2}_", "_", test_name)
 
     if end_of_track:
-        res_name += "__END_OF_TRACK" + suffix
-    return res_name
+        test_name += "__END_OF_TRACK" + suffix
+    return test_name
 
 
 LIST_OBJ_NAME_WITHOUT_ASSOCIATION = list()
@@ -205,34 +207,34 @@ def _survey_name_matching(survey_name: str, obj_name: str, single: bool, remove_
     if remove_trigrams:
         survey_name = _remove_trigrams(survey_name)
 
-    survey_name = re.sub("_START_", "_", survey_name)
-    survey_name = re.sub("_END_", "_", survey_name)
-    survey_name = re.sub("_BUFFER_", "_", survey_name)
-    survey_name = re.sub("_L_", "_", survey_name)
-    survey_name = re.sub("_R_", "_", survey_name)
+    survey_name = re.sub(r"_START_", "_", survey_name)
+    survey_name = re.sub(r"_END_", "_", survey_name)
+    survey_name = re.sub(r"_BUFFER_", "_", survey_name)
+    survey_name = re.sub(r"_L_", "_", survey_name)
+    survey_name = re.sub(r"_R_", "_", survey_name)
 
     if not survey_name.startswith(obj_name):
         return False
     suffix = survey_name.removeprefix(obj_name)
 
     # Removing switches in name
-    suffix = re.sub("_SW[DP]?[A-Z0-9]+_[0-9]+", "", suffix)  # some switches are named SWP or SW or SWD
-    suffix = re.sub("_SW[DP]?[A-Z0-9]+", "", suffix)  # some switches are named SWP or SW or SWD
-    suffix = re.sub("_[0-9]+AW[0-9]+", "", suffix)  # some switches are named with AW
-    suffix = re.sub("_W[0-9]+", "", suffix)  # some switches are named WXXXX
+    suffix = re.sub(r"_SW[DP]?[A-Z0-9]+_[0-9]+", "", suffix)  # some switches are named SWP or SW or SWD
+    suffix = re.sub(r"_SW[DP]?[A-Z0-9]+", "", suffix)  # some switches are named SWP or SW or SWD
+    suffix = re.sub(r"_[0-9]+AW[0-9]+", "", suffix)  # some switches are named with AW
+    suffix = re.sub(r"_W[0-9]+", "", suffix)  # some switches are named WXXXX
 
     if not single:  # Limit between two blocks
-        suffix = re.sub("_[A-Z0-9]+", "", suffix)  # suffix when multiple joints with same name
+        suffix = re.sub(r"_[A-Z0-9]+", "", suffix)  # suffix when multiple joints with same name
         if not suffix:
             return True
         return False
 
     else:  # Limit at end of track
-        suffix = re.sub("_[0-9]{1,2}", "", suffix)  # suffix when multiple joints with same name
-        suffix = re.sub("_F[1-9]", "", suffix)  # end of track suffix
-        suffix = re.sub("_T[0-9]+", "", suffix)  # end of track suffix
-        suffix = re.sub("_[FM]BS[0-9]+", "", suffix)  # end of track suffix
-        suffix = re.sub("_LCP[0-9]+", "", suffix)  # end of track suffix
+        suffix = re.sub(r"_[0-9]{1,2}", "", suffix)  # suffix when multiple joints with same name
+        suffix = re.sub(r"_F[1-9]", "", suffix)  # end of track suffix
+        suffix = re.sub(r"_T[0-9]+", "", suffix)  # end of track suffix
+        suffix = re.sub(r"_[FM]BS[0-9]+", "", suffix)  # end of track suffix
+        suffix = re.sub(r"_LCP[0-9]+", "", suffix)  # end of track suffix
         suffix = suffix.removesuffix("_DIRECT").removesuffix("_DIVERT")
         suffix = suffix.removesuffix("_LEFT").removesuffix("_RIGHT")
         suffix = suffix.removesuffix("_START").removesuffix("_END").removesuffix("_BUFFER")

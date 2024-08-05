@@ -10,7 +10,7 @@ from ..dc_sys_sheet_utils.block_utils import get_list_len_block
 __all__ = ["get_block_min_length"]
 
 
-def get_block_min_length(in_cbtc: bool = True):
+def get_block_min_length(in_cbtc: bool = False):
     if in_cbtc:
         block_dict = get_objects_in_cbtc_ter(DCSYS.CDV)
     else:

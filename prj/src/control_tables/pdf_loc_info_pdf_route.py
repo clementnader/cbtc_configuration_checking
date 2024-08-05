@@ -8,7 +8,7 @@ if PROJECT_NAME == Projects.Brussels:
     LOC_DICT = {
         "Name_Title":                             {"x":  42, "y": 814, "x_tol": 30, "y_tol": 30},
         "Name":                                   {"x": 115, "y": 813, "x_tol": 40},
-        "[1a] Controlled Signal":                 {"x":  44, "y": 736},
+        "[1a] Origin Signal":                     {"x":  44, "y": 736},
         "[1b] Origin LED Matrix":                 {"x":  44, "y": 636},
         "[2] Incompatibilities":                  {"x": 222, "y": 765, "y_tol": 40},
         "[5] Route path":                         {"x": 226, "y": 630, "y_tol": 60},
@@ -17,7 +17,7 @@ if PROJECT_NAME == Projects.Brussels:
         "[8] Flank protections":                  {"x": 372, "y": 510, "x_tol": 40, "y_tol": 70},
         "[9] Route path":                         {"x": 230, "y": 510, "y_tol": 70},
         "[10] Route path (T.C. clearance)":       {"x":  48, "y": 487, "y_tol": 40},
-        "[12] Overlap set":                       {"x":  49, "y": 395, "y_tol": 40},
+        "[12] Overlap set":                       {"x":  48, "y": 395, "y_tol": 50},
         "[14] Approach Area clearance":           {"x": 232, "y": 329},
         "[15] External Conditions":               {"x": 464, "y": 362},
         "[16] Route path (T.C. clearance)":       {"x": 221, "y": 180, "y_tol": 40},

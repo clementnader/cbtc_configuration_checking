@@ -3,11 +3,12 @@
 
 from ....cctool_oo_schema import *
 from ....dc_sys_sheet_utils.switch_utils import get_dc_sys_switch_points_dict
+from ...survey_utils import clean_track_name
 from .common_utils import *
 
 
 # Switch
-def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
+def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict, set_of_survey_tracks: set[str]):
     assert dc_sys_sheet == DCSYS.Aig
     assert res_sheet_name == "Switch"
 
@@ -16,7 +17,7 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
     res_dict = dict()
     for obj_name, obj_val in obj_dict.items():
         original_dc_sys_track, dc_sys_kp = obj_val["track"], obj_val["kp"]
-        dc_sys_track = original_dc_sys_track.upper()
+        dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
         test_names = [obj_name, obj_val.get("other_name")]
         if obj_name.endswith("_L"):
@@ -30,7 +31,7 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
             list_used_obj_names.append(survey_name)
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                original_dc_sys_track, dc_sys_kp)
+                                                                dc_sys_track, original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict

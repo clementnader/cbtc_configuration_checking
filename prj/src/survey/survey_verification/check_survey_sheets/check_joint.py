@@ -3,6 +3,7 @@
 
 from ....utils import *
 from ....cctool_oo_schema import *
+from ...survey_utils import clean_track_name
 from .joint_utils import *
 from .common_utils import *
 
@@ -10,7 +11,7 @@ from .common_utils import *
 # Block_Joint
 def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]],
                 block_def_dict: Optional[dict[str, dict[tuple[str, float], str]]],
-                buffer_survey_info: dict[str, dict[str, float]]):
+                buffer_survey_info: dict[str, dict[str, float]], set_of_survey_tracks: set[str]):
     assert dc_sys_sheet == DCSYS.CDV
     assert res_sheet_name == "Block_Joint"
 
@@ -23,7 +24,7 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
         original_dc_sys_track, dc_sys_kp = limit_position
         end_of_track_suffix = joint_track.removeprefix(original_dc_sys_track)
         # end_of_track_suffix is not null if a single block has two end-of-track limits on the same track
-        dc_sys_track = original_dc_sys_track.upper()
+        dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
         obj_name, survey_name, use_buffer = get_joint_name_in_survey(tc1, tc2, dc_sys_track, survey_info,
                                                                      limit_position, end_of_track_suffix,
@@ -37,7 +38,7 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
             list_used_obj_names.append(survey_name)
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                original_dc_sys_track, dc_sys_kp)
+                                                                dc_sys_track, original_dc_sys_track, dc_sys_kp)
         res_dict[(obj_name, dc_sys_track)]["block_def_limit_name"] = block_def_limit_name
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))

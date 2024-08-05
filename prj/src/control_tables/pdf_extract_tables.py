@@ -1,52 +1,74 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import pdfreader
+import pypdf
 import logging
 import re
 from ..utils import *
 from .pdf_loc_info_pdf_overlap import loc_info_pdf_overlap
 from .pdf_loc_info_pdf_route import loc_info_pdf_route
+from .pdf_extract_functions import *
 
 
 __all__ = ["CONTROL_TABLE_TYPE", "pdf_reader_extract_tables"]
 
 
-class CONTROL_TABLE_TYPE:
-    route = "route"
-    overlap = "overlap"
-
-
 NAME_TITLES = ["Name", "Name [0]", "Name[0]"]
 
 
-def pdf_reader_extract_tables(pdf_file: str, table_type: str, line_part: str, verbose: bool = False,
-                              specific_page: int = None) -> dict:
+def pdf_reader_extract_tables(pdf_file: str, table_type: str, verbose: bool = False,
+                              specific_page: int = None, new_method: bool = False) -> dict[str, Any]:
+    pdf_name = os.path.split(pdf_file)[-1]
+    print_section_title(f"Conversion of {Color.turquoise}{table_type.title()}{Color.reset} "
+                        f"{Color.mint_green}Control Tables{Color.reset} for {Color.yellow}{pdf_name}{Color.reset}...")
     res_dict = dict()
-    with open(pdf_file, "rb") as pdf:
-        viewer = pdfreader.SimplePDFViewer(pdf)
-        nbpages = len([p for p in viewer.doc.pages()])
+    # new_method = False
+    if new_method:
+        reader = pypdf.PdfReader(pdf_file)
+        nbpages = len(reader.pages)
         progress_bar(1, 1, end=True)  # reset progress_bar
-        for num_page in range(1, nbpages + 1):
+        for num_page, page in enumerate(reader.pages, start=1):
             if specific_page is not None and num_page != specific_page:
                 continue
-            print_log(f"\r{progress_bar(num_page - 1, nbpages)} "
-                      f"{Color.black}{csi_bg_color(Color.mint_green)}{table_type.title()}{Color.reset} "
-                      f"{Color.mint_green}Control Tables{Color.reset} conversion "
-                      f"for {Color.yellow}{line_part}{Color.reset} in-going...", end="")
-            viewer.navigate(num_page)
-            logging.disable(logging.WARNING)  # deactivate temporarily the warning logs
-            viewer.render()
-            logging.disable(logging.NOTSET)
-            # print(viewer.current_page["MediaBox"])
-            page_text = viewer.canvas.text_content
-            page_dict = _parse_page_text(page_text, table_type, num_page, verbose=verbose)
-            if page_dict:
-                res_dict[page_dict["Name"]] = page_dict
+            print_log(f"\r{progress_bar(num_page, nbpages)} "
+                      f"{Color.turquoise}{table_type.title()}{Color.reset} "
+                      f"{Color.mint_green}Control Tables{Color.reset} conversion in-going...", end="")
+            page_text = page.extract_text(extraction_mode="layout", layout_mode_scale_weight=1)
+            if verbose:
+                print()
+                print(page_text)
+                print_bar()
+            page_dict = _clean_res_dict_new_method(parse_pdf_control_table(page_text, num_page, table_type))
+            if page_dict is not None:
+                res_dict[page_dict["name"]["info"]] = page_dict
         print_log(f"\r{progress_bar(nbpages, nbpages, end=True)} "
-                  f"{Color.black}{csi_bg_color(Color.mint_green)}{table_type.title()}{Color.reset} "
-                  f"{Color.mint_green}Control Tables{Color.reset} conversion "
-                  f"for {Color.yellow}{line_part}{Color.reset} finished.")
+                  f"{Color.turquoise}{table_type.title()}{Color.reset} "
+                  f"{Color.mint_green}Control Tables{Color.reset} conversion finished.")
+    else:
+        with open(pdf_file, "rb") as pdf:
+            viewer = pdfreader.SimplePDFViewer(pdf)
+            nbpages = len([p for p in viewer.doc.pages()])
+            progress_bar(1, 1, end=True)  # reset progress_bar
+            for num_page in range(1, nbpages + 1):
+                if specific_page is not None and num_page != specific_page:
+                    continue
+                print_log(f"\r{progress_bar(num_page - 1, nbpages)} "
+                          f"{Color.turquoise}{table_type.title()}{Color.reset} "
+                          f"{Color.mint_green}Control Tables{Color.reset} conversion in-going...", end="")
+                viewer.navigate(num_page)
+                logging.disable(logging.WARNING)  # deactivate temporarily the warning logs
+                viewer.render()
+                logging.disable(logging.NOTSET)
+                page_text = viewer.canvas.text_content
+                print(page_text)
+                page_dict = _parse_page_text(page_text, table_type, num_page, verbose=verbose)
+                if page_dict:
+                    res_dict[page_dict["Name"]] = page_dict
+            print_log(f"\r{progress_bar(nbpages, nbpages, end=True)} "
+                      f"{Color.turquoise}{table_type.title()}{Color.reset} "
+                      f"{Color.mint_green}Control Tables{Color.reset} conversion finished.")
     return res_dict
 
 
@@ -138,19 +160,50 @@ def _extract_info(list_info: list[dict[str, Any]], table_type: str, num_page: in
 
 def _clean_res_dict(res_dict: dict[str, str]) -> dict[str, str]:
     for key, val in res_dict.items():
-        val = re.sub("( )+", " ", val)  # removing multiple spaces
-        val = re.sub("( )*-( )*", "-", val)  # removing spaces around hyphen character
-        val = re.sub("[(]( )*", "(", val)  # removing space inside parentheses
-        val = re.sub("( )*[)]", ")", val)  # removing space inside parentheses
-        val = re.sub("( )*,( )*", ", ", val)  # correctly format comma
+        val = re.sub(r"\s+", r" ", val)  # removing multiple spaces
+        val = re.sub(r"\s*-\s*", r"-", val)  # removing spaces around hyphen character
+        val = re.sub(r"[(]\s*", r"(", val)  # removing space inside parentheses
+        val = re.sub(r"\s*[)]", r")", val)  # removing space inside parentheses
+        val = re.sub(r"\s*,\s*", r", ", val)  # correctly format comma
+        val = re.sub(r"^([A-Z])\s([A-Za-z])", r"\1\2", val)  # removing space inside word
+        val = re.sub(r"([0-9])\s([0-9])", r"\1\2", val)  # removing space inside word
+        val = re.sub(r"(\s[A-Z])\s([A-Za-z])", r"\1\2", val)  # removing space inside word
+        val = re.sub(r"([A-Za-z])\s([A-Za-z0-9])$", r"\1\2", val)  # removing space inside word
+        val = re.sub(r"([A-Za-z])\s([A-Za-z0-9][\s,])", r"\1\2", val)  # removing space inside word
         val = val.strip()
         if (val.endswith(",") or val.endswith("_") or val.endswith(".")
                 or (val != "--" and val.endswith("-"))
                 or val.count("(") != val.count(")")):
             print_warning(f"Key {Color.blue}{key}{Color.reset} is on multiple lines "
-                          f"and it was not completely parsed from the Control Tables:", end="")
+                          f"and it was not completely parsed from the Control Tables:")
             print(f"{val = }\n")
         res_dict[key] = val
+    return res_dict
+
+
+def _clean_res_dict_new_method(res_dict: dict[str, dict[str, str]]) -> Optional[dict[str, dict[str, str]]]:
+    if res_dict is None:
+        return None
+    for key, val in res_dict.items():
+        info = val["info"]
+        info = re.sub(r"\s+", r" ", info)  # removing multiple spaces
+        info = re.sub(r"\s*-\s*", r"-", info)  # removing spaces around hyphen character
+        info = re.sub(r"[(]\s*", r"(", info)  # removing space inside parentheses
+        info = re.sub(r"\s*[)]", r")", info)  # removing space inside parentheses
+        info = re.sub(r"\s*,\s*", r", ", info)  # correctly format comma
+        info = re.sub(r"^([A-Z])\s([A-Za-z])", r"\1\2", info)  # removing space inside word
+        info = re.sub(r"([0-9])\s([0-9])", r"\1\2", info)  # removing space inside word
+        info = re.sub(r"(\s[A-Z])\s([A-Za-z])", r"\1\2", info)  # removing space inside word
+        info = re.sub(r"([A-Za-z])\s([A-Za-z0-9])$", r"\1\2", info)  # removing space inside word
+        info = re.sub(r"([A-Za-z])\s([A-Za-z0-9][\s,])", r"\1\2", info)  # removing space inside word
+        info = info.strip()
+        if (info.endswith(",") or info.endswith("_") or info.endswith(".")
+                or (info != "--" and info.endswith("-"))
+                or info.count("(") != info.count(")")):
+            print_warning(f"Key {Color.blue}{res_dict[key]['key_name']}{Color.reset} is on multiple lines "
+                          f"and it was not completely parsed from the Control Tables:")
+            print(f"{val = }\n")
+        res_dict[key]["info"] = info
     return res_dict
 
 

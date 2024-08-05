@@ -14,6 +14,7 @@ from .ixl_overlap import *
 from .platform import *
 from .psr import *
 from .signal import *
+from .sw_flank_protection import *
 from .switch import *
 
 from .check_offset import *

@@ -4,11 +4,13 @@
 from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
+from ...survey_utils import clean_track_name
 from .common_utils import *
 
 
 # Signal and Buffer, and Version Tag
-def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]]):
+def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]],
+                 set_of_survey_tracks: set[str]):
     assert dc_sys_sheet in [DCSYS.Sig, DCSYS.IATPM_Version_Tags]
     assert res_sheet_name in ["Signal", "Buffer", "Tag"]
 
@@ -19,7 +21,7 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
         if not obj_condition(res_sheet_name, obj_val):
             continue
         original_dc_sys_track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
-        dc_sys_track = original_dc_sys_track.upper()
+        dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
         test_names = [obj_name]
         if obj_name.startswith("STOP_SIG_"):
@@ -32,7 +34,7 @@ def check_object(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
             list_used_obj_names.append(survey_name)
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                original_dc_sys_track, dc_sys_kp)
+                                                                dc_sys_track, original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict

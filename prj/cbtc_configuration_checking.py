@@ -66,12 +66,14 @@ def route_and_overlap():
     #     # verbose=True,
     #     # specific_page=10,
     #     # line_parts=(CONTROL_TABLE_LINE_PART.depot,)
+    #     new_method=True,
     # )
     # parse_control_tables(
     #     CONTROL_TABLE_TYPE.overlap, use_csv_file=False,
     #     # verbose=True,
     #     # specific_page=2,
     #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
+    #     new_method=True,
     # )
 
     # Analyze DC_SYS with CSV files
@@ -143,6 +145,7 @@ def main():
     # test_rainbow()
     # test_moving_progress_bar()
 
+    # check_switch_flank_protection(in_cbtc=True)
     # get_walkways_track_kp_pos()
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Voie), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Sig), max_lvl=0)

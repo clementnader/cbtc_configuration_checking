@@ -3,6 +3,7 @@
 
 from ....cctool_oo_schema import *
 from ....dc_sys import *
+from ...survey_utils import clean_track_name
 from .common_utils import *
 
 
@@ -10,7 +11,8 @@ __all__ = ["check_platform_osp"]
 
 
 # Platform OSP
-def check_platform_osp(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]]):
+def check_platform_osp(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]],
+                       set_of_survey_tracks: set[str]):
     assert dc_sys_sheet == DCSYS.Quai.PointDArret
     assert res_sheet_name == "Platform"
 
@@ -19,7 +21,7 @@ def check_platform_osp(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str,
     res_dict = dict()
     for obj_name, obj_val in objs_dict.items():
         original_dc_sys_track, dc_sys_kp = obj_val
-        dc_sys_track = original_dc_sys_track.upper()
+        dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
         test_names = [obj_name]
         survey_name = test_names_in_survey(test_names, dc_sys_track, survey_info)
@@ -28,7 +30,7 @@ def check_platform_osp(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str,
             list_used_obj_names.append(survey_name)
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                original_dc_sys_track, dc_sys_kp)
+                                                                dc_sys_track, original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict

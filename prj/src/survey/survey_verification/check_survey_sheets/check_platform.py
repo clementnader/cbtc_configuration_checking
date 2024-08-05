@@ -4,40 +4,42 @@
 from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
+from ...survey_utils import clean_track_name
 from .common_utils import *
 from .check_platform_osp import *
 
 
 # Switch
-def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp_survey_info: dict):
+def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp_survey_info: dict,
+                   set_of_survey_tracks: set[str]):
     assert dc_sys_sheet == DCSYS.Quai
     assert res_sheet_name == "Platform"
 
     plt_dict = load_sheet(DCSYS.Quai)
     list_used_obj_names = list()
     res_dict = dict()
-    first_try_dict = dict()
     for plt_name, plt_val in plt_dict.items():
         plt_limits = _get_plt_limits(plt_val)
-        associated_survey_dict = get_corresponding_plt_survey_extremities(plt_name, plt_limits, plt_survey_info)
+        associated_survey_dict = get_corresponding_plt_survey_extremities(plt_name, plt_limits, plt_survey_info,
+                                                                          set_of_survey_tracks)
 
         limits_survey_info = [[plt_name + f"__Limit_{n}", lim_track, lim_kp, survey_name]
                               for n, ((lim_track, lim_kp), survey_name)
                               in enumerate(associated_survey_dict.items(), start=1)]
-        first_try_dict[plt_name] = limits_survey_info
 
-        for obj_name, dc_sys_track, dc_sys_kp, survey_name in limits_survey_info:
+        for obj_name, dc_sys_original_track, dc_sys_kp, survey_name in limits_survey_info:
+            dc_sys_track = clean_track_name(dc_sys_original_track, set_of_survey_tracks)
             survey_obj_info = plt_survey_info.get(survey_name)
             if survey_obj_info is not None:
                 list_used_obj_names.append(survey_name)
 
             res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                    dc_sys_track, dc_sys_kp)
+                                                                    dc_sys_track, dc_sys_original_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, plt_survey_info))
 
     # Add platform OSP on same sheet
-    res_dict.update(check_platform_osp(dc_sys_sheet.PointDArret, res_sheet_name, osp_survey_info))
+    res_dict.update(check_platform_osp(dc_sys_sheet.PointDArret, res_sheet_name, osp_survey_info, set_of_survey_tracks))
     return res_dict
 
 
@@ -107,14 +109,14 @@ def _get_survey_limits_on_track(plt_name: str, track: str, plt_survey_info: dict
 
 
 def get_corresponding_plt_survey_extremities(plt_name: str, plt_limits: list[tuple[str, float]],
-                                             plt_survey_info: dict[str, Any],
+                                             plt_survey_info: dict[str, Any], set_of_survey_tracks: set[str]
                                              ) -> dict[tuple[str, float], Optional[str]]:
     associated_survey_dict = {(lim_track, lim_kp): None for (lim_track, lim_kp) in plt_limits}
 
-    dc_sys_limit_tracks = set([track.upper() for (track, _) in plt_limits])
+    dc_sys_limit_tracks = set([clean_track_name(track, set_of_survey_tracks) for (track, _) in plt_limits])
     for test_track in dc_sys_limit_tracks:
         dc_sys_limits_on_track = [(track, dc_sys_kp) for (track, dc_sys_kp) in plt_limits
-                                  if track.upper() == test_track]
+                                  if clean_track_name(track, set_of_survey_tracks) == test_track]
         survey_limits_on_track = _get_survey_limits_on_track(plt_name, test_track, plt_survey_info)
 
         if len(dc_sys_limits_on_track) == 1:

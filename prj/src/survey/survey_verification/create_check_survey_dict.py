@@ -10,6 +10,7 @@ __all__ = ["create_check_survey_dict"]
 
 def create_check_survey_dict(survey_info, block_def_dict: Optional[dict[str, dict[tuple[str, float], str]]]):
     survey_verif_dict = dict()
+    set_of_survey_tracks = {info["survey_track"] for sub_dict in survey_info.values() for info in sub_dict.values()}
     for survey_type, survey_type_value in SURVEY_TYPES_DICT.items():
         if survey_type in ["OSP", "VERSION TAG"]:
             continue
@@ -18,19 +19,21 @@ def create_check_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
         func = survey_type_value["func"]
         if survey_type == "PLATFORM":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("PLATFORM"), survey_info.get("OSP")))
+                func(dcsys_sh, res_sheet, survey_info.get("PLATFORM"), survey_info.get("OSP"), set_of_survey_tracks))
         elif survey_type == "TAG":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("TAG"), survey_info.get("VERSION TAG")))
+                func(dcsys_sh, res_sheet, survey_info.get("TAG"), survey_info.get("VERSION TAG"), set_of_survey_tracks))
         elif survey_type == "TC":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("TC"), block_def_dict, survey_info.get("SIGNAL_BUFFER")))
+                func(dcsys_sh, res_sheet, survey_info.get("TC"), block_def_dict, survey_info.get("SIGNAL_BUFFER"),
+                     set_of_survey_tracks))
         elif survey_type == "WALKWAY":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("WALKWAY"), survey_info.get("PLATFORM")))
+                func(dcsys_sh, res_sheet, survey_info.get("WALKWAY"), survey_info.get("PLATFORM"),
+                     set_of_survey_tracks))
         else:
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get(survey_type)))
+                func(dcsys_sh, res_sheet, survey_info.get(survey_type), set_of_survey_tracks))
     return survey_verif_dict
 
 

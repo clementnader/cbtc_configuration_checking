@@ -68,7 +68,7 @@ def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
     for row, (obj_full_name, obj_val) in enumerate(verif_dict.items(), start=start_row):
         obj_name = obj_full_name[0]
         dc_sys_sheet = obj_val["dc_sys_sheet"]
-        dc_sys_track = obj_val["dc_sys_track"]
+        dc_sys_track = obj_val["dc_sys_original_track"]
         block_def_limit_name = obj_val.get("block_def_limit_name")
         dc_sys_kp = obj_val["dc_sys_kp"]
         survey_name = obj_val["survey_name"]

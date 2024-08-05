@@ -66,23 +66,23 @@ def get_dc_sys_switch_points_dict():
             kp = get_dc_sys_value(seg_dict[seg], kp_attr)
             res_dict[sw_name_and_pos] = {"track": track, "kp": kp}
             if sw_pos_name == "center":  # The center point name in the survey is sometimes the switch name only
-                #                         without the "_C" suffix
+                #                          without the "_C" suffix
                 res_dict[sw_name_and_pos]["other_name"] = sw_name
     return res_dict
 
 
 def get_corresponding_center_switch_point_track(heel_point_name: str
                                                 ) -> tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
-    is_left = (heel_point_name.endswith(SW_INFO_DICT["left"]["suffix"]) or heel_point_name.endswith("_G"))
-    is_right = (heel_point_name.endswith(SW_INFO_DICT["right"]["suffix"]) or heel_point_name.endswith("_D"))
+    is_left = (heel_point_name.endswith("_L") or heel_point_name.endswith("_G"))
+    is_right = (heel_point_name.endswith("_R") or heel_point_name.endswith("_D"))
     if not is_left and not is_right:
         return None, None, None, None
 
-    sw_dict = load_sheet(DCSYS.Aig)
+    sw_dict = {sw_name.upper(): sw_value for sw_name, sw_value in load_sheet(DCSYS.Aig).items()}
     seg_dict = load_sheet(DCSYS.Seg)
 
-    sw_name = (heel_point_name.removesuffix(SW_INFO_DICT["left"]["suffix"]) if is_left
-               else heel_point_name.removesuffix(SW_INFO_DICT["right"]["suffix"]))
+    sw_name = (heel_point_name.removesuffix("_L").removesuffix("_G") if is_left
+               else heel_point_name.removesuffix("_R").removesuffix("_D"))
     if sw_name not in sw_dict:
         return None, None, None, None
     point_seg = get_dc_sys_value(sw_dict[sw_name], SW_INFO_DICT["center"]["attr"])
@@ -92,13 +92,13 @@ def get_corresponding_center_switch_point_track(heel_point_name: str
 
 def get_corresponding_heels_switch_point_track(switch_point_name: str
                                                ) -> tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
-    is_left = (switch_point_name.endswith(SW_INFO_DICT["left"]["suffix"]) or switch_point_name.endswith("_G"))
-    is_right = (switch_point_name.endswith(SW_INFO_DICT["right"]["suffix"]) or switch_point_name.endswith("_D"))
+    is_left = (switch_point_name.endswith("_L") or switch_point_name.endswith("_G"))
+    is_right = (switch_point_name.endswith("_R") or switch_point_name.endswith("_D"))
     is_center = not is_left and not is_right
     if not is_center:
         return None, None, None, None
 
-    sw_dict = load_sheet(DCSYS.Aig)
+    sw_dict = {sw_name.upper(): sw_value for sw_name, sw_value in load_sheet(DCSYS.Aig).items()}
     seg_dict = load_sheet(DCSYS.Seg)
 
     sw_name = switch_point_name.removesuffix(SW_INFO_DICT["center"]["suffix"])

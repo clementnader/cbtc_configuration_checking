@@ -134,7 +134,7 @@ def _check_message_zc(obj_type, obj_name: str, associated_msg, obj_type_str, tar
             print_error(f"The flow of type {Color.yellow}{target_msg_type}{Color.reset} for "
                         f"{obj_type_str} {Color.blue}{obj_name}{Color.reset} is defined multiple times "
                         f"for the same ZC {zc_name}.\n"
-                        f"(The condition for the message {Color.white}*"
+                        f"(The condition for the message {Color.white}"
                         f"{condition_str.replace(Color.reset, Color.reset + Color.white)}"
                         f"{Color.reset} is {'not ' if condition else ''}met.)")
             print(msg_zc_dict[zc_name])

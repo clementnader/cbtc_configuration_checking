@@ -3,8 +3,6 @@
 
 import re
 from ....utils import *
-from ....cctool_oo_schema import *
-from ....dc_sys import *
 from ...survey_utils import *
 
 
@@ -14,7 +12,7 @@ __all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_su
 
 
 def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
-                       dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float):
+                       dc_sys_sheet: str, dc_sys_track: str, dc_sys_original_track: str, dc_sys_kp: float):
     survey_name = survey_obj_info["obj_name"] if survey_obj_info is not None else None
     survey_type = survey_obj_info["survey_type"] if survey_obj_info is not None else None
     survey_track = survey_obj_info["survey_track"] if survey_obj_info is not None else None
@@ -23,7 +21,8 @@ def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
     surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
     comments = survey_obj_info["comments"] if survey_obj_info is not None else None
 
-    return {"dc_sys_sheet": dc_sys_sheet, "dc_sys_track": dc_sys_track, "dc_sys_kp": dc_sys_kp,
+    return {"dc_sys_sheet": dc_sys_sheet, "dc_sys_track": dc_sys_track,
+            "dc_sys_original_track": dc_sys_original_track, "dc_sys_kp": dc_sys_kp,
             "survey_name": survey_name, "survey_type": survey_type,
             "survey_track": survey_track, "survey_original_track": survey_original_track,
             "surveyed_kp": surveyed_kp,
@@ -35,9 +34,8 @@ def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info:
     for obj_name, obj_val in survey_info.items():
         if obj_name in used_objects_from_survey:
             continue
-        obj_name = obj_val["obj_name"]
         extra_dict[(obj_name, obj_val["survey_track"])] = \
-            {"dc_sys_sheet": None, "dc_sys_track": None, "dc_sys_kp": None,
+            {"dc_sys_sheet": None, "dc_sys_track": None, "dc_sys_original_track": None, "dc_sys_kp": None,
              "survey_name": obj_val["obj_name"], "survey_type": obj_val["survey_type"],
              "survey_track": obj_val["survey_track"], "survey_original_track": obj_val["survey_original_track"],
              "surveyed_kp": obj_val["surveyed_kp"],
@@ -69,8 +67,9 @@ def _get_unique_list(i_list: list[Optional[str]]):
 
 def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str, Any], remove_leading_zeros: bool = False):
     if remove_leading_zeros:
-        test_name = "_".join(re.sub("^0*", "", x) for x in test_name.split("_"))
-        test_list = ["_".join(re.sub("^0*", "", x) for x in survey_name.split("_")) for survey_name in survey_info]
+        test_name = "_".join(re.sub(r"^0*", "", x) for x in test_name.split("_"))
+        test_list = ["_".join(re.sub(r"^0*", "", x) for x in survey_name.split("_"))
+                     for survey_name in survey_info]
     else:
         test_list = survey_info.keys()
     if test_name is not None and f"{test_name}__{track}".upper() in test_list:

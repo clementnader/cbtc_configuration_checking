@@ -84,13 +84,14 @@ def print_log(*args, end: str = "\n"):
 
 G_LAST_COLOR_INDEX = 0
 G_START_TIME = 0
+G_NEXT_EXEC_TIME = None
 C_PROBA = .1
 G_COIN_FLIP = numpy.random.random() < C_PROBA
 
 
 def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
                  sliding_rainbow: bool = True, static_rainbow: bool = False):
-    global G_LAST_COLOR_INDEX, G_START_TIME, G_COIN_FLIP
+    global G_LAST_COLOR_INDEX, G_START_TIME, G_COIN_FLIP, G_NEXT_EXEC_TIME
     colors = Color.rainbow if not G_COIN_FLIP else Color.progress_pride
     full_cell_char = '█'
     full_len = len(colors)
@@ -103,14 +104,20 @@ def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
             color = colors[(G_LAST_COLOR_INDEX + num_color_index) % full_len] if not end else Color.reset
             s += color + full_cell_char
         s += Color.reset + ' '*(full_len-nb_char) + '|'
-        G_LAST_COLOR_INDEX = (G_LAST_COLOR_INDEX - 1) % full_len if not end else 0
+        current_time = time.perf_counter()
+        if G_NEXT_EXEC_TIME is None or current_time > G_NEXT_EXEC_TIME:
+            G_NEXT_EXEC_TIME = current_time + 0.08
+            G_LAST_COLOR_INDEX = (G_LAST_COLOR_INDEX - 1) % full_len if not end else 0
     else:
         if static_rainbow:
             color = colors[int(percent*(full_len-1))]
         else:
             color = colors[G_LAST_COLOR_INDEX] if not end else Color.reset
-        G_LAST_COLOR_INDEX = (G_LAST_COLOR_INDEX + 1) % full_len if not end else 0
         s = '|' + color + full_cell_char*nb_char + ' '*(full_len-nb_char) + Color.reset + '|'
+        current_time = time.perf_counter()
+        if G_NEXT_EXEC_TIME is None or current_time > G_NEXT_EXEC_TIME:
+            G_NEXT_EXEC_TIME = current_time + 0.08
+            G_LAST_COLOR_INDEX = (G_LAST_COLOR_INDEX + 1) % full_len if not end else 0
     if not only_bar:
         s += f" {Color.default}{percent:>7.2%}{Color.reset} " + " "*(len(str(max_nb))-len(str(i))) + f"({i}/{max_nb})"
 

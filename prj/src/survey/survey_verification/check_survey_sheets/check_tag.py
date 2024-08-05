@@ -3,13 +3,14 @@
 
 from ....cctool_oo_schema import *
 from ....dc_sys import *
+from ...survey_utils import clean_track_name
 from .common_utils import *
 from .check_obj import check_object
 
 
 # Tag and IATPM_Tag
 def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dict[str, float]],
-              version_tag_survey_info: dict[str, dict[str, float]]):
+              version_tag_survey_info: dict[str, dict[str, float]], set_of_survey_tracks: set[str]):
     assert dc_sys_sheets == [DCSYS.Bal, DCSYS.IATPM_tags]
     assert res_sheet_name == "Tag"
 
@@ -21,7 +22,7 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
         other_name = obj_val["other_name"]
         original_dc_sys_track = obj_val["track"]
         dc_sys_kp = obj_val["kp"]
-        dc_sys_track = original_dc_sys_track.upper()
+        dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
         test_names = [obj_name, other_name]
         if obj_name.startswith("TAG_"):
@@ -32,11 +33,12 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
             list_used_obj_names.append(survey_name)
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, dc_sys_sheet,
-                                                                original_dc_sys_track, dc_sys_kp)
+                                                                dc_sys_track, original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, tag_survey_info))
 
-    res_dict.update(check_object(DCSYS.IATPM_Version_Tags, res_sheet_name, version_tag_survey_info))
+    res_dict.update(check_object(DCSYS.IATPM_Version_Tags, res_sheet_name, version_tag_survey_info,
+                                 set_of_survey_tracks))
     return res_dict
 
 

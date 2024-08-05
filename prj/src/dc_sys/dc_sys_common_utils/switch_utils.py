@@ -7,7 +7,7 @@ from ..load_database import *
 from .segments_utils import *
 
 
-__all__ = ["is_sw_point_seg_upstream", "get_sw_pos", "get_point_seg"]
+__all__ = ["is_sw_point_seg_upstream", "get_sw_pos", "get_point_seg", "is_switch_on_diamond_crossing"]
 
 
 def get_point_seg(sw):
@@ -41,3 +41,12 @@ def get_sw_pos(sw_val: dict[str, Any]) -> tuple[str, float]:
     len_seg = get_seg_len(point_seg)
     x = len_seg if upstream else 0
     return point_seg, x
+
+
+def is_switch_on_diamond_crossing(sw_name: str) -> tuple[bool, list[str]]:
+    ivb_dict = load_sheet(DCSYS.IVB)
+    for ivb_value in ivb_dict.values():
+        diamond_crossing_switches = get_dc_sys_value(ivb_value, DCSYS.IVB.DiamondCrossingSwitches.SwitchName)
+        if sw_name in diamond_crossing_switches:
+            return True, diamond_crossing_switches
+    return False, []

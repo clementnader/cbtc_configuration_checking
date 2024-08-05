@@ -4,11 +4,12 @@
 from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
+from ...survey_utils import clean_track_name
 from .common_utils import *
 
 
 # FloodGate
-def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
+def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict, set_of_survey_tracks: set[str]):
     assert dc_sys_sheet == DCSYS.Flood_Gate
     assert res_sheet_name == "FloodGate"
 
@@ -17,19 +18,21 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict):
     res_dict = dict()
     for fg_name, fg_val in fg_dict.items():
         fg_limits = _get_fg_limits(fg_val)
-        associated_survey_dict = _get_corresponding_survey_extremities(fg_name, fg_limits, survey_info)
+        associated_survey_dict = _get_corresponding_survey_extremities(fg_name, fg_limits, survey_info,
+                                                                       set_of_survey_tracks)
 
         limits_survey_info = [[fg_name + f"__Limit_{n}", lim_track, lim_kp, survey_name]
                               for n, ((lim_track, lim_kp), survey_name)
                               in enumerate(associated_survey_dict.items(), start=1)]
 
-        for obj_name, dc_sys_track, dc_sys_kp, survey_name in limits_survey_info:
+        for obj_name, dc_sys_original_track, dc_sys_kp, survey_name in limits_survey_info:
+            dc_sys_track = clean_track_name(dc_sys_original_track, set_of_survey_tracks)
             survey_obj_info = survey_info.get(survey_name)
             if survey_obj_info is not None:
                 list_used_obj_names.append(survey_name)
 
             res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                    dc_sys_track, dc_sys_kp)
+                                                                    dc_sys_track, dc_sys_original_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
     return res_dict
@@ -58,13 +61,14 @@ def _get_survey_limits_on_track(fg_name: str, test_track: str, survey_info: dict
 
 
 def _get_corresponding_survey_extremities(fg_name: str, fg_limits: list[tuple[str, float]],
-                                          survey_info: dict[str, Any]) -> dict[tuple[str, float], Optional[str]]:
+                                          survey_info: dict[str, Any], set_of_survey_tracks: set[str]
+                                          ) -> dict[tuple[str, float], Optional[str]]:
     associated_survey_dict = {(lim_track, lim_kp): None for (lim_track, lim_kp) in fg_limits}
 
-    dc_sys_limit_tracks = set([track.upper() for (track, _) in fg_limits])
+    dc_sys_limit_tracks = set([clean_track_name(track, set_of_survey_tracks) for (track, _) in fg_limits])
     for test_track in dc_sys_limit_tracks:
         dc_sys_limits_on_track = [(track, dc_sys_kp) for (track, dc_sys_kp) in fg_limits
-                                  if track.upper() == test_track]
+                                  if clean_track_name(track, set_of_survey_tracks) == test_track]
         survey_limits_on_track = _get_survey_limits_on_track(fg_name, test_track, survey_info)
 
         if len(dc_sys_limits_on_track) == 1:

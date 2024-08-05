@@ -61,7 +61,8 @@ class ControlTableInfo:
 
 def parse_control_tables(table_type: str, use_csv_file: bool = False, verbose: bool = False, specific_page: int = None,
                          line_parts: tuple = (CONTROL_TABLE_LINE_PART.line, CONTROL_TABLE_LINE_PART.depot,
-                                              CONTROL_TABLE_LINE_PART.depot2)) -> dict:
+                                              CONTROL_TABLE_LINE_PART.depot2),
+                         new_method: bool = False) -> dict:
     res_dict = dict()
 
     for line_part in line_parts:
@@ -69,19 +70,24 @@ def parse_control_tables(table_type: str, use_csv_file: bool = False, verbose: b
         if not control_table_info.control_tables_path:
             continue
         res_dict.update(_get_res_dict_control_table(
-            control_table_info.control_tables_path, control_table_info.result_file, table_type, line_part,
-            use_csv_file=use_csv_file, verbose=verbose, specific_page=specific_page))
-    res_dict = {obj_name.strip(): {key.strip(): val.strip() for key, val in obj_val.items()}
-                for obj_name, obj_val in res_dict.items()}
+            control_table_info.control_tables_path, control_table_info.result_file, table_type,
+            use_csv_file=use_csv_file, verbose=verbose, specific_page=specific_page, new_method=new_method))
+    if new_method:
+        res_dict = {obj_name.strip(): {val["key_name"].strip(): val["info"].strip() for key, val in obj_val.items()}
+                    for obj_name, obj_val in res_dict.items()}
+    else:
+        res_dict = {obj_name.strip(): {key.strip(): val.strip() for key, val in obj_val.items()}
+                    for obj_name, obj_val in res_dict.items()}
     return res_dict
 
 
-def _get_res_dict_control_table(control_tables_path: str, result_file: str, table_type: str, line_part: str,
-                                use_csv_file: bool = False, verbose: bool = False, specific_page: int = None):
+def _get_res_dict_control_table(control_tables_path: str, result_file: str, table_type: str,
+                                use_csv_file: bool = False, verbose: bool = False, specific_page: int = None,
+                                new_method: bool = False):
     if use_csv_file is False or not os.path.exists(result_file):
-        res_dict = pdf_reader_extract_tables(control_tables_path, table_type, line_part, verbose=verbose,
-                                             specific_page=specific_page)
-        create_csv_file_control_table(res_dict, result_file)
+        res_dict = pdf_reader_extract_tables(control_tables_path, table_type, verbose=verbose,
+                                             specific_page=specific_page, new_method=new_method)
+        create_csv_file_control_table(res_dict, result_file, new_method=new_method)
     else:
         res_dict = analyze_csv_file_control_table(result_file)
     return res_dict
@@ -103,21 +109,29 @@ def analyze_csv_file_control_table(result_file: str) -> dict:
     return res_dict
 
 
-def create_csv_file_control_table(res_dict: dict, result_file: str) -> None:
+def create_csv_file_control_table(res_dict: dict, result_file: str, new_method: bool = False) -> None:
     csv = str()
-    for tables_dict in res_dict.values():
-        if not csv:
-            csv = ";".join(list(tables_dict.keys())) + "\n"
-        csv += ";".join(list(tables_dict.values())) + "\n"
+    if new_method:
+        for tables_dict in res_dict.values():
+            if not csv:
+                csv = ";".join([val["key_name"] for val in tables_dict.values()]) + "\n"
+            csv += ";".join([val["info"] for val in tables_dict.values()]) + "\n"
+    else:
+        for tables_dict in res_dict.values():
+            if not csv:
+                csv = ";".join(list(tables_dict.keys())) + "\n"
+            csv += ";".join(list(tables_dict.values())) + "\n"
     if not csv.strip():
         return
-    _create_csv(csv, result_file)
+    result_file = _create_csv(csv, result_file, new_method=new_method)
     print_success(f"The result file can be accessed at \"{result_file}\".")
 
 
-def _create_csv(csv: str, result_file: str):
+def _create_csv(csv: str, result_file: str, new_method: bool = False) -> str:
+    if new_method:
+        result_file = "_new".join(os.path.splitext(result_file))
     if not csv.strip():
-        return
+        return result_file
     try:
         with open(result_file, "w") as f:
             f.write(csv)
@@ -129,3 +143,4 @@ def _create_csv(csv: str, result_file: str):
             sys.exit(1)
         with open(result_file, "w") as f:
             f.write(csv)
+    return result_file
