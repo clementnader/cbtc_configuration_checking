@@ -32,7 +32,7 @@ def add_switch_center_points(sw_survey_info: dict[str, dict[str, Any]], survey_n
 
         old_comments = survey_obj_info["comments"]
         new_comments = (f"Center Switch Point {center_point_name} does not exist\n"
-                        f"on track {center_point_track} in survey:\n{survey_name},\n"
+                        f"on track {survey_obj_info['survey_original_track']} in survey:\n{survey_name},\n"
                         f"{corresponding_sw_pos.capitalize()} Switch Point {obj_name} is used\n"
                         f"as they are on the same track.")
         comments = _add_comment_for_switch_point(new_comments, old_comments)
@@ -69,7 +69,7 @@ def add_switch_heel_points(sw_survey_info: dict[str, dict[str, Any]], survey_nam
 
         old_comments = survey_obj_info["comments"]
         new_comments = (f"{corresponding_sw_pos.capitalize()} Switch Point {heel_point_name} does not exist\n"
-                        f"on track {heel_point_track} in survey:\n{survey_name},\n"
+                        f"on track {survey_obj_info['survey_original_track']} in survey:\n{survey_name},\n"
                         f"Center Switch Point {obj_name} is used\n"
                         f"as they are on the same track.")
         comments = _add_comment_for_switch_point(new_comments, old_comments)

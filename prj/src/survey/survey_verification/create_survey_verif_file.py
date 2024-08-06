@@ -55,7 +55,7 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_
 def _update_menu_sheet(wb: openpyxl.workbook.Workbook):
     if get_ga_version() >= (7, 2, 0, 0):
         return
-    ws = wb.get_sheet_by_name("Survey")
+    ws = wb["Survey"]
     ws.delete_rows(17)  # for older GA versions, delete PSD line that was not verified here
     ws.row_dimensions[17].height = 15  # restore default height
 

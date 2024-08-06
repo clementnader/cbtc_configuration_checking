@@ -59,6 +59,7 @@ def pdf_reader_extract_tables(pdf_file: str, table_type: str, verbose: bool = Fa
                           f"{Color.mint_green}Control Tables{Color.reset} conversion in-going...", end="")
                 viewer.navigate(num_page)
                 logging.disable(logging.WARNING)  # deactivate temporarily the warning logs
+                # TODO: use warnings.filterwarnings
                 viewer.render()
                 logging.disable(logging.NOTSET)
                 page_text = viewer.canvas.text_content

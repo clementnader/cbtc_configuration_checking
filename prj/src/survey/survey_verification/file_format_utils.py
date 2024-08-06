@@ -31,7 +31,7 @@ MANUAL_VERIFICATION_COL = "L"
 def create_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, extra_column: bool
                        ) -> tuple[xl_ws.Worksheet, int]:
     wb.create_sheet(sheet_name)
-    ws = wb.get_sheet_by_name(sheet_name)
+    ws = wb[sheet_name]
     ws.sheet_properties.tabColor = "0070C0"
     _set_columns_width(ws, extra_column)
     ws.sheet_view.zoomScale = 85

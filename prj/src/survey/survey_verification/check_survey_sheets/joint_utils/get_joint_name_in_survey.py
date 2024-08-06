@@ -28,9 +28,6 @@ def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_in
     if survey_name is None:
         survey_name = _try_to_find_name_in_survey(obj_name, list_test_names, track, survey_info)
 
-    # if survey_name is None:
-    #     survey_name = _test_one_obj_on_track(joint, track, joints_dict, survey_info)
-
     return obj_name, survey_name, use_buffer
 
 
@@ -96,19 +93,6 @@ def _get_list_of_joint_test_names_multiple_prefixes(tc1: str, tc2: Optional[str]
     return list_test_names + other_prefix_list + other_prefix_list_2 + other_prefix_list_3
 
 
-# def _test_one_obj_on_track(joint: tuple[str, Optional[str], str], track: str,
-#                            objs_dict: dict[tuple[str, Optional[str], str], tuple[str, float]],
-#                            survey_info: dict[str, Any]) -> Optional[str]:
-#     list_joints_on_track = [obj for obj, obj_val in objs_dict.items()
-#                             if obj_val[0] == track]
-#     list_survey_obj_on_track = [survey_name for survey_name, survey_obj_info in survey_info.items()
-#                                 if survey_obj_info["survey_track"] == track]
-#     if len(list_joints_on_track) == 1 and len(list_survey_obj_on_track) == 1 and list_joints_on_track[0] == joint:
-#         # Only one object on this track inside the survey and inside the DC_SYS, we can associate them
-#         return list_survey_obj_on_track[0]
-#     return None
-
-
 def _remove_leading_zeros_and_trailing_letters(test_name: str) -> Optional[str]:
     res_name = "_".join(word.removeprefix("0") for word in test_name.split("_"))
     res_name = re.sub(r"(_[0-9]+)([A-Z]+)(_)", r"\1\3", res_name)
@@ -145,7 +129,7 @@ def _remove_trigrams(test_name: str) -> Optional[str]:
     for _ in range(2):
         test_name = re.sub(r"_[A-Z]{3}_", "_", test_name)
         test_name = re.sub(r"_[A-Z]{2}[0-9]{0,2}_", "_", test_name)
-        test_name = re.sub(r"_[A-Z][0-9]{1,2}_", "_", test_name)
+        test_name = re.sub(r"_S[0-9]{2}_", "_", test_name)
 
     if end_of_track:
         test_name += "__END_OF_TRACK" + suffix

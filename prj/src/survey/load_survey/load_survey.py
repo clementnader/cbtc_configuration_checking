@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import warnings
 from ...utils import *
 from ...database_location import *
 from ..survey_types import *
@@ -28,7 +29,10 @@ def load_survey() -> dict:
                   f"{Color.white}{Color.underline}Loading sheet {Color.blue}{survey_sheet}{Color.white} of "
                   f"survey file{Color.no_underline}{NBSP}\n{' '*len(f' {i}/{nb_of_survey} - ')}"
                   f"{Color.underline}{Color.cyan}{survey_addr}{Color.white}...{Color.reset}{NBSP}")
+        warnings.filterwarnings("ignore", message="Cannot parse header or footer so it will be ignored",
+                                category=UserWarning, module="openpyxl")  # deactivate the warning for header/footer
         wb = load_xl_file(survey_addr)
+        warnings.filterwarnings("default")
         if all_sheets:
             sheet_names = get_xl_sheet_names(wb)
         else:
@@ -105,7 +109,8 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
                 comments = None
                 to_delete = False
             else:
-                comments = (f"Object appearing {len(surveyed_values)} times in same survey: {survey_name}.\n"
+                comments = (f"Object appearing {len(surveyed_values)} times on track {original_track}\n"
+                            f"in same survey: {survey_name}.\n"
                             f"List of surveyed KPs is: {str(surveyed_values).removeprefix('[').removesuffix(']')}.")
                 to_delete = True
                 for i, i_surveyed_kp in enumerate(surveyed_values, start=1):

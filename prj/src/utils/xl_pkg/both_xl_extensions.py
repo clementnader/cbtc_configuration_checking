@@ -37,7 +37,7 @@ def get_xl_sheet_by_name(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook], 
         ws = wb.sheet_by_name(sheet_name)
         return ws
     elif isinstance(wb, openpyxl.workbook.Workbook):
-        ws = wb.get_sheet_by_name(sheet_name)
+        ws = wb[sheet_name]
         return ws
 
 
