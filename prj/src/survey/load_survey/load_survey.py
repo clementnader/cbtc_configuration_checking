@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import warnings
 from ...utils import *
 from ...database_location import *
 from ..survey_types import *
-from .switch_survey_utils import *
 from .track_survey_utils import *
 
 
@@ -26,13 +24,10 @@ def load_survey() -> dict:
                   f"{Color.underline}{Color.cyan}{survey_addr}{Color.white}...{Color.reset}{NBSP}")
         else:
             print(f"\n {i}/{nb_of_survey} - "
-                  f"{Color.white}{Color.underline}Loading sheet {Color.blue}{survey_sheet}{Color.white} of "
+                  f"{Color.white}{Color.underline}Loading sheet {Color.blue}\"{survey_sheet}\"{Color.white} of "
                   f"survey file{Color.no_underline}{NBSP}\n{' '*len(f' {i}/{nb_of_survey} - ')}"
                   f"{Color.underline}{Color.cyan}{survey_addr}{Color.white}...{Color.reset}{NBSP}")
-        warnings.filterwarnings("ignore", message="Cannot parse header or footer so it will be ignored",
-                                category=UserWarning, module="openpyxl")  # deactivate the warning for header/footer
         wb = load_xl_file(survey_addr)
-        warnings.filterwarnings("default")
         if all_sheets:
             sheet_names = get_xl_sheet_names(wb)
         else:
@@ -106,7 +101,10 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
             surveyed_values = sorted(old_surveyed_values + [surveyed_kp])
             if all(surveyed_kp == old_value for old_value in old_surveyed_values):
                 # object appearing multiple times in same survey but with the same surveyed KP value
-                comments = None
+                comments = (f"Object appearing {len(surveyed_values)} times "
+                            f"with the same surveyed KP value ({surveyed_kp}) "
+                            f"on track {original_track} \n"
+                            f"in survey: {survey_name}.")
                 to_delete = False
             else:
                 comments = (f"Object appearing {len(surveyed_values)} times on track {original_track}\n"
@@ -114,7 +112,7 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
                             f"List of surveyed KPs is: {str(surveyed_values).removeprefix('[').removesuffix(']')}.")
                 to_delete = True
                 for i, i_surveyed_kp in enumerate(surveyed_values, start=1):
-                    intermediate_survey_dict[survey_type][f"{key_name}_{i}__{track}"] = {
+                    intermediate_survey_dict[survey_type][f"{key_name}__{i}__{track}"] = {
                         "survey_type": type_name,
                         "obj_name": obj_name, "survey_track": track, "survey_original_track": original_track,
                         "surveyed_kp": i_surveyed_kp, "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
@@ -131,13 +129,6 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
             "list_surveyed_values": surveyed_values, "to_delete": to_delete
         }
 
-    set_of_survey_tracks = {info["survey_track"] for sub_dict in intermediate_survey_dict.values()
-                            for info in sub_dict.values()}
-
-    intermediate_survey_dict["SWP"].update(add_switch_center_points(intermediate_survey_dict["SWP"], survey_name,
-                                                                    set_of_survey_tracks))
-    intermediate_survey_dict["SWP"].update(add_switch_heel_points(intermediate_survey_dict["SWP"], survey_name,
-                                                                  set_of_survey_tracks))
     loaded_survey = _update_survey_dictionary(loaded_survey, intermediate_survey_dict)
 
     return loaded_survey

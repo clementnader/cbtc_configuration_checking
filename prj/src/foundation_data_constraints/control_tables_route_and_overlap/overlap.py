@@ -108,7 +108,7 @@ def _correspondence_ovl_control_table_dc_sys(ovl_control_table: str, ovl_dc_sys:
         ovl_dc_sys = split_text[-2] + end
     split_text = ovl_control_table.split("-", 1)
     sig = split_text[0]
-    if test_with_ovl_pos and PROJECT_NAME == Projects.Glasgow:
+    if test_with_ovl_pos and PROJECT_NAME.startswith("Glasgow"):
         end = split_text[1].removeprefix(sig).removeprefix("o").removesuffix("o")
         sig = "S" + sig
     elif test_with_ovl_pos and ovl_val["nb_occurrences"] == 1:

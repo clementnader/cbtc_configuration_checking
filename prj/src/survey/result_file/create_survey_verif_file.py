@@ -40,7 +40,7 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_
     _update_menu_sheet(wb)
 
     for sheet_name, verif_dict in survey_verif_dict.items():
-        extra_column = (sheet_name == "Block_Joint") and block_def_exists_bool
+        extra_column = (sheet_name == SURVEY_TYPES_DICT["BLOCK"]["res_sheet"]) and block_def_exists_bool
         ws, start_row = create_verif_sheet(wb, sheet_name, extra_column)
         _update_verif_sheet(sheet_name, ws, verif_dict, extra_column, start_row)
 
@@ -65,10 +65,11 @@ def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
     tolerance_dict = get_tolerance_dict(sheet_name)
     multiple_dc_sys_objets = _get_multiple_dc_sys_objets(sheet_name)
     multiple_survey_objets = _get_multiple_survey_objets(sheet_name)
+    sheet_comments = False
     for row, (obj_full_name, obj_val) in enumerate(verif_dict.items(), start=start_row):
         obj_name = obj_full_name[0]
         dc_sys_sheet = obj_val["dc_sys_sheet"]
-        dc_sys_track = obj_val["dc_sys_original_track"]
+        dc_sys_track = obj_val["dc_sys_original_track"]  # display the original track name
         block_def_limit_name = obj_val.get("block_def_limit_name")
         dc_sys_kp = obj_val["dc_sys_kp"]
         survey_name = obj_val["survey_name"]
@@ -93,53 +94,49 @@ def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
             _add_block_def_info(ws, row, block_def_limit_name)
         _add_line_cell_comments(ws, row, surveyed_kp_comment, extra_column)
         _add_line_calculations(ws, row, tolerance, extra_column)
-        _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity, extra_column)
+        sheet_comments = _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity, extra_column,
+                                                   sheet_comments)
+    if sheet_comments is False:  # no automatic comments, the column can be hidden
+        ws.column_dimensions[get_column(AUTOMATIC_COMMENTS_COL, extra_column)].hidden = True
 
 
 def _add_line_info(ws: xl_ws.Worksheet, row: int,
                    obj_name: str, dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float,
                    survey_name: str, survey_type: str, survey_track: float, surveyed_kp: float,
                    dc_sys_color: str, survey_color: str, extra_column: bool) -> None:
+    bg_color_dc_sys = dc_sys_color if obj_name is not None else None
+    bg_color_survey = survey_color if survey_name is not None else None
     # Name
-    create_cell(ws, obj_name, row=row, column=NAME_COL, borders=True)
-    if obj_name is not None:
-        set_bg_color(ws, dc_sys_color, row=row, column=NAME_COL)
+    create_cell(ws, obj_name, row=row, column=NAME_COL, borders=True,
+                bg_color=bg_color_dc_sys)
     # DC_SYS Sheet
-    create_cell(ws, dc_sys_sheet, row=row, column=DC_SYS_SHEET_COL, borders=True)
-    if dc_sys_sheet is not None:
-        set_bg_color(ws, dc_sys_color, row=row, column=DC_SYS_SHEET_COL)
+    create_cell(ws, dc_sys_sheet, row=row, column=DC_SYS_SHEET_COL, borders=True,
+                bg_color=bg_color_dc_sys)
     # DC_SYS Track
-    create_cell(ws, dc_sys_track, row=row, column=DC_SYS_TRACK_COL, borders=True)
-    if dc_sys_track is not None:
-        set_bg_color(ws, dc_sys_color, row=row, column=DC_SYS_TRACK_COL)
+    create_cell(ws, dc_sys_track, row=row, column=DC_SYS_TRACK_COL, borders=True,
+                bg_color=bg_color_dc_sys)
     # DC_SYS KP
-    create_cell(ws, dc_sys_kp, row=row, column=DC_SYS_KP_COL, borders=True)
-    if dc_sys_kp is not None:
-        set_bg_color(ws, dc_sys_color, row=row, column=DC_SYS_KP_COL)
+    create_cell(ws, dc_sys_kp, row=row, column=DC_SYS_KP_COL, borders=True,
+                nb_of_digits=2, bg_color=bg_color_dc_sys)
     # Survey Name
-    create_cell(ws, survey_name, row=row, column=get_column(SURVEY_NAME_COL, extra_column), borders=True)
-    if survey_name is not None:
-        set_bg_color(ws, survey_color, row=row, column=get_column(SURVEY_NAME_COL, extra_column))
+    create_cell(ws, survey_name, row=row, column=get_column(SURVEY_NAME_COL, extra_column), borders=True,
+                bg_color=bg_color_survey)
     # Survey Type
-    create_cell(ws, survey_type, row=row, column=get_column(SURVEY_TYPE_COL, extra_column), borders=True)
-    if survey_type is not None:
-        set_bg_color(ws, survey_color, row=row, column=get_column(SURVEY_TYPE_COL, extra_column))
+    create_cell(ws, survey_type, row=row, column=get_column(SURVEY_TYPE_COL, extra_column), borders=True,
+                bg_color=bg_color_survey)
     # Survey Track
-    create_cell(ws, survey_track, row=row, column=get_column(SURVEY_TRACK_COL, extra_column), borders=True)
-    if survey_track is not None:
-        set_bg_color(ws, survey_color, row=row, column=get_column(SURVEY_TRACK_COL, extra_column))
+    create_cell(ws, survey_track, row=row, column=get_column(SURVEY_TRACK_COL, extra_column), borders=True,
+                bg_color=bg_color_survey)
     # Surveyed KP
-    create_cell(ws, surveyed_kp, row=row, column=get_column(SURVEYED_KP_COL, extra_column), borders=True)
-    if surveyed_kp is not None:
-        set_bg_color(ws, survey_color, row=row, column=get_column(SURVEYED_KP_COL, extra_column))
+    create_cell(ws, surveyed_kp, row=row, column=get_column(SURVEYED_KP_COL, extra_column), borders=True,
+                nb_of_digits=3, bg_color=bg_color_survey)
 
 
 def _add_block_def_info(ws: xl_ws.Worksheet, row: int,
                         block_def_limit_name: str) -> None:
     # Block Def. Limit Name
-    create_cell(ws, block_def_limit_name, row=row, column=BLOCK_DEF_LIMIT_NAME_COL, borders=True)
-    if block_def_limit_name is not None:
-        set_bg_color(ws, XlBgColor.light_grey, row=row, column=BLOCK_DEF_LIMIT_NAME_COL)
+    create_cell(ws, block_def_limit_name, row=row, column=BLOCK_DEF_LIMIT_NAME_COL, borders=True,
+                bg_color=XlBgColor.light_grey if block_def_limit_name is not None else None)
 
 
 def _add_line_cell_comments(ws: xl_ws.Worksheet, row: int,
@@ -155,18 +152,22 @@ def _add_line_calculations(ws: xl_ws.Worksheet, row: int,
     difference_formula = (f'= IF(ISBLANK({NAME_COL}{row}), "Not in DC_SYS", '
                           f'IF(ISBLANK({get_column(SURVEY_NAME_COL, extra_column)}{row}), "Not Surveyed", '
                           f'{DC_SYS_KP_COL}{row} - {get_column(SURVEYED_KP_COL, extra_column)}{row}))')
-    create_cell(ws, difference_formula, row=row, column=get_column(DIFFERENCE_COL, extra_column), borders=True)
-    set_fixed_number_of_digits(ws, 4, row=row, column=get_column(DIFFERENCE_COL, extra_column))
+    create_cell(ws, difference_formula, row=row, column=get_column(DIFFERENCE_COL, extra_column), borders=True,
+                nb_of_digits=4)
     # Status
     status_formula = (f'= IF({get_column(DIFFERENCE_COL, extra_column)}{row} = "Not in DC_SYS", "Not in DC_SYS", '
                       f'IF({get_column(DIFFERENCE_COL, extra_column)}{row} = "Not Surveyed", "Not Surveyed", '
                       f'IF(ABS({get_column(DIFFERENCE_COL, extra_column)}{row}) <= {tolerance}, "OK", "KO")))')
     create_cell(ws, status_formula, row=row, column=get_column(STATUS_COL, extra_column),
-                borders=True, center_horizontal=True)
+                borders=True, align_horizontal=XlAlign.center)
 
 
 def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
-                              comments: str, tolerance: str, reverse_polarity: bool, extra_column: bool) -> None:
+                              comments: str, tolerance: str, reverse_polarity: bool, extra_column: bool,
+                              sheet_comments: bool) -> bool:
+    if comments is not None:
+        comments = comments.replace("2 times", "twice")
+
     if reverse_polarity:
         if comments is None:
             full_comments = '= '
@@ -184,16 +185,24 @@ def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
                           f' " -> OK", " -> KO") & "."')
     else:
         full_comments = comments
+    if full_comments is not None:
+        sheet_comments = True
+
     # Comments
-    create_cell(ws, full_comments, row=row, column=get_column(COMMENTS_COL, extra_column),
-                borders=True, line_wrap=True)
+    create_cell(ws, full_comments, row=row, column=get_column(AUTOMATIC_COMMENTS_COL, extra_column),
+                borders=True, line_wrap=True, align_vertical=XlAlign.top)
     if reverse_polarity:
         # line feeds inside a formula are not directly taken into account by the line wrap to autofit the row height
         extra_row = 1 if comments else 0
-        adjust_fixed_row_height(ws, row=row, column=get_column(COMMENTS_COL, extra_column), extra_row=extra_row)
+        adjust_fixed_row_height(ws, row=row, column=get_column(AUTOMATIC_COMMENTS_COL, extra_column),
+                                extra_row=extra_row)
     # Manual Verification
     create_cell(ws, None, row=row, column=get_column(MANUAL_VERIFICATION_COL, extra_column),
-                borders=True, center_horizontal=True)
+                borders=True, align_horizontal=XlAlign.center)
+    # Manual Comments
+    create_cell(ws, None, row=row, column=get_column(COMMENTS_COL, extra_column),
+                borders=True, align_vertical=XlAlign.top)
+    return sheet_comments
 
 
 def _get_tolerance(tolerance_dict: Optional[Union[tuple[str, str, float], dict[str, tuple[str, str, float]]]],
@@ -203,13 +212,13 @@ def _get_tolerance(tolerance_dict: Optional[Union[tuple[str, str, float], dict[s
     if isinstance(tolerance_dict, tuple):
         return tolerance_dict[1]
 
-    for (test_sh_name, corresponding_key), tol in tolerance_dict.items():
+    for (list_test_sh_name, corresponding_key), tol in tolerance_dict.items():
         if dc_sys_sheet is not None:
-            if dc_sys_sheet == test_sh_name:
+            if dc_sys_sheet in list_test_sh_name:
                 return tol[1]
         else:
             test_survey_type_names = SURVEY_TYPES_DICT[corresponding_key]["survey_type_names"]
-            if survey_type in test_survey_type_names:
+            if survey_type.upper() in test_survey_type_names:
                 return tol[1]
     return None
 
@@ -224,7 +233,7 @@ def _get_multiple_dc_sys_objets(sheet_name: str) -> Optional[list]:
 
 
 def _get_dc_sys_color(multiple_dc_sys_objets: Optional[list], dc_sys_sheet: str):
-    list_colors = [XlBgColor.light_yellow, XlBgColor.light_orange, XlBgColor.light_pink]
+    list_colors = [XlBgColor.light_yellow, XlBgColor.light_orange, XlBgColor.light_pink, XlBgColor.light_red]
     if dc_sys_sheet is None:
         return list_colors[0]
     if not multiple_dc_sys_objets:
@@ -238,7 +247,7 @@ def _get_dc_sys_color(multiple_dc_sys_objets: Optional[list], dc_sys_sheet: str)
     return list_colors[0]
 
 
-def _get_multiple_survey_objets(sheet_name: str) -> Optional[list[tuple]]:
+def _get_multiple_survey_objets(sheet_name: str) -> Optional[list[str]]:
     for val in SURVEY_TYPES_DICT.values():
         if val["res_sheet"] == sheet_name:
             return val.get("multiple_survey_objets")
@@ -248,15 +257,14 @@ def _get_multiple_survey_objets(sheet_name: str) -> Optional[list[tuple]]:
 
 
 def _get_survey_color(multiple_survey_objets: Optional[list[tuple]], survey_type: str):
-    list_colors = [XlBgColor.light_green, XlBgColor.light_blue2, XlBgColor.light_blue3]
+    list_colors = [XlBgColor.light_green, XlBgColor.light_blue3, XlBgColor.light_blue2]
     if survey_type is None:
         return list_colors[0]
     if not multiple_survey_objets:
         return list_colors[0]
-    for obj, color in zip(multiple_survey_objets, list_colors):
-        obj_name, inf_lim, sup_lim = obj
-        list_survey_objects = SURVEY_TYPES_DICT[obj_name]["survey_type_names"][inf_lim:sup_lim]
-        if survey_type.upper() in list_survey_objects:
+    for obj_name, color in zip(multiple_survey_objets, list_colors):
+        list_survey_objects = SURVEY_TYPES_DICT[obj_name]["survey_type_names"]
+        if survey_type.strip().upper() in list_survey_objects:
             return color
     print_warning(f"{survey_type = } not found inside multiple_survey_objets or not enough colors defined:\n"
                   f"{multiple_survey_objets = }\n"

@@ -13,17 +13,28 @@ from .xl_utils import *
 from ..common_utils import *
 
 
-__all__ = ["xl_borders", "XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comment",
+__all__ = ["xl_borders", "XlAlign", "XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comment",
            "create_cell", "create_merged_cell",
            "set_fixed_number_of_digits",
            "set_font_size", "set_bold_font", "set_bg_color",
-           "center_vertical_alignment", "center_horizontal_alignment", "enable_line_wrap",
+           "set_vertical_alignment", "set_horizontal_alignment", "enable_line_wrap",
            "adjust_fixed_row_height",
            "draw_exterior_borders", "draw_all_borders_of_a_range",
            "draw_exterior_borders_of_a_range",
            "add_unique_values_conditional_formatting", "add_duplicate_values_conditional_formatting",
            "add_is_equal_conditional_formatting", "add_formula_conditional_formatting",
            "create_defined_name"]
+
+
+class XlAlign:
+    center = "center"
+    # Horizontal Alignments
+    general = "general"
+    left = "left"
+    right = "right"
+    # Vertical Alignments
+    top = "top"
+    bottom = "bottom"
 
 
 class XlFontColor:
@@ -42,17 +53,18 @@ class XlBgColor:
     ok = "C6EFCE"
     na = "FFEB9C"
     # main colors
-    yellow = "FFD966"
-    light_yellow = "FFF2CC"
-    green = "A9D08E"
-    light_green = "E2EFDA"
+    yellow = "FFD050"
+    light_yellow = "FFFFBB"
+    green = "A0E0A0"
+    light_green = "DDFFCC"
     blue = "9BC2E6"
     light_blue = "DDEBF7"
     # other colors
-    light_orange = "F8CBAD"
-    light_pink = "FFCCFF"
-    light_blue2 = "BBCCEE"
-    light_blue3 = "BBFFFF"
+    light_orange = "FFCC99"
+    light_pink = "FFCCCC"
+    light_red = "FF9999"
+    light_blue2 = "CCFFFF"
+    light_blue3 = "99CCFF"
     special_blue = "9999FF"
     # grey
     grey = "BFBFBF"
@@ -84,14 +96,14 @@ def add_cell_comment(ws: openpyxl.worksheet.worksheet.Worksheet, comment: str,
 def create_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: Union[str, float, None],
                 cell: str = None, row: int = None, column: Union[str, int] = None,
                 font_size: int = None, bold: bool = False, italic: bool = False, bg_color: str = None,
-                center_vertical: bool = True, center_horizontal: bool = False, line_wrap: bool = False,
-                borders: bool = False) -> None:
+                align_vertical: str = XlAlign.center, align_horizontal: str = XlAlign.general, line_wrap: bool = False,
+                nb_of_digits: int = None, borders: bool = False) -> None:
     row, column = get_row_and_column_from_cell(cell, row, column)
 
     ws.cell(row=row, column=column, value=value)
     # Cell Formatting
-    _update_cell_formatting(ws, row, column, font_size, bold, italic, bg_color, center_vertical, center_horizontal,
-                            line_wrap)
+    _update_cell_formatting(ws, row, column, font_size, bold, italic, bg_color,
+                            align_vertical, align_horizontal, line_wrap, nb_of_digits)
     # Cell Borders
     if borders:
         draw_exterior_borders(ws, row=row, column=column)
@@ -101,8 +113,8 @@ def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
                        start_cell: str = None, start_row: int = None, start_column: Union[str, int] = None,
                        end_cell: str = None, end_row: int = None, end_column: Union[str, int] = None,
                        font_size: int = None, bold: bool = False, italic: bool = False, bg_color: str = None,
-                       center_vertical: bool = True, center_horizontal: bool = False,
-                       line_wrap: bool = True,
+                       align_vertical: str = XlAlign.center, align_horizontal: str = XlAlign.general,
+                       line_wrap: bool = True, nb_of_digits: int = None,
                        borders: bool = False, border_style: str = xl_borders.BORDER_THIN) -> None:
     start_row, start_column = get_row_and_column_from_cell(start_cell, start_row, start_column)
     end_row, end_column = get_row_and_column_from_cell(end_cell, end_row, end_column)
@@ -111,8 +123,8 @@ def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
                    start_column=start_column, end_column=end_column)
     ws.cell(row=start_row, column=start_column, value=value)
     # Cell Formatting
-    _update_cell_formatting(ws, start_row, start_column, font_size, bold, italic, bg_color, center_vertical,
-                            center_horizontal, line_wrap)
+    _update_cell_formatting(ws, start_row, start_column, font_size, bold, italic, bg_color,
+                            align_vertical, align_horizontal, line_wrap, nb_of_digits)
     # Cell Borders
     if borders:
         draw_all_borders_of_a_range(ws, start_row=start_row, end_row=end_row, start_column=start_column,
@@ -121,8 +133,8 @@ def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
 
 def _update_cell_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, row: int, column: int,
                             font_size: int, bold: bool, italic: bool, bg_color: str,
-                            center_vertical: bool, center_horizontal: bool,
-                            line_wrap: bool) -> None:
+                            align_vertical: str, align_horizontal: str,
+                            line_wrap: bool, nb_of_digits: int) -> None:
     if font_size is not None:
         set_font_size(ws, font_size=font_size, row=row, column=column)
     if bold:
@@ -131,12 +143,14 @@ def _update_cell_formatting(ws: openpyxl.worksheet.worksheet.Worksheet, row: int
         set_italic_font(ws, row=row, column=column)
     if bg_color is not None:
         set_bg_color(ws, hex_color=bg_color, row=row, column=column)
-    if center_vertical:
-        center_vertical_alignment(ws, row=row, column=column)
-    if center_horizontal:
-        center_horizontal_alignment(ws, row=row, column=column)
+    if align_vertical:
+        set_vertical_alignment(ws, align_vertical=align_vertical, row=row, column=column)
+    if align_horizontal:
+        set_horizontal_alignment(ws, align_horizontal=align_horizontal, row=row, column=column)
     if line_wrap:
         enable_line_wrap(ws, row=row, column=column)
+    if nb_of_digits:
+        set_fixed_number_of_digits(ws, number_of_digits=nb_of_digits, row=row, column=column)
 
 
 # ------ Number Formatting ------ #
@@ -178,17 +192,17 @@ def set_bg_color(ws: openpyxl.worksheet.worksheet.Worksheet, hex_color: str,
     ws[cell].fill = pattern_style
 
 
-def center_vertical_alignment(ws: openpyxl.worksheet.worksheet.Worksheet,
-                              cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+def set_vertical_alignment(ws: openpyxl.worksheet.worksheet.Worksheet, align_vertical: str = XlAlign.center,
+                           cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
-    alignment_style = xl_styles.Alignment(vertical="center")
+    alignment_style = xl_styles.Alignment(vertical=align_vertical)
     ws[cell].alignment += alignment_style
 
 
-def center_horizontal_alignment(ws: openpyxl.worksheet.worksheet.Worksheet,
-                                cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+def set_horizontal_alignment(ws: openpyxl.worksheet.worksheet.Worksheet, align_horizontal: str = XlAlign.general,
+                             cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
-    alignment_style = xl_styles.Alignment(horizontal="center")
+    alignment_style = xl_styles.Alignment(horizontal=align_horizontal)
     ws[cell].alignment += alignment_style
 
 

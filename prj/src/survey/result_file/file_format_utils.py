@@ -9,7 +9,7 @@ __all__ = ["create_verif_sheet",
            "NAME_COL", "DC_SYS_SHEET_COL", "DC_SYS_TRACK_COL", "DC_SYS_KP_COL",
            "BLOCK_DEF_LIMIT_NAME_COL",
            "SURVEY_NAME_COL", "SURVEY_TYPE_COL", "SURVEY_TRACK_COL", "SURVEYED_KP_COL",
-           "DIFFERENCE_COL", "STATUS_COL", "COMMENTS_COL", "MANUAL_VERIFICATION_COL",
+           "DIFFERENCE_COL", "STATUS_COL", "AUTOMATIC_COMMENTS_COL", "MANUAL_VERIFICATION_COL", "COMMENTS_COL",
            "get_column", "get_tolerance_dict"]
 
 
@@ -24,27 +24,32 @@ SURVEY_TRACK_COL = "G"
 SURVEYED_KP_COL = "H"
 DIFFERENCE_COL = "I"
 STATUS_COL = "J"
-COMMENTS_COL = "K"
+AUTOMATIC_COMMENTS_COL = "K"
 MANUAL_VERIFICATION_COL = "L"
+COMMENTS_COL = "M"
 
 
 def create_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, extra_column: bool
                        ) -> tuple[xl_ws.Worksheet, int]:
     wb.create_sheet(sheet_name)
     ws = wb[sheet_name]
+    # Set properties and display options for the sheet
     ws.sheet_properties.tabColor = "0070C0"
     _set_columns_width(ws, extra_column)
-    ws.sheet_view.zoomScale = 85
-    ws.sheet_view.showGridLines = False
+    ws.sheet_view.zoomScale = 85  # set zoom level to 85 %
+    ws.sheet_view.showGridLines = False  # turn off gridlines display
     _set_conditional_formatting(ws, extra_column)
-    # Set tolerance
+    # Write location tolerance and set the defined name
     row = _write_tolerance_variable(wb, ws, sheet_name)
-    row += 1
     # Write columns titles
+    row += 1
     _write_columns_title(ws, row, extra_column)
-    row += 2
-    ws.freeze_panes = f"A{row}"
-    ws.auto_filter.ref = f"A{row-1}:{get_column(MANUAL_VERIFICATION_COL, extra_column)}{row - 1}"
+    # Set filter
+    row += 1
+    ws.auto_filter.ref = f"A{row}:{get_column(COMMENTS_COL, extra_column)}{row}"
+    # Freeze header rows
+    row += 1
+    ws.freeze_panes = f"B{row}"
     return ws, row
 
 
@@ -52,17 +57,18 @@ def _set_columns_width(ws: xl_ws.Worksheet, extra_column: bool):
     ws.column_dimensions[NAME_COL].width = 40
     ws.column_dimensions[DC_SYS_SHEET_COL].width = 12.5
     ws.column_dimensions[DC_SYS_TRACK_COL].width = 18
-    ws.column_dimensions[DC_SYS_KP_COL].width = 15.5
+    ws.column_dimensions[DC_SYS_KP_COL].width = 13.5
     if extra_column:
         ws.column_dimensions[BLOCK_DEF_LIMIT_NAME_COL].width = 20.5
     ws.column_dimensions[get_column(SURVEY_NAME_COL, extra_column)].width = 33
     ws.column_dimensions[get_column(SURVEY_TYPE_COL, extra_column)].width = 12.5
     ws.column_dimensions[get_column(SURVEY_TRACK_COL, extra_column)].width = 18
-    ws.column_dimensions[get_column(SURVEYED_KP_COL, extra_column)].width = 15.5
+    ws.column_dimensions[get_column(SURVEYED_KP_COL, extra_column)].width = 13.5
     ws.column_dimensions[get_column(DIFFERENCE_COL, extra_column)].width = 13.5
     ws.column_dimensions[get_column(STATUS_COL, extra_column)].width = 13.5
-    ws.column_dimensions[get_column(COMMENTS_COL, extra_column)].width = 58
-    ws.column_dimensions[get_column(MANUAL_VERIFICATION_COL, extra_column)].width = 16
+    ws.column_dimensions[get_column(AUTOMATIC_COMMENTS_COL, extra_column)].width = 45
+    ws.column_dimensions[get_column(MANUAL_VERIFICATION_COL, extra_column)].width = 13.5
+    ws.column_dimensions[get_column(COMMENTS_COL, extra_column)].width = 45
 
 
 def _set_conditional_formatting(ws: xl_ws.Worksheet, extra_column: bool):
@@ -105,34 +111,34 @@ def _write_tolerance_variable(wb: openpyxl.workbook.Workbook, ws: xl_ws.Workshee
 def _write_columns_title(ws: xl_ws.Worksheet, row: int, extra_column: bool):
     # DC_SYS information
     create_merged_cell(ws, "DC_SYS", start_row=row, end_row=row, start_column=NAME_COL, end_column=DC_SYS_KP_COL,
-                       center_horizontal=True, bold=True, bg_color=XlBgColor.yellow)
-    create_cell(ws, "Data Name", row=row+1, column=NAME_COL, center_horizontal=True, bold=True,
+                       align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.yellow)
+    create_cell(ws, "Data Name", row=row+1, column=NAME_COL, align_horizontal=XlAlign.center, bold=True,
                 bg_color=XlBgColor.yellow)
-    create_cell(ws, "Sheet", row=row+1, column=DC_SYS_SHEET_COL, center_horizontal=True, bold=True,
+    create_cell(ws, "Sheet", row=row+1, column=DC_SYS_SHEET_COL, align_horizontal=XlAlign.center, bold=True,
                 bg_color=XlBgColor.yellow)
-    create_cell(ws, "Track", row=row+1, column=DC_SYS_TRACK_COL, center_horizontal=True, bold=True,
+    create_cell(ws, "Track", row=row+1, column=DC_SYS_TRACK_COL, align_horizontal=XlAlign.center, bold=True,
                 bg_color=XlBgColor.yellow)
-    create_cell(ws, "KP", row=row+1, column=DC_SYS_KP_COL, center_horizontal=True, bold=True,
+    create_cell(ws, "KP", row=row+1, column=DC_SYS_KP_COL, align_horizontal=XlAlign.center, bold=True,
                 bg_color=XlBgColor.yellow)
     draw_exterior_borders_of_a_range(ws, start_row=row, end_row=row+1, start_column=NAME_COL, end_column=DC_SYS_KP_COL)
     # Block Definition
     if extra_column:
         create_merged_cell(ws, "Block Def. Name", start_row=row, end_row=row+1, start_column=BLOCK_DEF_LIMIT_NAME_COL,
-                           end_column=BLOCK_DEF_LIMIT_NAME_COL, borders=True, center_horizontal=True, bold=True,
-                           border_style=xl_borders.BORDER_MEDIUM, bg_color=XlBgColor.grey)
+                           end_column=BLOCK_DEF_LIMIT_NAME_COL, borders=True, align_horizontal=XlAlign.center,
+                           bold=True, border_style=xl_borders.BORDER_MEDIUM, bg_color=XlBgColor.grey)
     # Survey information
     create_merged_cell(ws, "Survey", start_row=row, end_row=row,
                        start_column=get_column(SURVEY_NAME_COL, extra_column),
                        end_column=get_column(SURVEYED_KP_COL, extra_column),
-                       center_horizontal=True, bold=True, bg_color=XlBgColor.green)
+                       align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.green)
     create_cell(ws, "Reference", row=row+1, column=get_column(SURVEY_NAME_COL, extra_column),
-                center_horizontal=True, bold=True, bg_color=XlBgColor.green)
+                align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.green)
     create_cell(ws, "Type", row=row+1, column=get_column(SURVEY_TYPE_COL, extra_column),
-                center_horizontal=True, bold=True, bg_color=XlBgColor.green)
+                align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.green)
     create_cell(ws, "Track", row=row+1, column=get_column(SURVEY_TRACK_COL, extra_column),
-                center_horizontal=True, bold=True, bg_color=XlBgColor.green)
+                align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.green)
     create_cell(ws, "Surveyed KP", row=row+1, column=get_column(SURVEYED_KP_COL, extra_column),
-                center_horizontal=True, bold=True, bg_color=XlBgColor.green)
+                align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.green)
     draw_exterior_borders_of_a_range(ws, start_row=row, end_row=row+1,
                                      start_column=get_column(SURVEY_NAME_COL, extra_column),
                                      end_column=get_column(SURVEYED_KP_COL, extra_column))
@@ -140,22 +146,26 @@ def _write_columns_title(ws: xl_ws.Worksheet, row: int, extra_column: bool):
     create_merged_cell(ws, "Difference", start_row=row, end_row=row+1,
                        start_column=get_column(DIFFERENCE_COL, extra_column),
                        end_column=get_column(DIFFERENCE_COL, extra_column),
-                       center_horizontal=True, bold=True, bg_color=XlBgColor.blue)
+                       align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.blue)
     create_merged_cell(ws, "Status", start_row=row, end_row=row+1,
                        start_column=get_column(STATUS_COL, extra_column),
                        end_column=get_column(STATUS_COL, extra_column),
-                       center_horizontal=True, bold=True, bg_color=XlBgColor.blue)
-    create_merged_cell(ws, "Comments", start_row=row, end_row=row+1,
-                       start_column=get_column(COMMENTS_COL, extra_column),
-                       end_column=get_column(COMMENTS_COL, extra_column),
-                       center_horizontal=True, bold=True, bg_color=XlBgColor.blue)
+                       align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.blue)
+    create_merged_cell(ws, "Automatic Comments", start_row=row, end_row=row+1,
+                       start_column=get_column(AUTOMATIC_COMMENTS_COL, extra_column),
+                       end_column=get_column(AUTOMATIC_COMMENTS_COL, extra_column),
+                       align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.blue)
     create_merged_cell(ws, "Manual Verification", start_row=row, end_row=row+1,
                        start_column=get_column(MANUAL_VERIFICATION_COL, extra_column),
                        end_column=get_column(MANUAL_VERIFICATION_COL, extra_column),
-                       center_horizontal=True, bold=True, bg_color=XlBgColor.blue)
+                       align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.blue)
+    create_merged_cell(ws, "Comments", start_row=row, end_row=row+1,
+                       start_column=get_column(COMMENTS_COL, extra_column),
+                       end_column=get_column(COMMENTS_COL, extra_column),
+                       align_horizontal=XlAlign.center, bold=True, bg_color=XlBgColor.blue)
     draw_exterior_borders_of_a_range(ws, start_row=row, end_row=row+1,
                                      start_column=get_column(DIFFERENCE_COL, extra_column),
-                                     end_column=get_column(MANUAL_VERIFICATION_COL, extra_column))
+                                     end_column=get_column(COMMENTS_COL, extra_column))
 
 
 def get_column(default_col: str, extra_col: bool = False) -> str:

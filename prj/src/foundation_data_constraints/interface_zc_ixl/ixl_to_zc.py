@@ -122,7 +122,7 @@ def _rule_1_check_signal(sig_msg_dict: dict, in_cbtc: bool):
         cbtc_terr_exit_or_with_iatp = (get_dc_sys_value(sig, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O
                                        or get_dc_sys_value(sig, DCSYS.Sig.WithIatpDepCheck) == YesOrNo.O)
         if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, is_not_buffer_or_pr,
-                          "shall exist for all Signals (excluding buffers and permanent reds)",
+                          "shall exist for all Signals (excluding buffers and permanently reds)",
                           TypeNomLogiqueInfoMESPAS.PR_ASPECT, shall_be_vital=cbtc_terr_exit_or_with_iatp,
                           is_flux_pas_mes=False, vital_condition=cbtc_terr_exit_or_with_iatp,
                           vital_condition_str="flag [CBTC Territory exit] set to 'Y' "

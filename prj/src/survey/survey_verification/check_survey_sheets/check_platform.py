@@ -6,12 +6,12 @@ from ....cctool_oo_schema import *
 from ....dc_sys import *
 from ...survey_utils import clean_track_name
 from .common_utils import *
-from .check_platform_osp import *
+from .check_osp import *
 
 
 # Switch
-def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp_survey_info: dict,
-                   set_of_survey_tracks: set[str]):
+def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict,
+                   set_of_survey_tracks: set[str], osp_survey_info: dict):
     assert dc_sys_sheet == DCSYS.Quai
     assert res_sheet_name == "Platform"
 
@@ -38,8 +38,9 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict, osp
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, plt_survey_info))
 
-    # Add platform OSP on same sheet
-    res_dict.update(check_platform_osp(dc_sys_sheet.PointDArret, res_sheet_name, osp_survey_info, set_of_survey_tracks))
+    # Add OSP on same sheet
+    res_dict.update(
+        check_osp([DCSYS.Quai.PointDArret, DCSYS.PtA], res_sheet_name, osp_survey_info, set_of_survey_tracks))
     return res_dict
 
 

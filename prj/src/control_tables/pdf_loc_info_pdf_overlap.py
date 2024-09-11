@@ -7,7 +7,7 @@ from ..database_location import *
 #     f.write(json.dumps(LOC_DICT, indent=2))
 
 
-if PROJECT_NAME == Projects.Brussels:
+if PROJECT_NAME.startswith("Brussels"):
     LOC_DICT = {
         "Name_Title":                   {"x":  30, "y": 744, "x_tol": 30, "y_tol": 30},
         "Name":                         {"x": 100, "y": 743, "x_tol": 40},
@@ -39,7 +39,7 @@ elif PROJECT_NAME == Projects.Copenhagen:
         "[10] Track Circuit":           {"x": 229, "y": 340},
         "[11] Timer":                   {"x": 402, "y": 340},
     }
-elif PROJECT_NAME == Projects.Glasgow:
+elif PROJECT_NAME.startswith("Glasgow"):
     LOC_DICT = {
         "Name_Title":                   {"x":  39, "y": 744, "x_tol": 30, "y_tol": 30},
         "Name":                         {"x": 128, "y": 743, "x_tol": 40},

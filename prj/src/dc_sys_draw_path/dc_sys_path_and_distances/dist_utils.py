@@ -63,19 +63,24 @@ def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x
         return False
 
 
-def print_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str) -> None:
+def print_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str,
+                               direction: str = None) -> None:
     type_str_1 = get_sh_name(obj_type_1)
     type_str_2 = get_sh_name(obj_type_2)
-    d = get_dist_between_objects(obj_type_1, obj_name_1, obj_type_2, obj_name_2)
+    downstream = None if direction is None else direction == Direction.CROISSANT
+    d = get_dist_between_objects(obj_type_1, obj_name_1, obj_type_2, obj_name_2, downstream=downstream)
     if d is None:
         print(f"No path found between {type_str_1} {Color.mint_green}{obj_name_1}{Color.reset} "
-              f"and {Color.mint_green}{type_str_2}{Color.reset} {obj_name_2}.")
+              f"and {type_str_2} {Color.mint_green}{obj_name_2}{Color.reset}"
+              f"{(' in direction ' + Color.yellow + direction + Color.reset) if direction is not None else ''}.")
     else:
         print(f"Distance between {type_str_1} {Color.mint_green}{obj_name_1}{Color.reset} "
-              f"and {type_str_2} {Color.mint_green}{obj_name_2}{Color.reset} is {Color.beige}{d}{Color.reset}.")
+              f"and {type_str_2} {Color.mint_green}{obj_name_2}{Color.reset} is {Color.beige}{d}{Color.reset}"
+              f"{(' in direction ' + Color.yellow + direction + Color.reset) if direction is not None else ''}.")
 
 
-def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str) -> Optional[float]:
+def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str,
+                             downstream: bool = None) -> Optional[float]:
     loc1 = get_obj_position(obj_type_1, obj_name_1)
     loc2 = get_obj_position(obj_type_2, obj_name_2)
     if loc1 is None or loc2 is None:
@@ -89,7 +94,7 @@ def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2
         seg1, x1 = lim1[0], lim1[1]
         for lim2 in loc2:
             seg2, x2 = lim2[0], lim2[1]
-            current_d = get_dist(seg1, x1, seg2, x2)
+            current_d = get_dist(seg1, x1, seg2, x2, downstream=downstream)
             if current_d is None:
                 continue
             if min_d is None or current_d < min_d:
@@ -97,8 +102,11 @@ def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2
     return min_d
 
 
-def get_dist(seg1: str, x1: float, seg2: str, x2: float, verbose: bool = False) -> Optional[float]:
+def get_dist(seg1: str, x1: float, seg2: str, x2: float, verbose: bool = False,
+             downstream: bool = None) -> Optional[float]:
     """ Return the distance between (seg1, x1) and (seg2, x2). """
+    if downstream is not None:
+        return get_dist_downstream(seg1, x1, seg2, x2, downstream)
     x1 = float(x1)
     x2 = float(x2)
     if seg1 == seg2:

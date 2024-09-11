@@ -12,7 +12,8 @@ __all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_su
 
 
 def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
-                       dc_sys_sheet: str, dc_sys_track: str, dc_sys_original_track: str, dc_sys_kp: float):
+                       dc_sys_sheet: str, dc_sys_track: str, dc_sys_original_track: str, dc_sys_kp: float,
+                       extra_comment: str = None):
     survey_name = survey_obj_info["obj_name"] if survey_obj_info is not None else None
     survey_type = survey_obj_info["survey_type"] if survey_obj_info is not None else None
     survey_track = survey_obj_info["survey_track"] if survey_obj_info is not None else None
@@ -20,6 +21,11 @@ def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
     surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
     surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
     comments = survey_obj_info["comments"] if survey_obj_info is not None else None
+    if extra_comment is not None:
+        if comments is None:
+            comments = extra_comment
+        else:
+            comments += "\n\n" + extra_comment
 
     return {"dc_sys_sheet": dc_sys_sheet, "dc_sys_track": dc_sys_track,
             "dc_sys_original_track": dc_sys_original_track, "dc_sys_kp": dc_sys_kp,
@@ -43,17 +49,40 @@ def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info:
     return extra_dict
 
 
-def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[str, Any]) -> str:
+def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[str, Any],
+                         do_print: bool = True,
+                         do_smallest_amount_of_patterns: bool = False) -> str:
+    # Remove duplicates in the test list
     test_names = _get_unique_list(test_names)
+    # Get only survey names on the corresponding track
+    survey_test_list = [(survey_name.removesuffix(f"__{track}".upper()), survey_name)
+                        for survey_name in survey_info
+                        if survey_name.endswith(f"__{track}".upper())]
+
     for test_name in test_names:
-        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info)
+        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print)
         if test_name_in_survey is not None:
             return test_name_in_survey
-    # try removing leading zeros
+    # Try removing leading zeros
     for test_name in test_names:
-        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, remove_leading_zeros=True)
+        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print,
+                                                   remove_leading_zeros=True)
         if test_name_in_survey is not None:
             return test_name_in_survey
+    # Try removing duplicate patterns
+    for test_name in test_names:
+        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print,
+                                                   test_unique_patterns=True)
+        if test_name_in_survey is not None:
+            return test_name_in_survey
+    # Try with the smallest amount of patterns
+    if do_smallest_amount_of_patterns:
+        for test_name in test_names:
+            test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print,
+                                                       test_smallest_patterns=True)
+            if test_name_in_survey is not None:
+                return test_name_in_survey
+
     return f"{test_names[0]}__{track}".upper()  # default
 
 
@@ -61,20 +90,62 @@ def _get_unique_list(i_list: list[Optional[str]]):
     new_list = list()
     for x in i_list:
         if x is not None and x not in new_list:
-            new_list.append(x)
+            new_list.append(x.upper())
     return new_list
 
 
-def _test_name_in_survey(test_name: str, track: str, survey_info: dict[str, Any], remove_leading_zeros: bool = False):
-    if remove_leading_zeros:
-        test_name = "_".join(re.sub(r"^0*", "", x) for x in test_name.split("_"))
-        test_list = ["_".join(re.sub(r"^0*", "", x) for x in survey_name.split("_"))
-                     for survey_name in survey_info]
+def _test_name_in_survey(original_test_name: str, track: str, survey_info: dict[str, dict[str, Union[str, float]]],
+                         survey_test_list: list[tuple[str, str]],
+                         do_print: bool,
+                         remove_leading_zeros: bool = False,
+                         test_unique_patterns: bool = False,
+                         test_smallest_patterns: bool = False):
+    if remove_leading_zeros:  # apply the same transformation to the name from DC_SYS and the ones from the survey
+        test_name = _remove_leading_zeros(original_test_name)
+        survey_test_list = [(_remove_leading_zeros(survey_test_name), survey_name)
+                            for survey_test_name, survey_name in survey_test_list]
+
+    elif test_unique_patterns or test_smallest_patterns:
+        test_name = _get_unique_patterns(original_test_name)
+        survey_test_list = [(_get_unique_patterns(survey_name), survey_name)
+                            for survey_test_name, survey_name in survey_test_list]
+
+    else:  # default
+        test_name = original_test_name
+
+    if test_smallest_patterns:
+        corresponding_survey_name_list = _test_smallest_patterns(test_name, survey_test_list)
     else:
-        test_list = survey_info.keys()
-    if test_name is not None and f"{test_name}__{track}".upper() in test_list:
-        return f"{test_name}__{track}".upper()
+        corresponding_survey_name_list = [survey_name for survey_test_name, survey_name in survey_test_list
+                                          if test_name == survey_test_name]
+    if len(corresponding_survey_name_list) == 1:
+        return corresponding_survey_name_list[0]
+    if len(corresponding_survey_name_list) > 1 and do_print:
+        print_log(f"Multiple objects in survey can correspond to {Color.yellow}{original_test_name}{Color.reset} on "
+                  f"{Color.light_yellow}{track}{Color.reset}, unable to associate it:\n{Color.default}"
+                  f"{[survey_info[matching_obj]['obj_name'] for matching_obj in corresponding_survey_name_list]}"
+                  f"{Color.reset}")
     return None
+
+
+def _remove_leading_zeros(name: str) -> str:
+    name = "_".join(re.sub(r"^0*", "", x) for x in name.split("_"))
+    return name
+
+
+def _get_unique_patterns(name: str) -> str:
+    list_patterns = set(name.split("_"))
+    name = "_".join(pattern for pattern in sorted(list_patterns))
+    return name
+
+
+def _test_smallest_patterns(test_name: str, survey_test_list: list[tuple[str, str]]) -> list[str]:
+    test_name_patterns = test_name.split("_")
+    list_survey_patterns = [(survey_test_name.split("_"), survey_name)
+                            for survey_test_name, survey_name in survey_test_list]
+    corresponding_survey_name_list = [survey_name for survey_test_patterns, survey_name in list_survey_patterns
+                                      if all(pattern in survey_test_patterns for pattern in test_name_patterns)]
+    return corresponding_survey_name_list
 
 
 def get_corresponding_survey_one_limit_on_track(dc_sys_limits_on_track: list[tuple[str, float]],
@@ -136,13 +207,21 @@ def get_corresponding_survey_two_limits_on_track(dc_sys_limits_on_track: list[tu
                                                    if survey_name != survey_name_corresponding_to_1]:
                 surveyed_kp_2 = survey_info[survey_name_corresponding_to_2]["surveyed_kp"]
                 reversed_polarity = (check_polarity(lim1_kp, surveyed_kp_1) and check_polarity(lim2_kp, surveyed_kp_2))
-                if reversed_polarity:
-                    diff1 = abs(abs(lim1_kp) - abs(surveyed_kp_1))
-                    diff2 = abs(abs(lim2_kp) - abs(surveyed_kp_2))
-                else:
+                if not reversed_polarity:
+                    # First, test if there is an association where in each pair both values are close,
+                    # and try to minimize the sum of differences.
                     diff1 = abs(lim1_kp - surveyed_kp_1)
                     diff2 = abs(lim2_kp - surveyed_kp_2)
-                test_differences.append((diff1 + diff2,
+                    # If the sums of the differences are equal, it means that the survey KPs are both larger
+                    # or both smaller than both DC_SYS KPs.
+                    # In that case, associate the smallest KP with the smallest and the largest with the largest.
+                    # We want a False (0) when they are aligned and a True (1) if not, to work in the sort.
+                    second_test = not ((lim1_kp <= lim2_kp) == (surveyed_kp_1 <= surveyed_kp_2))
+                else:  # In reverse polarity, we simply work with the absolute values of the KP.
+                    diff1 = abs(abs(lim1_kp) - abs(surveyed_kp_1))
+                    diff2 = abs(abs(lim2_kp) - abs(surveyed_kp_2))
+                    second_test = not ((abs(lim1_kp) <= abs(lim2_kp)) == (abs(surveyed_kp_1) <= abs(surveyed_kp_2)))
+                test_differences.append(((diff1 + diff2, second_test),
                                          {(lim1_track, lim1_kp): survey_name_corresponding_to_1,
                                           (lim2_track, lim2_kp): survey_name_corresponding_to_2}))
         closest_combination = sorted(test_differences, key=lambda x: x[0])[0][1]

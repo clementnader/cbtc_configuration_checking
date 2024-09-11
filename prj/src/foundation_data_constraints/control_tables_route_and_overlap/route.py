@@ -123,7 +123,7 @@ def _check_controlled_sig(route: str, route_val: dict[str, Any], control_sig: st
     sig_nb = dc_sys_origin_signal.split("_")[-1]
     if PROJECT_NAME == Projects.Copenhagen:
         control_sig = control_sig.removeprefix("0")
-    if PROJECT_NAME == Projects.Glasgow:
+    if PROJECT_NAME.startswith("Glasgow"):
         sig_nb = sig_nb.removeprefix("S")
     if sig_nb == control_sig:
         return True

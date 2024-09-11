@@ -17,9 +17,8 @@ __all__ = ["get_user_full_name"]
 
 
 def get_user_full_name() -> str:
-    print_log(f"Trying to get user full name to set it as author in Header sheet...")
     if sys.platform != "win32":
-        print_log(f"\tPlatform OS is not Windows, unable to find the user name.")
+        print_log(f"Platform OS is not Windows, unable to find the user name.")
         return ""
     # full_name = None
     # for language, full_name_attr in FULL_NAME_ATTRIBUTES.items():
@@ -30,9 +29,9 @@ def get_user_full_name() -> str:
     #         break
     full_name = get_display_name()
     if not full_name:
-        print_log(f"\tUnable to find the user name.")
+        print_log(f"Unable to find the user name.")
         return ""
-    print_log(f"\tUser name is found to be {Color.default}\"{full_name}\"{Color.reset}.")
+    print_log(f"User name is found to be {Color.default}\"{full_name}\"{Color.reset}.")
     if "(" in full_name:
         full_name = full_name.split("(", 1)[0].strip()
     if "," in full_name:

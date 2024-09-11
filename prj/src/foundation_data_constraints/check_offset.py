@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
 from ..utils import *
 from ..dc_sys.load_database.load_xl import *
 from ..dc_sys import *
@@ -18,12 +19,34 @@ def check_offset_correctness():
     wb = load_dc_sys_wb()
     sheet_names = get_xl_sheet_names(wb)
     for sh_name in sheet_names:
+        if "Comment" in sh_name or "MergeExcel_log" in sh_name:
+            continue
         ws = get_xl_sheet_by_name(wb, sh_name)
+        # if check_integers(ws) is False:
+        #     success = False
         if verify_sheet(ws) is False:
             success = False
     if success:
         print_log("No KO has been raised in the verification of the correspondence between "
                   "(Segment, Offset) <-> (Track, KP).")
+
+
+def check_integers(ws: xlrd.sheet):
+    success = True
+    nb_cols = ws.ncols
+    for j in range(1, nb_cols+1):
+        for i in range(3, get_xl_number_of_rows(ws) + 1):
+            cell_value = get_xl_cell_value(ws, row=i, column=j)
+            if cell_value is None or isinstance(cell_value, float) or isinstance(cell_value, int):
+                continue
+            if re.search(r"^[0-9]+([,.][0-9]+)?$", cell_value) is not None:
+                if "," in cell_value or "." in cell_value:
+                    print_warning(f"In sheet {Color.blue}{ws.name}{Color.reset}: "
+                                  f"cell at {Color.yellow}{get_xl_column_letter(j)}{i}{Color.reset} "
+                                  f"is not parsed as a number in Excel, "
+                                  f"check its decimal separator: \"{cell_value}\".")
+                    success = False
+    return success
 
 
 def verify_sheet(ws: xlrd.sheet):
@@ -61,16 +84,13 @@ def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name)
                       f"\n{seg = } / {x = }")
         return False
     if not (isinstance(x, float) or isinstance(x, int)):
-        if "." in x:
-            print_warning(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                          f"Offset at {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
-                          f"uses a dot \'.\' as the decimal separator"
-                          f"\n{x = }")
-            success = False
         try:
             x = float(x.replace(',', '.'))
         except ValueError:
-            print_error("Actually, it is not a number!")
+            print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
+                        f"Offset at {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
+                        f"is not a number"
+                        f"\n{x = }")
             return False
     x = round(x, 3)
     len_seg = get_seg_len(seg)
@@ -103,13 +123,14 @@ def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col,
                       f"\n{track = } / {kp = }")
         return False
     if not (isinstance(kp, float) or isinstance(kp, int)):
-        if "." in kp:
-            print_warning(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                          f"KP at {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
-                          f"uses a dot \'.\' as the decimal separator"
-                          f"\n{kp = }")
-            success = False
-        kp = float(kp.replace(',', '.'))
+        try:
+            kp = float(kp.replace(',', '.'))
+        except ValueError:
+            print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
+                        f"KP at {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
+                        f"is not a number"
+                        f"\n{kp = }")
+            return False
     kp = round(kp, 3)
     min_kp, max_kp = get_track_limits(track)
     if not (min_kp <= kp):

@@ -64,7 +64,8 @@ def get_orientation_of_zone_limits(obj_type_name: str, obj_name: str, zone_limit
         elif any(are_other_limits_upstream) and any(are_other_limits_downstream):
             direction = None
         else:  # not any upstream and not any downstream
-            print_error(f"Unable to find direction for limit {(seg1, x1)} of {obj_type_name} {obj_name}.")
+            print_error(f"Unable to find direction for limit {(seg1, x1)} of "
+                        f"{Color.beige}{obj_type_name}{Color.reset} {Color.yellow}{obj_name}{Color.reset}.")
             direction = None
         if direction is not None:
             oriented_zone_limits.append((seg1, x1, direction))
@@ -94,7 +95,8 @@ def update_missed_limits(obj_type_name: str, obj_name: str,
             start_limit = oriented_zone_limits[cnt]
             other_limits, wrong_limit_direction = find_other_limits(start_limit, zone_limits)
             if wrong_limit_direction:
-                print_error(f"Reached the end of track, the zone is not closed for {obj_type_name} {obj_name}:\n"
+                print_error(f"Reached the end of track, the zone is not closed for "
+                            f"{Color.beige}{obj_type_name}{Color.reset} {Color.yellow}{obj_name}{Color.reset}:\n"
                             f"problem starting from {start_limit}: "
                             f"end of track has been reached or a whole loop has been made.")
                 continue
@@ -111,7 +113,8 @@ def update_missed_limits(obj_type_name: str, obj_name: str,
                 start_limit = (start_limit_seg, start_limit_x, False)
                 other_limits, wrong_limit_direction = find_other_limits(start_limit, zone_limits)
                 if wrong_limit_direction:
-                    print_error(f"Reached the end of track, the zone is not closed for {obj_type_name} {obj_name}:\n"
+                    print_error(f"Reached the end of track, the zone is not closed for "
+                                f"{Color.beige}{obj_type_name}{Color.reset} {Color.yellow}{obj_name}{Color.reset}:\n"
                                 f"problem starting from {(start_limit_seg, start_limit_x)} (tried in both directions): "
                                 f"end of track has been reached or a whole loop has been made.")
                     continue
@@ -120,7 +123,8 @@ def update_missed_limits(obj_type_name: str, obj_name: str,
 
     missed_limits = get_missed_limits(oriented_zone_limits, zone_limits)
     if missed_limits:  # Not all limits orientation has been found
-        print_error(f"Unable to get all oriented limits for {obj_type_name} {obj_name}.")
+        print_error(f"Unable to get all oriented limits for {Color.beige}{obj_type_name}{Color.reset} "
+                    f"{Color.yellow}{obj_name}{Color.reset}.")
         print(f"{zone_limits = }\n{oriented_zone_limits = }")
         oriented_zone_limits.extend([(seg, x, None) for seg, x in missed_limits])
 

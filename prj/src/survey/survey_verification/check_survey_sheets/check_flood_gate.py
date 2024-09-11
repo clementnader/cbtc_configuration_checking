@@ -9,7 +9,8 @@ from .common_utils import *
 
 
 # FloodGate
-def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict, set_of_survey_tracks: set[str]):
+def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
+                     set_of_survey_tracks: set[str]):
     assert dc_sys_sheet == DCSYS.Flood_Gate
     assert res_sheet_name == "FloodGate"
 

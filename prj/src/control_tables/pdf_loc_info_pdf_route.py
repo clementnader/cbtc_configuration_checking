@@ -4,7 +4,7 @@
 from ..database_location import *
 
 
-if PROJECT_NAME == Projects.Brussels:
+if PROJECT_NAME.startswith("Brussels"):
     LOC_DICT = {
         "Name_Title":                             {"x":  42, "y": 814, "x_tol": 30, "y_tol": 30},
         "Name":                                   {"x": 115, "y": 813, "x_tol": 40},
@@ -49,7 +49,7 @@ elif PROJECT_NAME == Projects.Copenhagen:
         "[18] Track Circuit clearance":           {"x": 475, "y": 184},
         "[19] External Conditions \\ MAR":        {"x":  47, "y": 364, "y_tol": 50},
     }
-elif PROJECT_NAME == Projects.Glasgow:
+elif PROJECT_NAME.startswith("Glasgow"):
     LOC_DICT = {
         "Name_Title":                             {"x":  44, "y": 814, "x_tol": 30, "y_tol": 30},
         "Name":                                   {"x": 132, "y": 812, "x_tol": 40},

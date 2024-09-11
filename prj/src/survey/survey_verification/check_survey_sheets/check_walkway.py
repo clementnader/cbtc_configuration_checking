@@ -10,8 +10,8 @@ from .check_platform import get_corresponding_plt_survey_extremities
 
 
 # Walkway
-def check_walkway(dc_sys_sheet, res_sheet_name: str, survey_info: dict, plt_survey_info: dict,
-                  set_of_survey_tracks: set[str]):
+def check_walkway(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
+                  set_of_survey_tracks: set[str], plt_survey_info: dict):
     assert dc_sys_sheet == DCSYS.Walkways_Area
     assert res_sheet_name == "Walkway"
 

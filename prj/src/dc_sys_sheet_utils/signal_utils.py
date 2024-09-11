@@ -63,7 +63,7 @@ def check_upstream_and_downstream_ivb_of_a_signal(sig_name: str) -> None:
     list_ivb_on_sig = get_zones_on_point(DCSYS.IVB, sig_seg, sig_x, direction=sig_direction)
     if not list_ivb_on_sig:
         if sig_type == SignalType.PERMANENT_ARRET:
-            print_log(f"Permanent Red {sig_name} is on no IVB.")
+            print_log(f"Permanently Red {sig_name} is on no IVB.")
         else:
             print_error(f"Signal {sig_name} is on no IVB.")
         return
@@ -93,7 +93,7 @@ def check_upstream_and_downstream_ivb_of_a_signal(sig_name: str) -> None:
         if sig_type == SignalType.PERMANENT_ARRET:
             pass
         else:
-            print_error(f"Signal {sig_name} has no IVB downstream. It should be a Permanent Red.")
+            print_error(f"Signal {sig_name} has no IVB downstream. It should be a Permanently Red.")
         downstream_ivb = None
     else:
         if len(list_ivb_after_sig) > 1:

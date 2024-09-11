@@ -28,7 +28,7 @@ def update_author_name(ws: xl_ws.Worksheet) -> None:
     user_full_name = get_user_full_name()
     if user_full_name == "":
         return
-    create_cell(ws, user_full_name, cell=AUTHOR_CELL, center_horizontal=True, bold=True, borders=True)
+    create_cell(ws, user_full_name, cell=AUTHOR_CELL, align_horizontal=XlAlign.center, bold=True, borders=True)
 
 
 C_D470 = "C_D470"

@@ -118,7 +118,7 @@ def _merged_cell_for_prj_line_number(ws: xl_ws.Worksheet, current_row: int, prj_
     create_merged_cell(ws, f"LINE NUMBER {prj_line_number}",
                        start_row=current_row, start_column=PMC_FIRST_COLUMN,
                        end_row=current_row, end_column=STATUS_COLUMN - 1,
-                       font_size=16, bold=True, center_horizontal=True, borders=True)
+                       font_size=16, bold=True, align_horizontal=XlAlign.center, borders=True)
     return current_row + 1
 
 
@@ -128,7 +128,7 @@ def _merged_cell_for_train_unit_number(ws: xl_ws.Worksheet, current_row: int, tr
     create_merged_cell(ws, f"{TRAIN_UNIT_ID} = {train_unit_number}",
                        start_row=current_row, start_column=PMC_FIRST_COLUMN,
                        end_row=current_row, end_column=STATUS_COLUMN - 1,
-                       font_size=14, bold=True, bg_color=bg_color, center_horizontal=True, borders=True)
+                       font_size=14, bold=True, bg_color=bg_color, align_horizontal=XlAlign.center, borders=True)
     return current_row + 1
 
 
@@ -139,7 +139,7 @@ def _merged_cell_for_cc_id(ws: xl_ws.Worksheet, current_row: int, cc_num: int, c
     create_merged_cell(ws, f"{cc_id_name} = {cc_id_value}",
                        start_row=current_row, start_column=PMC_FIRST_COLUMN,
                        end_row=current_row, end_column=STATUS_COLUMN - 1,
-                       font_size=12, bold=True, bg_color=bg_color, center_horizontal=True, borders=True)
+                       font_size=12, bold=True, bg_color=bg_color, align_horizontal=XlAlign.center, borders=True)
     return current_row + 1
 
 
@@ -152,7 +152,7 @@ def _add_row_for_param(ws: xl_ws.Worksheet, current_row: int, cc_num: int, param
         current_col = PMC_FIRST_COLUMN
         for pmc_num in range(1, NB_PMC+1):
             create_cell(ws, f"PMC {pmc_num}", row=current_row, column=current_col,
-                        bold=True, bg_color=bg_color, center_horizontal=True, borders=True)
+                        bold=True, bg_color=bg_color, align_horizontal=XlAlign.center, borders=True)
             current_col += 1
         current_row += 1
     # Write the parameter name cell
@@ -188,7 +188,7 @@ def _set_status_and_comments_columns(ws: xl_ws.Worksheet, current_row: int,
     # Status cell
     row_status = "KO" if any([status["duplicate_cells"] for status in dict_of_status.values()]) else "OK"
     create_cell(ws, f"{row_status}", row=current_row, column=STATUS_COLUMN,
-                center_horizontal=True, borders=True)
+                align_horizontal=XlAlign.center, borders=True)
     # Comments cell
     if row_status == "OK":
         create_cell(ws, None, row=current_row, column=COMMENTS_COLUMN,
@@ -205,7 +205,7 @@ def _set_status_and_comments_columns(ws: xl_ws.Worksheet, current_row: int,
     # Extra Status and Comments cells
     if ws.title == PMC_IP_ADDRESS_SHEET_NAME:
         create_cell(ws, None, row=current_row, column=IP_ADDRESS_STATUS2_COLUMN,
-                    center_horizontal=True, borders=True)
+                    align_horizontal=XlAlign.center, borders=True)
         create_cell(ws, None, row=current_row, column=IP_ADDRESS_COMMENTS2_COLUMN,
                     line_wrap=True, borders=True)
 

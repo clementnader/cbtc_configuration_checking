@@ -51,7 +51,7 @@ The tool automates the verification of the unicity of the PMC alpha and beta IP 
 4. Once all the information has been specified, you can press the button **"Launch DC_TU Verification"**.
 
 
-5. The result Excel file is placed into the Desktop and is opened automatically.
+5. The result Excel file is placed into the Desktop and is opened automatically in a new session of Excel.
 
 ---
 ### 3.3 Results

@@ -191,64 +191,66 @@ def _add_line_info(ws: xl_ws.Worksheet, row: int, sig_name: str,
     # Signal Name
     create_cell(ws, sig_name, row=row, column=SIGNAL_NAME_COL, borders=True)
     # Type
-    create_cell(ws, sig_type, row=row, column=TYPE_COL, borders=True, center_horizontal=True)
+    create_cell(ws, sig_type, row=row, column=TYPE_COL, borders=True, align_horizontal=XlAlign.center)
     # Direction
-    create_cell(ws, sig_direction, row=row, column=DIRECTION_COL, borders=True, center_horizontal=True)
+    create_cell(ws, sig_direction, row=row, column=DIRECTION_COL, borders=True, align_horizontal=XlAlign.center)
     # IXL Approach Zone
-    create_cell(ws, ixl_apz, row=row, column=IXL_APZ_COL, borders=True, line_wrap=True, center_horizontal=True)
+    create_cell(ws, ixl_apz, row=row, column=IXL_APZ_COL, borders=True, line_wrap=True, align_horizontal=XlAlign.center)
     # Platform Related
     create_cell(ws, platform_related, row=row, column=PLATFORM_RELATED_COL,
-                borders=True, line_wrap=True, center_horizontal=True)
+                borders=True, line_wrap=True, align_horizontal=XlAlign.center)
     if platform_related is not None:
         set_bg_color(ws, XlBgColor.light_pink, row=row, column=PLATFORM_RELATED_COL)
     # Downstream Seg
-    create_cell(ws, downstream_seg, row=row, column=DOWNSTREAM_LIM_SEG_COL, borders=True, center_horizontal=True)
+    create_cell(ws, downstream_seg, row=row, column=DOWNSTREAM_LIM_SEG_COL, borders=True)
     # Downstream x
-    create_cell(ws, downstream_x, row=row, column=DOWNSTREAM_LIM_X_COL, borders=True, center_horizontal=True)
+    create_cell(ws, downstream_x, row=row, column=DOWNSTREAM_LIM_X_COL, borders=True, nb_of_digits=2)
     # Downstream Track
-    create_cell(ws, downstream_track, row=row, column=DOWNSTREAM_LIM_TRACK_COL, borders=True, center_horizontal=True)
+    create_cell(ws, downstream_track, row=row, column=DOWNSTREAM_LIM_TRACK_COL, borders=True)
     # Downstream KP
-    create_cell(ws, downstream_kp, row=row, column=DOWNSTREAM_LIM_KP_COL, borders=True, center_horizontal=True)
+    create_cell(ws, downstream_kp, row=row, column=DOWNSTREAM_LIM_KP_COL, borders=True, nb_of_digits=2)
     # Upstream Seg
-    create_cell(ws, upstream_seg, row=row, column=UPSTREAM_LIM_SEG_COL, borders=True, center_horizontal=True)
+    create_cell(ws, upstream_seg, row=row, column=UPSTREAM_LIM_SEG_COL, borders=True)
     # Upstream x
-    create_cell(ws, upstream_x, row=row, column=UPSTREAM_LIM_X_COL, borders=True, center_horizontal=True)
+    create_cell(ws, upstream_x, row=row, column=UPSTREAM_LIM_X_COL, borders=True, nb_of_digits=2)
     # Upstream Track
-    create_cell(ws, upstream_track, row=row, column=UPSTREAM_LIM_TRACK_COL, borders=True, center_horizontal=True)
+    create_cell(ws, upstream_track, row=row, column=UPSTREAM_LIM_TRACK_COL, borders=True)
     # Upstream KP
-    create_cell(ws, upstream_kp, row=row, column=UPSTREAM_LIM_KP_COL, borders=True, center_horizontal=True)
+    create_cell(ws, upstream_kp, row=row, column=UPSTREAM_LIM_KP_COL, borders=True, nb_of_digits=2)
     # IXL APZ Length
-    create_cell(ws, ixl_apz_dist, row=row, column=IXL_APZ_LENGTH_COL, borders=True, center_horizontal=True)
+    create_cell(ws, ixl_apz_dist, row=row, column=IXL_APZ_LENGTH_COL, borders=True, align_horizontal=XlAlign.center,
+                nb_of_digits=2)
     # DLT Distance
-    create_cell(ws, dlt_distance, row=row, column=DLT_DIST_COL, borders=True, center_horizontal=True)
+    create_cell(ws, dlt_distance, row=row, column=DLT_DIST_COL, borders=True, align_horizontal=XlAlign.center, nb_of_digits=2)
 
 
 def _add_value_to_remove(ws: xl_ws.Worksheet, row: int, status: Optional[str],
                          inhibit_simple_overshoot_recovery: bool, platform_related: Optional[str]) -> None:
     if status is not None:
-        create_cell(ws, None, row=row, column=VALUE_TO_REMOVE_COL, borders=True, center_horizontal=True)
+        create_cell(ws, None, row=row, column=VALUE_TO_REMOVE_COL, borders=True, align_horizontal=XlAlign.center)
         return
     # Value to remove
     formula = (f'= IF(OR(inhibit_simple_overshoot_recovery = TRUE, {PLATFORM_RELATED_COL}{row} = ""), '
                f'(at_deshunt_max_dist + block_laying_uncertainty + MAX(mtc_rollback_dist, at_rollback_dist)),'
                f'(at_deshunt_max_dist + block_laying_uncertainty + MAX(mtc_rollback_dist, at_rollback_dist,'
                f'overshoot_recovery_dist + overshoot_recovery_stopping_max_dist)))')
-    create_cell(ws, formula, row=row, column=VALUE_TO_REMOVE_COL, borders=True, center_horizontal=True)
+    create_cell(ws, formula, row=row, column=VALUE_TO_REMOVE_COL, borders=True, align_horizontal=XlAlign.center, nb_of_digits=2)
     if not inhibit_simple_overshoot_recovery and platform_related is not None:
         set_bg_color(ws, XlBgColor.light_pink, row=row, column=VALUE_TO_REMOVE_COL)
 
 
 def _add_status(ws: xl_ws.Worksheet, row: int, status: Optional[str]) -> None:
     if status is not None:
-        create_cell(ws, None, row=row, column=MIN_DIST_COL, borders=True, center_horizontal=True)
-        create_cell(ws, status, row=row, column=STATUS_COL, borders=True, center_horizontal=True)
+        create_cell(ws, None, row=row, column=MIN_DIST_COL, borders=True, align_horizontal=XlAlign.center)
+        create_cell(ws, status, row=row, column=STATUS_COL, borders=True, align_horizontal=XlAlign.center)
         return
     # Minimum Distance
     min_dist_formula = f'= {IXL_APZ_LENGTH_COL}{row} - {VALUE_TO_REMOVE_COL}{row}'
-    create_cell(ws, min_dist_formula, row=row, column=MIN_DIST_COL, borders=True, center_horizontal=True)
+    create_cell(ws, min_dist_formula, row=row, column=MIN_DIST_COL, borders=True, align_horizontal=XlAlign.center,
+                nb_of_digits=2)
     # Status
     status_formula = f'= IF({DLT_DIST_COL}{row} <= {MIN_DIST_COL}{row}, "OK", "KO")'
-    create_cell(ws, status_formula, row=row, column=STATUS_COL, borders=True, center_horizontal=True)
+    create_cell(ws, status_formula, row=row, column=STATUS_COL, borders=True, align_horizontal=XlAlign.center)
 
 
 def _add_comments(ws: xl_ws.Worksheet, row: int, comments: Optional[str],

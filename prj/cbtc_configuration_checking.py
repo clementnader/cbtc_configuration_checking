@@ -84,16 +84,16 @@ def route_and_overlap():
 
 def dc_par_customer_data():
     # min_length_multiple_path(in_cbtc=False)  # trapezoid_length
-    # min_distance_between_vsp_overlap(in_cbtc=False)
     # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
     #                                                                    with a buffer just down the line
+    # min_distance_between_vsp_overlap(in_cbtc=False)  # TODO: useless to delete
+    # smallest_size_of_a_switch_block_heel(in_cbtc=True)
     # max_dist_local_tag_group(in_cbtc=False)
-    # smallest_size_of_a_switch_block_heel(in_cbtc=False)
     return
 
 
 def survey():
-    # check_survey()  # v2.4
+    # check_survey()  # v2.5
     # survey_window()
     # cctool_schema_window()
     return
@@ -127,7 +127,7 @@ def constraints():
     #                                       -> it seems multiple ZC can do the job sometimes,
     #                                       and tool shall gives multiple ZC these times,
     #                                       re-work the way ZC is assigned.
-    # r_tm_ats_itf_1(in_cbtc=False)
+    # r_tm_ats_itf_1(in_cbtc=True)
     # ats_atc_sheet_verif(in_cbtc=True)  # TODO: Check if extra flows exist for object that does not exist per type,
     #                                           and if extra object type exists.
     # cf_signal_12(apz_with_tc=True)
@@ -176,8 +176,11 @@ def main():
 
 if __name__ == "__main__":
     skip_init = False
+    # skip_init = True
     # Initialization Commands
-    if not skip_init:
+    if skip_init:
+        print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}")
+    else:
         current_cctool_oo_version = get_ga_version_text()
         print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}\n"
                     f"with CCTool-OO Schema version:\n"

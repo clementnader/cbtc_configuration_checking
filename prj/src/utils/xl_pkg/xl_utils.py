@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import warnings
 import openpyxl
 import openpyxl.utils as xl_ut
 import openpyxl.worksheet.worksheet as xl_ws
@@ -8,13 +9,24 @@ import xlrd
 from ..common_utils import *
 
 
-__all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws", "load_xlsx_wb", "get_xlrd_column", "get_xlrd_row",
+__all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws", "load_xlsx_wb", "load_xlrd_wb", "get_xlrd_column", "get_xlrd_row",
            "get_xl_column_letter", "get_xl_column_number", "get_xlrd_float_value", "get_xlrd_value", "get_xlsx_value",
            "get_row_and_column_from_cell", "get_cell_from_row_and_column", "get_cell_range"]
 
 
-def load_xlsx_wb(path: str) -> openpyxl.workbook.Workbook:
-    return openpyxl.load_workbook(path, data_only=True)
+def load_xlsx_wb(xl_file_address: str) -> openpyxl.workbook.Workbook:
+    warnings.filterwarnings("ignore", message="Cannot parse header or footer so it will be ignored",
+                            category=UserWarning, module="openpyxl")  # deactivate the warning for header/footer
+    warnings.filterwarnings("ignore", message="Data Validation extension is not supported and will be removed",
+                            category=UserWarning, module="openpyxl")  # deactivate the warning for extension
+    wb = openpyxl.load_workbook(xl_file_address, data_only=True)
+    warnings.filterwarnings("default")
+    return wb
+
+
+def load_xlrd_wb(xl_file_address: str) -> openpyxl.workbook.Workbook:
+    wb = xlrd.open_workbook(xl_file_address)
+    return wb
 
 
 def get_xlrd_column(column_number: int) -> int:

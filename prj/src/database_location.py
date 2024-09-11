@@ -8,13 +8,17 @@ __all__ = ["Projects", "PROJECT_NAME", "DATABASE_LOC"]
 class Projects:
     Ankara_L1 = "Ankara_L1"
     Ankara_L2 = "Ankara_L2"
-    Brussels = "Brussels"
+    Brussels_P1B0 = "Brussels_P1B0"
+    Brussels_P1B2 = "Brussels_P1B2"
     Copenhagen = "Copenhagen"
-    Glasgow = "Glasgow"
+    Glasgow_IATP = "Glasgow_IATP"
+    Glasgow_CBTC = "Glasgow_CBTC"
     Lima = "Lima"
     Milan = "Milan"
     Riyadh = "Riyadh"
     Thessaloniki = "Thessaloniki"
+
+    OCTYS_L6 = "OCTYS_L6"
 
     Baltimore = "Baltimore"
     BART = "BART"
@@ -24,6 +28,7 @@ class Projects:
     NMML1 = "NMML1"
     Noida = "Noida"
     Shenyang = "Shenyang"
+    Taipei = "Taipei"
     Wenzhou = "Wenzhou"
     Mock_up = "Mock-up"
     Mock_up_2 = "Mock-up 2"
@@ -35,13 +40,18 @@ class Projects:
 # --- Main projects --- #
 # PROJECT_NAME = Projects.Ankara_L1
 # PROJECT_NAME = Projects.Ankara_L2
-# PROJECT_NAME = Projects.Brussels
+# PROJECT_NAME = Projects.Brussels_P1B0
+# PROJECT_NAME = Projects.Brussels_P1B2
 # PROJECT_NAME = Projects.Copenhagen
-# PROJECT_NAME = Projects.Glasgow
+# PROJECT_NAME = Projects.Glasgow_IATP
+# PROJECT_NAME = Projects.Glasgow_CBTC
 # PROJECT_NAME = Projects.Lima
 # PROJECT_NAME = Projects.Milan
 # PROJECT_NAME = Projects.Riyadh
 PROJECT_NAME = Projects.Thessaloniki
+
+# --- OCTYS --- #
+# PROJECT_NAME = Projects.OCTYS_L6
 
 # --- USA --- #
 # PROJECT_NAME = Projects.Baltimore
@@ -49,11 +59,12 @@ PROJECT_NAME = Projects.Thessaloniki
 # PROJECT_NAME = Projects.Hurontario
 # PROJECT_NAME = Projects.MSH
 # --- India --- #
-# PROJECT_NAME = Projects.KMRC
-# PROJECT_NAME = Projects.NMML1
+# PROJECT_NAME = Projects.KMRC  # TODO find or create Block Def. file
+# PROJECT_NAME = Projects.NMML1  # TODO find or create Block Def. file
 # PROJECT_NAME = Projects.Noida
 # --- China --- #
 # PROJECT_NAME = Projects.Shenyang
+# PROJECT_NAME = Projects.Taipei
 # PROJECT_NAME = Projects.Wenzhou
 # --- Mock-up --- #
 # PROJECT_NAME = Projects.Mock_up
@@ -138,18 +149,17 @@ class ProjectDatabaseLoc:
             self.survey_loc.survey_kp_col = [3, 5]
 
         # ------------------------------- Brussels -------------------------------#
-        elif project_name == Projects.Brussels:
-            phase_2 = False
-            # phase_2 = True
-            if not phase_2:
+        elif project_name.startswith("Brussels"):
+            phase_0 = project_name == Projects.Brussels_P1B0
+            if phase_0:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V08_P1B\DC_SYS.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V08_P1B\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V08_P1B\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V08_P1B"
                 self.fouling_point_addr = r"C:\Users\naderc\Desktop\BXL\fouling_point_fd_checking_1b0.xlsx"
             else:
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2\DC_SYS.xls"
-                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2\DC_PAR.xls"
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2_R2\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2_R2\DC_PAR.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
                                            r"C:\Users\naderc\Desktop\BXL\AFS_BXL_1B0.xlsx"]
@@ -226,8 +236,8 @@ class ProjectDatabaseLoc:
             self.ixl_apz.apz_nb_columns = 5
 
         # ------------------------------- Glasgow -------------------------------#
-        elif project_name == Projects.Glasgow:
-            iatp = False
+        elif project_name.startswith("Glasgow"):
+            iatp = project_name == Projects.Glasgow_IATP
             if iatp:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS_IATPM.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
@@ -371,11 +381,10 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Thessaloniki -------------------------------#
         elif project_name == Projects.Thessaloniki:
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V03_RC3\DC_SYS.xls"
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC1\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC1\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC1\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V09"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC4\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC4\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC4\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V12"
             self.fouling_point_addr = r"C:\Users\naderc\Desktop\TSK\Fouling Points TSK_C_D470_07_03_03_V02_RC3.xlsx"
             # -- Survey -- #
             self.survey_loc.survey_addr = [
@@ -416,6 +425,25 @@ class ProjectDatabaseLoc:
 # -------------------------------------------------- Other projects -------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
 
+        # --- OCTYS --- #
+
+        # ------------------------------- OCTYS_L6 -------------------------------#
+        elif project_name == Projects.OCTYS_L6:
+            self.dc_sys_addr = (r"C:\Users\naderc\Desktop\OCTYS\Ligne 6\OCTYS_L6C_D405-6_0502"
+                                r"\DC_SYS_OCTYS_L6C_D405-6_0502.xls")
+            self.dc_par_addr = (r"C:\Users\naderc\Desktop\OCTYS\Ligne 6\OCTYS_L6C_D405-6_0502"
+                                r"\DC_PAR_OCTYS_L6C_D405-6_0502.xls")
+            # -- Survey -- #
+            self.block_def = r""
+            self.survey_loc.survey_addr = r""
+            self.survey_loc.survey_sheet = r""
+            self.survey_loc.all_sheets = True
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
+
         # --- USA --- #
 
         # ------------------------------- Baltimore -------------------------------#
@@ -435,8 +463,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- BART -------------------------------#
         elif project_name == Projects.BART:
-            self.dc_sys_addr = (r"C:\Users\naderc\Desktop\USA\BART"
-                                r"\BART_V2.3.0_SYS_1-DC_SYS-DRAGON_2.1.1 (RefSys 7.2.1.1).xls")
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\BART\BART_C_D470_08_02_00_V00\DC_SYS_BART.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\USA\BART\BART_C_D470_08_02_00_V00\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\USA\BART\BART_C_D470_08_02_00_V00\DC_BOP.xls"
 
         # ------------------------------- Hurontario -------------------------------#
         elif project_name == Projects.Hurontario:
@@ -489,7 +518,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- NOIDA -------------------------------#
         elif project_name == Projects.Noida:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\NOIDA\NS01_C_D470_18_00_RC1\DC_SYS.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\NOIDA\NS01_C_D470_18_00_RC1\DC_SYS.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\NOIDA\NS01_C_D470_18_00_RC1\DC_SYS_patch_ZC04.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\INDIA\NOIDA\NS01_C_D470_18_00_RC1\DC_PAR.xls"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\INDIA\NOIDA\CIRCUIT_DE_VOIE.xls"
             self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\INDIA\NOIDA"
@@ -518,6 +549,24 @@ class ProjectDatabaseLoc:
             self.survey_loc.type_col = 4
             self.survey_loc.track_col = 2
             self.survey_loc.survey_kp_col = 6
+
+        # ------------------------------- Taipei -------------------------------#
+        elif project_name == Projects.Taipei:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\TC1_C_D470_06_00_RC14\DC_SYS.xls"
+            # -- Survey -- #
+            self.block_def = r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey"
+                                           r"\TC1_D932_Depot_20190221.xlsx",
+                                           r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey\TC1_Mainline_AFS_object_"
+                                           r"list_draft_J20180720_vs_cmts_20180817_R1_vs_mod_20181212.xlsx",
+                                           r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey\901_軌.xlsx"]
+            self.survey_loc.survey_sheet = [r"Depot", r"Mainline ", r"工作表1"]
+            self.survey_loc.all_sheets = [False, False, False]
+            self.survey_loc.start_row = [2, 2, 2]
+            self.survey_loc.ref_col = [1, 1, 7]
+            self.survey_loc.type_col = [4, 5, 9]
+            self.survey_loc.track_col = [2, 2, 8]
+            self.survey_loc.survey_kp_col = [3, 3, 11]
 
         # ------------------------------- Wenzhou -------------------------------#
         elif project_name == Projects.Wenzhou:

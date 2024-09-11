@@ -12,8 +12,8 @@ __all__ = ["print_bar", "print_title", "print_section_title", "print_error", "pr
            "test_moving_progress_bar", "ask_question_yes_or_no", "pretty_print_dict", "get_print_prefix"]
 
 
-def print_bar(length: int = 100):
-    print("-" * length + "\n")
+def print_bar(length: int = 100, start="", end="\n"):
+    print(start + "-" * length + "\n", end=end)
 
 
 def print_title(title: str, color: str = Color.blue):

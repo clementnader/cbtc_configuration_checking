@@ -14,5 +14,5 @@ DC_PAR_WB = None
 def load_dc_par_wb():
     global DC_PAR_WB
     if DC_PAR_WB is None:
-        DC_PAR_WB = xlrd.open_workbook(DATABASE_LOC.dc_par_addr)
+        DC_PAR_WB = load_xlrd_wb(DATABASE_LOC.dc_par_addr)
     return DC_PAR_WB

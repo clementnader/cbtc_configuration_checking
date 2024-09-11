@@ -19,6 +19,8 @@ def min_dist_between_platform_osp_and_end_of_next_platform(in_cbtc: bool = False
     dict_min_dist = dict()
 
     for i, (plt, plt_value) in enumerate(plt_dict.items()):
+        # if "VIRT" in plt:
+        #     continue
         for osp_name, osp_seg, osp_x, osp_direction in get_dc_sys_zip_values(
                 plt_value, DCSYS.Quai.PointDArret.Name, DCSYS.Quai.PointDArret.Seg,
                 DCSYS.Quai.PointDArret.X, DCSYS.Quai.PointDArret.SensApproche):
@@ -60,6 +62,8 @@ def get_dist_osp_next_plt(osp_name, osp_seg, osp_x, osp_direction, osp_plt, plt_
 def get_closest_platform(osp_seg, osp_x, osp_plt, plt_dict, downstream: bool):
     dist_osp_plt_dict = dict()
     for plt, plt_value in plt_dict.items():
+        # if "VIRT" in plt:
+        #     continue
         if plt != osp_plt:
             plt_limits = list(get_dc_sys_zip_values(plt_value, DCSYS.Quai.ExtremiteDuQuai.Seg,
                                                     DCSYS.Quai.ExtremiteDuQuai.X))

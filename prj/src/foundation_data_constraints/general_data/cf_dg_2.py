@@ -30,7 +30,7 @@ def _cf_2_check_signal(msg_dict: dict):
         is_not_buffer_or_pr = get_dc_sys_value(obj, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
                                                                             SignalType.PERMANENT_ARRET]
         if _check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, is_not_buffer_or_pr,
-                           "shall exist for all Signals except Permanent Red and Buffer",
+                           "shall exist for all Signals except Permanently Red and Buffer",
                            TypeNomLogiqueVariantBF.FAILED_ZONE,
                            shall_be_vital=False,
                            is_hf=False) is False:

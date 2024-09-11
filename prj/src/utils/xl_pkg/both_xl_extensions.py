@@ -14,10 +14,10 @@ __all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_number_of_rows", "get
 def load_xl_file(xl_file_address: str) -> Optional[Union[xlrd.book.Book, openpyxl.workbook.Workbook]]:
     ext = os.path.splitext(xl_file_address)[1]
     if ext == ".xls":
-        wb = xlrd.open_workbook(xl_file_address)
+        wb = load_xlrd_wb(xl_file_address)
         return wb
     elif ext == ".xlsx" or ext == ".xlsm" or ext == ".xlsb":
-        wb = openpyxl.load_workbook(xl_file_address, data_only=True)
+        wb = load_xlsx_wb(xl_file_address)
         return wb
     else:
         print_error(f"{xl_file_address} is not an Excel file: extension is {ext=}.")

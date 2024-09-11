@@ -64,21 +64,37 @@ def get_next_segments(obj_type_name: str, obj_name: str, start_seg: str, start_x
     if is_first_seg_on_another_limit(obj_type_name, obj_name, start_seg, start_x, downstream, zone_limits):
         return
 
-    def inner_recurs_next_seg(seg: str, inner_downstream: bool):
+    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[tuple[str, float]]):
         global ZONE_SEGMENTS
+        nonlocal warning_has_already_been_printed
+
+        if not warning_has_already_been_printed and not get_linked_segs(seg, inner_downstream):
+            # if an end of track is reached the zone is open
+            warning_has_already_been_printed = True
+            print_warning(f"{Color.beige}{obj_type_name}{Color.reset} {Color.yellow}{obj_name}{Color.reset} is open, "
+                          f"an end of track has been reached while inside the zone. "
+                          f"The zone was traveled by starting by the point {(start_seg, start_x)} in direction "
+                          f"{'downstream' if downstream else 'upstream'}.")
+
         for next_seg in get_linked_segs(seg, inner_downstream):
             if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
-            if is_seg_end_limit(obj_type_name, obj_name, next_seg, next_inner_downstream, zone_limits):
-                continue
-            if (next_seg, next_inner_downstream) in ZONE_SEGMENTS[obj_type_name][obj_name]:
-                continue
-            ZONE_SEGMENTS[obj_type_name][obj_name].append((next_seg, next_inner_downstream))
-            inner_recurs_next_seg(next_seg, next_inner_downstream)
 
-    inner_recurs_next_seg(start_seg, downstream)
+            if is_seg_end_limit(obj_type_name, obj_name, next_seg, next_inner_downstream, zone_limits):
+                ZONE_SEGMENTS[obj_type_name][obj_name].extend(path)  # only append path if another limit is reached
+                continue
+
+            if (next_seg, next_inner_downstream) in ZONE_SEGMENTS[obj_type_name][obj_name]:  # already managed
+                continue
+            if (next_seg, next_inner_downstream) in path:  # a whole loop has been made
+                continue
+
+            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [(next_seg, next_inner_downstream)])
+
+    warning_has_already_been_printed = False
+    inner_recurs_next_seg(start_seg, downstream, [])
 
 
 def is_first_seg_on_another_limit(obj_type_name: str, obj_name: str, start_seg: str, start_x: float, downstream: bool,
@@ -88,7 +104,8 @@ def is_first_seg_on_another_limit(obj_type_name: str, obj_name: str, start_seg: 
             if (downstream and start_x < limit_x) or (not downstream and start_x > limit_x):
                 if not downstream == limit_downstream:
                     return True
-                print_warning(f"Reach a limit for {obj_type_name} {obj_name} but with a different direction.")
+                print_warning(f"Reach a limit for {Color.beige}{obj_type_name}{Color.reset} "
+                              f"{Color.yellow}{obj_name}{Color.reset} but with a different direction.")
                 print(f"{start_seg = }, {start_x = }, {downstream = }")
                 print((limit_seg, limit_x, limit_downstream))
                 return True
@@ -101,7 +118,8 @@ def is_seg_end_limit(obj_type_name: str, obj_name: str, seg: str, downstream: bo
                                  for limit_seg, _, limit_downstream in zone_limits]:
         return True
     if seg in [limit_seg for limit_seg, _, _ in zone_limits]:
-        print_warning(f"Reach a limit for {obj_type_name} {obj_name} but with a different direction.")
+        print_warning(f"Reach a limit for {Color.beige}{obj_type_name}{Color.reset} "
+                      f"{Color.yellow}{obj_name}{Color.reset} but with a different direction.")
         print(f"{seg = }, {downstream = }")
         print([limit_seg for limit_seg, _, _ in zone_limits if seg == limit_seg])
         return True

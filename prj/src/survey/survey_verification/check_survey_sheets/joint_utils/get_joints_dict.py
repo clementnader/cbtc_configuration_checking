@@ -39,10 +39,6 @@ def get_joints_dict(block_def_dict: Optional[dict[str, dict[tuple[str, float], s
             else:
                 if joint in joints_dict and limit_position != joints_dict[joint]:
                     # A block with two end-of-track limits on the same track
-                    print_log(f"\nBlock {Color.yellow}{block_name}{Color.reset} in DC_SYS possesses 2 end-of-track "
-                              f"limits on the same track {Color.light_yellow}{track}{Color.reset} "
-                              f"at {Color.default}KP {joints_dict[joint][0][1]}{Color.reset} "
-                              f"and {Color.default}KP {limit_position[1]}{Color.reset}.")
                     joints_dict[(block_name, matching_block_name, track + "__1")] = joints_dict[joint]
                     del joints_dict[joint]
                     joints_dict[(block_name, matching_block_name, track + "__2")] = (limit_position,
