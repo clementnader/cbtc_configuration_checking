@@ -149,8 +149,8 @@ def _add_line_cell_comments(ws: xl_ws.Worksheet, row: int,
 def _add_line_calculations(ws: xl_ws.Worksheet, row: int,
                            tolerance: str, extra_column: bool) -> None:
     # Difference
-    difference_formula = (f'= IF(ISBLANK({NAME_COL}{row}), "Not in DC_SYS", '
-                          f'IF(ISBLANK({get_column(SURVEY_NAME_COL, extra_column)}{row}), "Not Surveyed", '
+    difference_formula = (f'= IF(ISBLANK({DC_SYS_KP_COL}{row}), "Not in DC_SYS", '
+                          f'IF(ISBLANK({get_column(SURVEYED_KP_COL, extra_column)}{row}), "Not Surveyed", '
                           f'{DC_SYS_KP_COL}{row} - {get_column(SURVEYED_KP_COL, extra_column)}{row}))')
     create_cell(ws, difference_formula, row=row, column=get_column(DIFFERENCE_COL, extra_column), borders=True,
                 nb_of_digits=4)
@@ -173,10 +173,10 @@ def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
             full_comments = '= '
         else:
             full_comments = f'= "{comments}\n\n" & '
-        full_comments += (f'"Opposite sign in survey.\n'
+        full_comments += (f'"Opposite sign in survey. '
                           f'Difference with absolute signs makes " & '
                           f'ROUND(ABS({DC_SYS_KP_COL}{row}) - '
-                          f'ABS({get_column(SURVEYED_KP_COL, extra_column)}{row}), 4) & ",\nwhich is "'
+                          f'ABS({get_column(SURVEYED_KP_COL, extra_column)}{row}), 4) & ", which is "'
                           f' & IF(ABS(ABS({DC_SYS_KP_COL}{row}) - '
                           f'ABS({get_column(SURVEYED_KP_COL, extra_column)}{row})) <= {tolerance},'
                           f' "lower", "larger") & " than the tolerance " & {tolerance}'

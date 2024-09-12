@@ -13,10 +13,9 @@ def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
     set_of_survey_tracks = {info["survey_track"] for sub_dict in survey_info.values() for info in sub_dict.values()}
 
     for survey_type, survey_type_value in SURVEY_TYPES_DICT.items():
-        if survey_type in ["OSP", "BUFFER", "DYNAMIC_TAG", "VERSION_TAG", "TURNBACK_PLATFORM"]:
-            continue
-
         res_sheet = survey_type_value["res_sheet"]
+        if res_sheet is None:
+            continue
         dcsys_sh = survey_type_value["dcsys_sh"]
         func = survey_type_value["func"]
         display_name = survey_type_value["display_name"]

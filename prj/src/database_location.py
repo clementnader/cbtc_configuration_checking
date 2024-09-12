@@ -280,16 +280,23 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Lima -------------------------------#
         elif project_name == Projects.Lima:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1\DC_SYS_0402RC1.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1_SP1\DC_SYS_0402RC1.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\LIMA\Objects_List - v3 Rev 01.xlsx"
-            self.survey_loc.survey_sheet = r"Dico"
+            self.survey_loc.survey_sheet = r"Object List"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
             self.survey_loc.ref_col = 1
-            self.survey_loc.type_col = 8
-            self.survey_loc.track_col = 7
-            self.survey_loc.survey_kp_col = 10
+            self.survey_loc.type_col = 3
+            self.survey_loc.track_col = 4
+            self.survey_loc.survey_kp_col = 7
+            # self.survey_loc.survey_sheet = r"Dico"
+            # self.survey_loc.all_sheets = False
+            # self.survey_loc.start_row = 2
+            # self.survey_loc.ref_col = 1
+            # self.survey_loc.type_col = 8
+            # self.survey_loc.track_col = 7
+            # self.survey_loc.survey_kp_col = 10
 
         # ------------------------------- Milan -------------------------------#
         elif project_name == Projects.Milan:

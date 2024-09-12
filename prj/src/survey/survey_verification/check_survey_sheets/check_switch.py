@@ -64,6 +64,7 @@ def _get_test_names(obj_name: str) -> tuple[list[str], str]:
 def _switch_center_point_to_heel(obj_name: str, survey_obj_info: dict[str, Union[str, float]],
                                  survey_info: dict[str, dict[str, Union[str, float]]],
                                  sw_type: str, dc_sys_track: str):
+    assert sw_type == "center"
     if survey_obj_info is not None:  # already associated info in survey
         return survey_obj_info, None
 
@@ -90,9 +91,8 @@ def _switch_center_point_to_heel(obj_name: str, survey_obj_info: dict[str, Union
         survey_obj_info = right_survey_obj_info
         corresponding_sw_pos = "right"
 
-    extra_comment = (f"Center Switch Point does not exist\n"
-                     f"on track {dc_sys_track} in survey,\n"
-                     f"{corresponding_sw_pos.capitalize()} Switch Point is used\n"
+    extra_comment = (f"Center Switch Point does not exist on track {dc_sys_track} in survey, "
+                     f"{corresponding_sw_pos.capitalize()} Switch Point is used "
                      f"as they are on the same track.")
     return survey_obj_info, extra_comment
 
@@ -100,6 +100,7 @@ def _switch_center_point_to_heel(obj_name: str, survey_obj_info: dict[str, Union
 def _switch_heel_point_to_center(obj_name: str, survey_obj_info: dict[str, Union[str, float]],
                                  survey_info: dict[str, dict[str, Union[str, float]]],
                                  sw_type: str, dc_sys_track: str):
+    assert sw_type in ["left", "right"]
     if survey_obj_info is not None:  # already associated info in survey
         return survey_obj_info, None
 
@@ -111,8 +112,6 @@ def _switch_heel_point_to_center(obj_name: str, survey_obj_info: dict[str, Union
     if survey_obj_info is None:
         return None, None
 
-    extra_comment = (f"{sw_type.capitalize()} Switch Point does not exist\n"
-                     f"on track {dc_sys_track} in survey,\n"
-                     f"Center Switch Point is used\n"
-                     f"as they are on the same track.")
+    extra_comment = (f"{sw_type.capitalize()} Switch Point does not exist on track {dc_sys_track} in survey, "
+                     f"Center Switch Point is used as they are on the same track.")
     return survey_obj_info, extra_comment

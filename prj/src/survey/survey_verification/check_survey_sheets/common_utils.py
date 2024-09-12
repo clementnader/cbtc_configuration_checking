@@ -55,9 +55,9 @@ def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[st
     # Remove duplicates in the test list
     test_names = _get_unique_list(test_names)
     # Get only survey names on the corresponding track
-    survey_test_list = [(survey_name.removesuffix(f"__{track}".upper()), survey_name)
+    survey_test_list = [(survey_name.upper().removesuffix(f"__{track}".upper()), survey_name)
                         for survey_name in survey_info
-                        if survey_name.endswith(f"__{track}".upper())]
+                        if survey_name.upper().endswith(f"__{track}".upper())]
 
     for test_name in test_names:
         test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print)
@@ -107,7 +107,7 @@ def _test_name_in_survey(original_test_name: str, track: str, survey_info: dict[
 
     elif test_unique_patterns or test_smallest_patterns:
         test_name = _get_unique_patterns(original_test_name)
-        survey_test_list = [(_get_unique_patterns(survey_name), survey_name)
+        survey_test_list = [(_get_unique_patterns(survey_test_name), survey_name)
                             for survey_test_name, survey_name in survey_test_list]
 
     else:  # default
@@ -134,7 +134,10 @@ def _remove_leading_zeros(name: str) -> str:
 
 
 def _get_unique_patterns(name: str) -> str:
-    list_patterns = set(name.split("_"))
+    list_patterns = list()
+    for pattern in name.split("_"):
+        if pattern not in list_patterns or any(element.isnumeric() for element in pattern):
+            list_patterns.append(pattern)
     name = "_".join(pattern for pattern in sorted(list_patterns))
     return name
 
@@ -144,8 +147,17 @@ def _test_smallest_patterns(test_name: str, survey_test_list: list[tuple[str, st
     list_survey_patterns = [(survey_test_name.split("_"), survey_name)
                             for survey_test_name, survey_name in survey_test_list]
     corresponding_survey_name_list = [survey_name for survey_test_patterns, survey_name in list_survey_patterns
-                                      if all(pattern in survey_test_patterns for pattern in test_name_patterns)]
+                                      if _test_all_patterns_are_present(test_name_patterns, survey_test_patterns)]
     return corresponding_survey_name_list
+
+
+def _test_all_patterns_are_present(test_name_patterns: list[str], survey_test_patterns: list[str]) -> bool:
+    remaining_test_name_patterns = survey_test_patterns[:]
+    for pattern in test_name_patterns:
+        if pattern not in remaining_test_name_patterns:
+            return False
+        remaining_test_name_patterns.remove(pattern)
+    return True
 
 
 def get_corresponding_survey_one_limit_on_track(dc_sys_limits_on_track: list[tuple[str, float]],

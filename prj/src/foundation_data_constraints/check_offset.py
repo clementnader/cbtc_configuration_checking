@@ -54,14 +54,14 @@ def verify_sheet(ws: xlrd.sheet):
     seg_x_cols, track_kp_cols = find_seg_x_cols(ws)
     if check_correspondence_seg_x_track_kp(ws, seg_x_cols, track_kp_cols) is False:
         success = False
-    for seg_col, x_col in seg_x_cols:
+    for seg_col, x_col, _, _ in seg_x_cols:
         for i in range(START_LINE, get_xl_number_of_rows(ws) + 1):
             first_cell = get_xl_cell_value(ws, row=i, column=1)
             seg = get_xl_cell_value(ws, row=i, column=seg_col)
             x = get_xl_cell_value(ws, row=i, column=x_col)
             if verif_correct_offset_seg_x(seg, x, first_cell, i, seg_col, x_col, ws.name) is False:
                 success = False
-    for track_col, kp_col in track_kp_cols:
+    for track_col, kp_col, _, _ in track_kp_cols:
         for i in range(START_LINE, get_xl_number_of_rows(ws) + 1):
             first_cell = get_xl_cell_value(ws, row=i, column=1)
             track = get_xl_cell_value(ws, row=i, column=track_col)
@@ -71,132 +71,130 @@ def verify_sheet(ws: xlrd.sheet):
     return success
 
 
-def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name):
+def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name) -> Optional[bool]:
     success = True
     if first_cell is None:
         return
     if seg is None and x is None:
         return
     if seg is None or x is None:
-        print_warning(f"Strange pair (segment/offset) in sheet {Color.blue}{sh_name}{Color.reset}: "
+        print_warning(f"Strange pair (segment/offset) ({seg} / {x}) in sheet {Color.blue}{sh_name}{Color.reset}: "
                       f"{Color.yellow}{get_xl_column_letter(seg_col)}{row}{Color.reset} and "
-                      f"{Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset}"
-                      f"\n{seg = } / {x = }")
+                      f"{Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset}.")
         return False
     if not (isinstance(x, float) or isinstance(x, int)):
         try:
             x = float(x.replace(',', '.'))
         except ValueError:
             print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                        f"Offset at {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
-                        f"is not a number"
-                        f"\n{x = }")
+                        f"Offset ({x}) at {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
+                        f"is not a number.")
             return False
     x = round(x, 3)
     len_seg = get_seg_len(seg)
     if not (0 <= x):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"Offset at cell {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
-                    f"shall be positive"
-                    f"\n{x = }")
+                    f"Offset ({x}) at cell {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
+                    f"shall be positive.")
         success = False
     if not (x <= len_seg):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"Offset at cell {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
-                    f"shall be lower than "
-                    f"the segment {seg} length ({len_seg})"
-                    f"\n{x = }")
+                    f"Offset ({x}) at cell {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
+                    f"shall be lower than the segment {seg} length ({len_seg}).")
         success = False
     return success
 
 
-def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col, sh_name):
+def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col, sh_name) -> Optional[bool]:
     success = True
     if first_cell is None:
         return
     if track is None and kp is None:
         return
     if track is None or kp is None:
-        print_warning(f"Strange pair (track/KP) in sheet {Color.blue}{sh_name}{Color.reset}: "
+        print_warning(f"Strange pair (track/KP) ({track} / {kp}) in sheet {Color.blue}{sh_name}{Color.reset}: "
                       f"{Color.yellow}{get_xl_column_letter(track_col)}{row}{Color.reset} and "
-                      f"{Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset}"
-                      f"\n{track = } / {kp = }")
+                      f"{Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset}.")
         return False
     if not (isinstance(kp, float) or isinstance(kp, int)):
         try:
             kp = float(kp.replace(',', '.'))
         except ValueError:
             print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                        f"KP at {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
-                        f"is not a number"
-                        f"\n{kp = }")
+                        f"KP ({kp}) at {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
+                        f"is not a number.")
             return False
     kp = round(kp, 3)
     min_kp, max_kp = get_track_limits(track)
     if not (min_kp <= kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"KP at cell {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
-                    f"shall be larger than the start KP of track {track} ({min_kp})"
-                    f"\n{kp = }")
+                    f"KP ({kp}) at cell {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
+                    f"shall be larger than the start KP of track {track} (min = {min_kp}).")
         success = False
     if not (kp <= max_kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
-                    f"KP at cell {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
-                    f"shall be lower than the end KP of track {track} ({max_kp})"
-                    f"\n{kp = }")
+                    f"KP ({kp}) at cell {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
+                    f"shall be lower than the end KP of track {track} (max = {max_kp}).")
         success = False
     return success
 
 
-def find_seg_x_cols(ws: xlrd.sheet) -> tuple[list[tuple], list[tuple]]:
+def find_seg_x_cols(ws: xlrd.sheet) -> tuple[list[tuple[int, int, str, str]], list[tuple[int, int, str, str]]]:
     nb_cols = ws.ncols
     is_prev_seg = False
     is_prev_track = False
     seg_x_cols = list()
     track_kp_cols = list()
+    prev_cell = ""
+    title = ""
     for j in range(1, nb_cols+1):
         cell1 = get_xl_cell_value(ws, row=1, column=j)
-        if not cell1:
-            break
-        try:
-            cell2 = get_xl_cell_value(ws, row=2, column=j)
-            cell = cell1 if not cell2 else cell2
-        except IndexError:
-            cell = cell1
-        cell = f"{cell}".strip().lower()
-        if cell.endswith("seg"):
+        cell2 = get_xl_cell_value(ws, row=2, column=j)
+        if cell1 is not None:
+            title = cell1
+        cell = f"{title}" if not cell2 else f"{title}::{cell2}"
+        if not cell:
+            continue
+        cell_to_test = f"{cell}".strip().lower()
+        if cell_to_test.endswith("seg"):
             is_prev_seg = True
             is_prev_track = False
-        elif cell.endswith("voie") or cell.endswith("track"):
+        elif cell_to_test.endswith("voie") or cell_to_test.endswith("track"):
             is_prev_seg = False
             is_prev_track = True
-        elif is_prev_seg and cell.endswith("x"):
-            seg_x_cols.append((j-1, j))
+        elif is_prev_seg and cell_to_test.endswith("x"):
+            seg_x_cols.append((j-1, j, prev_cell, cell))
             is_prev_seg = False
             is_prev_track = False
-        elif is_prev_track and (cell.endswith("pk") or cell.endswith("kp")):
-            track_kp_cols.append((j-1, j))
+        elif is_prev_track and (cell_to_test.endswith("pk") or cell_to_test.endswith("kp")):
+            track_kp_cols.append((j-1, j, prev_cell, cell))
             is_prev_seg = False
             is_prev_track = False
         else:
             is_prev_seg = False
             is_prev_track = False
+        prev_cell = cell
     return seg_x_cols, track_kp_cols
 
 
-def check_correspondence_seg_x_track_kp(ws, seg_x_cols, track_kp_cols):
+def check_correspondence_seg_x_track_kp(ws, seg_x_cols: list[tuple[int, int, str, str]],
+                                        track_kp_cols: list[tuple[int, int, str, str]]) -> bool:
     success = True
-    for (seg_col, x_col), (track_col, kp_col) in zip(seg_x_cols, track_kp_cols):
+    for ((seg_col, x_col, seg_col_name, x_col_name),
+         (track_col, kp_col, track_col_name, kp_col_name)) in zip(seg_x_cols, track_kp_cols):
         for i in range(START_LINE, get_xl_number_of_rows(ws) + 1):
             first_cell = get_xl_cell_value(ws, row=i, column=1)
             if first_cell is None:
                 continue
-            if test_match_x_kp(ws, i, seg_col, x_col, track_col, kp_col, ws.name, first_cell) is False:
+            if test_match_x_kp(ws, i, seg_col, x_col, track_col, kp_col, ws.name, first_cell,
+                               seg_col_name, x_col_name, track_col_name, kp_col_name) is False:
                 success = False
     return success
 
 
-def test_match_x_kp(ws, row, seg_col, x_col, track_col, kp_col, sh_name, first_cell):
+def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_col: int,
+                    sh_name: str, first_cell: str,
+                    seg_col_name: str, x_col_name: str, track_col_name: str, kp_col_name: str) -> bool:
     success = True
     tolerance = .01
 
@@ -205,10 +203,10 @@ def test_match_x_kp(ws, row, seg_col, x_col, track_col, kp_col, sh_name, first_c
     if seg is None and track is None:
         return True
     if seg is None or track is None:
-        print_warning(f"Strange pair (seg/track) in sheet {Color.blue}{sh_name}{Color.reset}: "
+        print_warning(f"Strange pair (seg/track) for columns \"{seg_col_name}\"/\"{track_col_name}\": "
+                      f"({seg} / {track}) in sheet {Color.blue}{sh_name}{Color.reset}: "
                       f"{Color.yellow}{get_xl_column_letter(seg_col)}{row}{Color.reset} and "
-                      f"{Color.yellow}{get_xl_column_letter(track_col)}{row}{Color.reset}"
-                      f"\n{seg = } / {track = }")
+                      f"{Color.yellow}{get_xl_column_letter(track_col)}{row}{Color.reset}.")
         return False
     x = round(get_xl_float_value(ws, row=row, column=x_col), 2)
     kp = round(get_xl_float_value(ws, row=row, column=kp_col), 2)
@@ -229,17 +227,21 @@ def test_match_x_kp(ws, row, seg_col, x_col, track_col, kp_col, sh_name, first_c
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"at row {Color.yellow}{row}{Color.reset} ({Color.beige}{first_cell = }{Color.reset}), "
                     f"(segment, offset) {Color.light_green}{(seg, x)}{Color.reset} "
-                    f"(at columns {get_xl_column_letter(seg_col)} and {get_xl_column_letter(x_col)})\n"
-                    f"is different from the one recalculated {Color.light_green}{(test_seg, test_x)}{Color.reset}\n"
-                    f"with the (track, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
-                    f"(at columns {get_xl_column_letter(track_col)} and {get_xl_column_letter(kp_col)}).")
+                    f"(at columns {get_xl_column_letter(seg_col)} \"{seg_col_name}\" "
+                    f"and {get_xl_column_letter(x_col)} \"{x_col_name}\")\n"
+                    f"is different from the one recalculated {Color.light_green}{(test_seg, test_x)}{Color.reset} "
+                    f"from the (track, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
+                    f"(at columns {get_xl_column_letter(track_col)} \"{track_col_name}\" "
+                    f"and {get_xl_column_letter(kp_col)} \"{kp_col_name}\").")
     if track != test_track or round(abs(kp - test_kp), 2) > tolerance:
         success = False
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"at row {Color.yellow}{row}{Color.reset} ({Color.beige}{first_cell = }{Color.reset}), "
                     f"(track, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
-                    f"(at columns {get_xl_column_letter(track_col)} and {get_xl_column_letter(kp_col)})\n"
-                    f"is different from the one recalculated {Color.light_blue}{(test_track, test_kp)}{Color.reset}\n"
-                    f"with the (segment, offset) {Color.light_green}{(seg, x)}{Color.reset} "
-                    f"(at columns {get_xl_column_letter(seg_col)} and {get_xl_column_letter(x_col)}).")
+                    f"(at columns {get_xl_column_letter(track_col)} \"{track_col_name}\" "
+                    f"and {get_xl_column_letter(kp_col)} \"{kp_col_name})\"\n"
+                    f"is different from the one recalculated {Color.light_blue}{(test_track, test_kp)}{Color.reset} "
+                    f"from the (segment, offset) {Color.light_green}{(seg, x)}{Color.reset} "
+                    f"(at columns {get_xl_column_letter(seg_col)} \"{seg_col_name}\" "
+                    f"and {get_xl_column_letter(x_col)} \"{x_col_name}\").")
     return success

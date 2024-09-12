@@ -102,12 +102,11 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
             if all(surveyed_kp == old_value for old_value in old_surveyed_values):
                 # object appearing multiple times in same survey but with the same surveyed KP value
                 comments = (f"Object appearing {len(surveyed_values)} times "
-                            f"with the same surveyed KP value ({surveyed_kp}) "
-                            f"on track {original_track} \n"
-                            f"in survey: {survey_name}.")
+                            f"with the same surveyed KP value ({round(surveyed_kp, 6)}) "
+                            f"on track {original_track} in survey: {survey_name}.")
                 to_delete = False
             else:
-                comments = (f"Object appearing {len(surveyed_values)} times on track {original_track}\n"
+                comments = (f"Object appearing {len(surveyed_values)} times on track {original_track} "
                             f"in same survey: {survey_name}.\n"
                             f"List of surveyed KPs is: {str(surveyed_values).removeprefix('[').removesuffix(']')}.")
                 to_delete = True
