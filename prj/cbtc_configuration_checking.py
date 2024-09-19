@@ -83,7 +83,7 @@ def route_and_overlap():
 
 
 def dc_par_customer_data():
-    # min_length_multiple_path(in_cbtc=False)  # trapezoid_length
+    # min_length_multiple_path(in_cbtc=True)  # trapezoid_length
     # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
     #                                                                    with a buffer just down the line
     # min_distance_between_vsp_overlap(in_cbtc=False)  # TODO: useless to delete
@@ -93,7 +93,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()  # v2.5
+    # check_survey()  # v2.5.1
     # survey_window()
     # cctool_schema_window()
     return

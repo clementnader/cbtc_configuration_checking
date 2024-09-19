@@ -281,6 +281,7 @@ class ProjectDatabaseLoc:
         # ------------------------------- Lima -------------------------------#
         elif project_name == Projects.Lima:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1_SP1\DC_SYS_0402RC1.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0403RC1\DC_SYS_0403RC1.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\LIMA\Objects_List - v3 Rev 01.xlsx"
             self.survey_loc.survey_sheet = r"Object List"

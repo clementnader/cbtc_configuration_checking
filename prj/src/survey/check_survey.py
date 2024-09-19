@@ -13,7 +13,7 @@ from .result_file import *
 __all__ = ["check_survey"]
 
 
-SURVEY_CHECKING_VERSION = "v2.5"
+SURVEY_CHECKING_VERSION = "v2.5.1"
 
 
 def check_survey():

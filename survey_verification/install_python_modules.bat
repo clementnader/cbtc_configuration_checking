@@ -9,7 +9,7 @@ echo. && echo ---------------------------------------------- && echo.
 echo Installing the required Python libraries...
 echo. && echo ---------------------------------------------- && echo.
 
-for %%x in (numpy openpyxl xlrd Unidecode pdfreader tk) do (
+for %%x in (numpy openpyxl xlrd Unidecode pdfreader tk pypdf) do (
     echo. && echo Install library %%x.
     REM Uncomment next line if launching it while connected to Hitachi network, on site or with VPN
     %PYTHON_EXE% -m pip install %%x --proxy http://z-proxy1.loc.global.sys

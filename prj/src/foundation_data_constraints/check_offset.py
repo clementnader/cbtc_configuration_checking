@@ -37,9 +37,21 @@ def check_integers(ws: xlrd.sheet):
     for j in range(1, nb_cols+1):
         for i in range(3, get_xl_number_of_rows(ws) + 1):
             cell_value = get_xl_cell_value(ws, row=i, column=j)
-            if cell_value is None or isinstance(cell_value, float) or isinstance(cell_value, int):
+            if cell_value is None:
                 continue
-            if re.search(r"^[0-9]+([,.][0-9]+)?$", cell_value) is not None:
+            if isinstance(cell_value, float) or isinstance(cell_value, int):
+                if check_xl_cell_style_percent(ws, row=i, column=j):
+                    thousandth = round(round(cell_value*100*100, 6) % 1, 6)
+                    cell_value_str = f"{cell_value:.4%}"
+                else:
+                    thousandth = round(round(cell_value*100, 6) % 1, 6)
+                    cell_value_str = f"{cell_value}"
+                if thousandth > 1E-6:
+                    print_log(f"In sheet {Color.blue}{ws.name}{Color.reset}: "
+                              f"cell at {Color.yellow}{get_xl_column_letter(j)}{i}{Color.reset} "
+                              f"has more than 2 digits after the point: \"{cell_value_str}\".\t\t{thousandth = }")
+                    success = False
+            elif re.search(r"^[0-9]+([,.][0-9]+)?$", cell_value) is not None:
                 if "," in cell_value or "." in cell_value:
                     print_warning(f"In sheet {Color.blue}{ws.name}{Color.reset}: "
                                   f"cell at {Color.yellow}{get_xl_column_letter(j)}{i}{Color.reset} "
@@ -124,7 +136,7 @@ def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col,
                         f"KP ({kp}) at {Color.yellow}{get_xl_column_letter(kp_col)}{row}{Color.reset} "
                         f"is not a number.")
             return False
-    kp = round(kp, 3)
+    kp = round(kp, 4)
     min_kp, max_kp = get_track_limits(track)
     if not (min_kp <= kp):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
@@ -196,7 +208,7 @@ def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_c
                     sh_name: str, first_cell: str,
                     seg_col_name: str, x_col_name: str, track_col_name: str, kp_col_name: str) -> bool:
     success = True
-    tolerance = .01
+    tolerance = 1E-4
 
     seg = get_xl_cell_value(ws, row=row, column=seg_col)
     track = get_xl_cell_value(ws, row=row, column=track_col)
@@ -208,8 +220,8 @@ def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_c
                       f"{Color.yellow}{get_xl_column_letter(seg_col)}{row}{Color.reset} and "
                       f"{Color.yellow}{get_xl_column_letter(track_col)}{row}{Color.reset}.")
         return False
-    x = round(get_xl_float_value(ws, row=row, column=x_col), 2)
-    kp = round(get_xl_float_value(ws, row=row, column=kp_col), 2)
+    x = round(get_xl_float_value(ws, row=row, column=x_col), 4)
+    kp = round(get_xl_float_value(ws, row=row, column=kp_col), 4)
 
     test_seg, test_x = from_kp_to_seg_offset(track, kp)
     if test_seg is None or test_x is None:
@@ -217,10 +229,10 @@ def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_c
         success = False
         skip_verif_seg_x = True
     else:
-        test_x = round(test_x, 2)
+        test_x = round(test_x, 4)
         skip_verif_seg_x = False
     test_track, test_kp = from_seg_offset_to_kp(seg, x)
-    test_kp = round(test_kp, 2)
+    test_kp = round(test_kp, 4)
 
     if not skip_verif_seg_x and not are_points_matching(seg, x, test_seg, test_x, tolerance=tolerance):
         success = False
@@ -233,7 +245,7 @@ def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_c
                     f"from the (track, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
                     f"(at columns {get_xl_column_letter(track_col)} \"{track_col_name}\" "
                     f"and {get_xl_column_letter(kp_col)} \"{kp_col_name}\").")
-    if track != test_track or round(abs(kp - test_kp), 2) > tolerance:
+    if track != test_track or round(abs(kp - test_kp), 4) > tolerance:
         success = False
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"at row {Color.yellow}{row}{Color.reset} ({Color.beige}{first_cell = }{Color.reset}), "

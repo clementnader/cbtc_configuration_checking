@@ -25,7 +25,7 @@ def load_xlsx_wb(xl_file_address: str) -> openpyxl.workbook.Workbook:
 
 
 def load_xlrd_wb(xl_file_address: str) -> openpyxl.workbook.Workbook:
-    wb = xlrd.open_workbook(xl_file_address)
+    wb = xlrd.open_workbook(xl_file_address, formatting_info=True)
     return wb
 
 

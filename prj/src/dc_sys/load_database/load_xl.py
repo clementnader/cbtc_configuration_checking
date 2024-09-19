@@ -12,7 +12,7 @@ WB = None
 WB_OLD = None
 
 
-def load_dc_sys_wb(old: bool = False):
+def load_dc_sys_wb(old: bool = False) -> xlrd.book.Book:
     if old:
         global WB_OLD
         if not WB_OLD:
