@@ -12,10 +12,32 @@ from ..xl_pkg import get_xl_bg_dimmer_color
 
 
 __all__ = ["tkinter", "default_gui_bg_color", "disable_frame", "enable_frame",
-           "gui_add_dir_and_file_open_button", "gui_add_dir_open_button"]
+           "gui_add_dir_and_file_open_button", "gui_add_dir_open_button",
+           "TEMPLATE_DIRECTORY", "create_window"]
 
 
 G_INITIAL_DIRECTORY = DESKTOP_DIRECTORY
+TEMPLATE_DIRECTORY = os.path.join(os.path.dirname(__file__), "..", "..", "templates")
+
+
+def create_window(window_title: str) -> tkinter.Tk:
+    window = tkinter.Tk()
+    # Set title
+    window.title(window_title)
+    # Define window icon
+    logo_name = "logo_hitachi_rail.png"
+    photo = tkinter.PhotoImage(file=os.path.join(TEMPLATE_DIRECTORY, logo_name))
+    window.wm_iconphoto(False, photo)
+    # Set properties
+    window.resizable(False, False)  # not resizable
+    window.attributes("-topmost", True)  # always at top
+    # Set window default position, it is set at the top left with a margin of 1/4 of the width screen from the edge
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    window.geometry(f"+{screen_width // 4}+{screen_height // 4}")
+    # Set minimal window size
+    window.minsize(300, 100)
+    return window
 
 
 def disable_frame(frame: Union[tkinter.Tk, tkinter.Frame]):

@@ -48,7 +48,7 @@ def get_corresponding_cctool_oo_schema():
     sys.exit(1)
 
 
-def get_cctool_oo_version_info(cctool_oo_file) -> tuple[str, str]:
+def get_cctool_oo_version_info(cctool_oo_file: str) -> tuple[str, str]:
     wb = load_cctool_oo_schema_wb(cctool_oo_file)
     revision_sh = wb.sheet_by_name(REVISION_SHEET)
     for row in range(get_xl_number_of_rows(revision_sh) + 1, 0, -1):

@@ -19,7 +19,7 @@ def get_approach_area_ivb_from_excel_file(sig_name: str) -> Optional[list[str]]:
     if DATABASE_LOC.ixl_apz.ixl_apz_file is None:
         return None
     if not LOADED_DB:
-        wb = load_xlsx_wb(DATABASE_LOC.ixl_apz.ixl_apz_file)
+        wb = load_xl_file(DATABASE_LOC.ixl_apz.ixl_apz_file)
         ws = get_xl_sheet_by_name(wb, DATABASE_LOC.ixl_apz.ixl_apz_sheet_name)
         for row in range(DATABASE_LOC.ixl_apz.start_line, get_xl_number_of_rows(ws) + 1):
             sig = get_xl_cell_value(ws, row=row, column=DATABASE_LOC.ixl_apz.sig_column)

@@ -9,6 +9,7 @@ from ...dc_sys_sheet_utils.zc_tracking_area_utils import get_all_zc
 from ...dc_sys_sheet_utils.signal_utils import get_related_overlaps
 from ...dc_sys_get_cbtc_territory import *
 from ...dc_par import *
+from ..signal import check_signal_with_overlap
 from .common_functions import *
 
 __all__ = ["r_mes_pas_itf_3"]
@@ -62,6 +63,7 @@ def _rule_3_check_plt(plt_msg_dict: dict, in_cbtc: bool):
 
 def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
     print_section_title(f"\nChecking {TypeClasseObjetPASMES.SIGNAL}...")
+    check_signal_with_overlap()  # first verify the flag [With overlap]
     if not in_cbtc:
         sig_dict = load_sheet(DCSYS.Sig)
     else:

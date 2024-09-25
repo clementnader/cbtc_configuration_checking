@@ -9,7 +9,7 @@ from .dc_tu_utils import *
 __all__ = ["create_dc_tu_verif_file"]
 
 
-DC_TU_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_dc_tu_verification.xlsx")
+DC_TU_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join(TEMPLATE_DIRECTORY, "template_dc_tu_verification.xlsx")
 DC_TU_VERIF_TEMPLATE = get_full_path(__file__, DC_TU_VERIF_TEMPLATE_RELATIVE_PATH)
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
@@ -45,7 +45,7 @@ def create_dc_tu_verif_file(ip_address_dict: dict, ssh_key_dict: dict, tool_vers
 
 
 def _create_verif_file(ip_address_dict: dict, ssh_key_dict: dict, tool_version: str) -> str:
-    wb = load_xlsx_wb(DC_TU_VERIF_TEMPLATE)
+    wb = load_xlsx_wb(DC_TU_VERIF_TEMPLATE, template=True)
     update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version)
 
     _update_ip_addr_sheet(wb, ip_address_dict)

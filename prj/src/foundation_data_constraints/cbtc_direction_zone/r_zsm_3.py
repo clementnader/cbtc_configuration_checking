@@ -14,8 +14,7 @@ from ...ixl_utils import get_distance_between_block_and_approach_zone
 __all__ = ["r_zsm_3"]
 
 
-VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_r_zsm_3_verification.xlsx")
-VERIF_TEMPLATE = get_full_path(__file__, VERIF_TEMPLATE_RELATIVE_PATH)
+VERIF_TEMPLATE = os.path.join(TEMPLATE_DIRECTORY, "template_r_zsm_3_verification.xlsx")
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 VERIF_FILE_NAME = "R_ZSM_3 Verification.xlsx"
@@ -97,7 +96,7 @@ def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any
 
 
 def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
-    wb = load_xlsx_wb(VERIF_TEMPLATE)
+    wb = load_xlsx_wb(VERIF_TEMPLATE, template=True)
 
     update_header_sheet_for_verif_file(wb)
 

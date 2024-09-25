@@ -9,19 +9,20 @@ from .xl_utils import *
 
 __all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_number_of_rows", "get_xl_number_of_columns",
            "get_xl_sheet_names", "get_xl_cell_value", "get_xl_float_value", "get_xl_cell_style",
-           "check_xl_cell_style_percent"]
+           "check_xl_cell_style_percent", "get_xl_sheet_names_preload"]
 
 
-def load_xl_file(xl_file_address: str) -> Optional[Union[xlrd.book.Book, openpyxl.workbook.Workbook]]:
+def load_xl_file(xl_file_address: str, preload: bool = False
+                 ) -> Optional[Union[xlrd.book.Book, openpyxl.workbook.Workbook]]:
     ext = os.path.splitext(xl_file_address)[1]
     if ext == ".xls":
-        wb = load_xlrd_wb(xl_file_address)
+        wb = load_xlrd_wb(xl_file_address, on_demand=preload)
         return wb
-    elif ext == ".xlsx" or ext == ".xlsm" or ext == ".xlsb":
-        wb = load_xlsx_wb(xl_file_address)
+    elif ext == ".xlsx" or ext == ".xlsm":
+        wb = load_xlsx_wb(xl_file_address, read_only=preload)
         return wb
     else:
-        print_error(f"{xl_file_address} is not an Excel file: extension is {ext=}.")
+        print_error(f"{xl_file_address} is not an Excel file: extension is \"{ext}\".")
         return None
 
 
@@ -30,6 +31,11 @@ def get_xl_sheet_names(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook]) ->
         return wb.sheet_names()
     elif isinstance(wb, openpyxl.workbook.Workbook):
         return wb.sheetnames
+
+
+def get_xl_sheet_names_preload(xl_file_address: str) -> list[str]:
+    wb = load_xl_file(xl_file_address, preload=True)
+    return get_xl_sheet_names(wb)
 
 
 def get_xl_sheet_by_name(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook], sheet_name: str

@@ -12,8 +12,7 @@ from .file_format_utils import *
 __all__ = ["create_survey_verif_file"]
 
 
-SURVEY_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "template_survey_verification.xlsx")
-SURVEY_VERIF_TEMPLATE = get_full_path(__file__, SURVEY_VERIF_TEMPLATE_RELATIVE_PATH)
+SURVEY_VERIF_TEMPLATE = os.path.join(TEMPLATE_DIRECTORY, "template_survey_verification.xlsx")
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 # OUTPUT_DIRECTORY = os.path.join(DESKTOP_DIRECTORY, "Correspondence with Site Survey")
@@ -34,7 +33,7 @@ def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], bloc
 
 def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
                        tool_version: str):
-    wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE)
+    wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE, template=True)
 
     update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version)
     _update_menu_sheet(wb)

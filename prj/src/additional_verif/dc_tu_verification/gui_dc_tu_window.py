@@ -10,17 +10,11 @@ __all__ = ["dc_tu_window"]
 
 
 def dc_tu_window():
-    print_title(f"DC_TU Verification", color=Color.mint_green)
+    print_title("DC_TU Verification", color=Color.mint_green)
     print(f"{Color.light_green}Select the C11_D470.{Color.reset}\n")
-    # Root window
-    window = tkinter.Tk()
-    window.title(f"DC_TU Verification")
-    window.resizable(False, False)
-    window.attributes("-topmost", True)
 
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    window.geometry(f"+{screen_width//4}+{screen_height//4}")
+    # Root window
+    window = create_window("DC_TU Verification")
 
     # Left Frame
     bg = f"#{XlBgColor.light_blue}"

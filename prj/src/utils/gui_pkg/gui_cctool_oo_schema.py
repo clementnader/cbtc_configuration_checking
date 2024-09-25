@@ -14,14 +14,7 @@ __all__ = ["cctool_schema_window"]
 
 def cctool_schema_window():
     # Root window
-    window = tkinter.Tk()
-    window.title("CCTool-OO Schema")
-    window.resizable(False, False)
-    window.attributes("-topmost", True)
-
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    window.geometry(f"+{screen_width//4}+{screen_height//4}")
+    window = create_window("CCTool-OO Schema")
 
     bg = f"#{XlBgColor.light_blue}"
     window.configure(bg=bg)

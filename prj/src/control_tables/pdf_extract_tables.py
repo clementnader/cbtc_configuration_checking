@@ -3,7 +3,7 @@
 
 import os
 import pdfreader
-import pypdf
+# import pypdf
 import logging
 import re
 from ..utils import *
@@ -25,51 +25,51 @@ def pdf_reader_extract_tables(pdf_file: str, table_type: str, verbose: bool = Fa
                         f"{Color.mint_green}Control Tables{Color.reset} for {Color.yellow}{pdf_name}{Color.reset}...")
     res_dict = dict()
     # new_method = False
-    if new_method:
-        reader = pypdf.PdfReader(pdf_file)
-        nbpages = len(reader.pages)
+    # if new_method:
+    #     reader = pypdf.PdfReader(pdf_file)
+    #     nbpages = len(reader.pages)
+    #     progress_bar(1, 1, end=True)  # reset progress_bar
+    #     for num_page, page in enumerate(reader.pages, start=1):
+    #         if specific_page is not None and num_page != specific_page:
+    #             continue
+    #         print_log(f"\r{progress_bar(num_page, nbpages)} "
+    #                   f"{Color.turquoise}{table_type.title()}{Color.reset} "
+    #                   f"{Color.mint_green}Control Tables{Color.reset} conversion in-going...", end="")
+    #         page_text = page.extract_text(extraction_mode="layout", layout_mode_scale_weight=1)
+    #         if verbose:
+    #             print()
+    #             print(page_text)
+    #             print_bar()
+    #         page_dict = _clean_res_dict_new_method(parse_pdf_control_table(page_text, num_page, table_type))
+    #         if page_dict is not None:
+    #             res_dict[page_dict["name"]["info"]] = page_dict
+    #     print_log(f"\r{progress_bar(nbpages, nbpages, end=True)} "
+    #               f"{Color.turquoise}{table_type.title()}{Color.reset} "
+    #               f"{Color.mint_green}Control Tables{Color.reset} conversion finished.")
+    # else:
+    with open(pdf_file, "rb") as pdf:
+        viewer = pdfreader.SimplePDFViewer(pdf)
+        nbpages = len([p for p in viewer.doc.pages()])
         progress_bar(1, 1, end=True)  # reset progress_bar
-        for num_page, page in enumerate(reader.pages, start=1):
+        for num_page in range(1, nbpages + 1):
             if specific_page is not None and num_page != specific_page:
                 continue
-            print_log(f"\r{progress_bar(num_page, nbpages)} "
+            print_log(f"\r{progress_bar(num_page - 1, nbpages)} "
                       f"{Color.turquoise}{table_type.title()}{Color.reset} "
                       f"{Color.mint_green}Control Tables{Color.reset} conversion in-going...", end="")
-            page_text = page.extract_text(extraction_mode="layout", layout_mode_scale_weight=1)
-            if verbose:
-                print()
-                print(page_text)
-                print_bar()
-            page_dict = _clean_res_dict_new_method(parse_pdf_control_table(page_text, num_page, table_type))
-            if page_dict is not None:
-                res_dict[page_dict["name"]["info"]] = page_dict
+            viewer.navigate(num_page)
+            logging.disable(logging.WARNING)  # deactivate temporarily the warning logs
+            # TODO: use warnings.filterwarnings
+            viewer.render()
+            logging.disable(logging.NOTSET)
+            page_text = viewer.canvas.text_content
+            print(page_text)
+            page_dict = _parse_page_text(page_text, table_type, num_page, verbose=verbose)
+            if page_dict:
+                res_dict[page_dict["Name"]] = page_dict
         print_log(f"\r{progress_bar(nbpages, nbpages, end=True)} "
                   f"{Color.turquoise}{table_type.title()}{Color.reset} "
                   f"{Color.mint_green}Control Tables{Color.reset} conversion finished.")
-    else:
-        with open(pdf_file, "rb") as pdf:
-            viewer = pdfreader.SimplePDFViewer(pdf)
-            nbpages = len([p for p in viewer.doc.pages()])
-            progress_bar(1, 1, end=True)  # reset progress_bar
-            for num_page in range(1, nbpages + 1):
-                if specific_page is not None and num_page != specific_page:
-                    continue
-                print_log(f"\r{progress_bar(num_page - 1, nbpages)} "
-                          f"{Color.turquoise}{table_type.title()}{Color.reset} "
-                          f"{Color.mint_green}Control Tables{Color.reset} conversion in-going...", end="")
-                viewer.navigate(num_page)
-                logging.disable(logging.WARNING)  # deactivate temporarily the warning logs
-                # TODO: use warnings.filterwarnings
-                viewer.render()
-                logging.disable(logging.NOTSET)
-                page_text = viewer.canvas.text_content
-                print(page_text)
-                page_dict = _parse_page_text(page_text, table_type, num_page, verbose=verbose)
-                if page_dict:
-                    res_dict[page_dict["Name"]] = page_dict
-            print_log(f"\r{progress_bar(nbpages, nbpages, end=True)} "
-                      f"{Color.turquoise}{table_type.title()}{Color.reset} "
-                      f"{Color.mint_green}Control Tables{Color.reset} conversion finished.")
     return res_dict
 
 

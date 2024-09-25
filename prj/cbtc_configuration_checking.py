@@ -130,6 +130,7 @@ def constraints():
     # r_tm_ats_itf_1(in_cbtc=True)
     # ats_atc_sheet_verif(in_cbtc=True)  # TODO: Check if extra flows exist for object that does not exist per type,
     #                                           and if extra object type exists.
+    # check_signal_with_overlap()
     # cf_signal_12(apz_with_tc=True)
     # r_zsm_3(apz_with_tc=True)
     # verif_calib_distance()

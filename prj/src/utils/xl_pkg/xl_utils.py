@@ -14,18 +14,25 @@ __all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws", "load_xlsx_wb", "load_xlrd_wb",
            "get_row_and_column_from_cell", "get_cell_from_row_and_column", "get_cell_range"]
 
 
-def load_xlsx_wb(xl_file_address: str) -> openpyxl.workbook.Workbook:
+def load_xlsx_wb(xl_file_address: str, template: bool = False, read_only: bool = False) -> openpyxl.workbook.Workbook:
     warnings.filterwarnings("ignore", message="Cannot parse header or footer so it will be ignored",
                             category=UserWarning, module="openpyxl")  # deactivate the warning for header/footer
     warnings.filterwarnings("ignore", message="Data Validation extension is not supported and will be removed",
                             category=UserWarning, module="openpyxl")  # deactivate the warning for extension
-    wb = openpyxl.load_workbook(xl_file_address, data_only=True)
+    if template:
+        wb = openpyxl.load_workbook(xl_file_address, rich_text=True)
+    elif read_only:
+        wb = openpyxl.load_workbook(xl_file_address, data_only=True, read_only=True, keep_links=False)
+    else:
+        # read-only active prevents the max_row to work
+        wb = openpyxl.load_workbook(xl_file_address, data_only=True, read_only=False, keep_links=False)
     warnings.filterwarnings("default")
     return wb
 
 
-def load_xlrd_wb(xl_file_address: str) -> openpyxl.workbook.Workbook:
-    wb = xlrd.open_workbook(xl_file_address, formatting_info=True)
+def load_xlrd_wb(xl_file_address: str, formatting_info=False, on_demand=False) -> openpyxl.workbook.Workbook:
+    # formatting_info is useful if a cell is in percentage mode
+    wb = xlrd.open_workbook(xl_file_address, formatting_info=formatting_info, on_demand=on_demand)
     return wb
 
 

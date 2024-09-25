@@ -6,8 +6,7 @@ from ..utils import *
 from ..dc_sys_sheet_utils import *
 
 
-FOULING_POINT_TEMPLATE_RELATIVE_PATH = os.path.join("..", "..", "templates", "Fouling Points template.xlsx")
-FOULING_POINT_TEMPLATE = get_full_path(__file__, FOULING_POINT_TEMPLATE_RELATIVE_PATH)
+FOULING_POINT_TEMPLATE = os.path.join(TEMPLATE_DIRECTORY, "Fouling Points template.xlsx")
 
 OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 FOULING_POINT_SHEET = "Fouling_Point"
@@ -29,7 +28,7 @@ def create_fouling_points_file():
 
 
 def _make_file(sw_pos_dict):
-    wb = load_xlsx_wb(FOULING_POINT_TEMPLATE)
+    wb = load_xlsx_wb(FOULING_POINT_TEMPLATE, template=True)
     ws = wb[FOULING_POINT_SHEET]
     for row, (sw_name, sw_pos) in enumerate(sw_pos_dict.items(), start=FOULING_POINT_START_ROW):
         ws[f"{SW_NAME_COL}{row}"] = sw_name

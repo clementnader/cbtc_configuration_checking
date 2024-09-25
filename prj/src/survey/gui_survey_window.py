@@ -15,15 +15,9 @@ def survey_window() -> None:
     print(f"{Color.light_green}Select the DC_SYS "
           f"{Color.cyan}{Color.underline}compatible with System Referential {ga_version}{Color.no_underline}"
           f"{Color.light_green} and the Survey information to verify.{Color.reset}\n")
-    # Root window
-    window = tkinter.Tk()
-    window.title(f"Survey Verification (System Referential {ga_version})")
-    window.resizable(False, False)
-    window.attributes("-topmost", True)
 
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    window.geometry(f"+{screen_width//4}+{screen_height//4}")
+    # Root window
+    window = create_window(f"Survey Verification (System Referential {ga_version})")
 
     # Top Frame
     bg = f"#{XlBgColor.light_yellow}"

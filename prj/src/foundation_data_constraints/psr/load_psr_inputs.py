@@ -22,7 +22,7 @@ SPEED_COLUMN = 40
 
 def get_psr_definition() -> dict[str, dict[int, dict[str, float]]]:
     psr_dict = dict()
-    wb = load_xlsx_wb(PSR_INPUT_FILE)
+    wb = load_xl_file(PSR_INPUT_FILE)
     for sheet_name, track_name in ((TRACK_41_FILE, "TRACK_41"), (TRACK_42_FILE, "TRACK_42")):
         psr_dict[track_name] = dict()
         ws = get_xl_sheet_by_name(wb, sheet_name)

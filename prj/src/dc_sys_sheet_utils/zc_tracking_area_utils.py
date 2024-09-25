@@ -48,6 +48,7 @@ def _get_zc_of_overlap(obj_name: str) -> list[str]:
         zc_list = get_zc_of_point(seg, x, direction)
         if zc_list is None:
             print_error(f"Point {(seg, x, direction)} for overlap {obj_name} is on no ZC.")
+            zc_list = []
         dict_zc_on_limits[(seg, x)] = zc_list
 
     list_zc = list()
@@ -64,9 +65,11 @@ def get_zc_of_obj(obj_type, obj_name: str) -> list[str]:
         return _get_zc_of_overlap(obj_name)
     position = get_obj_position(obj_type, obj_name)
     if isinstance(position, tuple):
-        return get_zc_of_point(*position)
+        list_zc = get_zc_of_point(*position)
+        return list_zc if list_zc is not None else []
     if isinstance(position, list):
-        return get_zc_of_extremities(position)
+        list_zc = get_zc_of_extremities(position)
+        return list_zc if list_zc is not None else []
     return []
 
 
@@ -118,7 +121,7 @@ def _get_zc_managing_ivb(ivb_name: str) -> Optional[str]:
     ivb_dict = load_sheet(DCSYS.IVB)
     dedicated_zc = get_dc_sys_value(ivb_dict[ivb_name], DCSYS.IVB.ZcName)
     if dedicated_zc is None:
-        print_error(f"IVB {ivb_name} is not managed by a ZC.")
+        print_warning(f"IVB {ivb_name} is not managed by a ZC.")
         return None
     list_of_zc_covering_ivb = get_zc_of_obj(DCSYS.IVB, ivb_name)
     if dedicated_zc not in list_of_zc_covering_ivb:

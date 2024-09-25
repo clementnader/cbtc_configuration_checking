@@ -87,8 +87,11 @@ def get_next_segments(obj_type_name: str, obj_name: str, start_seg: str, start_x
                 continue
 
             if (next_seg, next_inner_downstream) in ZONE_SEGMENTS[obj_type_name][obj_name]:  # already managed
+                ZONE_SEGMENTS[obj_type_name][obj_name].extend(path)  # append the current path and terminate the branch
                 continue
+
             if (next_seg, next_inner_downstream) in path:  # a whole loop has been made
+                ZONE_SEGMENTS[obj_type_name][obj_name].extend(path)  # append the current path and terminate the branch
                 continue
 
             inner_recurs_next_seg(next_seg, next_inner_downstream, path + [(next_seg, next_inner_downstream)])

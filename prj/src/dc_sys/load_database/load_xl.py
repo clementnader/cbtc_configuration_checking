@@ -16,12 +16,12 @@ def load_dc_sys_wb(old: bool = False) -> xlrd.book.Book:
     if old:
         global WB_OLD
         if not WB_OLD:
-            WB_OLD = load_xlrd_wb(DATABASE_LOC.dc_sys_addr_old)
+            WB_OLD = load_xlrd_wb(DATABASE_LOC.dc_sys_addr_old, formatting_info=True)
         return WB_OLD
     else:
         global WB
         if not WB:
-            WB = load_xlrd_wb(DATABASE_LOC.dc_sys_addr)
+            WB = load_xlrd_wb(DATABASE_LOC.dc_sys_addr, formatting_info=True)
         return WB
 
 
