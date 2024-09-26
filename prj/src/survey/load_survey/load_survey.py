@@ -11,11 +11,13 @@ from .track_survey_utils import *
 __all__ = ["load_survey"]
 
 
-def load_survey() -> dict:
+def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str]]:
     survey_info = dict()
-    nb_of_survey = len(list(get_survey_loc_info()))
+    survey_loc_info = list(get_survey_loc_info())
+    display_info_list = _get_survey_files_display_info(survey_loc_info)
+    nb_of_survey = len(display_info_list)
     for i, (survey_addr, survey_sheet, all_sheets, start_row,
-            ref_col, type_col, track_col, survey_kp_col) in enumerate(get_survey_loc_info(), start=1):
+            ref_col, type_col, track_col, survey_kp_col) in enumerate(survey_loc_info, start=1):
         missing_types = list()
         if all_sheets:
             print(f"\n {i}/{nb_of_survey} - "
@@ -42,7 +44,18 @@ def load_survey() -> dict:
             print(f"\n\t> The following type{'s' if len(missing_types) > 1 else ''} in the survey "
                   f"{'are' if len(missing_types) > 1 else 'is'} not loaded: "
                   f"{Color.yellow}{', '.join(missing_types)}{Color.reset}.")
-    return survey_info
+    return survey_info, display_info_list
+
+
+def _get_survey_files_display_info(survey_loc_info: list[tuple[Union[str, bool], ...]]) -> list[str]:
+    def _display_sheet(all_sheets: bool, survey_sheet: str):
+        return 'all sheets' if all_sheets else 'sheet "' + survey_sheet + '"'
+
+    display_info_list = [(f"{os.path.split(survey_addr)[-1]} "
+                          f"({_display_sheet(all_sheets, survey_sheet)})")
+                         for (survey_addr, survey_sheet, all_sheets, start_row,
+                              ref_col, type_col, track_col, survey_kp_col) in survey_loc_info]
+    return display_info_list
 
 
 def get_survey_loc_info():
@@ -91,8 +104,9 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
         if surveyed_kp is None:
             continue
         if not (isinstance(surveyed_kp, float) or isinstance(surveyed_kp, int)):
-            print_log(f"Surveyed KP of {type_name} {key_name} in \"{survey_name}\" is not a number:\n"
-                      f"\t{type(surveyed_kp)} \"{surveyed_kp}\". Object is considered not surveyed.")
+            print_log(f"Surveyed KP of {type_name} {Color.yellow}{key_name}{Color.reset} in \"{survey_name}\" is not "
+                      f"a number: {Color.beige}\"{surveyed_kp}\"{Color.reset} ({type(surveyed_kp)}). "
+                      f"Object is considered not surveyed.")
             continue
 
         surveyed_kp_comment = f"From {survey_name}"

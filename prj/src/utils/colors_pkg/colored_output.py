@@ -194,7 +194,7 @@ def print_named_colors():
 
 def remove_colors(string: str):
     res_string = string
-    res_string = re.sub("\\".join(c for c in ESCAPE_SEQ) + r".*?[mABCD]", "", res_string)
+    res_string = re.sub("\\".join(c for c in ESCAPE_SEQ) + r".*?[mABCD]", r"", res_string)
     # the '?' is to remove the greedy behavior of the '*' quantifier
     # in order to match with the smallest text inside the brackets, if there is more than one pair of brackets
     return res_string

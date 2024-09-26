@@ -170,7 +170,7 @@ def _get_key_name_multiple_lines(text: str, max_len: int, num_line: int, absciss
 
         line = prefix + " " + expression
 
-    line = re.sub(r"\s{2,5}", " ", line)
+    line = re.sub(r"\s{2,5}", r" ", line)
     line = _remove_spaces(line)
 
     for key_name in possible_key_names:

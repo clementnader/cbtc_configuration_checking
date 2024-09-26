@@ -21,6 +21,15 @@ def clean_track_name(original_track: str, set_to_test: set[str]):
     if test_track_name in set_to_test:
         return test_track_name
 
+    test_track_name = re.sub(r" +", r"_", test_track_name)
+    test_track_name = re.sub(r"_+", r"_", test_track_name)
+    if test_track_name in set_to_test:
+        return test_track_name
+
+    test_track_name = re.sub(r"([A-Z])([0-9])", r"\1_\2", test_track_name)
+    if test_track_name in set_to_test:
+        return test_track_name
+
     if re.search(r"^TRACK_[0-9]+$", test_track_name) is not None:
         track_number = test_track_name.removeprefix("TRACK_")
         if f"T{track_number}" in set_to_test:
@@ -43,4 +52,4 @@ def clean_track_name(original_track: str, set_to_test: set[str]):
     #     if test_track_without_last_number in set_to_test:
     #         return test_track_without_last_number
 
-    return test_track_name
+    return original_track.upper()

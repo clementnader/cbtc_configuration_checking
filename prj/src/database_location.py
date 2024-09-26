@@ -280,24 +280,24 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Lima -------------------------------#
         elif project_name == Projects.Lima:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1_SP1\DC_SYS_0402RC1.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1\DC_SYS_0402RC1.xls"
             # self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0403RC1\DC_SYS_0403RC1.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\LIMA\Objects_List - v3 Rev 01.xlsx"
-            self.survey_loc.survey_sheet = r"Object List"
-            self.survey_loc.all_sheets = False
-            self.survey_loc.start_row = 2
-            self.survey_loc.ref_col = 1
-            self.survey_loc.type_col = 3
-            self.survey_loc.track_col = 4
-            self.survey_loc.survey_kp_col = 7
-            # self.survey_loc.survey_sheet = r"Dico"
-            # self.survey_loc.all_sheets = False
-            # self.survey_loc.start_row = 2
-            # self.survey_loc.ref_col = 1
-            # self.survey_loc.type_col = 8
-            # self.survey_loc.track_col = 7
-            # self.survey_loc.survey_kp_col = 10
+            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos "
+                                           r"topograficos en rieles- ML-L2\Depot\Anexos de Informe 02-012021"
+                                           r"\METRO_LINEA2 DIC. 2020_modified.xls",
+                                           r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos "
+                                           r"topograficos en rieles- ML-L2\MainLine\Anexos de informe 03-022021"
+                                           r"\LIMA L2 E1A - OBJECTS LIST-ENERO 2021.xls",
+                                           r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos "
+                                           r"topograficos en rieles- ML-L2\Objects_List - v3 Rev 01.xlsx"]
+            self.survey_loc.survey_sheet = [r"", r"Object List", r"Object List"]
+            self.survey_loc.all_sheets = [True, False, False]
+            self.survey_loc.start_row = [4, 4, 2]
+            self.survey_loc.ref_col = [1, 2, 1]
+            self.survey_loc.type_col = [3, 4, 3]
+            self.survey_loc.track_col = [4, 5, 4]
+            self.survey_loc.survey_kp_col = [13, 7, 6]
 
         # ------------------------------- Milan -------------------------------#
         elif project_name == Projects.Milan:

@@ -22,20 +22,22 @@ TOOL_NAME = "Survey_Checking"
 
 
 def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
-                             tool_version: str):
+                             tool_version: str, survey_display_info_list: list[str]):
     try:
-        res_file_path = _create_verif_file(survey_verif_dict, block_def_exists_bool, tool_version)
+        res_file_path = _create_verif_file(survey_verif_dict, block_def_exists_bool, tool_version,
+                                           survey_display_info_list)
     except KeyboardInterrupt:
-        _create_verif_file(survey_verif_dict, block_def_exists_bool, tool_version)
+        _create_verif_file(survey_verif_dict, block_def_exists_bool, tool_version,
+                           survey_display_info_list)
         raise KeyboardInterrupt
     return res_file_path
 
 
 def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
-                       tool_version: str):
+                       tool_version: str, survey_display_info_list: list[str]):
     wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE, template=True)
 
-    update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version)
+    update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version, survey=survey_display_info_list)
     _update_menu_sheet(wb)
 
     for sheet_name, verif_dict in survey_verif_dict.items():
@@ -200,7 +202,7 @@ def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
                 borders=True, align_horizontal=XlAlign.center)
     # Manual Comments
     create_cell(ws, None, row=row, column=get_column(COMMENTS_COL, extra_column),
-                borders=True, align_vertical=XlAlign.top)
+                borders=True, line_wrap=True, align_vertical=XlAlign.top)
     return sheet_comments
 
 

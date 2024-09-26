@@ -134,8 +134,8 @@ def _remove_specific_patterns(test_name: str) -> Optional[str]:
     if end_of_track:
         test_name, suffix = test_name.split("__END_OF_TRACK", 1)
 
-    res_name = re.sub(r"_[A-Z]{3}_", "_", test_name)
-    res_name = re.sub(r"PL[0-9]+_", "", res_name)
+    res_name = re.sub(r"_[A-Z]{3}_", r"_", test_name)
+    res_name = re.sub(r"PL[0-9]+_", r"", res_name)
 
     if end_of_track:
         res_name += "__END_OF_TRACK" + suffix
@@ -152,9 +152,9 @@ def _remove_trigrams(test_name: str) -> Optional[str]:
         test_name, suffix = test_name.split("__END_OF_TRACK", 1)
 
     for _ in range(2):
-        test_name = re.sub(r"_[A-Z]{3}_", "_", test_name)
-        test_name = re.sub(r"_[A-Z]{2}[0-9]{0,2}_", "_", test_name)
-        test_name = re.sub(r"_S[0-9]{2}_", "_", test_name)
+        test_name = re.sub(r"_[A-Z]{3}_", r"_", test_name)
+        test_name = re.sub(r"_[A-Z]{2}[0-9]{0,2}_", r"_", test_name)
+        test_name = re.sub(r"_S[0-9]{2}_", r"_", test_name)
 
     if end_of_track:
         test_name += "__END_OF_TRACK" + suffix
@@ -223,34 +223,34 @@ def _survey_name_matching(survey_name: str, obj_name: str, single: bool, remove_
     if remove_trigrams:
         survey_name = _remove_trigrams(survey_name)
 
-    survey_name = re.sub(r"_START_", "_", survey_name)
-    survey_name = re.sub(r"_END_", "_", survey_name)
-    survey_name = re.sub(r"_BUFFER_", "_", survey_name)
-    survey_name = re.sub(r"_L_", "_", survey_name)
-    survey_name = re.sub(r"_R_", "_", survey_name)
+    survey_name = re.sub(r"_START_", r"_", survey_name)
+    survey_name = re.sub(r"_END_", r"_", survey_name)
+    survey_name = re.sub(r"_BUFFER_", r"_", survey_name)
+    survey_name = re.sub(r"_L_", r"_", survey_name)
+    survey_name = re.sub(r"_R_", r"_", survey_name)
 
     if not survey_name.startswith(obj_name):
         return False
     suffix = survey_name.removeprefix(obj_name)
 
     # Removing switches in name
-    suffix = re.sub(r"_SW[DP]?[A-Z0-9]+_[0-9]+", "", suffix)  # some switches are named SWP or SW or SWD
-    suffix = re.sub(r"_SW[DP]?[A-Z0-9]+", "", suffix)  # some switches are named SWP or SW or SWD
-    suffix = re.sub(r"_[0-9]+AW[0-9]+", "", suffix)  # some switches are named with AW
-    suffix = re.sub(r"_W[0-9]*A*[0-9]+", "", suffix)  # some switches are named WXXXX or WXAXXX
+    suffix = re.sub(r"_SW[DP]?[A-Z0-9]+_[0-9]+", r"", suffix)  # some switches are named SWP or SW or SWD
+    suffix = re.sub(r"_SW[DP]?[A-Z0-9]+", r"", suffix)  # some switches are named SWP or SW or SWD
+    suffix = re.sub(r"_[0-9]+AW[0-9]+", r"", suffix)  # some switches are named with AW
+    suffix = re.sub(r"_W[0-9]*A*[0-9]+", r"", suffix)  # some switches are named WXXXX or WXAXXX
 
     if not single:  # Limit between two blocks
-        suffix = re.sub(r"_[A-Z0-9]+", "", suffix)  # suffix when multiple joints with same name
+        suffix = re.sub(r"_[A-Z0-9]+", r"", suffix)  # suffix when multiple joints with same name
         if not suffix:
             return True
         return False
 
     else:  # Limit at end of track
-        suffix = re.sub(r"_[0-9]{1,2}", "", suffix)  # suffix when multiple joints with same name
-        suffix = re.sub(r"_F[1-9]", "", suffix)  # end of track suffix
-        suffix = re.sub(r"_T[0-9]+", "", suffix)  # end of track suffix
-        suffix = re.sub(r"_[FM]BS[0-9]+", "", suffix)  # end of track suffix
-        suffix = re.sub(r"_LCP[0-9]+", "", suffix)  # end of track suffix
+        suffix = re.sub(r"_[0-9]{1,2}", r"", suffix)  # suffix when multiple joints with same name
+        suffix = re.sub(r"_F[1-9]", r"", suffix)  # end of track suffix
+        suffix = re.sub(r"_T[0-9]+", r"", suffix)  # end of track suffix
+        suffix = re.sub(r"_[FM]BS[0-9]+", r"", suffix)  # end of track suffix
+        suffix = re.sub(r"_LCP[0-9]+", r"", suffix)  # end of track suffix
         suffix = suffix.removesuffix("_DIRECT").removesuffix("_DIVERT")
         suffix = suffix.removesuffix("_LEFT").removesuffix("_RIGHT")
         suffix = suffix.removesuffix("_START").removesuffix("_END").removesuffix("_BUFFER")

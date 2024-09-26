@@ -69,6 +69,12 @@ def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[st
                                                    remove_leading_zeros=True)
         if test_name_in_survey is not None:
             return test_name_in_survey
+    # Try removing underscores
+    for test_name in test_names:
+        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print,
+                                                   add_underscores=True)
+        if test_name_in_survey is not None:
+            return test_name_in_survey
     # Try removing duplicate patterns
     for test_name in test_names:
         test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print,
@@ -98,11 +104,18 @@ def _test_name_in_survey(original_test_name: str, track: str, survey_info: dict[
                          survey_test_list: list[tuple[str, str]],
                          do_print: bool,
                          remove_leading_zeros: bool = False,
+                         add_underscores: bool = False,
                          test_unique_patterns: bool = False,
                          test_smallest_patterns: bool = False):
-    if remove_leading_zeros:  # apply the same transformation to the name from DC_SYS and the ones from the survey
+    if remove_leading_zeros:
+        # apply the same transformation to the name from DC_SYS and the ones from the survey
         test_name = _remove_leading_zeros(original_test_name)
         survey_test_list = [(_remove_leading_zeros(survey_test_name), survey_name)
+                            for survey_test_name, survey_name in survey_test_list]
+
+    elif add_underscores:  # apply first the removal of leading zeros, then remove underscores
+        test_name = _add_underscores(original_test_name)
+        survey_test_list = [(_add_underscores(survey_test_name), survey_name)
                             for survey_test_name, survey_name in survey_test_list]
 
     elif test_unique_patterns or test_smallest_patterns:
@@ -129,8 +142,13 @@ def _test_name_in_survey(original_test_name: str, track: str, survey_info: dict[
 
 
 def _remove_leading_zeros(name: str) -> str:
-    name = "_".join(re.sub(r"^0*", "", x) for x in name.split("_"))
+    name = "_".join(re.sub(r"^0*", r"", x) for x in name.split("_"))
     return name
+
+
+def _add_underscores(name: str) -> str:
+    name = re.sub(r"([A-Z])([0-9])", r"\1_\2", name)
+    return _remove_leading_zeros(name)
 
 
 def _get_unique_patterns(name: str) -> str:
@@ -211,7 +229,8 @@ def get_corresponding_survey_two_limits_on_track(dc_sys_limits_on_track: list[tu
         survey_name_dict[closest_dc_sys_limit] = survey_name
     else:  # multiple extremities corresponding,
         # find for which DC_SYS limits combination the difference is the smallest
-        (lim1_track, lim1_kp), (lim2_track, lim2_kp) = dc_sys_limits_on_track
+        (lim1_track, lim1_kp) = dc_sys_limits_on_track[0]
+        (lim2_track, lim2_kp) = dc_sys_limits_on_track[1]
         test_differences = list()
         for survey_name_corresponding_to_1 in survey_limits_on_track:
             surveyed_kp_1 = survey_info[survey_name_corresponding_to_1]["surveyed_kp"]

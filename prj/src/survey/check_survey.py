@@ -13,7 +13,7 @@ from .result_file import *
 __all__ = ["check_survey"]
 
 
-SURVEY_CHECKING_VERSION = "v2.5.1"
+SURVEY_CHECKING_VERSION = "v2.5.2"
 
 
 def check_survey():
@@ -29,7 +29,7 @@ def check_survey():
     else:
         block_def_dict = None
     print_section_title(f"Loading Survey information...")
-    survey_info = load_survey()
+    survey_info, survey_display_info_list = load_survey()
     print_bar(start="\n")
 
     print_section_title(f"Analyzing the Survey information and comparing them to the DC_SYS...")
@@ -37,7 +37,8 @@ def check_survey():
     print_bar(start="\n")
 
     print_section_title(f"Creating the Result File...")
-    res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None, SURVEY_CHECKING_VERSION)
+    res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None, SURVEY_CHECKING_VERSION,
+                                             survey_display_info_list)
     open_excel_file(res_file_path)
 
     if get_ga_version() < (6, 0, 0, 0):
