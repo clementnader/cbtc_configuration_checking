@@ -38,7 +38,7 @@ def get_mtor_ccte_ko():
                 if first_ko:
                     first_ko = False
                     print()
-                print(f"New KO: on key {Color.blue}{key}{Color.reset}, KO is \"{Color.yellow}{val}{Color.reset}\"")
+                print(f"New KO: on key {Color.blue}{key}{Color.reset}, KO is {Color.yellow}\"{val}\"{Color.reset}")
                 dict_of_kos[sub_dict_name][key] = val
             else:
                 if val != dict_of_kos[sub_dict_name][key]:
@@ -46,8 +46,8 @@ def get_mtor_ccte_ko():
                         first_ko = False
                         print()
                     print(f"A different KO is seen on key {Color.blue}{key}{Color.reset}, "
-                          f"old KO is \"{Color.light_yellow}{dict_of_kos[sub_dict_name][key]}{Color.reset}\", "
-                          f"new KO is \"{Color.yellow}{val}{Color.reset}\".")
+                          f"old KO is {Color.light_yellow}\"{dict_of_kos[sub_dict_name][key]}\"{Color.reset}, "
+                          f"new KO is {Color.yellow}\"{val}\"{Color.reset}\".")
     print_log(f"\r{progress_bar(nb_files, nb_files, end=True)} analysis of "
               f"all MTOR and CCTE Plugs Verification files is done.")
 

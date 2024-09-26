@@ -66,7 +66,8 @@ def add_survey_info(survey_file_name: str, frame: tkinter.Frame, ref_row: int,
                     extra_func: Callable[None, None] = None) -> None:
 
     try:
-        print_log(f"Loading the Survey File to get the sheet names...")
+        print_log(f"Loading Survey File {Color.beige}\"{os.path.split(survey_file_name)[-1]}\"{Color.reset} "
+                  f"to get the sheet names...")
         survey_sheets = get_xl_sheet_names_preload(survey_file_name)
     except Exception as error:
         logging.error(traceback.format_exc())

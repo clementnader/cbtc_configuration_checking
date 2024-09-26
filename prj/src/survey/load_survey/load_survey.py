@@ -41,7 +41,7 @@ def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str]]:
                 get_survey(survey_info, survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
                            os.path.split(survey_addr)[-1], missing_types))
         if missing_types:
-            print(f"\n\t> The following type{'s' if len(missing_types) > 1 else ''} in the survey "
+            print(f"\t> The following type{'s' if len(missing_types) > 1 else ''} in the survey "
                   f"{'are' if len(missing_types) > 1 else 'is'} not loaded: "
                   f"{Color.yellow}{', '.join(missing_types)}{Color.reset}.")
     return survey_info, display_info_list
