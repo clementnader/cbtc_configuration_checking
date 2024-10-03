@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from ...utils import *
 from .load_xl import *
 from .process_block_definition import *
@@ -18,10 +19,10 @@ JOINT_NAME_COLUMN_TITLE_PREFIX = "OBJET EXTREMITE "
 START_ROW = 3
 
 
-def get_block_definition() -> Optional[dict[str, dict[tuple[str, float], str]]]:
-    block_def_wb = load_block_def_wb()
+def get_block_definition() -> tuple[Optional[dict[str, dict[tuple[str, float], str]]], Optional[str]]:
+    block_def_wb, block_def_addr = load_block_def_wb()
     if block_def_wb is None:
-        return None
+        return None, None
     block_def_ws = get_xl_sheet_by_name(block_def_wb, BLOCK_DEF_SHEET)
     block_name_column, segment_limits_list_column, offset_limits_list_column, joint_name_columns_list = (
         _get_columns(block_def_ws))
@@ -35,7 +36,7 @@ def get_block_definition() -> Optional[dict[str, dict[tuple[str, float], str]]]:
                     f"{segment_limits_list_column = }\n"
                     f"{offset_limits_list_column = }\n"
                     f"{joint_name_columns_list = }")
-        return None
+        return None, None
 
     block_def_dict = dict()
     for row in range(START_ROW, get_xl_number_of_rows(block_def_ws) + 1):
@@ -69,7 +70,14 @@ def get_block_definition() -> Optional[dict[str, dict[tuple[str, float], str]]]:
                                                           limit_objects))
 
         block_def_dict[block_name.strip()] = list(zip(seg_x_limits_list, limit_objects))
-    return associate_block_def_to_dc_sys(block_def_dict)
+
+    block_definition_display_info = _get_block_definition_display_info(block_def_addr, BLOCK_DEF_SHEET)
+    return associate_block_def_to_dc_sys(block_def_dict), block_definition_display_info
+
+
+def _get_block_definition_display_info(block_def_addr: str, block_def_sheet: str) -> str:
+    display_info = f"{os.path.split(block_def_addr)[-1]} (sheet \"{block_def_sheet}\")"
+    return display_info
 
 
 def _get_columns(block_def_ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]

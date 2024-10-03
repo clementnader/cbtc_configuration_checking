@@ -3,4 +3,5 @@
 
 from .gui_cctool_oo_schema import *
 from .gui_open_buttons import *
+from .gui_tab_control import *
 from .gui_utils import *

@@ -4,7 +4,6 @@
 from .block import *
 from .calibration_base import *
 from .cbtc_direction_zone import *
-from .control_tables_route_and_overlap import *
 from .dynamic_tag import *
 from .general_data import *
 from .interface_ats_atc import *

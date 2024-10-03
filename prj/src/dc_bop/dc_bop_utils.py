@@ -9,7 +9,7 @@ __all__ = ["convert_switch_pos_to_ixl"]
 
 
 def convert_switch_pos_to_ixl(sw_name: str, left_or_right: str) -> str:
-    switch_bop_dict = load_bop()
+    switch_bop_dict = load_dc_bop()
     reverse_equals_right = switch_bop_dict[sw_name]
     if left_or_right.upper().strip() == Switch_Position.GAUCHE:
         if reverse_equals_right:

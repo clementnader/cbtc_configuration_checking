@@ -39,7 +39,9 @@ def survey_window() -> None:
     bg = f"#{XlBgColor.light_green}"
     bottom_left_frame = tkinter.Frame(window, bg=bg)
     bottom_left_frame.grid(column=0, row=20, sticky="nswe")
-    survey_loc_dict = add_survey_tab_control(bottom_left_frame)
+    survey_loc_dict = add_tab_control(bottom_left_frame, type_name="survey",
+                                      add_open_button_func=add_survey_open_button,
+                                      tab_bg= XlBgColor.green)
 
     # Right Frame
     bg = f"#{XlBgColor.light_blue}"
@@ -67,88 +69,6 @@ def survey_window() -> None:
 
     print_log(f"Survey Verification Window was closed.")
     return
-
-
-def add_survey_tab_control(frame: tkinter.Frame, bg: str = None) -> dict[str, dict[str, tkinter.StringVar]]:
-    notebook_style = tkinter.ttk.Style()
-    notebook_style.theme_create("custom_theme", settings={
-        "TNotebook": {
-            "layout": [],
-            "configure": {"tabposition": "nw",
-                          "background": "white",  # background color of the tabs bar
-                          "tabmargins": [0, 0, 10, 0]}},
-        "TNotebook.Tab": {
-            "configure": {"padding": [5, 1]},
-            "map": {"background": [("selected", f"#{XlBgColor.green}"),  # tab color when active
-                                   ("!active", "gray75")]}}  # tab color when not active
-    })
-    notebook_style.theme_use("custom_theme")
-
-    tab_control = tkinter.ttk.Notebook(frame)
-
-    if bg is None:
-        bg = default_gui_bg_color(frame)
-
-    tabs = list()
-    buttons_dict = dict()
-    survey_loc_dict = dict()
-
-    create_new_survey_tab(tab_control, tabs, buttons_dict, survey_loc_dict, bg)
-
-    return survey_loc_dict
-
-
-def create_new_survey_tab(tab_control: tkinter.ttk.Notebook, tabs: list[tkinter.ttk.Frame],
-                          delete_buttons_dict: dict[str, tkinter.Button],
-                          survey_loc_dict: dict[str, dict[str, tkinter.StringVar]], bg: str) -> None:
-
-    tab_number = 1 if not tabs else int(tab_control.tab(tabs[-1], "text").split(" ", 1)[1]) + 1
-    tab_name = f"Survey {tab_number}"
-
-    tab_frame = tkinter.Frame(tab_control, bg=bg, padx=10, pady=10)
-    tab_control.add(tab_frame, text=tab_name)
-    tab_control.pack(expand=1, anchor="sw", fill="both")
-    tab_control.select(tab_frame)
-    tabs.append(tab_frame)
-
-    survey_loc_dict[tab_name] = add_survey_open_button(
-        tab_frame, ref_row=0, extra_func=lambda: add_another_survey_button(
-            tab_control, tab_frame, tabs, delete_buttons_dict, survey_loc_dict, bg), bg=bg)
-
-    if tab_number != 1:  # if there is only one tab, no delete button
-        delete_buttons_dict[tab_name] = (
-            add_delete_tab_button(tab_control, tab_frame, tabs, delete_buttons_dict, survey_loc_dict))
-    if len(tabs) == 2:  # if there are more than one tab, add the delete button on the first tab
-        delete_buttons_dict[tab_control.tab(tabs[0], "text")] = (
-            add_delete_tab_button(tab_control, tabs[0], tabs, delete_buttons_dict, survey_loc_dict))
-
-
-def add_another_survey_button(tab_control: tkinter.ttk.Notebook, tab_frame: tkinter.Frame, tabs: list,
-                              delete_buttons_dict: dict[str, tkinter.Button],
-                              survey_loc_dict: dict[str, dict[str, tkinter.StringVar]], bg: str) -> tkinter.Button:
-    new_tab_button = tkinter.Button(
-        tab_frame,
-        text="add another survey file",
-        command=lambda: create_new_survey_tab(tab_control, tabs, delete_buttons_dict, survey_loc_dict, bg),
-        wraplength=80,
-        background="#FFFF77"
-    )
-    new_tab_button.grid(column=0, row=9, rowspan=4, sticky="sw", padx=5, pady=5)
-    return new_tab_button
-
-
-def add_delete_tab_button(tab_control: tkinter.ttk.Notebook, tab_frame: tkinter.Frame, tabs: list,
-                          buttons_dict: dict[str, tkinter.Button],
-                          survey_loc_dict: dict[str, dict[str, tkinter.StringVar]]) -> tkinter.Button:
-    delete_button = tkinter.Button(
-        tab_frame,
-        text="delete tab",
-        command=lambda: delete_tab(tab_control, tab_frame, tabs, buttons_dict, survey_loc_dict),
-        wraplength=80,
-        background="#FFA0A0",
-    )
-    delete_button.grid(column=6, row=9, rowspan=4, sticky="se", padx=5, pady=5)
-    return delete_button
 
 
 def add_launch_survey_button(window: tkinter.Tk, frame: tkinter.Frame,

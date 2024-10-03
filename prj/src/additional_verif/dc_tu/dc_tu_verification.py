@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
-from .load_dc_tu_information import *
-from .analyze_dc_tu import *
-from .dc_tu_result_file import *
+from .dc_tu_analysis import *
+from .load_dc_tu import *
 
 
 __all__ = ["dc_tu_verification"]
 
 
-DC_TU_CHECKING_VERSION = "v1.2"
+DC_TU_CHECKING_VERSION = "v1.3"
 
 
 def dc_tu_verification():

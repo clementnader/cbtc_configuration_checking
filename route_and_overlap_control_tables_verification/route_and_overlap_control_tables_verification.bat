@@ -1,5 +1,5 @@
 @echo off
-title DC_TU Verification Tool
+title Route and Overlap Control Tables Verification Tool
 REM configure cmd window size
 mode con: cols=160 lines=40
 REM configure cmd window buffer size to 9000 rows
@@ -13,11 +13,11 @@ REM set PATH=%LocalAppData%\Programs\Python\Python39\;%PATH%
 set PYTHON_EXE=python39
 
 echo. && echo ----------------------------------------------------------- && echo.
-echo Launching the DC_TU Verification tool...
+echo Launching the Route and Overlap Control Tables Verification tool...
 echo. && echo ----------------------------------------------------------- && echo.
 
 cd py_exec
-%PYTHON_EXE% launch_dc_tu_verification.py
+%PYTHON_EXE% launch_control_tables_verification.py
 cd ..
 
 echo. && echo ----------------------------------------------------------- && echo.

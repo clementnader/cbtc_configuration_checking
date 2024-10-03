@@ -32,7 +32,7 @@ def get_seg_len(seg_name: str) -> float:
     return round(float(get_dc_sys_value(seg_dict[seg_name], DCSYS.Seg.Longueur)), 3)
 
 
-def are_points_matching(seg1: str, x1: float, seg2: str, x2: float, tolerance: float = .00) -> bool:
+def are_points_matching(seg1: str, x1: float, seg2: str, x2: float, tolerance: float = .0) -> bool:
     if seg1 == seg2 and round(abs(x1 - x2), 2) <= tolerance:
         return True
     len_seg1 = get_seg_len(seg1)

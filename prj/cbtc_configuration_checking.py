@@ -37,8 +37,9 @@ def cc():
 
 
 def additional_verif():
-    # dc_tu_verification()  # v1.2
+    # dc_tu_verification()  # v1.3
     # dc_tu_window()
+
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
@@ -60,20 +61,19 @@ def dc_par_add_on_param():
 
 
 def route_and_overlap():
+    # GUI Window
+    # control_tables_window()
+
     # Create CSV files
-    # parse_control_tables(
+    # load_control_tables(
     #     CONTROL_TABLE_TYPE.route, use_csv_file=False,
-    #     # verbose=True,
-    #     # specific_page=10,
-    #     # line_parts=(CONTROL_TABLE_LINE_PART.depot,)
-    #     new_method=True,
+    #     # supersede_input_file_number=1,
+    #     # supersede_specific_pages=45,
     # )
-    # parse_control_tables(
+    # load_control_tables(
     #     CONTROL_TABLE_TYPE.overlap, use_csv_file=False,
-    #     # verbose=True,
-    #     # specific_page=2,
-    #     # line_parts=(CONTROL_TABLE_LINE_PART.line,)
-    #     new_method=True,
+    #     # supersede_input_file_number=1,
+    #     # supersede_specific_pages=2,
     # )
 
     # Analyze DC_SYS with CSV files
@@ -93,7 +93,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()  # v2.5.2
+    # check_survey()  # v2.6
     # survey_window()
     # cctool_schema_window()
     return

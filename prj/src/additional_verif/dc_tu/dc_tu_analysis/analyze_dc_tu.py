@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...utils import *
-from .dc_tu_utils import *
+from ....utils import *
+from ..dc_tu_utils import *
 
 
 __all__ = ["get_number_of_cc", "get_ip_address_and_ssh_key"]

@@ -1,16 +1,16 @@
-# !/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 
-sys.path.append("..")
+sys.path.append(os.path.join("..", ".."))
 
 from prj.src import *
 
 
 def main():
-    dc_tu_window()
-    dc_tu_verification()
+    control_tables_window()
 
 
 if __name__ == "__main__":

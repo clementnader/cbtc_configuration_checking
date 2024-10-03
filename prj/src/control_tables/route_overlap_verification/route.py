@@ -5,8 +5,10 @@ from ...utils import *
 from ...cctool_oo_schema import *
 from ...dc_sys import *
 from ...dc_sys_sheet_utils.route_utils import get_routes
-from ...control_tables import *
 from ...database_location import *
+from ..load_control_tables import *
+from ..control_tables_utils import *
+from .common_utils import *
 
 
 __all__ = ["check_route_control_tables"]
@@ -14,7 +16,7 @@ __all__ = ["check_route_control_tables"]
 
 def check_route_control_tables(use_csv_file: bool = False):
     route_dict = get_routes()
-    route_control_tables = parse_control_tables(CONTROL_TABLE_TYPE.route, use_csv_file)
+    route_control_tables = load_control_tables(CONTROL_TABLE_TYPE.route, use_csv_file)
 
     print_title("Route verification...", color=Color.mint_green)
     missing_routes = list()
@@ -29,40 +31,9 @@ def check_route_control_tables(use_csv_file: bool = False):
     if missing_routes_in_dc_sys:
         result = False
 
-    print()
-    print_bar()
-    print(f"Total number of Routes in DC_SYS: {Color.yellow}{len(route_dict)}{Color.reset}\n"
-          f"Total number of Routes in Control Tables: {Color.yellow}{len(route_control_tables)}{Color.reset}\n")
-    print_bar()
-    if result is True and not (missing_routes or missing_routes_in_dc_sys):
-        print_section_title("Result of Route verification:")
-        print_success("Routes in DC_SYS correspond to the Control Tables.\n")
-        return True
-    if not missing_routes_in_dc_sys and missing_routes:
-        print(f"{Color.orange}All routes from the Control Tables are implemented, "
-              f"but extra routes appear in the DC_SYS.{Color.reset}\n")
-    elif missing_routes_in_dc_sys and not missing_routes:
-        print(f"{Color.orange}All routes in the DC_SYS appear in the Control Tables, "
-              f"but extra routes in the Control Tables are missing in the DC_SYS.{Color.reset}\n")
-    elif missing_routes_in_dc_sys and missing_routes:
-        print(f"{Color.orange}Routes are missing between the DC_SYS and the Control Tables.{Color.reset}\n")
-    else:
-        print(f"{Color.vivid_green}All routes have been found between the DC_SYS and the Control Tables."
-              f"{Color.reset}\n")
-
-    if missing_routes:
-        print_section_title("Missing information for Route:")
-        print_warning(f"The following {Color.yellow}{len(missing_routes)}{Color.reset} routes "
-                      f"in the DC_SYS are missing in the Control Tables:\n"
-                      f"\t{Color.yellow}" + "\n\t".join(missing_routes) + f"{Color.reset}\n")
-    if missing_routes_in_dc_sys:
-        print_section_title("Exhaustiveness of Route:")
-        print_warning(f"The following {Color.yellow}{len(missing_routes_in_dc_sys)}{Color.reset} routes "
-                      f"in the Control Tables are missing in the DC_SYS:\n"
-                      f"\t{Color.yellow}" + "\n\t".join(missing_routes_in_dc_sys) + f"{Color.reset}\n")
-    print_section_title("Result of Route verification:")
-    print_error("Routes in DC_SYS do not correspond to the Control Tables.\n")
-    return False
+    result = print_route_overlap_results("route", result, len(route_dict), len(route_control_tables),
+                                         missing_routes, missing_routes_in_dc_sys)
+    return result
 
 
 def _check_route(route: str, route_val: dict[str, str], route_control_tables: dict[str, dict]):
@@ -135,6 +106,7 @@ def _check_controlled_sig(route: str, route_val: dict[str, Any], control_sig: st
 
 def _check_route_sw(route: str, route_val: dict[str, Any], route_sw: str, table_name: str):
     dc_sys_route_sw: list[str] = route_val['Route Switch']
+    dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_val["Route IVB"]]
     if route_sw == "--":
         route_sw_list = []
     else:
@@ -157,7 +129,8 @@ def _check_route_sw(route: str, route_val: dict[str, Any], route_sw: str, table_
                     f"number of switches {Color.yellow}({len(dc_sys_route_sw)}){Color.reset} as in the Control Table "
                     f"{Color.green}{table_name}{Color.reset} {Color.yellow}({len(route_sw_list)}){Color.reset}.\n"
                     f"DC_SYS Route Switch: {Color.white}{', '.join(dc_sys_route_sw)}{Color.reset}\n"
-                    f"Control Table Switch Route Path: {Color.beige}{route_sw}{Color.reset}")
+                    f"Control Table Switch Route Path: {Color.beige}{route_sw}{Color.reset}\n"
+                    f"{Color.default}DC_SYS Route IVB: {', '.join(dc_sys_route_ivb)}{Color.reset}")
         result = False
         return result
 
@@ -166,7 +139,7 @@ def _check_route_sw(route: str, route_val: dict[str, Any], route_sw: str, table_
             dc_sys_route_sw_str = (f"{csi_bg_color(Color.yellow)}{Color.black}{dc_sys_sw}{Color.reset}"
                                    f"{Color.white}").join(", ".join(dc_sys_route_sw).split(dc_sys_sw))
             route_sw_str = (f"{csi_bg_color(Color.yellow)}{Color.black}{control_table_sw}{Color.reset}"
-                            f"{Color.white}").join(route_sw.split(control_table_sw))
+                            f"{Color.beige}").join(route_sw.split(control_table_sw))
             if any(sw.endswith(control_table_sw) for sw in dc_sys_route_sw):
                 corresponding_sw = [sw for sw in dc_sys_route_sw if sw.endswith(control_table_sw)][0]
                 dc_sys_route_sw_str = (f"{csi_bg_color(Color.light_red)}{Color.black}{corresponding_sw}"
@@ -176,13 +149,15 @@ def _check_route_sw(route: str, route_val: dict[str, Any], route_sw: str, table_
                               f"{Color.blue}{dc_sys_sw = }{Color.reset} does not correspond to "
                               f"{Color.blue}{control_table_sw = }{Color.reset}.\n"
                               f"DC_SYS Route Switch: {Color.white}{dc_sys_route_sw_str}{Color.reset}\n"
-                              f"Control Table Switch Route Path: {Color.beige}{route_sw_str}{Color.reset}")
+                              f"Control Table Switch Route Path: {Color.beige}{route_sw_str}{Color.reset}\n"
+                              f"{Color.default}DC_SYS Route IVB: {', '.join(dc_sys_route_ivb)}{Color.reset}")
             else:
                 print_error(f"For Route {Color.green}{route}{Color.reset}, switch {Color.blue}{dc_sys_sw = }"
                             f"{Color.reset} does not correspond to switch {Color.blue}{control_table_sw = }"
                             f"{Color.reset} in the Control Table {Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Route Switch: {Color.white}{dc_sys_route_sw_str}{Color.reset}\n"
-                            f"Control Table Switch Route Path: {Color.beige}{route_sw_str}{Color.reset}")
+                            f"Control Table Switch Route Path: {Color.beige}{route_sw_str}{Color.reset}\n"
+                            f"{Color.default}DC_SYS Route IVB: {', '.join(dc_sys_route_ivb)}{Color.reset}")
             result = False
 
     return result
@@ -206,7 +181,7 @@ def _check_route_path(route: str, route_val: dict[str, Any], route_path: str, ta
                     f"{Color.green}{table_name}{Color.reset} {Color.yellow}({len(route_path_list)}){Color.reset}.\n"
                     f"DC_SYS Route IVB: {Color.white}{', '.join(dc_sys_route_ivb)}{Color.reset}\n"
                     f"Control Table Route Path: {Color.beige}{route_path}{Color.reset}\n"
-                    f"{Color.default}DC_SYS Route Switch: {Color.white}{', '.join(dc_sys_route_sw)}{Color.reset}")
+                    f"{Color.default}DC_SYS Route Switch: {', '.join(dc_sys_route_sw)}{Color.reset}")
         result = False
 
     for dc_sys_ivb, control_table_ivb in zip(dc_sys_route_ivb, route_path_list):
@@ -214,7 +189,7 @@ def _check_route_path(route: str, route_val: dict[str, Any], route_path: str, ta
             dc_sys_route_ivb_str = (f"{csi_bg_color(Color.yellow)}{Color.black}{dc_sys_ivb}{Color.reset}"
                                     f"{Color.white}").join(', '.join(dc_sys_route_ivb).split(dc_sys_ivb))
             route_path_str = (f"{csi_bg_color(Color.yellow)}{Color.black}{control_table_ivb}{Color.reset}"
-                              f"{Color.white}").join(route_path.split(control_table_ivb))
+                              f"{Color.beige}").join(route_path.split(control_table_ivb))
             if any(ivb.endswith(control_table_ivb) for ivb in dc_sys_route_ivb):
                 corresponding_ivb = [ivb for ivb in dc_sys_route_ivb if ivb.endswith(control_table_ivb)][0]
                 dc_sys_route_ivb_str = (f"{csi_bg_color(Color.light_red)}{Color.black}{corresponding_ivb}"
@@ -225,13 +200,15 @@ def _check_route_path(route: str, route_val: dict[str, Any], route_path: str, ta
                               f"{Color.blue}{dc_sys_ivb = }{Color.reset} does not correspond to "
                               f"{Color.blue}{control_table_ivb = }{Color.reset}.\n"
                               f"DC_SYS Route IVB: {Color.white}{dc_sys_route_ivb_str}{Color.reset}\n"
-                              f"Control Table Route Path: {Color.white}{route_path_str}{Color.reset}")
+                              f"Control Table Route Path: {Color.beige}{route_path_str}{Color.reset}\n"
+                              f"{Color.default}DC_SYS Route Switch: {', '.join(dc_sys_route_sw)}{Color.reset}")
             else:
                 print_error(f"For Route {Color.green}{route}{Color.reset}, {Color.blue}{dc_sys_ivb = }{Color.reset} "
                             f"does not correspond to {Color.blue}{control_table_ivb = }{Color.reset} "
                             f"in the Control Table {Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Route IVB: {Color.white}{dc_sys_route_ivb_str}{Color.reset}\n"
-                            f"Control Table Route Path: {Color.white}{route_path_str}{Color.reset}")
+                            f"Control Table Route Path: {Color.beige}{route_path_str}{Color.reset}\n"
+                            f"{Color.default}DC_SYS Route Switch: {', '.join(dc_sys_route_sw)}{Color.reset}")
             result = False
 
     return result

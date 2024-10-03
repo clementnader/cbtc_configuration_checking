@@ -7,6 +7,7 @@ from ...dc_sys import *
 from ..survey_types import *
 from ..survey_utils import *
 from .file_format_utils import *
+from .header_sheet_utils import *
 
 
 __all__ = ["create_survey_verif_file"]
@@ -18,26 +19,26 @@ OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
 # OUTPUT_DIRECTORY = os.path.join(DESKTOP_DIRECTORY, "Correspondence with Site Survey")
 VERIF_FILE_NAME = "Correspondence with Site Survey.xlsx"
 
-TOOL_NAME = "Survey_Checking"
-
 
 def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
-                             tool_version: str, survey_display_info_list: list[str]):
+                             tool_version: str, survey_display_info_list: list[str],
+                             block_definition_display_info: str):
     try:
         res_file_path = _create_verif_file(survey_verif_dict, block_def_exists_bool, tool_version,
-                                           survey_display_info_list)
+                                           survey_display_info_list, block_definition_display_info)
     except KeyboardInterrupt:
         _create_verif_file(survey_verif_dict, block_def_exists_bool, tool_version,
-                           survey_display_info_list)
+                           survey_display_info_list, block_definition_display_info)
         raise KeyboardInterrupt
     return res_file_path
 
 
 def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
-                       tool_version: str, survey_display_info_list: list[str]):
+                       tool_version: str, survey_display_info_list: list[str],
+                       block_definition_display_info: str):
     wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE, template=True)
 
-    update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version, survey=survey_display_info_list)
+    create_survey_header_sheet(wb, tool_version, survey_display_info_list, block_definition_display_info)
     _update_menu_sheet(wb)
 
     for sheet_name, verif_dict in survey_verif_dict.items():
@@ -174,7 +175,7 @@ def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
             full_comments = '= '
         else:
             full_comments = f'= "{comments}\n\n" & '
-        full_comments += (f'"Opposite sign in survey. '
+        full_comments += (f'"Opposite sign in survey.\n'
                           f'Difference with absolute signs makes " & '
                           f'ROUND(ABS({DC_SYS_KP_COL}{row}) - '
                           f'ABS({get_column(SURVEYED_KP_COL, extra_column)}{row}), 4) & ", which is "'
@@ -194,9 +195,11 @@ def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
                 borders=True, line_wrap=True, align_vertical=XlAlign.top)
     if reverse_polarity:
         # line feeds inside a formula are not directly taken into account by the line wrap to autofit the row height
-        extra_row = 1 if comments else 0
+        # extra_row = 1 if comments else 0
+        polarity_comments_length = len(
+            "Difference with absolute signs makes -00.0000, which is larger than the tolerance 0.006 -> KO.")
         adjust_fixed_row_height(ws, row=row, column=get_column(AUTOMATIC_COMMENTS_COL, extra_column),
-                                extra_row=extra_row)
+                                line_length=polarity_comments_length + (len(comments) if comments is not None else 0))
     # Manual Verification
     create_cell(ws, None, row=row, column=get_column(MANUAL_VERIFICATION_COL, extra_column),
                 borders=True, align_horizontal=XlAlign.center)

@@ -3,10 +3,10 @@
 
 import os
 import csv
-from ...utils import *
-from ...database_location import *
-from ...cc_param.cc_param_utils import *
-from .dc_tu_utils import *
+from ....utils import *
+from ....database_location import *
+from ....cc_param.cc_param_utils import *
+from ..dc_tu_utils import *
 
 
 __all__ = ["load_dc_tu_information"]

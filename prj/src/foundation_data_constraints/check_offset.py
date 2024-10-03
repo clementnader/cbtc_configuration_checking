@@ -208,7 +208,8 @@ def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_c
                     sh_name: str, first_cell: str,
                     seg_col_name: str, x_col_name: str, track_col_name: str, kp_col_name: str) -> bool:
     success = True
-    tolerance = 1E-4
+    percent_style = check_xl_cell_style_percent(ws, row=row, column=x_col)
+    tolerance = 1E-2 if not percent_style else 1E-4
 
     seg = get_xl_cell_value(ws, row=row, column=seg_col)
     track = get_xl_cell_value(ws, row=row, column=track_col)

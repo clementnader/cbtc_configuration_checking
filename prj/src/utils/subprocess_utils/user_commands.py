@@ -4,19 +4,20 @@
 import sys
 import ctypes
 from ..colors_pkg import *
+from ..common_utils import *
 
 
 __all__ = ["get_user_full_name"]
 
 
-def get_user_full_name() -> str:
+def get_user_full_name() -> Optional[str]:
     if sys.platform != "win32":
         print_log(f"Platform OS is not Windows, unable to find the user name.")
-        return ""
+        return None
     full_name = get_display_name()
     if not full_name:
         print_log(f"Unable to find the user name.")
-        return ""
+        return None
     print_log(f"User name is found to be {Color.default}\"{full_name}\"{Color.reset}.")
     if "(" in full_name:
         full_name = full_name.split("(", 1)[0].strip()

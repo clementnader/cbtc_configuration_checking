@@ -42,31 +42,39 @@ def print_section_title(title: str):
     print("\n" + main_color + title + Color.reset + NBSP)
 
 
-def print_error(*args, end: str = "\n", no_newline: bool = False):
+def print_error(*args, end: str = "\n", no_newline: bool = False, no_prefix: bool = False):
     main_color = Color.light_red
     if not no_newline:
         print("\n", end="")
-    print(f"{csi_bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
+    if not no_prefix:
+        print(f"{csi_bg_color(main_color)}{Color.black}Error{Color.reset}{main_color}: ", end="")
+    print(f"{main_color}", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") if isinstance(arg, str) else arg
             for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)
 
 
-def print_warning(*args, end: str = "\n", no_newline: bool = False):
+def print_warning(*args, end: str = "\n", no_newline: bool = False, no_prefix: bool = False):
     main_color = Color.orange
     if not no_newline:
         print("\n", end="")
-    print(f"{csi_bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
+    if not no_prefix:
+        print(f"{csi_bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
+    print(f"{main_color}", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") if isinstance(arg, str) else arg
             for arg in args)
     print(*args, end="")
     print(f"{Color.reset}", end=end)
 
 
-def print_success(*args, end: str = "\n"):
+def print_success(*args, end: str = "\n", no_newline: bool = False, no_prefix: bool = True):
     main_color = Color.vivid_green
-    print(f"\n{main_color}", end="")
+    if not no_newline:
+        print("\n", end="")
+    if not no_prefix:
+        print(f"{csi_bg_color(main_color)}{Color.black}Success{Color.reset}{main_color}: ", end="")
+    print(f"{main_color}", end="")
     args = (arg.replace(Color.reset, f"{Color.reset}{main_color}") if isinstance(arg, str) else arg
             for arg in args)
     print(*args, end="")

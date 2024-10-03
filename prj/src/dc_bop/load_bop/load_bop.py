@@ -3,10 +3,10 @@
 
 from ...utils import *
 from ...cctool_oo_schema import *
-from .load_xl import *
+from ...database_location import *
 
 
-__all__ = ["load_bop"]
+__all__ = ["load_dc_bop", "erase_dc_bop"]
 
 
 LOADED_SWITCH_DIRS = dict()
@@ -21,10 +21,10 @@ SW_NAME_2_COL = 4
 REVERSE_EQUALS_RIGHT_2_COL = 5
 
 
-def load_bop() -> dict:
+def load_dc_bop() -> dict:
     global LOADED_SWITCH_DIRS
     if not LOADED_SWITCH_DIRS:
-        wb = load_dc_bop_wb()
+        wb = load_xlrd_wb(DATABASE_LOC.dc_bop_addr)
         sw_sh = wb.sheet_by_name(SWITCH_SHEET)
         LOADED_SWITCH_DIRS = get_switch_bop(sw_sh)
     return LOADED_SWITCH_DIRS
@@ -53,3 +53,8 @@ def convert_sw_pos(reverse_equals_right: str):
         return False
     if reverse_equals_right.upper().strip() == YesOrNo.O:
         return True
+
+
+def erase_dc_bop():
+    global LOADED_SWITCH_DIRS
+    LOADED_SWITCH_DIRS = dict()

@@ -1,4 +1,7 @@
 @echo off
+title Install Python modules
+
+REM ------------------------------------------------------------------------------
 
 REM set PATH=C:\Python39\;%PATH%
 REM set PATH=%LocalAppData%\Programs\Python\Python39\;%PATH%

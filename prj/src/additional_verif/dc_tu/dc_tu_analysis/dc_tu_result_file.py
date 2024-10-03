@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from ...utils import *
-from .dc_tu_utils import *
+from ....utils import *
+from ..dc_tu_utils import *
 
 
 __all__ = ["create_dc_tu_verif_file"]

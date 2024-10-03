@@ -80,3 +80,49 @@ def _get_missing_limits_per_track(missing_limits: list[tuple[str, float]]) -> di
             missing_limits_dict_per_track[missing_lim_track] = list()
         missing_limits_dict_per_track[missing_lim_track].append(missing_lim_kp)
     return missing_limits_dict_per_track
+
+
+# def _sorted_block_dict() -> dict[str, dict]:
+#     def _split_name(block_name: str) -> tuple[Union[str, int], ...]:
+#         """ Split block name into a tuple to separate the numeric and the alphabetic words. """
+#         if all(not c.isnumeric() for c in block_name):  # no number if the track name
+#             return int(1E9), block_name.lower()
+#         list_num = list()
+#         list_other = list()
+#         pos = 0
+#         char_type = "num" if block_name[pos].isnumeric() else "other"
+#         first_type = char_type
+#         current_word = block_name[pos]
+#         while pos < len(block_name) - 1:
+#             pos += 1
+#             new_char_type = "num" if block_name[pos].isnumeric() else "other"
+#             if new_char_type == char_type:
+#                 current_word += block_name[pos]
+#             else:
+#                 if char_type == "num":
+#                     current_word = int(current_word)
+#                     list_num.append(current_word)
+#                 else:
+#                     current_word = current_word.lower()
+#                     list_other.append(current_word)
+#                 current_word = block_name[pos]
+#             char_type = new_char_type
+#
+#         if char_type == "num":
+#             current_word = int(current_word)
+#             list_num.append(current_word)
+#             if first_type == char_type:
+#                 list_other.append("")  # add an element so that both lists have the same length
+#         else:
+#             current_word = current_word.lower()
+#             list_other.append(current_word)
+#             if first_type == char_type:
+#                 list_num.append(int(1E9))  # add an element so that both lists have the same length
+#         list_words = list()
+#         for num, other in zip(list_num, list_other):
+#             list_words.append(num)
+#             list_words.append(other)
+#         return tuple(list_words)
+#
+#     block_dict = load_sheet(DCSYS.CDV)
+#     return {block_name: block_dict[block_name] for block_name in sorted(block_dict, key=_split_name)}

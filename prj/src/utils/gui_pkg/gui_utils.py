@@ -20,7 +20,7 @@ G_INITIAL_DIRECTORY = DESKTOP_DIRECTORY
 TEMPLATE_DIRECTORY = os.path.join(os.path.dirname(__file__), "..", "..", "templates")
 
 
-def create_window(window_title: str) -> tkinter.Tk:
+def create_window(window_title: str, min_width: Optional[int] = 300, min_height: Optional[int] = 100) -> tkinter.Tk:
     window = tkinter.Tk()
     # Set title
     window.title(window_title)
@@ -36,7 +36,7 @@ def create_window(window_title: str) -> tkinter.Tk:
     screen_height = window.winfo_screenheight()
     window.geometry(f"+{screen_width // 4}+{screen_height // 4}")
     # Set minimal window size
-    window.minsize(300, 100)
+    window.minsize(min_width, min_height)
     return window
 
 

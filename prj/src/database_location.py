@@ -76,9 +76,9 @@ PROJECT_NAME = Projects.Thessaloniki
 
 class ProjectDatabaseLoc:
     class ControlTablesLoc:
-        line = r""  # Main Line
-        depot = r""   # Depot
-        depot2 = r""  # if Depot is split in two parts
+        control_tables_addr = None
+        all_pages = None
+        specific_pages = None
 
     class SurveyLoc:
         survey_addr = None
@@ -120,8 +120,8 @@ class ProjectDatabaseLoc:
             self.dc_par_addr = r"C:\Users\naderc\Desktop\Ank\ANK_L1\ANK_L1_C_D470_V12_05_RC2\DC_PAR.xls"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\Ank\ANK_L1\circuitdevoie.xlsx"
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\Ank\SURVEY"
-                                           r"\ANK_L1_C_D932_14_00_RC1.xlsx")
+            self.survey_loc.survey_addr = (
+                r"C:\Users\naderc\Desktop\Ank\SURVEY\ANK_L1_C_D932_14_00_RC1.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
@@ -137,9 +137,10 @@ class ProjectDatabaseLoc:
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\Ank\ANK_L2\ANK_L2_C11_D470_06_05_03_V07"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\Ank\ANK_L2\CIRCUIT_DE_VOIE.xls"
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\Ank\SURVEY\ANK_L2_C_D932_01_00_RC2.xlsx",
-                                           r"C:\Users\naderc\Desktop\Ank\SURVEY"
-                                           r"\Metro_gzrgh_KM_SON_BufferAdded_FoulingPadded_JointAdded_rev01.xlsx"]
+            self.survey_loc.survey_addr = [
+                r"C:\Users\naderc\Desktop\Ank\SURVEY\ANK_L2_C_D932_01_00_RC2.xlsx",
+                r"C:\Users\naderc\Desktop\Ank\SURVEY"
+                r"\Metro_gzrgh_KM_SON_BufferAdded_FoulingPadded_JointAdded_rev01.xlsx"]
             self.survey_loc.survey_sheet = [r"Result Final", r"Survey_Template"]
             self.survey_loc.all_sheets = [False, False]
             self.survey_loc.start_row = [2, 2]
@@ -157,12 +158,20 @@ class ProjectDatabaseLoc:
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V08_P1B\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V08_P1B"
                 self.fouling_point_addr = r"C:\Users\naderc\Desktop\BXL\fouling_point_fd_checking_1b0.xlsx"
+                # -- Survey -- #
+                self.survey_loc.survey_addr = [
+                    r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
+                    r"C:\Users\naderc\Desktop\BXL\AFS_BXL_1B0.xlsx"]
             else:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2_R2\DC_SYS.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2_R2\DC_PAR.xls"
+                self.dc_bop_addr = (r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2_R2"
+                                    r"\C64_D413\DC_BOP.xls")
+                # -- Survey -- #
+                self.survey_loc.survey_addr = [
+                    r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey_1B2.xlsx",
+                    r"C:\Users\naderc\Desktop\BXL\AFS_BXL_1B0.xlsx"]
             # -- Survey -- #
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
-                                           r"C:\Users\naderc\Desktop\BXL\AFS_BXL_1B0.xlsx"]
             self.survey_loc.survey_sheet = [r"PhotoBook", r"Export_travaillé"]
             self.survey_loc.all_sheets = [False, False]
             self.survey_loc.start_row = [2, 13]
@@ -178,23 +187,20 @@ class ProjectDatabaseLoc:
             self.ixl_apz.apz_start_column = 9
             self.ixl_apz.apz_nb_columns = 5
             # -- Control Tables -- #
-            self.control_tables_route.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables Erasme Antenna 03.01"
-                                              r"\90000536.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES "
-                                              r"ITINÉRAIRES_FR_rev03.01.pdf")
-            self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\BXL\Control Tables Erasme Antenna 03.01"
-                                                r"\90000537.L02.FR-BXL_IXL_ LISTE DES OVERLAP + PARAMÈTRES "
-                                                r"OVERLAP_FR_rev03.01.pdf")
-            # self.control_tables_route.depot = (r"C:\Users\naderc\Desktop\BXL\Control Tables Erasme Depot 02.00"
-            #                                    r"\90000528_L02_FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES "
-            #                                    r"ITINÉRAIRES_FR_rev02_00.pdf")
-            # self.control_tables_overlap.depot = (r"C:\Users\naderc\Desktop\BXL\Control Tables Erasme Depot 02.00"
-            #                                      r"\BXL_IXL_ LISTE DES OVERLAP + PARAMETRES OVERLAP_FR_rev01.00.pdf")
-            self.control_tables_route.depot = (r"C:\Users\naderc\Desktop\BXL\Control Tables Erasme Depot 03.00"
-                                               r"\90000528.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES "
-                                               r"ITINÉRAIRES_FR_rev03.00.pdf")
-            self.control_tables_overlap.depot = (r"C:\Users\naderc\Desktop\BXL\Control Tables Erasme Depot 03.00"
-                                                 r"\90000530.L02.FR-BXL_IXL_LISTE DES OVERLAP + PARAMÈTRES "
-                                                 r"OVERLAP_FR_rev02.00.pdf")
+            self.control_tables_route.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Antenna 03.01"
+                r"\90000536.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.01.pdf",
+                r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Depot 03.00"
+                r"\90000528.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.00.pdf"]
+            self.control_tables_route.all_pages = [True, True]
+            self.control_tables_route.specific_pages = [None, None]
+            self.control_tables_overlap.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Antenna 03.01"
+                r"\90000537.L02.FR-BXL_IXL_ LISTE DES OVERLAP + PARAMÈTRES OVERLAP_FR_rev03.01.pdf",
+                r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Depot 03.00"
+                r"\90000530.L02.FR-BXL_IXL_LISTE DES OVERLAP + PARAMÈTRES OVERLAP_FR_rev02.00.pdf"]
+            self.control_tables_overlap.all_pages = [True, True]
+            self.control_tables_overlap.specific_pages = [None, None]
 
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
@@ -205,11 +211,11 @@ class ProjectDatabaseLoc:
             self.fouling_point_addr = r"C:\Users\naderc\Desktop\KCR\Fouling point data_KCR_V06_06_01_v03_récollé.xlsx"
             # -- Survey -- #
             # self.block_def = r"C:\Users\naderc\Desktop\KCR\CIRCUIT_DE_VOIE_patch_12_01_RC2.xls"
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\KCR"
-                                           r"\CR-ASTS-042189 - 15.00_ATT002 - ATC- KCR C_D932 - "
-                                           r"Field Survey report.xlsx",
-                                           r"C:\Users\naderc\Desktop\KCR"
-                                           r"\AFS_Project_KCR_Sydhavn_survey_eng table_30.08.23.xlsx"]
+            self.survey_loc.survey_addr = [
+                r"C:\Users\naderc\Desktop\KCR"
+                r"\CR-ASTS-042189 - 15.00_ATT002 - ATC- KCR C_D932 - Field Survey report.xlsx",
+                r"C:\Users\naderc\Desktop\KCR"
+                r"\AFS_Project_KCR_Sydhavn_survey_eng table_30.08.23.xlsx"]
             self.survey_loc.survey_sheet = [r"Result Final", r"D932"]
             self.survey_loc.all_sheets = [False, False]
             self.survey_loc.start_row = [2, 3]
@@ -218,14 +224,16 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = [2, 3]
             self.survey_loc.survey_kp_col = [3, 5]
             # -- Control Tables -- #
-            self.control_tables_route.line = (r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES"
-                                              r"\CR-ASTS-045007-11.00-ATT001- Line CT Routes.pdf")
-            self.control_tables_route.depot = (r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES"
-                                               r"\CR-ASTS-045017-11.00-ATT001- CMC CT Routes.pdf")
-            self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES"
-                                                r"\CR-ASTS-045009-07.00-ATT001- Line CT Overlap.pdf")
-            self.control_tables_overlap.depot = (r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES"
-                                                 r"\CR-ASTS-045019-09.00 ATC CMC Control Tables Overlap.pdf")
+            self.control_tables_route.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES\CR-ASTS-045007-11.00-ATT001- Line CT Routes.pdf",
+                r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES\CR-ASTS-045017-12.00-ATT001- CMC CT Routes.pdf"]
+            self.control_tables_route.all_pages = [True, True]
+            self.control_tables_route.specific_pages = [None, None]
+            self.control_tables_overlap.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES\CR-ASTS-045009-07.00-ATT001- Line CT Overlap.pdf",
+                r"C:\Users\naderc\Desktop\KCR\CONTROL TABLES\CR-ASTS-045019-09.00 ATC CMC Control Tables Overlap.pdf"]
+            self.control_tables_overlap.all_pages = [True, True]
+            self.control_tables_overlap.specific_pages = [None, None]
             # -- IXL Approach Zone -- #
             self.ixl_apz.ixl_apz_file = (r"C:\Users\naderc\Desktop\KCR\CR-ASTS-GEN=Gen-PS=ATC=GEN-IFM-ICD-042155_14.00"
                                          r"#ATT004XLSX - ATC - C12_D404  IXL APZ Rev01.xlsx")
@@ -243,33 +251,13 @@ class ProjectDatabaseLoc:
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V05"
-                # -- Control Tables -- #
-                self.control_tables_route.line = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables\IATP"
-                                                  r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_"
-                                                  r"Rev00-3-86-Routes.pdf")
-                self.control_tables_route.depot = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables\IATP"
-                                                   r"\GWISIGIXL0180-01.00 - ATT001_Depot Control tables_"
-                                                   r"Rev00-3-81-Routes.pdf")
-                self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables\IATP"
-                                                    r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_"
-                                                    r"Rev00-173-236-Overlap.pdf")
-                self.control_tables_overlap.depot = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables\IATP"
-                                                     r"\GWISIGIXL0180-01.00 - ATT001_Depot Control tables_"
-                                                     r"Rev00-162-173-Overlap.pdf")
             else:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\DC_SYS.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\C64_D413\DC_BOP.xls"
-                # -- Control Tables -- #
-                self.control_tables_route.line = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
-                                                  r"\GWISIGIXL0400-00.00-ATT002 - Appendix B_Routes_Rev00.pdf")
-                self.control_tables_route.depot = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
-                                                   r"\GWISIGIXL0401-00.00-ATT002 - Appendix L_Routes_Rev00.pdf")
-                self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
-                                                    r"\GWISIGIXL0400-00.00-ATT006 - Appendix F_Overlap_Rev00.pdf")
             # -- Survey -- #
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\Glasgow\SURVEY"
-                                           r"\2024_03_16 Survey Data and Input Sheet_FCB amendments.xlsx")
+            self.survey_loc.survey_addr = (
+                r"C:\Users\naderc\Desktop\Glasgow\SURVEY\2024_03_16 Survey Data and Input Sheet_FCB amendments.xlsx")
             self.survey_loc.survey_sheet = r"GW_ML_survey_inputs"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
@@ -277,20 +265,48 @@ class ProjectDatabaseLoc:
             self.survey_loc.type_col = 2
             self.survey_loc.track_col = 3
             self.survey_loc.survey_kp_col = 5
+            # -- Control Tables -- #
+            if iatp:
+                self.control_tables_route.control_tables_addr = [
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\IATP"
+                    r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_Rev00-3-86-Routes.pdf",
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\IATP"
+                    r"\GWISIGIXL0180-01.00 - ATT001_Depot Control tables_Rev00-3-81-Routes.pdf"]
+                self.control_tables_route.all_pages = [True, True]
+                self.control_tables_route.specific_pages = [None, None]
+                self.control_tables_overlap.control_tables_addr = [
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\IATP"
+                    r"\GWISIGIXL0180-01.00 - ATT002_Circles Control tables_Rev00-173-236-Overlap.pdf",
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\IATP"
+                    r"\GWISIGIXL0180-01.00 - ATT001_Depot Control tables_Rev00-162-173-Overlap.pdf"]
+                self.control_tables_overlap.all_pages = [True, True]
+                self.control_tables_overlap.specific_pages = [None, None]
+            else:
+                self.control_tables_route.control_tables_addr = [
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
+                    r"\GWISIGIXL0400-00.00-ATT002 - Appendix B_Routes_Rev00.pdf",
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
+                    r"\GWISIGIXL0401-00.00-ATT002 - Appendix L_Routes_Rev00.pdf"]
+                self.control_tables_route.all_pages = [True, True]
+                self.control_tables_route.specific_pages = [None, None]
+                self.control_tables_overlap.control_tables_addr = [
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
+                    r"\GWISIGIXL0400-00.00-ATT006 - Appendix F_Overlap_Rev00.pdf"]
+                self.control_tables_overlap.all_pages = [True]
+                self.control_tables_overlap.specific_pages = [None]
 
         # ------------------------------- Lima -------------------------------#
         elif project_name == Projects.Lima:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1\DC_SYS_0402RC1.xls"
             # self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0403RC1\DC_SYS_0403RC1.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos "
-                                           r"topograficos en rieles- ML-L2\Depot\Anexos de Informe 02-012021"
-                                           r"\METRO_LINEA2 DIC. 2020_modified.xls",
-                                           r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos "
-                                           r"topograficos en rieles- ML-L2\MainLine\Anexos de informe 03-022021"
-                                           r"\LIMA L2 E1A - OBJECTS LIST-ENERO 2021.xls",
-                                           r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos "
-                                           r"topograficos en rieles- ML-L2\Objects_List - v3 Rev 01.xlsx"]
+            self.survey_loc.survey_addr = [
+                r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
+                r"\Depot\Anexos de Informe 02-012021\METRO_LINEA2 DIC. 2020_modified.xls",
+                r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
+                r"\MainLine\Anexos de informe 03-022021\LIMA L2 E1A - OBJECTS LIST-ENERO 2021.xls",
+                r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
+                r"\Objects_List - v3 Rev 01.xlsx"]
             self.survey_loc.survey_sheet = [r"", r"Object List", r"Object List"]
             self.survey_loc.all_sheets = [True, False, False]
             self.survey_loc.start_row = [4, 4, 2]
@@ -305,19 +321,15 @@ class ProjectDatabaseLoc:
             self.dc_par_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_03_RC2\ML4_DC_PAR.xls"
             self.dc_bop_addr = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C_D470_V03_03_RC2\DC_BOP.xls"
             self.kit_c11_dir = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_WH_C11_D470_06_06_02_V08"
-            self.fouling_point_addr = (r"C:\Users\naderc\Desktop\ML4\4. WHOLE"
-                                       r"\Fouling Point ML4_WH_C_D470_V03_01_RC3.xlsx")
+            self.fouling_point_addr = (
+                r"C:\Users\naderc\Desktop\ML4\4. WHOLE\Fouling Point ML4_WH_C_D470_V03_01_RC3.xlsx")
             # -- Survey -- #
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\ML4\SURVEY"
-                                           r"\(ML4) LN04_Object_List_01_return28.03.24.xlsx",
-                                           r"C:\Users\naderc\Desktop\ML4\SURVEY"
-                                           r"\ML4_TF2 REPORT OBJECT_AFS_REV_5.1.xlsx",
-                                           r"C:\Users\naderc\Desktop\ML4\SURVEY"
-                                           r"\ML4_TF3 AFS DB integration template.xlsx",
-                                           r"C:\Users\naderc\Desktop\ML4\SURVEY"
-                                           r"\ml4 tki_depot_ln01_object.xlsx",
-                                           r"C:\Users\naderc\Desktop\ML4\SURVEY"
-                                           r"\ML4_LN02 - Coni Zugna to Sforza AFS Object List.xlsx"]
+            self.survey_loc.survey_addr = [
+                r"C:\Users\naderc\Desktop\ML4\SURVEY\(ML4) LN04_Object_List_01_return28.03.24.xlsx",
+                r"C:\Users\naderc\Desktop\ML4\SURVEY\ML4_TF2 REPORT OBJECT_AFS_REV_5.1.xlsx",
+                r"C:\Users\naderc\Desktop\ML4\SURVEY\ML4_TF3 AFS DB integration template.xlsx",
+                r"C:\Users\naderc\Desktop\ML4\SURVEY\ml4 tki_depot_ln01_object.xlsx",
+                r"C:\Users\naderc\Desktop\ML4\SURVEY\ML4_LN02 - Coni Zugna to Sforza AFS Object List.xlsx"]
             self.survey_loc.all_sheets = [False, False, False, False, False, False]
             self.survey_loc.survey_sheet = ["Object_List_LN04",
                                             "Foglio1",
@@ -330,18 +342,18 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = [3, 4, 3, 3, 3]
             self.survey_loc.survey_kp_col = [5, 7, 4, 5, 5]
             # -- Control Tables -- #
-            self.control_tables_route.line = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE rev05.00"
-                                              r"\M4-ST00PGRE-55047_05.00_Allegato_1-6-160.pdf")
-            self.control_tables_route.depot = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE rev05.00"
-                                               r"\M4-ST00PGRE-55047_05.00_Allegato_1-368-521.pdf")
-            self.control_tables_route.depot2 = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE rev05.00"
-                                                r"\M4-ST00PGRE-55047_05.00_Allegato_1-794-935.pdf")
-            self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE rev05.00"
-                                                r"\M4-ST00PGRE-55047_05.00_Allegato_1-316-324.pdf")
-            self.control_tables_overlap.depot = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE rev05.00"
-                                                 r"\M4-ST00PGRE-55047_05.00_Allegato_1-676-731.pdf")
-            self.control_tables_overlap.depot2 = (r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE rev05.00"
-                                                  r"\M4-ST00PGRE-55047_05.00_Allegato_1-1078-1124.pdf")
+            self.control_tables_route.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE\M4-ST00PGRE-55047_05.00_Allegato_1.pdf",
+                r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE\M4-ST00PGRE-55047_05.00_Allegato_1.pdf",
+                r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE\M4-ST00PGRE-55047_05.00_Allegato_1.pdf"]
+            self.control_tables_route.all_pages = [False, False, False]
+            self.control_tables_route.specific_pages = [(6, 160), (368, 521), (794, 935)]
+            self.control_tables_overlap.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE\M4-ST00PGRE-55047_05.00_Allegato_1.pdf",
+                r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE\M4-ST00PGRE-55047_05.00_Allegato_1.pdf",
+                r"C:\Users\naderc\Desktop\ML4\Control Tables\WHOLE\M4-ST00PGRE-55047_05.00_Allegato_1.pdf"]
+            self.control_tables_overlap.all_pages = [False, False, False]
+            self.control_tables_overlap.specific_pages = [(316, 324), (676, 731), (1078, 1124)]
             # -- IXL Approach Zone -- #
             self.ixl_apz.ixl_apz_file = r"C:\Users\naderc\Desktop\ML4\4. WHOLE\ML4_IXL_APZ.xlsx"
             self.ixl_apz.ixl_apz_sheet_name = r"IXL_APZ"
@@ -368,24 +380,24 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = 2
             self.survey_loc.survey_kp_col = 3
             # -- Control Tables -- #
-            self.control_tables_route.line = (r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
-                                              r"\MAIN LINE - CONTROL TABLES"
-                                              r"\Appendix B_Routes.pdf")
-            self.control_tables_route.depot = (r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
-                                               r"\WEST DEPOT - CONTROL TABLES (AUTOMATIC AREA)"
-                                               r"\Appendix B_Routes.pdf")
-            self.control_tables_route.depot2 = (r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
-                                                r"\EAST DEPOT - CONTROL TABLES (AUTOMATIC AREA)"
-                                                r"\Appendix B_Routes.pdf")
-            self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
-                                                r"\MAIN LINE - CONTROL TABLES"
-                                                r"\Appendix E_Overlap.pdf")
-            self.control_tables_overlap.depot = (r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
-                                                 r"\WEST DEPOT - CONTROL TABLES (AUTOMATIC AREA)"
-                                                 r"\Appendix E_Overlap.pdf")
-            self.control_tables_overlap.depot2 = (r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
-                                                  r"\EAST DEPOT - CONTROL TABLES (AUTOMATIC AREA)"
-                                                  r"\Appendix E_Overlap.pdf")
+            self.control_tables_route.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
+                r"\MAIN LINE - CONTROL TABLES\Appendix B_Routes.pdf",
+                r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
+                r"\WEST DEPOT - CONTROL TABLES (AUTOMATIC AREA)\Appendix B_Routes.pdf",
+                r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
+                r"\EAST DEPOT - CONTROL TABLES (AUTOMATIC AREA)\Appendix B_Routes.pdf"]
+            self.control_tables_route.all_pages = [True, True, True]
+            self.control_tables_route.specific_pages = [None, None, None]
+            self.control_tables_overlap.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
+                r"\MAIN LINE - CONTROL TABLES\Appendix E_Overlap.pdf",
+                r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
+                r"\WEST DEPOT - CONTROL TABLES (AUTOMATIC AREA)\Appendix E_Overlap.pdf",
+                r"C:\Users\naderc\Desktop\Riyadh\Control Tables"
+                r"\EAST DEPOT - CONTROL TABLES (AUTOMATIC AREA)\Appendix E_Overlap.pdf"]
+            self.control_tables_overlap.all_pages = [True, True, True]
+            self.control_tables_overlap.specific_pages = [None, None, None]
 
         # ------------------------------- Thessaloniki -------------------------------#
         elif project_name == Projects.Thessaloniki:
@@ -409,18 +421,18 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = [3, 3, 15, 15]
             self.survey_loc.survey_kp_col = [7, 7, 17, 17]
             # -- Control Tables -- #
-            self.control_tables_route.line = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00"
-                                              r"\1G00LV601R721B_EN_ANNEX_B.pdf")
-            self.control_tables_route.depot = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00"
-                                               r"\1G00LV601R722B_EN_ANNEX_B.pdf")
-            self.control_tables_route.depot2 = (r"C:\Users\naderc\Desktop\TSK\Control Tables KLM rev 02.00"
-                                                r"\1GE0LV601R721A_EN_ANNEX_B_KLM_rev02.00.pdf")
-            self.control_tables_overlap.line = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00"
-                                                r"\1G00LV601R721B_EN_ANNEX_D.pdf")
-            self.control_tables_overlap.depot = (r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00"
-                                                 r"\1G00LV601R722B_EN_ANNEX_D.pdf")
-            self.control_tables_overlap.depot2 = (r"C:\Users\naderc\Desktop\TSK\Control Tables KLM rev 02.00"
-                                                  r"\1GE0LV601R721A_EN_ANNEX_D_KLM_rev02.00.pdf")
+            self.control_tables_route.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00\1G00LV601R721B_EN_ANNEX_B.pdf",
+                r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00\1G00LV601R722B_EN_ANNEX_B.pdf",
+                r"C:\Users\naderc\Desktop\TSK\Control Tables KLM rev 02.00\1GE0LV601R721A_EN_ANNEX_B_KLM_rev02.00.pdf"]
+            self.control_tables_route.all_pages = [True, True, True]
+            self.control_tables_route.specific_pages = [None, None, None]
+            self.control_tables_overlap.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00\1G00LV601R721B_EN_ANNEX_D.pdf",
+                r"C:\Users\naderc\Desktop\TSK\Control Tables rev 05.00\1G00LV601R722B_EN_ANNEX_D.pdf",
+                r"C:\Users\naderc\Desktop\TSK\Control Tables KLM rev 02.00\1GE0LV601R721A_EN_ANNEX_D_KLM_rev02.00.pdf"]
+            self.control_tables_overlap.all_pages = [True, True, True]
+            self.control_tables_overlap.specific_pages = [None, None, None]
             # -- IXL Approach Zone -- #
             self.ixl_apz.ixl_apz_file = r"C:\Users\naderc\Desktop\TSK\TSK_IXL_APZ.xlsx"
             self.ixl_apz.ixl_apz_sheet_name = r"IXL_APZ"
@@ -498,10 +510,11 @@ class ProjectDatabaseLoc:
         elif project_name == Projects.KMRC:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
-                                           r"\KMRC-76054_Rev01_C_D932 - Advanced field survey report.xlsm",
-                                           r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
-                                           r"\KMRC-26054_Rev09_C_D932 - Advanced field survey report.xlsm"]
+            self.survey_loc.survey_addr = [
+                r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
+                r"\KMRC-76054_Rev01_C_D932 - Advanced field survey report.xlsm",
+                r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
+                r"\KMRC-26054_Rev09_C_D932 - Advanced field survey report.xlsm"]
             self.survey_loc.survey_sheet = [r"Result Final", r"KMRC-PH2A"]
             self.survey_loc.all_sheets = [False, False]
             self.survey_loc.start_row = [2, 2]
@@ -514,8 +527,8 @@ class ProjectDatabaseLoc:
         elif project_name == Projects.NMML1:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\NMML1\NMML1_PH2_C_D470_00_00_RC5\DC_SYS.xls"
             # -- Survey -- #
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\INDIA\NMML1"
-                                           r"\NMML1_C_D932_Line1_Advanced_field_survey_report.xlsm")
+            self.survey_loc.survey_addr = (
+                r"C:\Users\naderc\Desktop\INDIA\NMML1\NMML1_C_D932_Line1_Advanced_field_survey_report.xlsm")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
@@ -531,8 +544,9 @@ class ProjectDatabaseLoc:
             self.dc_par_addr = r"C:\Users\naderc\Desktop\INDIA\NOIDA\NS01_C_D470_18_00_RC1\DC_PAR.xls"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\INDIA\NOIDA\CIRCUIT_DE_VOIE.xls"
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\INDIA\NOIDA"
-                                           r"\NS01-L-SIG-9-0001 NS01_C_D932 - Advanced field survey report_06.00.xlsx")
+            self.survey_loc.survey_addr = (
+                r"C:\Users\naderc\Desktop\INDIA\NOIDA"
+                r"\NS01-L-SIG-9-0001 NS01_C_D932 - Advanced field survey report_06.00.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
@@ -548,8 +562,8 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA\CHINA V4\Shenyang\SHYL1_10_00\DC_SYS_SHYL1_10_00.xls"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\CHINA\CHINA V4\Shenyang\SHYL1_10_00\CIRCUIT_DE_VOIE.xls"
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\CHINA\CHINA V4\Shenyang"
-                                           r"\SY_L1_SIG_DB_D932_1409_V3.3_2016_5_11.xlsx")
+            self.survey_loc.survey_addr = (
+                r"C:\Users\naderc\Desktop\CHINA\CHINA V4\Shenyang\SY_L1_SIG_DB_D932_1409_V3.3_2016_5_11.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
@@ -563,11 +577,11 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\TC1_C_D470_06_00_RC14\DC_SYS.xls"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\CIRCUIT_DE_VOIE.xls"
-            self.survey_loc.survey_addr = [r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey"
-                                           r"\TC1_D932_Depot_20190221.xlsx",
-                                           r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey\TC1_Mainline_AFS_object_"
-                                           r"list_draft_J20180720_vs_cmts_20180817_R1_vs_mod_20181212.xlsx",
-                                           r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey\901_軌.xlsx"]
+            self.survey_loc.survey_addr = [
+                r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey\TC1_D932_Depot_20190221.xlsx",
+                r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey"
+                r"\TC1_Mainline_AFS_object_list_draft_J20180720_vs_cmts_20180817_R1_vs_mod_20181212.xlsx",
+                r"C:\Users\naderc\Desktop\CHINA\TAIPEI CLP1\Survey\901_軌.xlsx"]
             self.survey_loc.survey_sheet = [r"Depot", r"Mainline ", r"工作表1"]
             self.survey_loc.all_sheets = [False, False, False]
             self.survey_loc.start_row = [2, 2, 2]
@@ -582,8 +596,8 @@ class ProjectDatabaseLoc:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\CHINA\WENZHOU\WZS1_C_D470_08_04\DC_SYS_0804.xls"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\CHINA\WENZHOU\WZS1_C_D470_08_01\CIRCUIT_DE_VOIE_Corrected.xls"
-            self.survey_loc.survey_addr = (r"C:\Users\naderc\Desktop\CHINA\WENZHOU"
-                                           r"\WZ_S1P1_SIG_DB_D932_1409_D932_V1.8_modified.xlsx")
+            self.survey_loc.survey_addr = (
+                r"C:\Users\naderc\Desktop\CHINA\WENZHOU\WZ_S1P1_SIG_DB_D932_1409_D932_V1.8_modified.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2

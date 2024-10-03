@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import numpy
 import openpyxl.comments as xl_comments
+import openpyxl.drawing.image as xl_image
 import openpyxl.styles as xl_styles
 import openpyxl.styles.differential as xl_diff_styles
 import openpyxl.styles.borders as xl_borders
@@ -14,6 +16,7 @@ from ..common_utils import *
 
 
 __all__ = ["xl_borders", "XlAlign", "XlFontColor", "XlBgColor", "get_xl_bg_dimmer_color", "add_cell_comment",
+           "add_image",
            "create_cell", "create_merged_cell",
            "set_fixed_number_of_digits",
            "set_font_size", "set_bold_font", "set_bg_color",
@@ -89,6 +92,18 @@ def add_cell_comment(ws: openpyxl.worksheet.worksheet.Worksheet, comment: str,
     cell = get_cell_from_row_and_column(cell, row, column)
     comment = xl_comments.Comment(comment, None)
     ws[cell].comment = comment
+
+
+# ------ Image ------ #
+
+def add_image(ws: openpyxl.worksheet.worksheet.Worksheet, image_path: str,
+              cell: str = None, row: int = None, column: Union[str, int] = None,
+              ratio: float = 1.) -> None:
+    cell = get_cell_from_row_and_column(cell, row, column)
+    image = xl_image.Image(image_path)
+    image.height *= ratio
+    image.width *= ratio
+    ws.add_image(image, anchor=cell)
 
 
 # ------ Create cells ------ #
@@ -215,13 +230,19 @@ def enable_line_wrap(ws: openpyxl.worksheet.worksheet.Worksheet,
 
 def adjust_fixed_row_height(ws: openpyxl.worksheet.worksheet.Worksheet,
                             cell: str = None, row: int = None, column: Union[str, int] = None,
-                            extra_row: int = 0) -> None:
+                            line_length: int = None) -> None:
+    # Used to work with formula inside cell, with which the text_wrap will not work automatically
     row, column = get_row_and_column_from_cell(cell, row, column)
     value = get_xlsx_value(ws, row, column)
     if value is None:
         return
     line_feed_count = value.count("\n")
-    ws.row_dimensions[row].height = 15 * (line_feed_count + 1 + extra_row)
+    if line_length is None:
+        automatic_wrap = 2
+    else:
+        column_width = ws.column_dimensions[get_xl_column_letter(column)].width
+        automatic_wrap = numpy.ceil(line_length/column_width*4/5) - 1
+    ws.row_dimensions[row].height = 15 * (line_feed_count + automatic_wrap + 1)
 
 
 # ------ Cell Borders ------ #

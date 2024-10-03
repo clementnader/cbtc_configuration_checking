@@ -13,7 +13,7 @@ from .result_file import *
 __all__ = ["check_survey"]
 
 
-SURVEY_CHECKING_VERSION = "v2.5.2"
+SURVEY_CHECKING_VERSION = "v2.6"
 
 
 def check_survey():
@@ -24,10 +24,11 @@ def check_survey():
 
     if DATABASE_LOC.block_def is not None:
         print_section_title(f"Loading Block Def. information...")
-        block_def_dict = get_block_definition()
+        block_def_dict, block_definition_display_info = get_block_definition()
         print_bar(start="\n")
     else:
         block_def_dict = None
+        block_definition_display_info = None
     print_section_title(f"Loading Survey information...")
     survey_info, survey_display_info_list = load_survey()
     print_bar(start="\n")
@@ -38,7 +39,7 @@ def check_survey():
 
     print_section_title(f"Creating the Result File...")
     res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None, SURVEY_CHECKING_VERSION,
-                                             survey_display_info_list)
+                                             survey_display_info_list, block_definition_display_info)
     open_excel_file(res_file_path)
 
     if get_ga_version() < (6, 0, 0, 0):

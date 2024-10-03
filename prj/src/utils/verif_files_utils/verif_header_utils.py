@@ -17,10 +17,10 @@ FILES_FIRST_CELL = "D27"
 
 
 def update_header_sheet_for_verif_file(wb: openpyxl.workbook.Workbook, tool_name: str = None,
-                                       tool_version: str = None, survey: list[str] = None) -> None:
+                                       tool_version: str = None) -> None:
     ws = get_xl_sheet_by_name(wb, HEADER_SHEET_NAME)
     update_author_name(ws)
-    update_sa_versions(ws, tool_name, tool_version, survey)
+    update_sa_versions(ws, tool_name, tool_version)
 
 
 def update_author_name(ws: xl_ws.Worksheet) -> None:
@@ -36,8 +36,7 @@ C121_D470 = "C121_D470"
 DATE = "DATE"
 
 
-def update_sa_versions(ws: xl_ws.Worksheet, tool_name: str = None, tool_version: str = None,
-                       survey: list[str] = None) -> None:
+def update_sa_versions(ws: xl_ws.Worksheet, tool_name: str = None, tool_version: str = None) -> None:
     first_row, info_column = get_row_and_column_from_cell(FILES_FIRST_CELL)
     title_column = info_column - 1
 
@@ -59,12 +58,3 @@ def update_sa_versions(ws: xl_ws.Worksheet, tool_name: str = None, tool_version:
         elif (tool_name is not None and tool_version is not None
               and title.startswith(f"{tool_name.upper()} VERSION")):
             create_cell(ws, tool_version, row=row, column=info_column, borders=True)
-
-        elif survey and title.startswith("SURVEY"):
-            title = f"Survey file{'s' if len(survey) > 1 else ''}:"
-            create_cell(ws, title, row=row, column=title_column, borders=True)
-
-            info = "\n - ".join(survey)
-            if len(survey) > 1:
-                info = " - " + info
-            create_cell(ws, info, row=row, column=info_column, borders=True, line_wrap=True)
