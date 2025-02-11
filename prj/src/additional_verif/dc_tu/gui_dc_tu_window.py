@@ -3,7 +3,7 @@
 
 import sys
 from ...utils import *
-from .gui_survey_utils import *
+from .gui_dc_tu_utils import *
 from .dc_tu_verification import *
 
 
