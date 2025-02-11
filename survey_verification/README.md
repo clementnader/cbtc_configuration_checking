@@ -31,7 +31,7 @@ The tool lists every element from the DC_SYS of these types, and its position an
 - <ins>**DC_SYS**</ins>: It is an Excel file (.xls) provided in the project database C_D470.
 
 
-- *Optionally* <ins>**Block Def.**</ins>: It is an Excel file containing the denomination of the block limits (joints and buffers). It has to be formatted as follows:
+- *Optionally* <ins>**Block Def.**</ins>: It is an optional file used to establish the mapping between the block names from DC_SYS and the joint names given in the Survey. It is an Excel file containing the denomination of the block limits (joints and buffers). It has to be formatted as follows:
   - 2 lines of header.
   - 1 column named CDV_ID (usually first column). It contains all blocks names from DC_SYS (sheet CDV).
   - 2 columns LISTE EXTREMITES::LISTE SEGMENT_ID and LISTE EXTREMITES::LISTE EXT_ABS_SEG (usually the second and third columns). They contain respectively the list of limits segments and the list of the limits offsets. The elements of the lists are separated with commas ';'.
