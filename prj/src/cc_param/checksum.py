@@ -19,25 +19,6 @@ BASH_CMD = f"find -type f | sort -f | xargs -d \"\\n\" md5sum -t > \"{REGEN_FILE
 SORT_BASH_CMD = f"sort -k2f \"{ORIGINAL_FILE}\" > \"{ORDERED_ORIGINAL_FILE}\""
 
 
-def get_software_location(sw):
-    software_paths = {
-        "local_app_data": os.path.join(os.getenv("LocalAppData"), sw),
-        "local_app_data_programs": os.path.join(os.getenv("LocalAppData"), "Programs", sw),
-        "program_files": os.path.join(os.getenv("ProgramFiles"), sw),
-        "program_files_x86": os.path.join(os.getenv("ProgramFiles(x86)"), sw),
-    }
-
-    for sw_path in software_paths.values():
-        if os.path.exists(sw_path):
-            return sw_path
-    return None
-
-
-GIT_PATH = get_software_location("Git")
-BEYOND_COMPARE_PATH = get_software_location("Beyond Compare 4")
-BCOMP_EXE = "BCompare.exe"
-
-
 def verification_of_the_md5_checksum():
     kit_c11 = DATABASE_LOC.kit_c11_dir
     compare_checksums(kit_c11)

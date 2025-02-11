@@ -182,21 +182,21 @@ def set_fixed_number_of_digits(ws: openpyxl.worksheet.worksheet.Worksheet, numbe
 def set_font_size(ws: openpyxl.worksheet.worksheet.Worksheet, font_size: int,
                   cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
-    font_style = openpyxl.styles.Font(size=font_size)
+    font_style = xl_styles.Font(size=font_size)
     ws[cell].font = font_style
 
 
 def set_bold_font(ws: openpyxl.worksheet.worksheet.Worksheet,
                   cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
-    font_style = openpyxl.styles.Font(bold=True)
+    font_style = xl_styles.Font(bold=True)
     ws[cell].font += font_style
 
 
 def set_italic_font(ws: openpyxl.worksheet.worksheet.Worksheet,
                     cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
-    font_style = openpyxl.styles.Font(italic=True)
+    font_style = xl_styles.Font(italic=True)
     ws[cell].font += font_style
 
 
@@ -205,6 +205,11 @@ def set_bg_color(ws: openpyxl.worksheet.worksheet.Worksheet, hex_color: str,
     cell = get_cell_from_row_and_column(cell, row, column)
     pattern_style = xl_styles.PatternFill(start_color=hex_color, end_color=hex_color, fill_type="solid")
     ws[cell].fill = pattern_style
+
+
+def set_text_format(ws, row, column):
+    cell = get_cell_from_row_and_column(row, column)
+    ws[cell].number_format = "@"  # force text formatting
 
 
 def set_vertical_alignment(ws: openpyxl.worksheet.worksheet.Worksheet, align_vertical: str = XlAlign.center,
@@ -224,7 +229,7 @@ def set_horizontal_alignment(ws: openpyxl.worksheet.worksheet.Worksheet, align_h
 def enable_line_wrap(ws: openpyxl.worksheet.worksheet.Worksheet,
                      cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
-    alignment_style = openpyxl.styles.Alignment(wrap_text=True)
+    alignment_style = xl_styles.Alignment(wrap_text=True)
     ws[cell].alignment += alignment_style
 
 

@@ -11,6 +11,7 @@ __all__ = ["save_xl_file"]
 
 
 def save_xl_file(wb: openpyxl.workbook.Workbook, res_file_path: str):
+    res_file_path = os.path.abspath(res_file_path)
     if os.path.isfile(res_file_path):
         print_error(f"res_file_path = \"{res_file_path}\" already exists.")
         if not ask_question_yes_or_no("Do you want to overwrite it?"):

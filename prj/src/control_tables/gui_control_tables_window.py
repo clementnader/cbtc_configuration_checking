@@ -13,11 +13,11 @@ def control_tables_window() -> None:
     ga_version = get_ga_version_text()
     print_title(f"Route and Overlap Verification", color=Color.mint_green)
     print(f"{Color.light_green}Select the Control Tables and the DC_SYS "
-          f"{Color.cyan}{Color.underline}compatible with System Referential {ga_version}{Color.no_underline}"
+          f"{Color.cyan}{Color.underline}compatible with CCTool-OO Schema {ga_version}{Color.no_underline}"
           f"{Color.light_green}.{Color.reset}\n")
 
     # Root window
-    window_title = f"Control Table Verification (System Referential {ga_version})"
+    window_title = f"Control Table Verification (CCTool-OO Schema {ga_version})"
     window = create_window(window_title)
 
     # Center Frame
@@ -93,7 +93,7 @@ def control_tables_window() -> None:
 
     window.mainloop()
 
-    print_log(f"Route and Overlap Verification Window was closed.")
+    print_log(f"\nRoute and Overlap Verification Window was closed.")
     return
 
 

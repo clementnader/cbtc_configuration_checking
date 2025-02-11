@@ -13,14 +13,14 @@ from .result_file import *
 __all__ = ["check_survey"]
 
 
-SURVEY_CHECKING_VERSION = "v2.6"
+SURVEY_CHECKING_VERSION = "v2.7"
 
 
 def check_survey():
     check_offset_correctness()
 
     print_title(f"Correspondence with Site Survey for "
-                f"{Color.cyan}{get_c_d470_version()}{Color.reset}")
+                f"{Color.cyan}{get_current_version()}{Color.reset}")
 
     if DATABASE_LOC.block_def is not None:
         print_section_title(f"Loading Block Def. information...")
@@ -42,10 +42,11 @@ def check_survey():
                                              survey_display_info_list, block_definition_display_info)
     open_excel_file(res_file_path)
 
-    if get_ga_version() < (6, 0, 0, 0):
+    if get_ga_version() < (6, 5, 5, 0):
         print_bar(start="\n")
-        print_warning(f"GA version is before v6:"
+        print_warning(f"GA version is before v6.5.5:"
                       f"\nVerify that the objects to verify in Correspondence with Site Survey activity "
-                      f"asked by the System DPSA effectively correspond to sheet \"Survey\" of the result file.")
+                      f"asked by the System DPSA effectively correspond to sheet \"FD - Site Survey\" "
+                      f"of the result file.")
 
     return True

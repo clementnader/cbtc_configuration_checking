@@ -93,6 +93,8 @@ def is_everything_ready(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
     if not are_control_tables_ready(control_tables_loc_dict, control_table_type, main=False):
         test = False
 
+    if test:
+        print_log("OK all information is provided.")
     return test
 
 
@@ -124,4 +126,6 @@ def are_control_tables_ready(control_tables_loc_dict: dict[str, dict[str, tkinte
                       f"but the page is not filled.")
             test = False
 
+    if main and test:
+        print_log("OK all information is provided.")
     return test

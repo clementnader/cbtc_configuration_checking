@@ -7,41 +7,44 @@ from ...utils import *
 __all__ = ["add_block_joint_def_frame"]
 
 
-def add_block_joint_def_frame(frame: tkinter.Frame, ref_row: int, bg: str = None
+def add_block_joint_def_frame(frame: tkinter.Frame, bg: str = None
                               ) -> tuple[tkinter.BooleanVar, tkinter.StringVar, tkinter.StringVar]:
 
     title_label = tkinter.Label(frame, text="Block Joint Name Definition:",
                                 font=tkinter.font.Font(size=11, weight="bold"), bg=bg)
-    title_label.grid(column=0, row=ref_row, columnspan=6, sticky="w")
+    title_label.grid(column=0, row=0, columnspan=6, sticky="w")
+    title_label = tkinter.Label(frame,
+                                text="Select a file to establish the mapping between block names in DC_SYS\n"
+                                     "and joint names in Survey, or choose the option to let the tool make "
+                                     "this mapping.",
+                                font=tkinter.font.Font(size=8), justify="left", bg=bg)
+    title_label.grid(column=0, row=1, columnspan=6, sticky="w")
 
     # Left Frame
     left_frame = tkinter.Frame(frame, bg=bg)
-    left_frame.grid(column=0, row=1, sticky="nswe")
+    left_frame.grid(column=0, row=2, sticky="nswe")
 
     # Right Frame
     right_frame = tkinter.Frame(frame, bg=bg)
-    right_frame.grid(column=3, row=1, rowspan=20, sticky="nswe")
+    right_frame.grid(column=3, row=2, rowspan=20, sticky="nswe")
 
     # Separators
     sep = tkinter.ttk.Separator(frame, orient="vertical")
-    sep.grid(column=2, row=1, sticky="ns")
+    sep.grid(column=2, row=2, sticky="ns")
 
     # Left Frame
     sub_frame = tkinter.Frame(left_frame, bg=bg, padx=5, pady=5)
     sub_frame.grid(column=0, row=0, sticky="nswe")
-    automatic_names_bool_var = _add_automatic_names_button(sub_frame, 0, right_frame, bg=bg)
+    block_def_label = tkinter.Label(sub_frame, text="Dedicated Block Definition File\n"
+                                                    "(often called CIRCUIT_DE_VOIE.xls)",
+                                    font=tkinter.font.Font(size=10), justify="left", bg=bg)
+    block_def_label.grid(column=0, row=0, columnspan=10, sticky="w")
+    block_def_directory_string_var, block_def_file_name_string_var = _add_block_def_button(sub_frame, 1, bg=bg)
 
     # Right Frame
     sub_frame = tkinter.Frame(right_frame, bg=bg, padx=5, pady=5)
     sub_frame.grid(column=0, row=0, sticky="nswe")
-    block_def_label = tkinter.Label(sub_frame, text="Dedicated Block Definition File",
-                                    font=tkinter.font.Font(size=10), bg=bg)
-    block_def_label.grid(column=0, row=0, columnspan=10, sticky="w")
-    block_def_label = tkinter.Label(sub_frame, text="(often called CIRCUIT_DE_VOIE.xls)",
-                                    font=tkinter.font.Font(size=10), bg=bg)
-    block_def_label.grid(column=0, row=1, columnspan=10, sticky="w")
-    block_def_directory_string_var, block_def_file_name_string_var = _add_block_def_button(sub_frame, 2, bg=bg)
-    disable_frame(right_frame)  # default state
+    automatic_names_bool_var = _add_automatic_names_button(sub_frame, 0, left_frame, bg=bg)
 
     return automatic_names_bool_var, block_def_directory_string_var, block_def_file_name_string_var
 
@@ -77,10 +80,11 @@ def _add_automatic_names_button(frame: tkinter.Frame, ref_row: int, other_frame:
     automatic_names_comment = tkinter.Label(frame, text="Let the tool generate the joint names",
                                             font=tkinter.font.Font(size=10), bg=bg)
     automatic_names_comment.grid(column=0, row=ref_row, columnspan=3, sticky="w")
+    automatic_names_comment.config(state=tkinter.DISABLED)  # default state
 
-    frame.grid_rowconfigure(ref_row+1, minsize=60)
+    frame.grid_rowconfigure(ref_row+1, minsize=73)  # to align vertically with button to select Block Def file
     automatic_names = tkinter.BooleanVar()
-    automatic_names.set(True)
+    automatic_names.set(False)  # default state
     automatic_names_checkbutton = tkinter.Checkbutton(frame, text="automatic joint names",
                                                       font=tkinter.font.Font(size=9, weight="bold"),
                                                       variable=automatic_names, bg=bg,

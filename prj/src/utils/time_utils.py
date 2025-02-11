@@ -5,10 +5,10 @@ import time
 import datetime
 
 
-__all__ = ["time", "format_timespan", "format_timespan_simple", "get_today_date"]
+__all__ = ["time", "format_timespan", "format_timespan_simple", "get_today_date", "get_timestamp"]
 
 
-def format_timespan(seconds):
+def format_timespan(seconds: float) -> str:
     hr, mn, s, ms = split_time(seconds)
     list_time_str = list()
     if hr > 0:
@@ -26,7 +26,7 @@ def format_timespan(seconds):
     return ", ".join(list_time_str[:-1]) + " and " + list_time_str[-1]
 
 
-def format_timespan_simple(seconds):
+def format_timespan_simple(seconds: float) -> str:
     hr, mn, s, ms = split_time(seconds)
     list_time_str = list()
     if hr > 0:
@@ -42,7 +42,7 @@ def format_timespan_simple(seconds):
     return " ".join(list_time_str)
 
 
-def split_time(seconds):
+def split_time(seconds: float):
     s = int(seconds)
     ms = round(1000 * (seconds - s))
     mn, s = divmod(s, 60)
@@ -50,7 +50,12 @@ def split_time(seconds):
     return hr, mn, s, ms
 
 
-def get_today_date():
+def get_today_date() -> str:
     today = datetime.date.today()
     date = f"{today:%d/%m/%Y}"
     return date
+
+
+def get_timestamp() -> str:
+    timestamp = datetime.datetime.now()
+    return f"{timestamp:%Y_%m_%d__%H_%M_%S}"

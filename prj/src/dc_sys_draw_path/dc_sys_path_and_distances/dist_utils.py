@@ -80,7 +80,7 @@ def print_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name
 
 
 def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str,
-                             downstream: bool = None) -> Optional[float]:
+                             downstream: bool = None, avoid_zero: bool = False) -> Optional[float]:
     loc1 = get_obj_position(obj_type_1, obj_name_1)
     loc2 = get_obj_position(obj_type_2, obj_name_2)
     if loc1 is None or loc2 is None:
@@ -97,7 +97,7 @@ def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2
             current_d = get_dist(seg1, x1, seg2, x2, downstream=downstream)
             if current_d is None:
                 continue
-            if min_d is None or current_d < min_d:
+            if (min_d is None or current_d < min_d) and (avoid_zero is False or current_d != 0):
                 min_d = current_d
     return min_d
 

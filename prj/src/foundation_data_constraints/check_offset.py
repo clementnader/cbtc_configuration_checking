@@ -162,11 +162,11 @@ def find_seg_x_cols(ws: xlrd.sheet) -> tuple[list[tuple[int, int, str, str]], li
     for j in range(1, nb_cols+1):
         cell1 = get_xl_cell_value(ws, row=1, column=j)
         cell2 = get_xl_cell_value(ws, row=2, column=j)
+        if not cell1 and not cell2:
+            break  # if there is an empty column, it means it is done and extra columns are simply comments
         if cell1 is not None:
             title = cell1
         cell = f"{title}" if not cell2 else f"{title}::{cell2}"
-        if not cell:
-            continue
         cell_to_test = f"{cell}".strip().lower()
         if cell_to_test.endswith("seg"):
             is_prev_seg = True
@@ -252,7 +252,7 @@ def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_c
                     f"at row {Color.yellow}{row}{Color.reset} ({Color.beige}{first_cell = }{Color.reset}), "
                     f"(track, KP) {Color.light_blue}{(track, kp)}{Color.reset} "
                     f"(at columns {get_xl_column_letter(track_col)} \"{track_col_name}\" "
-                    f"and {get_xl_column_letter(kp_col)} \"{kp_col_name})\"\n"
+                    f"and {get_xl_column_letter(kp_col)} \"{kp_col_name}\")\n"
                     f"is different from the one recalculated {Color.light_blue}{(test_track, test_kp)}{Color.reset} "
                     f"from the (segment, offset) {Color.light_green}{(seg, x)}{Color.reset} "
                     f"(at columns {get_xl_column_letter(seg_col)} \"{seg_col_name}\" "

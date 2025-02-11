@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os.path
 
 from ..utils import *
 from ..cctool_oo_schema import *
@@ -65,7 +66,7 @@ def min_length_multiple_path(in_cbtc: bool = False):
     corresponding_paths = [path for path, path_len in multiple_path_len_dict.items()
                            if path_len['Minimal Length'] == min_len]
     print(f"The minimum length of a multiple path structure (rhombus or trapezoid) is, {print_in_cbtc(in_cbtc)}:"
-          f"\n{min_len = } m"
+          f"\n{Color.green}{min_len = } m{Color.reset}"
           f"\n > for: "
           f"{corresponding_paths}\n")
     for path, path_len in multiple_path_len_dict.items():
@@ -73,7 +74,12 @@ def min_length_multiple_path(in_cbtc: bool = False):
             pretty_print_dict(path_len)
             print()
 
-    print(create_csv_file(multiple_path_len_dict))
+    result_file = "multiple_path_length.csv"
+    result_file = f" - {get_current_version()}".join(os.path.splitext(result_file))
+    with open(result_file, "w") as f:
+        f.write(create_csv_file(multiple_path_len_dict))
+        print(f"{Color.white}CSV file with the different multiple-path configurations is available at{Color.reset}"
+              f"\n{Color.yellow}{os.path.abspath(result_file)}{Color.reset}")
     return multiple_path_len_dict
 
 

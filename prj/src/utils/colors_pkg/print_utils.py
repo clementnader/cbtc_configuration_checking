@@ -207,7 +207,11 @@ def pretty_print_dict(in_dict: Union[dict, list], lvl: int = 0, max_lvl: int = N
             if max_lvl is None or lvl <= max_lvl:
                 pretty_print_dict(val, lvl, max_lvl)
         else:
-            print(f"{get_print_prefix(lvl)}\t{val}")
+            if isinstance(val, list):
+                for a in val:
+                    print(f"{get_print_prefix(lvl)}\t{a}")
+            else:
+                print(f"{get_print_prefix(lvl)}\t{val}")
 
 
 def get_print_prefix(lvl: int) -> str:

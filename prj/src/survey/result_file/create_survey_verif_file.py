@@ -7,7 +7,6 @@ from ...dc_sys import *
 from ..survey_types import *
 from ..survey_utils import *
 from .file_format_utils import *
-from .header_sheet_utils import *
 
 
 __all__ = ["create_survey_verif_file"]
@@ -15,9 +14,11 @@ __all__ = ["create_survey_verif_file"]
 
 SURVEY_VERIF_TEMPLATE = os.path.join(TEMPLATE_DIRECTORY, "template_survey_verification.xlsx")
 
-OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
-# OUTPUT_DIRECTORY = os.path.join(DESKTOP_DIRECTORY, "Correspondence with Site Survey")
+OUTPUT_DIRECTORY = "."
 VERIF_FILE_NAME = "Correspondence with Site Survey.xlsx"
+
+TOOL_NAME = "Survey_Checking"
+FILE_TITLE = "Correspondence with Site Survey"
 
 
 def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
@@ -38,7 +39,10 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_
                        block_definition_display_info: str):
     wb = load_xlsx_wb(SURVEY_VERIF_TEMPLATE, template=True)
 
-    create_survey_header_sheet(wb, tool_version, survey_display_info_list, block_definition_display_info)
+    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version(),
+                                       tool_name=TOOL_NAME, tool_version=tool_version,
+                                       survey_display_info_list=survey_display_info_list,
+                                       block_definition_display_info=block_definition_display_info)
     _update_menu_sheet(wb)
 
     for sheet_name, verif_dict in survey_verif_dict.items():
@@ -46,8 +50,8 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_
         ws, start_row = create_verif_sheet(wb, sheet_name, extra_column)
         _update_verif_sheet(sheet_name, ws, verif_dict, extra_column, start_row)
 
-    verif_file_name = f" - {get_c_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
-    res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
+    verif_file_name = f" - {get_current_version()}".join(os.path.splitext(VERIF_FILE_NAME))
+    res_file_path = os.path.abspath(os.path.join(OUTPUT_DIRECTORY, verif_file_name))
     save_xl_file(wb, res_file_path)
     print_success(f"\"Correspondence with Site Survey\" verification file is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")
@@ -57,7 +61,7 @@ def _create_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_
 def _update_menu_sheet(wb: openpyxl.workbook.Workbook):
     if get_ga_version() >= (7, 2, 0, 0):
         return
-    ws = wb["Survey"]
+    ws = wb["FD - Site Survey"]
     ws.delete_rows(17)  # for older GA versions, delete PSD line that was not verified here
     ws.row_dimensions[17].height = 15  # restore default height
 
@@ -151,8 +155,8 @@ def _add_line_cell_comments(ws: xl_ws.Worksheet, row: int,
 def _add_line_calculations(ws: xl_ws.Worksheet, row: int,
                            tolerance: str, extra_column: bool) -> None:
     # Difference
-    difference_formula = (f'= IF(ISBLANK({DC_SYS_KP_COL}{row}), "Not in DC_SYS", '
-                          f'IF(ISBLANK({get_column(SURVEYED_KP_COL, extra_column)}{row}), "Not Surveyed", '
+    difference_formula = (f'= IF({DC_SYS_KP_COL}{row} = "", "Not in DC_SYS", '
+                          f'IF({get_column(SURVEYED_KP_COL, extra_column)}{row} = "", "Not Surveyed", '
                           f'{DC_SYS_KP_COL}{row} - {get_column(SURVEYED_KP_COL, extra_column)}{row}))')
     create_cell(ws, difference_formula, row=row, column=get_column(DIFFERENCE_COL, extra_column), borders=True,
                 nb_of_digits=4)

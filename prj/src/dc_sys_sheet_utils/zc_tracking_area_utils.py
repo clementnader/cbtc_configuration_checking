@@ -5,12 +5,12 @@ import sys
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
-from ..dc_sys_draw_path.dc_sys_get_zones import get_zones_on_point, get_zones_of_extremities, is_point_in_zone
+from ..dc_sys_draw_path.dc_sys_get_zones import get_zones_on_point, get_zones_intersecting_zone, is_point_in_zone
 from .line_section_utils import *
 from .maz_utils import *
 
 
-__all__ = ["get_all_zc", "is_point_in_zc", "get_zc_of_point", "get_zc_of_extremities", "get_zc_of_obj",
+__all__ = ["get_all_zc", "is_point_in_zc", "get_zc_of_point", "get_zc_of_obj",
            "get_zc_managing_obj", "get_ls_managed_by_zc", "get_zc_managing_ls"]
 
 
@@ -25,10 +25,6 @@ def is_point_in_zc(zc_name: str, seg: str, x: float, direction: str = None) -> O
 
 def get_zc_of_point(seg: str, x: float, direction: str = None) -> list[str]:
     return get_zones_on_point(DCSYS.PAS, seg, x, direction)
-
-
-def get_zc_of_extremities(limits: list[tuple[str, float]]) -> list[str]:
-    return get_zones_of_extremities(DCSYS.PAS, limits)
 
 
 def _get_zc_of_traffic_stop(obj_name: str) -> list[str]:
@@ -68,7 +64,7 @@ def get_zc_of_obj(obj_type, obj_name: str) -> list[str]:
         list_zc = get_zc_of_point(*position)
         return list_zc if list_zc is not None else []
     if isinstance(position, list):
-        list_zc = get_zc_of_extremities(position)
+        list_zc = get_zones_intersecting_zone(DCSYS.PAS, obj_type, obj_name)
         return list_zc if list_zc is not None else []
     return []
 

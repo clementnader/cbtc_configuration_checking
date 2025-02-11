@@ -13,11 +13,11 @@ def survey_window() -> None:
     ga_version = get_ga_version_text()
     print_title(f"Survey Verification", color=Color.mint_green)
     print(f"{Color.light_green}Select the DC_SYS "
-          f"{Color.cyan}{Color.underline}compatible with System Referential {ga_version}{Color.no_underline}"
+          f"{Color.cyan}{Color.underline}compatible with CCTool-OO Schema {ga_version}{Color.no_underline}"
           f"{Color.light_green} and the Survey information to verify.{Color.reset}\n")
 
     # Root window
-    window = create_window(f"Survey Verification (System Referential {ga_version})")
+    window = create_window(f"Survey Verification (CCTool-OO Schema {ga_version})")
 
     # Top Frame
     bg = f"#{XlBgColor.light_yellow}"
@@ -33,7 +33,7 @@ def survey_window() -> None:
     top_left_frame2.grid(column=0, row=5, sticky="nswe")
     sub_frame = tkinter.Frame(top_left_frame2, bg=bg, padx=10, pady=10)
     sub_frame.grid(column=0, row=0, sticky="nswe")
-    automatic_names, block_def_directory, block_def_file_name = add_block_joint_def_frame(sub_frame, ref_row=0, bg=bg)
+    automatic_names, block_def_directory, block_def_file_name = add_block_joint_def_frame(sub_frame, bg=bg)
 
     # Bottom Frame
     bg = f"#{XlBgColor.light_green}"
@@ -67,7 +67,7 @@ def survey_window() -> None:
 
     window.mainloop()
 
-    print_log(f"Survey Verification Window was closed.")
+    print_log(f"\nSurvey Verification Window was closed.")
     return
 
 

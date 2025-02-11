@@ -24,9 +24,9 @@ def convert_cc_param():
                              f"{Color.dark_grey}(put it between quotes){Color.reset}")
     parser.add_argument("-d", "--destination_folder", dest="dest_dir", action="store", type=str, required=False,
                         metavar=f"{Color.turquoise}Destination_Root_Folder{Color.reset}",
-                        default=DESKTOP_DIRECTORY,
+                        default=".",
                         help=f"root folder where the result converted directory will be stored, "
-                             f"default is the Desktop ({Color.green}{DESKTOP_DIRECTORY}{Color.reset})")
+                             f"default is the current folder")
     args = vars(parser.parse_args())
     input_dir = args["input_dir"]
     dest_dir = args["dest_dir"]
@@ -36,7 +36,7 @@ def convert_cc_param():
 def copy_kit_c11_d470(input_dir, dest_dir):
     result_dir = f"{os.path.split(input_dir)[-1]}_converted"
     full_res_dir = os.path.join(dest_dir, result_dir)
-    print(f"\nConverting the CCparameters.csv files from:\n"
+    print(f"\nConverting the CCParameter.csv files from:\n"
           f"\t{Color.yellow}{input_dir}{Color.reset}\n"
           f"to\n"
           f"\t{Color.yellow}{full_res_dir}{Color.reset}\n")

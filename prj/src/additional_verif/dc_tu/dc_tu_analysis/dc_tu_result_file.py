@@ -12,7 +12,7 @@ __all__ = ["create_dc_tu_verif_file"]
 DC_TU_VERIF_TEMPLATE_RELATIVE_PATH = os.path.join(TEMPLATE_DIRECTORY, "template_dc_tu_verification.xlsx")
 DC_TU_VERIF_TEMPLATE = get_full_path(__file__, DC_TU_VERIF_TEMPLATE_RELATIVE_PATH)
 
-OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
+OUTPUT_DIRECTORY = "."
 VERIF_FILE_NAME = "Analysis of ADD_VERIF_XXX - DC_TU Verification.xlsx"
 
 MONO_CC = "MonoCC"
@@ -33,6 +33,7 @@ IP_ADDRESS_STATUS2_COLUMN = 7
 IP_ADDRESS_COMMENTS2_COLUMN = 8
 
 TOOL_NAME = "DC_TU_Checking"
+FILE_TITLE = "Analysis of ADD_VERIF_XXX\nDC_TU Verification"
 
 
 def create_dc_tu_verif_file(ip_address_dict: dict, ssh_key_dict: dict, tool_version: str):
@@ -46,13 +47,19 @@ def create_dc_tu_verif_file(ip_address_dict: dict, ssh_key_dict: dict, tool_vers
 
 def _create_verif_file(ip_address_dict: dict, ssh_key_dict: dict, tool_version: str) -> str:
     wb = load_xlsx_wb(DC_TU_VERIF_TEMPLATE, template=True)
-    update_header_sheet_for_verif_file(wb, TOOL_NAME, tool_version)
+    update_header_sheet_for_verif_file(wb, title=FILE_TITLE,
+                                       c11_d470=get_c11_d470_version(),
+                                       tool_name=TOOL_NAME, tool_version=tool_version)
 
     _update_ip_addr_sheet(wb, ip_address_dict)
     _update_ssh_key_sheet(wb, ssh_key_dict)
 
-    verif_file_name = f" - {get_c11_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
-    res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
+    c11_d470 = get_c11_d470_version()
+    if c11_d470:
+        verif_file_name = f" - {c11_d470}".join(os.path.splitext(VERIF_FILE_NAME))
+    else:
+        verif_file_name = VERIF_FILE_NAME
+    res_file_path = os.path.abspath(os.path.join(OUTPUT_DIRECTORY, verif_file_name))
     save_xl_file(wb, res_file_path)
     print_success(f"Verification of DC_TU files is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")

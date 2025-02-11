@@ -14,7 +14,8 @@ __all__ = ["load_control_tables"]
 
 def load_control_tables(control_table_type: str, use_csv_file: bool = False,
                         supersede_input_file_number: int = None,
-                        supersede_specific_pages: Union[int, tuple[int, int]] = None):
+                        supersede_specific_pages: Union[int, tuple[int, int]] = None,
+                        debug: bool = False):
 
     if control_table_type not in [CONTROL_TABLE_TYPE.route, CONTROL_TABLE_TYPE.overlap]:
         print_error(f"{Color.yellow}{control_table_type = }{Color.reset} is unknown, expected "
@@ -37,7 +38,7 @@ def load_control_tables(control_table_type: str, use_csv_file: bool = False,
             specific_pages = supersede_specific_pages if supersede_specific_pages is not None else specific_pages
             all_pages = False if supersede_specific_pages is not None else all_pages
             control_table_info = _load_control_table_info(control_table_type, control_table_addr, all_pages,
-                                                          specific_pages, i, nb_of_control_tables)
+                                                          specific_pages, i, nb_of_control_tables, debug=debug)
             create_csv_file_control_table(control_table_info, result_file_name)
 
         else:
@@ -49,7 +50,8 @@ def load_control_tables(control_table_type: str, use_csv_file: bool = False,
 
 
 def _load_control_table_info(control_table_type: str, control_table_addr: str, all_pages: bool,
-                             specific_pages: Union[int, tuple[int, int]], i: int, nb_of_control_tables: int):
+                             specific_pages: Union[int, tuple[int, int]], i: int, nb_of_control_tables: int,
+                             debug: bool = False):
     if all_pages:
         print(f"\n {i}/{nb_of_control_tables} - "
               f"{Color.white}{Color.underline}Conversion of {Color.yellow}{control_table_type.title()}"
@@ -72,7 +74,8 @@ def _load_control_table_info(control_table_type: str, control_table_addr: str, a
         list_specific_pages = (list(range(specific_pages[0], specific_pages[1] + 1))
                                if isinstance(specific_pages, tuple)
                                else [specific_pages])
-    control_table_info = control_tables_pdf_parsing(control_table_type, control_table_addr, list_specific_pages)
+    control_table_info = control_tables_pdf_parsing(control_table_type, control_table_addr, list_specific_pages,
+                                                    debug=debug)
     return control_table_info
 
 

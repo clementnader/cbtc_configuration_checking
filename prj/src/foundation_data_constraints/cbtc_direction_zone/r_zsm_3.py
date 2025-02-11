@@ -16,7 +16,7 @@ __all__ = ["r_zsm_3"]
 
 VERIF_TEMPLATE = os.path.join(TEMPLATE_DIRECTORY, "template_r_zsm_3_verification.xlsx")
 
-OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
+OUTPUT_DIRECTORY = "."
 VERIF_FILE_NAME = "R_ZSM_3 Verification.xlsx"
 
 VERIF_SHEET = "R_ZSM_3"
@@ -38,6 +38,8 @@ IXL_APZ_LENGTH_COL = "N"
 TRAIN_TO_HOME_SIGNAL_MAX_DIST_COL = "O"
 STATUS_COL = "P"
 COMMENTS_COL = "Q"
+
+FILE_TITLE = "Verification of R_ZSM_3"
 
 
 def r_zsm_3(apz_with_tc: bool = False):
@@ -98,12 +100,12 @@ def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any
 def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
     wb = load_xlsx_wb(VERIF_TEMPLATE, template=True)
 
-    update_header_sheet_for_verif_file(wb)
+    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())
 
     _update_verif_sheet(wb, verif_dict)
 
-    verif_file_name = f" - {get_c_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
-    res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
+    verif_file_name = f" - {get_current_version()}".join(os.path.splitext(VERIF_FILE_NAME))
+    res_file_path = os.path.abspath(os.path.join(OUTPUT_DIRECTORY, verif_file_name))
     save_xl_file(wb, res_file_path)
     print_success(f"\"Verification of R_ZSM_3\" verification file is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")

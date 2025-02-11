@@ -40,17 +40,12 @@ def check_signal(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
         if survey_obj_info is not None:
             list_used_obj_names.append(survey_name)
 
-        extra_comment = None
-        # survey_obj_info, extra_comment = _associate_pr_sig_to_buffer(obj_name, survey_obj_info, buffer_survey_info,
-        #                                                              is_permanently_red_sig, test_names, dc_sys_track)
-
         dc_sys_sheet_name = (get_sh_name(dc_sys_sheet) + f"__{get_dc_sys_value(obj_val, DCSYS.Sig.Type)}"
                              if dc_sys_sheet == DCSYS.Sig
                              else get_sh_name(dc_sys_sheet))
 
         res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, dc_sys_sheet_name,
-                                                                dc_sys_track, original_dc_sys_track, dc_sys_kp,
-                                                                extra_comment)
+                                                                dc_sys_track, original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
 
@@ -95,43 +90,6 @@ def _get_test_names(obj_name: str, dc_sys_track: str, dc_sys_dict: dict[str, dic
             if other_name not in dc_sys_dict:  # if there is not already a signal called that
                 test_names.append(other_name)
     return test_names
-
-
-def _associate_pr_sig_to_buffer(obj_name: str, survey_obj_info: dict[str, Union[str, float]],
-                                buffer_survey_info: dict[str, dict[str, Union[str, float]]],
-                                is_permanently_red_sig: bool, test_names: list[str], dc_sys_track: str):
-    extra_comment = None
-    if survey_obj_info is not None:  # already associated info in survey
-        return survey_obj_info, extra_comment
-
-    if is_permanently_red_sig:
-        # try to associate permanently red signal to a buffer
-        radical = None
-        if obj_name.startswith("STOP_SS_"):
-            radical = obj_name.removeprefix("STOP_SS_")
-        elif obj_name.startswith("SIG_PR_"):
-            radical = obj_name.removeprefix("SIG_PR_")
-        elif obj_name.startswith("VIR_SPA_"):
-            radical = obj_name.removeprefix("VIR_SPA_")
-        elif obj_name.startswith("SPA_"):
-            radical = obj_name.removeprefix("SPA_")
-        elif obj_name.startswith("SS_BUF_"):
-            radical = obj_name.removeprefix("SS_BUF_")
-        elif obj_name.startswith("SS_"):
-            radical = obj_name.removeprefix("SS_")
-
-        if radical is not None:
-            test_names.extend(("SS_" + radical, "BUF_" + radical, "BUFF_" + radical, "BUFFER_" + radical,
-                               "SIG_BUF_" + radical, "SIG_BUFFER_" + radical))
-
-        survey_name = test_names_in_survey(test_names, dc_sys_track, buffer_survey_info, do_print=False,
-                                           do_smallest_amount_of_patterns=True)
-        survey_obj_info = buffer_survey_info.get(survey_name)
-        if survey_obj_info is not None:
-            extra_comment = (f"No associated signal in survey\n"
-                             f"for this Permanently Red Signal,\n"
-                             f"alignment with buffer is computed.")
-    return survey_obj_info, extra_comment
 
 
 def obj_condition(res_sheet, obj_val):

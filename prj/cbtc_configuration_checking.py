@@ -28,11 +28,18 @@ def compare_dc_sys():
 
 def cc():
     # verification_of_the_md5_checksum()
+    # generate_cc_parameters_diff_reports()
     # get_mtor_ccte_ko()
     # patch_cc_mtor_ccte()
     # checksum_compare_parser()
     # check_diff_cc_param()
     # convert_cc_param()
+    return
+
+
+def zc():
+    # check_pz_ze()
+    # check_ze_impacte_fu()
     return
 
 
@@ -56,6 +63,7 @@ def parameters_constraints():
 def dc_par_add_on_param():
     # get_max_slope(in_cbtc=False)
     # get_block_min_length(in_cbtc=False)
+    # get_block_max_length(in_cbtc=False)
     # min_switch_area_length(in_cbtc=False)
     return
 
@@ -69,37 +77,43 @@ def route_and_overlap():
     #     CONTROL_TABLE_TYPE.route, use_csv_file=False,
     #     # supersede_input_file_number=1,
     #     # supersede_specific_pages=45,
+    #     debug=True,
     # )
     # load_control_tables(
     #     CONTROL_TABLE_TYPE.overlap, use_csv_file=False,
     #     # supersede_input_file_number=1,
     #     # supersede_specific_pages=2,
+    #     # debug=True,
     # )
 
     # Analyze DC_SYS with CSV files
     # check_route_control_tables(use_csv_file=True)
     # check_overlap_control_tables(use_csv_file=True)
+    # verify_switches_along_the_routes()  # TODO
+    # TODO: verif overlap: du signal jusqu'au VSP tous les IVB et aiguilles (+position) qu'on passe
+    #  doivent être côté IXL et toutes les aiguilles (+position) doivent être côté CBTC
     return
 
 
 def dc_par_customer_data():
-    # min_length_multiple_path(in_cbtc=True)  # trapezoid_length
+    # min_length_multiple_path(in_cbtc=False)  # trapezoid_length
     # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
     #                                                                    with a buffer just down the line
     # min_distance_between_vsp_overlap(in_cbtc=False)  # TODO: useless to delete
-    # smallest_size_of_a_switch_block_heel(in_cbtc=True)
+    # smallest_size_of_a_switch_block_heel(in_cbtc=False)
     # max_dist_local_tag_group(in_cbtc=False)
     return
 
 
 def survey():
-    # check_survey()  # v2.6
+    # check_survey()  # v2.7
     # survey_window()
-    # cctool_schema_window()
+    # cctool_oo_schema_window()
     return
 
 
 def constraints():
+    # check_all_zones()
     # check_offset_correctness()
     # check_upstream_and_downstream_ivb_of_all_signals()
     # check_cbtc_protecting_switch_area(do_print_warning=False)
@@ -130,12 +144,19 @@ def constraints():
     # r_tm_ats_itf_1(in_cbtc=True)
     # ats_atc_sheet_verif(in_cbtc=True)  # TODO: Check if extra flows exist for object that does not exist per type,
     #                                           and if extra object type exists.
+    # zcr_zc_sheet_verif(in_cbtc=False)
     # check_signal_with_overlap()
-    # cf_signal_12(apz_with_tc=True)
-    # r_zsm_3(apz_with_tc=True)
+    # TODO: fix template of CF_SIGNAL_12 and R_ZSM_3
+    # Header sheet, en vrai reregarder pour la générer automatiquement ce sera plus propre
+    # cf_signal_12(apz_with_tc=False)  # TODO: write IXL APZ info in Header sheet
+    # r_zsm_3(apz_with_tc=False)  # TODO: create a single template file to reduce the weight and delete the sheets
+    #                                    depending on the verification to do.
     # verif_calib_distance()
     # ixl_overlap_platform_related()
     # get_closest_vsp_in_rear()
+
+    # get_par_worst_suspect_coupling_overrun_additionnal_dist()  # TODO ça marche comme l'outil de Damien mais à voir pour speeder ça (13mn sur KCR)
+    # TODO ET SURTOUT il faut implémenter les parties s'il y a d'autres slopes entre alpha1 et alpha2 !!!!!!!!
     return
 
 
@@ -148,14 +169,16 @@ def main():
 
     # check_switch_flank_protection(in_cbtc=True)
     # get_walkways_track_kp_pos()
+    # pretty_print_dict(list(get_all_segs_in_cbtc_ter()), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Voie), max_lvl=0)
+    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Profil), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Sig), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Zaum), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Bal), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Aig), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Quai), max_lvl=0)
 
-    # create_fouling_points_file()
+    # init_fouling_points_file()  # create empty fouling points file with the list of switches from DC_SYS
 
     survey()
 
@@ -178,18 +201,31 @@ def main():
 if __name__ == "__main__":
     skip_init = False
     # skip_init = True
+
     # Initialization Commands
     if skip_init:
-        print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}")
+        print_title(f"Working on {Color.cyan}{get_current_version()}{Color.reset}\n"
+                    f"{Color.orange}skipping the reloading of CCTool-OO Schema{Color.reset}")
     else:
         current_cctool_oo_version = get_ga_version_text()
-        print_title(f"Working on {Color.cyan}{get_c_d470_version()}{Color.reset}\n"
-                    f"with CCTool-OO Schema version:\n"
-                    f"{Color.pale_green}{current_cctool_oo_version}{Color.reset}")
-        regenerate_cctool_oo_schema_info()
+        if len(sys.argv) > 1 and sys.argv[1] == "skip_regen":
+            # we skip regeneration in case we just regenerated the info if the main Python instance
+            pass
+        else:  # default, regenerate CCTool-OO Schema info
+            print()
+            regenerate_cctool_oo_schema_info()
+
         if get_ga_version_text() != current_cctool_oo_version:
-            print_error(f"The compiled code is not in line with the current CCTool-OO Schema.")
-            print(f"{Color.white}Relaunch the tool.{Color.reset}")
-            sys.exit(1)
+            # CCTool-OO Schema is not in line we relaunch the tool with a new python instance
+            # to take into account the regenerated files.
+            print_log(f"Launch another Python instance to take into account the CCTool-OO Schema.")
+            python_exe = sys.executable
+            launch_cmd(f"{python_exe} \"cbtc_configuration_checking.py\" skip_regen")
+            sys.exit(0)
+
+        print_title(f"Working on {Color.cyan}{get_current_version()}{Color.reset}\n"
+                    f"with CCTool-OO Schema version: "
+                    f"{Color.pale_green}{current_cctool_oo_version}{Color.reset}")
+
     # Main Functions
     main()

@@ -92,8 +92,7 @@ def check_cbtc_protecting_switch_area(do_print_warning: bool = True) -> dict[str
 def get_local_speed(list_ivb: list[str], max_speed: float) -> float:
     local_speed = None
     for ivb_name in list_ivb:
-        limits = get_obj_position(DCSYS.IVB, ivb_name)
-        psr_speed = get_max_psr_speed_on_zone(limits)
+        psr_speed = get_max_psr_speed_on_zone(DCSYS.IVB, ivb_name)
         if psr_speed is not None and (local_speed is None or local_speed < psr_speed):
             local_speed = psr_speed  # get max speed in the zone
 

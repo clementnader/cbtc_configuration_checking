@@ -8,20 +8,23 @@ from .get_oriented_limits import *
 
 
 __all__ = ["get_segments_within_zone", "get_zone_limits", "get_all_segments_in_zone",
-           "is_point_in_zone", "get_zones_on_point", "get_zones_of_extremities"]  # TODO get_zones_of_zone
+           "is_point_in_zone", "is_seg_in_zone", "get_zones_on_point", "get_zones_on_segment",
+           "get_zones_intersecting_zone"]
 
 
 ZONE_SEGMENTS = dict()
 ZONE_LIMITS = dict()
 
 
-def get_segments_within_zone(obj_type, obj_name: str) -> set[str]:
+def get_segments_within_zone(obj_type, obj_name: str) -> Optional[set[str]]:
     global ZONE_SEGMENTS, ZONE_LIMITS
     obj_type_name = get_sh_name(obj_type)
     if obj_type_name not in ZONE_SEGMENTS:
         ZONE_SEGMENTS[obj_type_name] = dict()
         ZONE_LIMITS[obj_type_name] = dict()
-        update_segs_within_zones(obj_type_name)
+        _update_segs_within_zones(obj_type_name)
+    if obj_name not in ZONE_SEGMENTS[obj_type_name]:
+        return None
     return set([seg for seg, _ in ZONE_SEGMENTS[obj_type_name][obj_name]])
 
 
@@ -31,7 +34,7 @@ def get_zone_limits(obj_type, obj_name: str) -> list[tuple[str, float, bool]]:
     if obj_type_name not in ZONE_LIMITS:
         ZONE_SEGMENTS[obj_type_name] = dict()
         ZONE_LIMITS[obj_type_name] = dict()
-        update_segs_within_zones(obj_type_name)
+        _update_segs_within_zones(obj_type_name)
     return ZONE_LIMITS[obj_type_name][obj_name]
 
 
@@ -41,7 +44,7 @@ def get_all_segments_in_zone(obj_type, obj_name: str) -> set[str]:
     return zone_segments.union([seg for seg, _, _ in zone_limits])
 
 
-def update_segs_within_zones(obj_type_name: str) -> None:
+def _update_segs_within_zones(obj_type_name: str) -> None:
     global ZONE_SEGMENTS, ZONE_LIMITS
 
     obj_dict = load_sheet(obj_type_name)
@@ -52,16 +55,16 @@ def update_segs_within_zones(obj_type_name: str) -> None:
 
         ZONE_SEGMENTS[obj_type_name][obj_name] = list()
         for start_seg, start_x, start_direction in zone_limits:
-            get_next_segments(obj_type_name, obj_name, start_seg, start_x, start_direction, zone_limits)
+            _get_next_segments(obj_type_name, obj_name, start_seg, start_x, start_direction, zone_limits)
 
-        update_zone_limits(obj_type_name, obj_name, zone_limits)
+        _update_zone_limits(obj_type_name, obj_name, zone_limits)
 
 
-def get_next_segments(obj_type_name: str, obj_name: str, start_seg: str, start_x: float, downstream: bool,
+def _get_next_segments(obj_type_name: str, obj_name: str, start_seg: str, start_x: float, downstream: bool,
                       zone_limits: list[tuple[str, float, bool]]) -> None:
     global ZONE_SEGMENTS
 
-    if is_first_seg_on_another_limit(obj_type_name, obj_name, start_seg, start_x, downstream, zone_limits):
+    if _is_first_seg_on_another_limit(obj_type_name, obj_name, start_seg, start_x, downstream, zone_limits):
         return
 
     def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[tuple[str, float]]):
@@ -82,7 +85,7 @@ def get_next_segments(obj_type_name: str, obj_name: str, start_seg: str, start_x
             else:
                 next_inner_downstream = inner_downstream
 
-            if is_seg_end_limit(obj_type_name, obj_name, next_seg, next_inner_downstream, zone_limits):
+            if _is_seg_end_limit(obj_type_name, obj_name, next_seg, next_inner_downstream, zone_limits):
                 ZONE_SEGMENTS[obj_type_name][obj_name].extend(path)  # only append path if another limit is reached
                 continue
 
@@ -100,22 +103,38 @@ def get_next_segments(obj_type_name: str, obj_name: str, start_seg: str, start_x
     inner_recurs_next_seg(start_seg, downstream, [])
 
 
-def is_first_seg_on_another_limit(obj_type_name: str, obj_name: str, start_seg: str, start_x: float, downstream: bool,
+G_ALREADY_PRINTED = list()
+
+
+def _is_first_seg_on_another_limit(obj_type_name: str, obj_name: str, start_seg: str, start_x: float, downstream: bool,
                                   zone_limits: list[tuple[str, float, bool]]) -> bool:
+    global G_ALREADY_PRINTED
     for limit_seg, limit_x, limit_downstream in zone_limits:
+        if (limit_seg, limit_x, limit_downstream) == (start_seg, start_x, downstream):  # the limit corresponding to the
+            # start point
+            continue
+        if (limit_seg, limit_x, limit_downstream) == (start_seg, start_x, not downstream):  # limit corresponding to the
+            # start point in opposite direction
+            if (obj_type_name, obj_name, start_seg, start_x, not downstream) in G_ALREADY_PRINTED:
+                return True
+            G_ALREADY_PRINTED.append((obj_type_name, obj_name, start_seg, start_x, downstream))
+            print_warning(f"Zone {Color.beige}{obj_type_name}{Color.reset} {Color.yellow}{obj_name}{Color.reset} "
+                          f"is punctual: there are 2 limits on the same point in opposite directions.")
+            print((start_seg, start_x, downstream))
+            return True
         if start_seg == limit_seg:
-            if (downstream and start_x < limit_x) or (not downstream and start_x > limit_x):
+            if (downstream and start_x <= limit_x) or (not downstream and start_x >= limit_x):
                 if not downstream == limit_downstream:
                     return True
-                print_warning(f"Reach a limit for {Color.beige}{obj_type_name}{Color.reset} "
-                              f"{Color.yellow}{obj_name}{Color.reset} but with a different direction.")
+                print_error(f"Reach a limit for {Color.beige}{obj_type_name}{Color.reset} "
+                            f"{Color.yellow}{obj_name}{Color.reset} but with a different direction.")
                 print(f"{start_seg = }, {start_x = }, {downstream = }")
                 print((limit_seg, limit_x, limit_downstream))
                 return True
     return False
 
 
-def is_seg_end_limit(obj_type_name: str, obj_name: str, seg: str, downstream: bool,
+def _is_seg_end_limit(obj_type_name: str, obj_name: str, seg: str, downstream: bool,
                      zone_limits: list[tuple[str, float, bool]]) -> bool:
     if (seg, not downstream) in [(limit_seg, limit_downstream)
                                  for limit_seg, _, limit_downstream in zone_limits]:
@@ -129,7 +148,7 @@ def is_seg_end_limit(obj_type_name: str, obj_name: str, seg: str, downstream: bo
     return False
 
 
-def update_zone_limits(obj_type_name: str, obj_name: str, zone_limits: list[tuple[str, float, bool]]) -> None:
+def _update_zone_limits(obj_type_name: str, obj_name: str, zone_limits: list[tuple[str, float, bool]]) -> None:
     global ZONE_LIMITS
     ZONE_LIMITS[obj_type_name][obj_name] = list()
     for lim in zone_limits:
@@ -137,6 +156,7 @@ def update_zone_limits(obj_type_name: str, obj_name: str, zone_limits: list[tupl
 
 
 def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str = None) -> Optional[bool]:
+    obj_type_name = get_sh_name(obj_type)
     x = float(x)
     zone_segments = get_segments_within_zone(obj_type, obj_name)
     zone_limits = get_zone_limits(obj_type, obj_name)
@@ -148,8 +168,8 @@ def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str
                        if are_points_matching(lim_seg, lim_x, seg, x)]
     if limits_on_point:
         if len(limits_on_point) > 1:
-            print_warning(f"Weird zone for {obj_type} {Color.blue}{obj_name}{Color.reset} with multiple limits defined "
-                          f"on the same point:\n{limits_on_point}")
+            print_warning(f"Weird zone for {obj_type_name} {Color.blue}{obj_name}{Color.reset} with multiple limits "
+                          f"defined on the same point:\n{limits_on_point}")
         lim_downstream = limits_on_point[0][2]
         if direction is not None:
             if lim_downstream != (direction == Direction.CROISSANT):  # for a single point object,
@@ -172,6 +192,11 @@ def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str
     return False
 
 
+def is_seg_in_zone(obj_type, obj_name: str, seg: str) -> Optional[bool]:
+    zone_segments = get_all_segments_in_zone(obj_type, obj_name)
+    return seg in zone_segments
+
+
 def get_zones_on_point(obj_type, seg: str, x: float, direction: str = None) -> Optional[list[str]]:
     list_obj = list()
     obj_dict = load_sheet(obj_type)
@@ -179,23 +204,40 @@ def get_zones_on_point(obj_type, seg: str, x: float, direction: str = None) -> O
         if is_point_in_zone(obj_type, obj_name, seg, x, direction) is True:
             list_obj.append(obj_name)
     if not list_obj:
-        # print_warning(f"No {obj_type} has been found covering {(seg, x)}.")
+        # print_warning(f"No {get_sh_name(obj_type)} has been found covering {(seg, x)}.")
         return None
     return list_obj
 
 
-def get_zones_of_extremities(obj_type, limits: Union[list[tuple[str, float]], list[tuple[str, float, str]]]
-                             ) -> list[str]:
+def get_zones_on_segment(obj_type, seg: str) -> Optional[list[str]]:
     list_obj = list()
-    for lim in limits:
-        seg, x = lim[0], lim[1]
-        if len(lim) > 2:
-            direction = get_reverse_direction(lim[2])  # for a single point object,
-            # we consider it belongs to the zone upstream of it,
-            # behavior is mimicked for the zone too
-        else:
-            direction = None
-        zones = get_zones_on_point(obj_type, seg, x, direction)
+    obj_dict = load_sheet(obj_type)
+    for obj_name in obj_dict.keys():
+        if is_seg_in_zone(obj_type, obj_name, seg) is True:
+            list_obj.append(obj_name)
+    if not list_obj:
+        # print_warning(f"No {get_sh_name(obj_type)} has been found covering {(seg, x)}.")
+        return None
+    return list_obj
+
+
+def get_zones_intersecting_zone(zones_obj_type, my_obj_type, my_obj_name: str) -> list[str]:
+    my_zone_segments = get_segments_within_zone(my_obj_type, my_obj_name)
+    my_zone_limits = get_zone_limits(my_obj_type, my_obj_name)
+
+    list_obj = list()
+    for seg in my_zone_segments:
+        zones = get_zones_on_segment(zones_obj_type, seg)
         if zones is not None:
             list_obj.extend([obj for obj in zones if obj not in list_obj])
+
+    # TODO manage when no segment inside zone
+    for seg, x, downstream in my_zone_limits:
+        direction = get_reverse_direction(Direction.CROISSANT if downstream else Direction.DECROISSANT)
+        # for a single point object, we consider it belongs to the zone upstream of it,
+        # behavior is mimicked for the zone too
+        zones = get_zones_on_point(zones_obj_type, seg, x, direction)
+        if zones is not None:
+            list_obj.extend([obj for obj in zones if obj not in list_obj])
+
     return list_obj

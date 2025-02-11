@@ -14,8 +14,9 @@ __all__ = ["min_dist_between_two_last_signals_before_cbtc_territory_exit"]
 def get_sig_before_cbtc_exit(sig_dict: dict) -> list[str]:
     res_list = list()
     for sig, sig_value in sig_dict.items():
-        if get_dc_sys_value(sig_value, DCSYS.Sig.Type) == SignalType.PERMANENT_ARRET:
-            #     or get_dc_sys_value(sig_value, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O:
+        if get_dc_sys_value(sig_value, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O:
+        # if (get_dc_sys_value(sig_value, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O
+        #         or get_dc_sys_value(sig_value, DCSYS.Sig.Type) == SignalType.PERMANENT_ARRET):
             res_list.append(sig)
     return res_list
 

@@ -161,7 +161,8 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str, Any]],
             if key_name in loaded_survey[survey_type]:  # object already surveyed in another survey file
                 old_surveyed_kp = loaded_survey[survey_type][key_name]["surveyed_kp"]
                 old_comments = loaded_survey[survey_type][key_name]["comments"]
-                if old_comments or intermediate_survey_value["surveyed_kp"] != old_surveyed_kp:
+                if old_comments or round(intermediate_survey_value["surveyed_kp"], 9) != round(old_surveyed_kp, 9):
+                    # we use round because sometimes when reading from excel we get like 0.999999999981 instead of 1
                     old_surveyed_comment = loaded_survey[survey_type][key_name]["surveyed_kp_comment"]
                     new_comment = (f"Another surveyed KP value exists in survey "
                                    f"{old_surveyed_comment.removeprefix('From ')}: {old_surveyed_kp}.")

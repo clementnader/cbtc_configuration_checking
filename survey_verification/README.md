@@ -124,7 +124,7 @@ You will also have the possibility to add other survey files (some projects have
 Information logs are provided in the command window during the execution.
 
 
-6. The result Excel file is placed into the Desktop and is opened automatically in a new session of Excel.
+6. The result Excel file is placed in the tool directory and is opened automatically in a new session of Excel.
 
 ---
 ## 4 Results

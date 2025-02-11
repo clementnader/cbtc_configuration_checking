@@ -16,7 +16,7 @@ __all__ = ["cf_signal_12"]
 
 VERIF_TEMPLATE = os.path.join(TEMPLATE_DIRECTORY, "template_cf_signal_12_verification.xlsx")
 
-OUTPUT_DIRECTORY = DESKTOP_DIRECTORY
+OUTPUT_DIRECTORY = "."
 VERIF_FILE_NAME = "CF_SIGNAL_12 Verification.xlsx"
 
 PARAMETERS_SHEET = "Parameters"
@@ -44,6 +44,8 @@ MIN_DIST_COL = "P"
 DLT_DIST_COL = "Q"
 STATUS_COL = "R"
 COMMENTS_COL = "S"
+
+FILE_TITLE = "Verification of CF_SIGNAL_12"
 
 
 def cf_signal_12(apz_with_tc: bool = False):
@@ -73,6 +75,7 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
         res_dict[sig_name] = {"sig_name": sig_name, "sig_type": sig_type, "sig_direction": sig_direction}
         if sig_type in [SignalType.HEURTOIR, SignalType.PERMANENT_ARRET]:
             res_dict[sig_name]["status"] = "NA"
+            res_dict[sig_name]["comments"] = "Not a Home Signal."
             continue
 
         is_plt_rel, plt, plt_limit = is_sig_downstream_a_plt(sig_name)
@@ -116,13 +119,13 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
 def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
     wb = load_xlsx_wb(VERIF_TEMPLATE, template=True)
 
-    update_header_sheet_for_verif_file(wb)
+    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())
     inhibit_simple_overshoot_recovery = _fill_parameters_sheet(wb)
 
     _update_verif_sheet(wb, verif_dict, inhibit_simple_overshoot_recovery)
 
-    verif_file_name = f" - {get_c_d470_version()}".join(os.path.splitext(VERIF_FILE_NAME))
-    res_file_path = os.path.join(OUTPUT_DIRECTORY, verif_file_name)
+    verif_file_name = f" - {get_current_version()}".join(os.path.splitext(VERIF_FILE_NAME))
+    res_file_path = os.path.abspath(os.path.join(OUTPUT_DIRECTORY, verif_file_name))
     save_xl_file(wb, res_file_path)
     print_success(f"\"Verification of CF_SIGNAL_12\" verification file is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")
@@ -229,9 +232,9 @@ def _add_value_to_remove(ws: xl_ws.Worksheet, row: int, status: Optional[str],
         create_cell(ws, None, row=row, column=VALUE_TO_REMOVE_COL, borders=True, align_horizontal=XlAlign.center)
         return
     # Value to remove
-    formula = (f'= IF(OR(inhibit_simple_overshoot_recovery = TRUE, {PLATFORM_RELATED_COL}{row} = ""), '
-               f'(at_deshunt_max_dist + block_laying_uncertainty + MAX(mtc_rollback_dist, at_rollback_dist)),'
-               f'(at_deshunt_max_dist + block_laying_uncertainty + MAX(mtc_rollback_dist, at_rollback_dist,'
+    formula = (f'= IF(OR(inhibit_simple_overshoot_recovery = TRUE, {PLATFORM_RELATED_COL}{row} = ""),\n '
+               f'(at_deshunt_max_dist + block_laying_uncertainty + MAX(mtc_rollback_dist, at_rollback_dist)),\n '
+               f'(at_deshunt_max_dist + block_laying_uncertainty + MAX(mtc_rollback_dist, at_rollback_dist, '
                f'overshoot_recovery_dist + overshoot_recovery_stopping_max_dist)))')
     create_cell(ws, formula, row=row, column=VALUE_TO_REMOVE_COL, borders=True, align_horizontal=XlAlign.center, nb_of_digits=2)
     if not inhibit_simple_overshoot_recovery and platform_related is not None:

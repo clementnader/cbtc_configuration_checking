@@ -18,6 +18,7 @@ __all__ = ["r_cdv_5"]
 
 def r_cdv_5(print_ok: bool = False):
     sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
+    fp_dict = load_fouling_point_info()
 
     error_counts = [0, 0]
     for sw_name, sw_value in sw_dict.items():
@@ -28,8 +29,8 @@ def r_cdv_5(print_ok: bool = False):
 
         error_counts[0] += test_sw_danger_point(sw_name, sw_value, sw_block, is_sw_upstream,
                                                 upstream_limits, downstream_limits, print_ok)
-        # error_counts[1] += test_fouling_point_danger_point(sw_name, sw_block, is_sw_upstream,
-        #                                                    upstream_limits, downstream_limits, print_ok)
+        error_counts[1] += test_fouling_point_danger_point(sw_name, sw_value, sw_block, is_sw_upstream,
+                                                           upstream_limits, downstream_limits, print_ok, fp_dict)
     if error_counts[0] > 0:
         print(f"{Color.blue}There was {Color.light_blue}{error_counts[0]}{Color.blue} "
               f"error{'s' if error_counts[0] >= 2 else ''} on R_CDV_5 "
@@ -109,58 +110,55 @@ def get_min_dist(local_slope, is_danger_point_a_switch: bool = False):
     return final_value, final_value_str, variables, all_sub_variables
 
 
-def test_fouling_point_danger_point(sw_name, sw_block, is_sw_upstream, upstream_limits, downstream_limits,
-                                    print_ok: bool):
+def test_fouling_point_danger_point(sw_name, sw_value, sw_block, is_sw_upstream, upstream_limits, downstream_limits,
+                                    print_ok: bool, fp_dict):
     relative_limits = downstream_limits if is_sw_upstream else upstream_limits
-    fp_dict = fouling_points_associated_to_sw(sw_name)
+    sw_seg, sw_x = get_sw_pos(sw_value)
     error_count = 0
-    for heel_direction, (fp_seg, fp_x) in fp_dict.items():
-        # if fp_seg is None or fp_x is None:
-        #     print(f"Block {Color.yellow}{sw_block}{Color.reset} respects R_CDV_5:"
-        #           f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
-        #           f"of {Color.turquoise}{sw_name}{Color.reset}"
-        #           f"\n\tno fouling point is defined.")
-        #     continue
-        for seg, x in relative_limits:
-            if fp_seg is None or fp_x is None:
-                min_slope, max_slope = get_min_and_max_slopes_at_point(seg, x)
-            else:
-                min_slope, max_slope = get_min_and_max_slopes_on_virtual_seg(fp_seg, fp_x, seg, x)
-            local_slope = max_slope if is_sw_upstream else -min_slope
-            final_value, final_value_str, variables, all_sub_variables = get_min_dist(local_slope)
-            dist = get_dist(fp_seg, fp_x, seg, x)
-            if dist is None:
-                print(f"Block {Color.yellow}{sw_block}{Color.reset} respects R_CDV_5:"
-                      f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
-                      f"of {Color.turquoise}{sw_name}{Color.reset}"
-                      f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
-                      f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
-                      f"\n\tthe local slope is {Color.green}{local_slope:.3%}{Color.reset}"
-                      f"\n\tno distance is found.")
-                print_final_value(final_value_str)
-                continue
-            test = (dist >= final_value)
-            if not test:
-                print_error(f"Block {Color.yellow}{sw_block}{Color.reset} does not respect R_CDV_5:")
-                print(f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
-                      f"of {Color.turquoise}{sw_name}{Color.reset},"
-                      f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
-                      f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
-                      f"\n\tthe local slope is {Color.green}{local_slope:.3%}{Color.reset}"
-                      f"\n\tthe distance to the danger point is {Color.green}{dist}{Color.reset}")
-                print_sub_variables(all_sub_variables)
-                print_variables(variables)
-                print_final_value(final_value_str)
-                error_count += 1
-            elif print_ok:
-                print_success(f"Block {Color.yellow}{sw_block}{Color.reset} respects R_CDV_5:")
-                print(f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
-                      f"of {Color.turquoise}{sw_name}{Color.reset},"
-                      f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
-                      f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
-                      f"\n\tthe local slope is {Color.green}{local_slope:.3%}{Color.reset}"
-                      f"\n\tthe distance to the danger point is {Color.green}{dist}{Color.reset}")
-                # print_sub_variables(all_sub_variables)
-                # print_variables(variables)
-                print_final_value(final_value_str)
+    fp_dist = fp_dict.get(sw_name)
+    if not fp_dist:
+        print_error(f"No fouling point information is found about switch {sw_name}.")
+        error_count += 1
+        return error_count
+    fp_seg, fp_x = from_kp_to_seg_offset(*from_seg_offset_to_kp(sw_seg, sw_x + (1 if is_sw_upstream else -1)*fp_dist))
+
+    for seg, x in relative_limits:
+        min_slope, max_slope = get_min_and_max_slopes_on_virtual_seg(seg, x, seg, x)
+        local_slope = max_slope if is_sw_upstream else -min_slope
+        final_value, final_value_str, variables, all_sub_variables = get_min_dist(local_slope)
+        dist = get_dist(fp_seg, fp_x, seg, x)
+        if dist is None:
+            print(f"Block {Color.yellow}{sw_block}{Color.reset} respects R_CDV_5:"
+                  f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
+                  f"of {Color.turquoise}{sw_name}{Color.reset}"
+                  f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
+                  f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
+                  f"\n\tthe local slope is {Color.green}{local_slope:.3%}{Color.reset}"
+                  f"\n\tno distance is found.")
+            print_final_value(final_value_str)
+            continue
+        test = (dist >= final_value)
+        if not test:
+            print_error(f"Block {Color.yellow}{sw_block}{Color.reset} does not respect R_CDV_5:")
+            print(f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
+                  f"of {Color.turquoise}{sw_name}{Color.reset},"
+                  f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
+                  f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
+                  f"\n\tthe local slope is {Color.green}{local_slope:.3%}{Color.reset}"
+                  f"\n\tthe distance to the danger point is {Color.green}{dist}{Color.reset}")
+            print_sub_variables(all_sub_variables)
+            print_variables(variables)
+            print_final_value(final_value_str)
+            error_count += 1
+        elif print_ok:
+            print_success(f"Block {Color.yellow}{sw_block}{Color.reset} respects R_CDV_5:")
+            print(f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
+                  f"of {Color.turquoise}{sw_name}{Color.reset},"
+                  f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
+                  f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
+                  f"\n\tthe local slope is {Color.green}{local_slope:.3%}{Color.reset}"
+                  f"\n\tthe distance to the danger point is {Color.green}{dist}{Color.reset}")
+            # print_sub_variables(all_sub_variables)
+            # print_variables(variables)
+            print_final_value(final_value_str)
     return error_count

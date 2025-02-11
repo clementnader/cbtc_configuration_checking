@@ -6,8 +6,7 @@ from ..cctool_oo_schema import *
 from ..dc_sys import *
 
 
-__all__ = ["give_sw_kp_pos", "get_heel_position", "get_switch_position_dict",
-           "get_dc_sys_switch_points_dict"]
+__all__ = ["give_sw_kp_pos", "get_heel_position", "get_dc_sys_switch_points_dict"]
 
 
 def get_heel_position(point_seg, heel) -> tuple[Optional[str], str]:
@@ -33,15 +32,6 @@ def give_sw_kp_pos(sw):
     kp_attr = DCSYS.Seg.Fin if upstream else DCSYS.Seg.Origine
     kp = float(get_dc_sys_value(seg_dict[point_seg], kp_attr))
     return track, kp
-
-
-def get_switch_position_dict():
-    sw_dict = load_sheet(DCSYS.Aig)
-    sw_pos_dict = dict()
-    for sw, sw_info in sw_dict.items():
-        track, kp = give_sw_kp_pos(sw_info)
-        sw_pos_dict[sw] = {"track": track, "kp": kp}
-    return sw_pos_dict
 
 
 SW_INFO_DICT = {

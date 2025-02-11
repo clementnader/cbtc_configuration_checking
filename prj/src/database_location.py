@@ -15,6 +15,7 @@ class Projects:
     Glasgow_CBTC = "Glasgow_CBTC"
     Lima = "Lima"
     Milan = "Milan"
+    Panama = "Panama"
     Riyadh = "Riyadh"
     Thessaloniki = "Thessaloniki"
 
@@ -22,6 +23,7 @@ class Projects:
 
     Baltimore = "Baltimore"
     BART = "BART"
+    Chennai_CMRL = "Chennai_CMRL"
     Hurontario = "Hurontario"
     MSH = "MSH"
     KMRC = "KMRC"
@@ -47,6 +49,7 @@ class Projects:
 # PROJECT_NAME = Projects.Glasgow_CBTC
 # PROJECT_NAME = Projects.Lima
 # PROJECT_NAME = Projects.Milan
+# PROJECT_NAME = Projects.Panama
 # PROJECT_NAME = Projects.Riyadh
 PROJECT_NAME = Projects.Thessaloniki
 
@@ -58,14 +61,18 @@ PROJECT_NAME = Projects.Thessaloniki
 # PROJECT_NAME = Projects.BART
 # PROJECT_NAME = Projects.Hurontario
 # PROJECT_NAME = Projects.MSH
+
 # --- India --- #
-# PROJECT_NAME = Projects.KMRC  # TODO find or create Block Def. file
-# PROJECT_NAME = Projects.NMML1  # TODO find or create Block Def. file
+# PROJECT_NAME = Projects.Chennai_CMRL
+# PROJECT_NAME = Projects.KMRC
+# PROJECT_NAME = Projects.NMML1
 # PROJECT_NAME = Projects.Noida
+
 # --- China --- #
 # PROJECT_NAME = Projects.Shenyang
 # PROJECT_NAME = Projects.Taipei
 # PROJECT_NAME = Projects.Wenzhou
+
 # --- Mock-up --- #
 # PROJECT_NAME = Projects.Mock_up
 # PROJECT_NAME = Projects.Mock_up_2
@@ -76,19 +83,19 @@ PROJECT_NAME = Projects.Thessaloniki
 
 class ProjectDatabaseLoc:
     class ControlTablesLoc:
-        control_tables_addr = None
-        all_pages = None
-        specific_pages = None
+        control_tables_addr = []
+        all_pages = []
+        specific_pages = []
 
     class SurveyLoc:
-        survey_addr = None
-        survey_sheet = None
-        all_sheets = None
-        start_row = None
-        ref_col = None
-        type_col = None
-        track_col = None
-        survey_kp_col = None
+        survey_addr = []
+        survey_sheet = []
+        all_sheets = []
+        start_row = []
+        ref_col = []
+        type_col = []
+        track_col = []
+        survey_kp_col = []
 
     class IxlApz:
         ixl_apz_file = None
@@ -106,6 +113,7 @@ class ProjectDatabaseLoc:
     block_def = None
     survey_loc = SurveyLoc()
     kit_c11_dir = r""
+    kit_c11_sp_dir = r""
     kit_c121_d470_dir = r""
     control_tables_route = ControlTablesLoc()
     control_tables_overlap = ControlTablesLoc()
@@ -151,18 +159,42 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Brussels -------------------------------#
         elif project_name.startswith("Brussels"):
-            phase_0 = project_name == Projects.Brussels_P1B0
-            if phase_0:
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V08_P1B\DC_SYS.xls"
-                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V08_P1B\DC_PAR.xls"
-                self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V08_P1B\C64_D413\DC_BOP.xls"
-                self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_03_V08_P1B"
+            phase_1b0 = project_name == Projects.Brussels_P1B0
+            phase_1b2 = project_name == Projects.Brussels_P1B2
+            if phase_1b0:
+                # self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_03_V08_P1B\DC_SYS.xls"
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_04_V09_P1B0\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_04_V09_P1B0\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\BXL\BXL_C_D470_72_01_04_V09_P1B0\C64_D413\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\Users\naderc\Desktop\BXL\BXL_C11_D470_72_01_04_V09_P1B0"
                 self.fouling_point_addr = r"C:\Users\naderc\Desktop\BXL\fouling_point_fd_checking_1b0.xlsx"
                 # -- Survey -- #
                 self.survey_loc.survey_addr = [
                     r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
                     r"C:\Users\naderc\Desktop\BXL\AFS_BXL_1B0.xlsx"]
-            else:
+                # -- Control Tables -- #
+                self.control_tables_route.control_tables_addr = [
+                    r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Antenna 90000534.L02.FR 04.00"
+                    r"\90000536.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.01.pdf",
+                    r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Depot 90000527.L02.FR 04.00"
+                    r"\90000528.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.00.pdf"]
+                self.control_tables_route.all_pages = [True, True]
+                self.control_tables_route.specific_pages = [None, None]
+                self.control_tables_overlap.control_tables_addr = [
+                    r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Antenna 90000534.L02.FR 04.00"
+                    r"\90000537.L02.FR-BXL_IXL_ LISTE DES OVERLAP + PARAMÈTRES OVERLAP_FR_rev03.01.pdf",
+                    r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Depot 90000527.L02.FR 04.00"
+                    r"\90000530.L02.FR-BXL_IXL_LISTE DES OVERLAP + PARAMÈTRES OVERLAP_FR_rev02.00.pdf"]
+                self.control_tables_overlap.all_pages = [True, True]
+                self.control_tables_overlap.specific_pages = [None, None]
+                # -- IXL Approach Zone -- #
+                self.ixl_apz.ixl_apz_file = r"C:\Users\naderc\Desktop\BXL\BXL_IXL_APZ.xlsx"
+                self.ixl_apz.ixl_apz_sheet_name = r"IXL_APZ"
+                self.ixl_apz.start_line = 2
+                self.ixl_apz.sig_column = 'A'
+                self.ixl_apz.apz_start_column = 9
+                self.ixl_apz.apz_nb_columns = 5
+            elif phase_1b2:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2_R2\DC_SYS.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2_R2\DC_PAR.xls"
                 self.dc_bop_addr = (r"C:\Users\naderc\Desktop\BXL\PHASE 2\BXL_C_D470_72_02_01_V01_P1B2_R2"
@@ -171,6 +203,21 @@ class ProjectDatabaseLoc:
                 self.survey_loc.survey_addr = [
                     r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey_1B2.xlsx",
                     r"C:\Users\naderc\Desktop\BXL\AFS_BXL_1B0.xlsx"]
+                # -- Control Tables -- #
+                self.control_tables_route.control_tables_addr = [
+                    r"C:\Users\naderc\Desktop\BXL\PHASE 2\CONTROL TABLES"
+                    r"\90000528.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.00.pdf",
+                    r"C:\Users\naderc\Desktop\BXL\PHASE 2\CONTROL TABLES"
+                    r"\90000559.L02.FR-BXL_IXL_L1-5_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev00.00.pdf"]
+                self.control_tables_route.all_pages = [True, True]
+                self.control_tables_route.specific_pages = [None, None]
+                self.control_tables_overlap.control_tables_addr = [
+                    r"C:\Users\naderc\Desktop\BXL\PHASE 2\CONTROL TABLES"
+                    r"\90000530.L02.FR-BXL_IXL_LISTE DES OVERLAP + PARAMÈTRES OVERLAP_FR_rev02.00.pdf",
+                    r"C:\Users\naderc\Desktop\BXL\PHASE 2\CONTROL TABLES"
+                    r"\90000560.L02.FR-BXL_IXL_L1-5_LISTE DES OVERLAP + PARAMÈTRES OVERLAP_FR_rev00.00.pdf"]
+                self.control_tables_overlap.all_pages = [True, True]
+                self.control_tables_overlap.specific_pages = [None, None]
             # -- Survey -- #
             self.survey_loc.survey_sheet = [r"PhotoBook", r"Export_travaillé"]
             self.survey_loc.all_sheets = [False, False]
@@ -179,28 +226,6 @@ class ProjectDatabaseLoc:
             self.survey_loc.type_col = [2, 2]
             self.survey_loc.track_col = [3, 3]
             self.survey_loc.survey_kp_col = [4, 11]
-            # -- IXL Approach Zone -- #
-            self.ixl_apz.ixl_apz_file = r"C:\Users\naderc\Desktop\BXL\BXL_IXL_APZ.xlsx"
-            self.ixl_apz.ixl_apz_sheet_name = r"IXL_APZ"
-            self.ixl_apz.start_line = 2
-            self.ixl_apz.sig_column = 'A'
-            self.ixl_apz.apz_start_column = 9
-            self.ixl_apz.apz_nb_columns = 5
-            # -- Control Tables -- #
-            self.control_tables_route.control_tables_addr = [
-                r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Antenna 03.01"
-                r"\90000536.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.01.pdf",
-                r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Depot 03.00"
-                r"\90000528.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.00.pdf"]
-            self.control_tables_route.all_pages = [True, True]
-            self.control_tables_route.specific_pages = [None, None]
-            self.control_tables_overlap.control_tables_addr = [
-                r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Antenna 03.01"
-                r"\90000537.L02.FR-BXL_IXL_ LISTE DES OVERLAP + PARAMÈTRES OVERLAP_FR_rev03.01.pdf",
-                r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Depot 03.00"
-                r"\90000530.L02.FR-BXL_IXL_LISTE DES OVERLAP + PARAMÈTRES OVERLAP_FR_rev02.00.pdf"]
-            self.control_tables_overlap.all_pages = [True, True]
-            self.control_tables_overlap.specific_pages = [None, None]
 
         # ------------------------------- Copenhagen -------------------------------#
         elif project_name == Projects.Copenhagen:
@@ -246,18 +271,19 @@ class ProjectDatabaseLoc:
         # ------------------------------- Glasgow -------------------------------#
         elif project_name.startswith("Glasgow"):
             iatp = project_name == Projects.Glasgow_IATP
+            cbtc = project_name == Projects.Glasgow_CBTC
             if iatp:
                 self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS_IATPM.xls"
                 self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\Users\naderc\Desktop\Glasgow\GW_C11_D470_06_06_01_V05"
-            else:
-                self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\DC_SYS.xls"
-                self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\DC_PAR.xls"
-                self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02\C64_D413\DC_BOP.xls"
+            elif cbtc:
+                self.dc_sys_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02_R1\DC_SYS.xls"
+                self.dc_par_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02_R1\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\Users\naderc\Desktop\Glasgow\GW_C_D470_07_03_03_V02_R1\C64_D413\DC_BOP.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = (
-                r"C:\Users\naderc\Desktop\Glasgow\SURVEY\2024_03_16 Survey Data and Input Sheet_FCB amendments.xlsx")
+                r"C:\Users\naderc\Desktop\Glasgow\SURVEY\2024_12_17 Survey Data and Input Sheet.xlsx")
             self.survey_loc.survey_sheet = r"GW_ML_survey_inputs"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
@@ -281,32 +307,42 @@ class ProjectDatabaseLoc:
                     r"\GWISIGIXL0180-01.00 - ATT001_Depot Control tables_Rev00-162-173-Overlap.pdf"]
                 self.control_tables_overlap.all_pages = [True, True]
                 self.control_tables_overlap.specific_pages = [None, None]
-            else:
+            elif cbtc:
                 self.control_tables_route.control_tables_addr = [
                     r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
-                    r"\GWISIGIXL0400-00.00-ATT002 - Appendix B_Routes_Rev00.pdf",
+                    r"\GWISIGIXL0400-01.00-ATT002 - Appendix B_Routes_Rev00.pdf",
                     r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
-                    r"\GWISIGIXL0401-00.00-ATT002 - Appendix L_Routes_Rev00.pdf"]
+                    r"\GWISIGIXL0401-01.00-ATT002 - Appendix L_Routes_Rev00.pdf"]
                 self.control_tables_route.all_pages = [True, True]
                 self.control_tables_route.specific_pages = [None, None]
                 self.control_tables_overlap.control_tables_addr = [
                     r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC"
-                    r"\GWISIGIXL0400-00.00-ATT006 - Appendix F_Overlap_Rev00.pdf"]
+                    r"\GWISIGIXL0400-01.00-ATT006 - Appendix F_Overlap_Rev00.pdf"]
                 self.control_tables_overlap.all_pages = [True]
                 self.control_tables_overlap.specific_pages = [None]
 
         # ------------------------------- Lima -------------------------------#
         elif project_name == Projects.Lima:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1\DC_SYS_0402RC1.xls"
-            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0403RC1\DC_SYS_0403RC1.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0402RC1\DC_SYS_0402RC1.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0403RC1\DC_SYS_0403RC1.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0403RC1\DC_PAR_0402RC1.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\LIMA\ML2_C_D470_DB0403RC1\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\LIMA\ML2_C11_D470_06_06_00_V04_DB0403RC1"
             # -- Survey -- #
+            # self.survey_loc.survey_addr = [
+            #     r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
+            #     r"\Depot\Anexos de Informe 02-012021\METRO_LINEA2 DIC. 2020_modified.xls",
+            #     r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
+            #     r"\MainLine\Anexos de informe 03-022021\LIMA L2 E1A - OBJECTS LIST-ENERO 2021.xls",
+            #     r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
+            #     r"\Objects_List - v3 Rev 01.xlsx"]
             self.survey_loc.survey_addr = [
                 r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
                 r"\Depot\Anexos de Informe 02-012021\METRO_LINEA2 DIC. 2020_modified.xls",
                 r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
-                r"\MainLine\Anexos de informe 03-022021\LIMA L2 E1A - OBJECTS LIST-ENERO 2021.xls",
+                r"\MainLine\Anexos de informe 03-022021\LIMA L2 E1A - OBJECTS LIST-ENERO 2021_via_reversed.xls",
                 r"C:\Users\naderc\Desktop\LIMA\[B20] AFS Survey - Medicion de puntos topograficos en rieles- ML-L2"
-                r"\Objects_List - v3 Rev 01.xlsx"]
+                r"\Objects_List - v3 Rev 01_via_reversed.xlsx"]
             self.survey_loc.survey_sheet = [r"", r"Object List", r"Object List"]
             self.survey_loc.all_sheets = [True, False, False]
             self.survey_loc.start_row = [4, 4, 2]
@@ -314,6 +350,25 @@ class ProjectDatabaseLoc:
             self.survey_loc.type_col = [3, 4, 3]
             self.survey_loc.track_col = [4, 5, 4]
             self.survey_loc.survey_kp_col = [13, 7, 6]
+            # -- Control Tables -- #
+            self.control_tables_route.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\LIMA\CONTROL TABLES"
+                r"\B20X.0100002.L02.01ES-03.00-LINE 2 CONTROL TABLES - PHASE 1A"
+                r"\ML2-AST-01A-A-025-GRAL-SSIXL-DIS-CD-4125-51-002.pdf",
+                r"C:\Users\naderc\Desktop\LIMA\CONTROL TABLES"
+                r"\B20X.0100002.L02.00ES-03.00-DEPOT CONTROL TABLES - PHASE 1A"
+                r"\ML2-AST-01A-A-025-GRAL-SSIXL-DIS-CD-4126-51-002.pdf"]
+            self.control_tables_route.all_pages = [True, True]
+            self.control_tables_route.specific_pages = [None, None]
+            self.control_tables_overlap.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\LIMA\CONTROL TABLES"
+                r"\B20X.0100002.L02.01ES-03.00-LINE 2 CONTROL TABLES - PHASE 1A"
+                r"\ML2-AST-01A-A-025-GRAL-SSIXL-DIS-CD-4125-51-006.pdf",
+                r"C:\Users\naderc\Desktop\LIMA\CONTROL TABLES"
+                r"\B20X.0100002.L02.00ES-03.00-DEPOT CONTROL TABLES - PHASE 1A"
+                r"\ML2-AST-01A-A-025-GRAL-SSIXL-DIS-CD-4126-51-006.pdf"]
+            self.control_tables_overlap.all_pages = [True, True]
+            self.control_tables_overlap.specific_pages = [None, None]
 
         # ------------------------------- Milan -------------------------------#
         elif project_name == Projects.Milan:
@@ -362,6 +417,11 @@ class ProjectDatabaseLoc:
             self.ixl_apz.apz_start_column = 6
             self.ixl_apz.apz_nb_columns = 3
 
+        # ------------------------------- Panama -------------------------------#
+        elif project_name == Projects.Panama:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Panama\PAN_C_D470_08_03_00_V03\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\Panama\PAN_C_D470_08_03_00_V03\DC_PAR.xls"
+
         # ------------------------------- Riyadh -------------------------------#
         elif project_name == Projects.Riyadh:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\Riyadh\RL3_C_D470_09_01_RC1\DC_SYS.xls"
@@ -401,10 +461,11 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Thessaloniki -------------------------------#
         elif project_name == Projects.Thessaloniki:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC4\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC4\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V05_RC4\DC_BOP.xls"
-            self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V12"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V06_RC1\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V06_RC1\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\TSK\TSK_C_D470_07_03_03_V06_RC1\DC_BOP.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V13"
+            # self.kit_c11_sp_dir = r"C:\Users\naderc\Desktop\TSK\TSK_C11_D470_07_03_03_V12_SP1"
             self.fouling_point_addr = r"C:\Users\naderc\Desktop\TSK\Fouling Points TSK_C_D470_07_03_03_V02_RC3.xlsx"
             # -- Survey -- #
             self.survey_loc.survey_addr = [
@@ -470,8 +531,10 @@ class ProjectDatabaseLoc:
         elif project_name == Projects.Baltimore:
             # self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\MTA_C_D470_02_00_RC10\DC_SYS.xls"
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\MTA_C_D470_V_02_01_RC2\DC_SYS.xls"
+            # self.block_def = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\CIRCUIT_DE_VOIE.xls"
+            self.block_def = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\CIRCUIT_DE_VOIE (12).xls"
+            # self.block_def = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\CIRCUIT_DE_VOIE (12).xlsx"
             # -- Survey -- #
-            self.block_def = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\CIRCUIT_DE_VOIE.xls"
             self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\MTA_D932.xlsx"
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
@@ -493,7 +556,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- MSH -------------------------------#
         elif project_name == Projects.MSH:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\MSH\MSH_C_D470_V09_02_RC1\DC_SYS.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\MSH\MSH_C_D470_V09_02_RC1\DC_SYS.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\MSH\MSH_C_D470_V09_02_RC1\DC_SYS_patch_slopes.xls"
+            self.kit_c11_dir = r"C:\Users\naderc\Desktop\USA\MSH\MSH_C11_D470_06_06_03_V00"
             # -- Survey -- #
             self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\USA\MSH\Topo_V_06_00.xlsx"
             self.survey_loc.survey_sheet = None
@@ -506,9 +571,24 @@ class ProjectDatabaseLoc:
 
         # --- India --- #
 
+        # ------------------------------- Chennai CMRL -------------------------------#
+        elif project_name == Projects.Chennai_CMRL:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_08_03_00_V00_02\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_08_03_00_V00_02\DC_PAR.xls"
+            self.dc_bop_addr = (r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_08_03_00_V00_02"
+                                r"\C64_D413\DC_BOP.xls")
+            # -- Control Tables -- #
+            self.control_tables_route.control_tables_addr = [
+                (r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CONTROL TABLES"
+                 r"\CMRL-14057_01.03 Annexure B_Route_Control_Table.pdf")]
+            self.control_tables_route.all_pages = [True]
+            self.control_tables_route.specific_pages = [None]
+
         # ------------------------------- KMRC Kolkata -------------------------------#
         elif project_name == Projects.KMRC:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
+            self.block_def = (r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
+                              r"\CIRCUIT_DE_VOIE_KMRC_PH2A_C_D470_00_00_RC03.xls")
             # -- Survey -- #
             self.survey_loc.survey_addr = [
                 r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
@@ -526,6 +606,7 @@ class ProjectDatabaseLoc:
         # ------------------------------- NMML1 -------------------------------#
         elif project_name == Projects.NMML1:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\NMML1\NMML1_PH2_C_D470_00_00_RC5\DC_SYS.xls"
+            self.block_def = r"C:\Users\naderc\Desktop\INDIA\NMML1\CIRCUIT_DE_VOIE_NMML1.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = (
                 r"C:\Users\naderc\Desktop\INDIA\NMML1\NMML1_C_D932_Line1_Advanced_field_survey_report.xlsm")
@@ -627,6 +708,22 @@ class ProjectDatabaseLoc:
         # ------------------------------- Mock-up 5 -------------------------------#
         elif project_name == Projects.Mock_up_5:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\Mock-Up DC_SYS\DC_SYS_mock-up5.xls"
+
+    def reset(self):
+        self.cctool_oo_schema = r""
+        self.dc_sys_addr = r""
+        self.dc_sys_addr_old = r""
+        self.dc_par_addr = r""
+        self.dc_bop_addr = r""
+        self.block_def = None
+        self.survey_loc = self.SurveyLoc()
+        self.kit_c11_dir = r""
+        self.kit_c11_sp_dir = r""
+        self.kit_c121_d470_dir = r""
+        self.control_tables_route = self.ControlTablesLoc()
+        self.control_tables_overlap = self.ControlTablesLoc()
+        self.ixl_apz = self.IxlApz()
+        self.fouling_point_addr = r""
 
 
 DATABASE_LOC = ProjectDatabaseLoc(PROJECT_NAME)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import numpy
 from ..utils import *
 from ..database_location import DATABASE_LOC
 
@@ -28,5 +29,5 @@ def load_fouling_point_info() -> Optional[dict[str, float]]:
         if sw_name is None or sw_kp is None or fp_kp is None:
             continue
 
-        res_dict[sw_name] = round(abs(sw_kp - fp_kp), 3)
+        res_dict[sw_name] = numpy.ceil(abs(sw_kp - fp_kp), 3)
     return res_dict

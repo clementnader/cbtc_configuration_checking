@@ -11,7 +11,8 @@ from ..common_utils import *
 
 __all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws", "load_xlsx_wb", "load_xlrd_wb", "get_xlrd_column", "get_xlrd_row",
            "get_xl_column_letter", "get_xl_column_number", "get_xlrd_float_value", "get_xlrd_value", "get_xlsx_value",
-           "get_row_and_column_from_cell", "get_cell_from_row_and_column", "get_cell_range"]
+           "get_row_and_column_from_cell", "get_cell_from_row_and_column", "get_cell_range",
+           "get_xl_col_from_number_or_letter"]
 
 
 def load_xlsx_wb(xl_file_address: str, template: bool = False, read_only: bool = False) -> openpyxl.workbook.Workbook:
@@ -115,3 +116,11 @@ def get_cell_range(cell_range: str = None, start_row: int = None, end_row: int =
         end_cell = get_cell_from_row_and_column(row=end_row, column=end_column)
         cell_range = f"{start_cell}:{end_cell}"
     return cell_range
+
+
+def get_xl_col_from_number_or_letter(val: str) -> int:
+    try:
+        val = int(val)
+    except ValueError:
+        val = get_xl_column_number(val)
+    return val

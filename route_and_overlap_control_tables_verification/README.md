@@ -4,22 +4,16 @@ This tool helps with the **Verification of the Route and Overlap** verification 
 
 ---
 ## 1. Description of the Route and Overlap Verification activity
-The Correspondence with Site Survey activity is described in §2.1.2 of System DPSA. <br />
-The objective to verify the **consistency of the data in the C_D470** (more specifically in the DC_SYS file) **according to the topographic measures or site survey**.
-
-The exhaustive list of objects to verify is given in the attached file in §3.2 of the System DPSA.
+The Route and Overlap Verification activity is described in the Foundation Data Analysis of System DPSA. <br />
+The objective to verify the **correspondence between routes in DC_SYS (sheet Iti) and overlaps in DC_SYS (sheet IXL_Overlap) versus the IXL information**.
 
 ---
 ## 2. Tool behavior
 The tool automates the verification for the following elements:
-- Switches positioning,
-- Platform ends and OSPs positioning,
-- Blocks positioning,
-- Signals and Buffers positioning,
-- Localization and Dynamic tags positioning,
-- Flood Gates positioning.
-
-The tool lists every element from the DC_SYS of these types, and its position and tries to associate it using its name to the corresponding object from the survey. Objects are not associated if they are not on the same track in DC_SYS and survey, or if multiple elements in the survey can be associated to a same element in DC_SYS. The tool lists also every element from the survey that have not been associated. The objects are ordered by (track, KP).
+- for Routes:
+  - route name, start signal, list of IVBs of the route (including the Destination IVB), list of switches and their position.
+- for Overlaps:
+  - overlap name, corresponding signal, VSP position according to the IVB path from IXL, list of switches and their position.
 
 ---
 ## 3. How to use the tool
@@ -31,54 +25,8 @@ The tool lists every element from the DC_SYS of these types, and its position an
 - <ins>**DC_SYS**</ins>: It is an Excel file (.xls) provided in the project database C_D470.
 
 
-- *Optionally* <ins>**Block Def.**</ins>: It is an Excel file containing the denomination of the block limits (joints and buffers). It has to be formatted as follows:
-  - 2 lines of header.
-  - 1 column named CDV_ID (usually first column). It contains all blocks names from DC_SYS (sheet CDV).
-  - 2 columns LISTE EXTREMITES::LISTE SEGMENT_ID and LISTE EXTREMITES::LISTE EXT_ABS_SEG (usually the second and third columns). They contain respectively the list of limits segments and the list of the limits offsets. The elements of the lists are separated with commas ';'.
-  - and multiple columns named OBJET EXTREMITE N, with N from 1 to the maximum number of block limits. Each column contains the name of the correspond limit that will appear in the survey. 
-  
-  The position of the columns is not relevant for the tool but the name of the columns is.
+- <ins>**DC_BOP**</ins>: It is used for the verification of routes and overlaps. It is an Excel file (.xls) provided in the project database C_D470 (directly in the folder or inside subfolder C64_D413) containing the correspondence between the switches position at CBTC level (left/right) and at IXL level (normal/reverse).
 
-If this file is not provided, the tool will automatically try to find the block limit names by mixing the two blocks of the limit (e.g. JOI_AAA_MMM_BBB_NNN for joint between TC_AAA_MMM and TC_BBB_NNN). It will create various name patterns to try to adapt to the different projects.
-
-
-- <ins>**Survey file(s)**</ins>: They are Excel files (.xls, .xlsx or .xlsm) containing the surveyed information. As the template can differ, the user needs to specify to the tool:
-   - the survey sheet name, or you can specify to use all the sheets of the file to get the survey data,
-   - the first row containing the surveyed information (after the header line),
-   - and the different columns for the data the tool will use:
-     - reference name: name of the surveyed element,
-     - type: type of the surveyed element:
-       - for switches, type shall be:<br />
-       **SWP**, **SWITCH**, **SWITCH_POINT** or **SWITCH POINT**.
-       - for platform ends, type shall be:<br />
-       **PLATFORM**, **PLATFORM_END**, **PLATFORM END**,<br />
-       **PLATFORM_EXTREMITY** or **PLATFORM EXTREMITY**.
-       - for OSPs, type shall be:<br />
-       **OSP**, **PAE**, **PLATFORM_OSP** or **PLATFORM OSP**.
-       - for blocks, type shall be:<br />
-       **TC**, **TRACK_CIRCUIT**, **TRACK CIRCUIT**, **TRACK CIRCUITS JOINT**,<br />
-       **AXLE COUNTER** or **INSULATED JOINT**.
-       - for signals, type shall be:<br />
-       **SIG** or **SIGNAL**.
-       - for buffers, type shall be:<br />
-       **SIGNAL_BUFFER**, **SIGNAL BUFFER**, **BUFFER** or **BS**.
-       - for tags, type shall be:<br />
-       **BAL**, **BALISE**, **TAG**, **TAGS**,<br />
-       **FIXED_BAL**, **FIXED BAL**, **FIXED_BALISE**, **FIXED BALISE**,<br />
-       **FIXED_TAG**, **FIXED TAG**, **FIXED_TAGS** or **FIXED TAGS**.
-       - for dynamic tags, type shall be:<br />
-       **IATPM_BAL**, **IATPM BAL**, **IATPM_BALISE**, **IATPM BALISE**,<br />
-       **IATPM_TAG**, **IATPM TAG**, **IATPM_TAGS**, **IATPM TAGS**,<br />
-       **IATP_BAL**, **IATP BAL**, **IATP_BALISE**, **IATP BALISE**,<br />
-       **IATP_TAG**, **IATP TAG**, **IATP_TAGS** or **IATP TAGS**.
-       - for flood gates, type shall be:<br />
-       **FLOOD_GATE**, **FLOOD GATE**, **FLOODGATE** or **FLOODGATES**.
-     - track: track of the element,
-     - surveyed KP: kilometer point surveyed by a geometer.
-   
-   Projects can have various survey files. In that case, user have to specify path and information for all these files. They have to be **added in chronological order**, with the oldest first and the most recent last. (The tool will consider that the newer values supersede the older ones. A comment is nevertheless written to inform the user of different values for a same object.)
-
-Tool will display in the logs the list of all other survey types that are not parsed by the tool. In case of another name for an object, one can modify the file prj/src/survey/survey_types.py and add the extra name to the list "survey_type_names" inside the corresponding sub dictionary inside dictionary SURVEY_TYPES_DICT.
 
 ---
 ### 3.2. Steps to use the tool to compare the DC_SYS information with the survey file(s):
@@ -124,7 +72,7 @@ You will also have the possibility to add other survey files (some projects have
 Information logs are provided in the command window during the execution.
 
 
-6. The result Excel file is placed into the Desktop and is opened automatically in a new session of Excel.
+6. The result Excel file is placed in the tool directory and is opened automatically in a new session of Excel.
 
 ---
 ## 4 Results

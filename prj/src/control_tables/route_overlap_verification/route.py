@@ -91,12 +91,13 @@ def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys
 
 def _check_controlled_sig(route: str, route_val: dict[str, Any], control_sig: str, table_name: str):
     dc_sys_origin_signal: str = get_dc_sys_value(route_val, DCSYS.Iti.SignalOrig)
-    sig_nb = dc_sys_origin_signal.split("_")[-1]
-    if PROJECT_NAME == Projects.Copenhagen:
-        control_sig = control_sig.removeprefix("0")
-    if PROJECT_NAME.startswith("Glasgow"):
-        sig_nb = sig_nb.removeprefix("S")
+    control_sig = control_sig.upper()
+    sig_nb = dc_sys_origin_signal.split("_")[-1].upper()
     if sig_nb == control_sig:
+        return True
+    if sig_nb.removeprefix("S") == control_sig.removeprefix("S"):
+        return True
+    if sig_nb.removeprefix("0") == control_sig.removeprefix("0"):
         return True
     print_error(f"For Route {Color.green}{route}{Color.reset}, DC_SYS Origin Signal {Color.yellow}"
                 f"{dc_sys_origin_signal}{Color.reset} does not correspond to the Control Table {Color.green}"

@@ -4,6 +4,7 @@
 from .colors_pkg import *
 from .gui_pkg import *
 from .html_pkg import *
+from .software_utils import *
 from .subprocess_utils import *
 from .verif_files_utils import *
 from .xl_pkg import *

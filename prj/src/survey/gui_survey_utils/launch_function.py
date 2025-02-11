@@ -42,7 +42,7 @@ def launch_function(window: tkinter.Tk, dc_sys_directory: tkinter.StringVar, dc_
             window.wm_state("iconic")  # minimize window
             tkinter.messagebox.showinfo(title="Success",
                                          message="\"Correspondence with Site Survey\" verification file is available "
-                                                 "on the Desktop and is opening automatically.")
+                                                 "in the tool directory and is opening automatically.")
     else:
         tkinter.messagebox.showerror(title="Missing Information", message="Information is missing to launch the tool.")
 
@@ -86,4 +86,6 @@ def is_everything_ready(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
             print_log(f"For {survey_name}, Surveyed KP Column is not filled.")
             test = False
 
+    if test:
+        print_log("OK all information is provided.")
     return test

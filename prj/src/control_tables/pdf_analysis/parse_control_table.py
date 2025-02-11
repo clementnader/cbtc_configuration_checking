@@ -9,11 +9,19 @@ __all__ = ["analyze_pdf_info"]
 
 
 def analyze_pdf_info(table_type: str, num_page: int, pos_dict: dict[tuple[float, float], str],
-                     max_pos: tuple[float, float]) -> Optional[dict[str, dict[str, str]]]:
+                     max_pos: tuple[float, float],
+                     debug: bool = False) -> Optional[dict[str, dict[str, str]]]:
     titles_info = ROUTE_INFORMATION if table_type == CONTROL_TABLE_TYPE.route else OVERLAP_INFORMATION
     title_pos_dict, pos_dict = _get_title_positions(table_type, num_page, pos_dict)
     if title_pos_dict is None:
         return None
+    if debug:
+        print("title_pos_dict:")
+        pretty_print_dict(title_pos_dict)
+        print_bar()
+        print("pos_dict:")
+        pretty_print_dict(pos_dict)
+        print_bar()
 
     page_dict = dict()
     for title, title_value in title_pos_dict.items():
@@ -52,19 +60,28 @@ def _get_corresponding_info_bottom(num_page: int, key_name: str, title_pos: tupl
                                    max_pos: tuple[float, float], pos_dict: dict[tuple[float, float], str]
                                    ) -> Optional[str]:
     title_x, title_y = title_pos
-    tol_neg_x = - 120. * (max_pos[1] / 1000.)
+    tol_neg_x = -200. * (max_pos[1] / 1000.)
     tol_pos_x = 5. * (max_pos[1] / 1000.)
     info_bottom_dict = [((x, y), text) for (x, y), text in pos_dict.items()
-                        if tol_neg_x < (x - title_x) < tol_pos_x and y < title_y]  # y-axis origin is at the bottom of the page
+                        if tol_neg_x < (x - title_x) < tol_pos_x and y < title_y]
+    # y-axis origin is at the bottom of the page
     if not info_bottom_dict:
         print_error(f"Unable to find corresponding info for key {key_name} on page {num_page}.")
         return None
 
-    info_bottom_dict.sort(key=lambda a: -a[0][1])  # looking for the biggest y
+    def _sort_function(x: float, y: float) -> float:
+        delta_x = abs((x-title_x))
+        delta_y = abs((y-title_y))
+        return 5*delta_y + delta_x  # setting more weight to delta y, for similar delta y,
+        # the delta x will be considered to get the corresponding info
+
+    info_bottom_dict.sort(key=lambda a: _sort_function(a[0][0], a[0][1]))
     return info_bottom_dict[0][1]
 
 
 def _check_complete_expression(expression: str) -> bool:
+    if expression is None:
+        return False
     expression = expression.strip()
     if expression.count("\"") % 2 == 1:
         return False

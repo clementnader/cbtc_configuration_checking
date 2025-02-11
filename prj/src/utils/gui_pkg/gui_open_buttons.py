@@ -12,7 +12,7 @@ __all__ = ["add_dc_sys_open_button", "add_cctool_oo_open_button", "add_dc_par_op
 def add_dc_sys_open_button(frame: tkinter.Frame, ref_row: int, bg: str = None, ga_version: str = None
                            ) -> tuple[tkinter.StringVar, tkinter.StringVar]:
     title_text = "DC_SYS: "
-    open_text = "Open DC_SYS" + (f" compatible with System Referential {ga_version}" if ga_version is not None else "")
+    open_text = "Open DC_SYS" + (f" compatible with CCTool-OO Schema {ga_version}" if ga_version is not None else "")
     file_types = ("DC_SYS.xls", "*.xls")
 
     dc_sys_directory_string_var = tkinter.StringVar()

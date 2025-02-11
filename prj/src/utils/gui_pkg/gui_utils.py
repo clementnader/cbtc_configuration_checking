@@ -13,10 +13,12 @@ from ..xl_pkg import get_xl_bg_dimmer_color
 
 __all__ = ["tkinter", "default_gui_bg_color", "disable_frame", "enable_frame",
            "gui_add_dir_and_file_open_button", "gui_add_dir_open_button",
-           "TEMPLATE_DIRECTORY", "create_window"]
+           "TEMPLATE_DIRECTORY", "create_window",
+           "get_gui_initial_directory", "set_gui_initial_directory"]
 
 
-G_INITIAL_DIRECTORY = DESKTOP_DIRECTORY
+G_INITIAL_DIRECTORY = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                   "..", "..", "..", "..", ".."))  # root directory of the tool
 TEMPLATE_DIRECTORY = os.path.join(os.path.dirname(__file__), "..", "..", "templates")
 
 
@@ -168,3 +170,13 @@ def gui_select_directory(open_text: str, directory_string_var: tkinter.StringVar
 
 def default_gui_bg_color(frame: tkinter.Frame) -> str:
     return frame.cget("background")
+
+
+def get_gui_initial_directory() -> str:
+    global G_INITIAL_DIRECTORY
+    return G_INITIAL_DIRECTORY
+
+
+def set_gui_initial_directory(initial_directory: str) -> None:
+    global G_INITIAL_DIRECTORY
+    G_INITIAL_DIRECTORY = initial_directory
