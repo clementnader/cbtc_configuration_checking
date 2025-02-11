@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import warnings
 import openpyxl
 import openpyxl.utils as xl_ut
 import openpyxl.worksheet.worksheet as xl_ws
 import xlrd
 from ..common_utils import *
+from ..colors_pkg import *
 
 
 __all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws", "load_xlsx_wb", "load_xlrd_wb", "get_xlrd_column", "get_xlrd_row",
@@ -33,7 +35,28 @@ def load_xlsx_wb(xl_file_address: str, template: bool = False, read_only: bool =
 
 def load_xlrd_wb(xl_file_address: str, formatting_info=False, on_demand=False) -> openpyxl.workbook.Workbook:
     # formatting_info is useful if a cell is in percentage mode
-    wb = xlrd.open_workbook(xl_file_address, formatting_info=formatting_info, on_demand=on_demand)
+    try:
+        wb = xlrd.open_workbook(xl_file_address, formatting_info=formatting_info, on_demand=on_demand)
+    except AssertionError:
+        print_warning(f"Error reading the Excel file {Color.yellow}\"{xl_file_address}\"{Color.reset} "
+                      f"with xlrd library.\n"
+                      f"We use Excel Application to re-save it as another file to try to fix the issue.")
+        new_xl_file_address = "_patch".join(os.path.splitext(xl_file_address))
+
+        import comtypes.client
+        prog_id = "Excel.Application"
+        xl = comtypes.client.CreateObject(prog_id)
+        wb = xl.Workbooks.Open(xl_file_address)
+        wb.SaveAs(new_xl_file_address, FileFormat=56)  # Excel 97-2003 Workbook (*.xls)
+        # see https://learn.microsoft.com/en-us/office/vba/api/excel.xlfileformat
+        xl.DisplayAlerts = False
+        xl.Quit()
+
+        print_log(f"File has been re-saved as {Color.default}\"{new_xl_file_address}\"{Color.reset}.\n"
+                  f"We try to read this new file with xlrd library.")
+        wb = xlrd.open_workbook(new_xl_file_address, formatting_info=formatting_info, on_demand=on_demand)
+        print_log(f"It has worked. Execution continues.")
+
     return wb
 
 

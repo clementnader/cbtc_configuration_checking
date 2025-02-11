@@ -35,7 +35,10 @@ def get_xl_sheet_names(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook]) ->
 
 def get_xl_sheet_names_preload(xl_file_address: str) -> list[str]:
     wb = load_xl_file(xl_file_address, preload=True)
-    return get_xl_sheet_names(wb)
+    sheet_names = get_xl_sheet_names(wb)
+    if isinstance(wb, xlrd.book.Book):
+        wb.release_resources()
+    return sheet_names
 
 
 def get_xl_sheet_by_name(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook], sheet_name: str
