@@ -15,6 +15,9 @@ def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str]]:
     survey_info = dict()
     survey_loc_info = list(get_survey_loc_info())
     display_info_list = _get_survey_files_display_info(survey_loc_info)
+    if not display_info_list:
+        survey_info = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
+        return survey_info, display_info_list
     nb_of_survey = len(display_info_list)
     for i, (survey_addr, survey_sheet, all_sheets, start_row,
             ref_col, type_col, track_col, survey_kp_col) in enumerate(survey_loc_info, start=1):

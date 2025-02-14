@@ -6,6 +6,7 @@ import re
 import pdfreader
 import logging
 from ...utils import *
+from ..ini_file import *
 from .parse_control_table import *
 
 
@@ -30,13 +31,14 @@ def control_tables_pdf_parsing(table_type: str, pdf_file: str, specific_pages: l
             logging.disable(logging.WARNING)  # deactivate temporarily the warning logs
             viewer.render()
             logging.disable(logging.NOTSET)
-            page_text = viewer.canvas.text_content
-            page_text_info = _get_page_text_info(page_text)
+            page_text = viewer.canvas.text_content  # code of the PDF page
+            page_text_info = _get_page_text_info(page_text)  # extract the text information from the code
             pos_dict, max_pos = _create_pos_dict(page_text_info)
             if debug:
                 print()
                 pretty_print_dict(pos_dict)
                 print_bar()
+            # Interpret the info collected with the Control Tables template
             page_dict = analyze_pdf_info(table_type, num_page, pos_dict, max_pos, debug=debug)
             if debug:
                 sys.exit(1)
@@ -54,6 +56,9 @@ def _get_page_text_info(text: str) -> list[dict[str, Any]]:
     lines = text.splitlines()
     within_text_block = False
     for i, line in enumerate(lines):
+        # The backslash and parentheses characters are escaped in the PDF code.
+        # We replace them by temporarily characters so that we can discriminate the parentheses that are not text
+        # but internal PDF code symbol.
         line = line.strip().replace(r"\\", "!!|").replace(r"\(", "!![").replace(r"\)", "!!]")
         if within_text_block:
             if line == "ET":
@@ -61,8 +66,12 @@ def _get_page_text_info(text: str) -> list[dict[str, Any]]:
                     list_info.append(info)
                 within_text_block = False
             elif "(" in line and ")" in line:
-                info["text"] += (_parse_text_line(line).replace("!!|", "\\")
-                                 .replace("!![", "(").replace("!!]", ")"))
+                # The characters of a same group can be split inside parentheses, we regroup them.
+                text = _parse_text_line(line)
+                # We restore back the actual text backslash and parentheses characters that were replaced,
+                # and we remove the escaping character, so that it can be read properly.
+                text = text.replace("!!|", "\\").replace("!![", "(").replace("!!]", ")")
+                info["text"] += text
             else:
                 info["extra_info"].append(line)
         if line == "BT":

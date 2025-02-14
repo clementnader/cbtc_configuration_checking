@@ -124,7 +124,7 @@ def create_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: Union[str, fl
         draw_exterior_borders(ws, row=row, column=column)
 
 
-def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: str,
+def create_merged_cell(ws: openpyxl.worksheet.worksheet.Worksheet, value: Union[str, float, None],
                        start_cell: str = None, start_row: int = None, start_column: Union[str, int] = None,
                        end_cell: str = None, end_row: int = None, end_column: Union[str, int] = None,
                        font_size: int = None, bold: bool = False, italic: bool = False, bg_color: str = None,

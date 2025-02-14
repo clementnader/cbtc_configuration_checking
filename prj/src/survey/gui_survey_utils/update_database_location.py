@@ -43,6 +43,9 @@ def update_database_loc(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
         survey_file = os.path.join(survey_info["survey_directory"].get(),
                                    survey_info["survey_file_name"].get()
                                    ).replace("/", os.path.sep)  # Survey File
+        if not survey_file:
+            print_log(f"\tNo Survey.")
+            continue
         print_log(f"\tSurvey File is {Color.default}\"{survey_file}\"{Color.reset}.")
         DATABASE_LOC.survey_loc.survey_addr.append(survey_file)
 

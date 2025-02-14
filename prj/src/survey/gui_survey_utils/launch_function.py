@@ -16,8 +16,19 @@ def launch_function(window: tkinter.Tk, dc_sys_directory: tkinter.StringVar, dc_
                     survey_loc_dict: dict[str, dict[str, tkinter.StringVar]],
                     automatic_names: tkinter.BooleanVar,
                     block_def_directory: tkinter.StringVar, block_def_file_name: tkinter.StringVar):
-    if is_everything_ready(dc_sys_directory, dc_sys_file_name, survey_loc_dict,
-                           automatic_names, block_def_directory, block_def_file_name):
+    everything_ready, only_survey_missing = is_everything_ready(
+        dc_sys_directory, dc_sys_file_name, survey_loc_dict, automatic_names, block_def_directory, block_def_file_name)
+
+    if not everything_ready and only_survey_missing:
+        answer = tkinter.messagebox.askquestion(title="Missing Survey Information",
+                                                message="No survey specified to launch the tool.\n"
+                                                        "Do you want to proceed without survey?",
+                                                icon=tkinter.messagebox.WARNING,
+                                                type=tkinter.messagebox.YESNO)
+        if answer == tkinter.messagebox.YES:
+            everything_ready = True
+
+    if everything_ready:
         success = False
         window.withdraw()  # hide window
         try:
@@ -44,15 +55,18 @@ def launch_function(window: tkinter.Tk, dc_sys_directory: tkinter.StringVar, dc_
                                          message="\"Correspondence with Site Survey\" verification file is available "
                                                  "in the tool directory and is opening automatically.")
     else:
-        tkinter.messagebox.showerror(title="Missing Information", message="Information is missing to launch the tool.")
+        tkinter.messagebox.showerror(title="Missing Information",
+                                     message="Information is missing to launch the tool.")
 
 
 def is_everything_ready(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: tkinter.StringVar,
                         survey_loc_dict: dict[str, dict[str, tkinter.StringVar]],
                         automatic_names: tkinter.BooleanVar,
-                        block_def_directory: tkinter.StringVar, block_def_file_name: tkinter.StringVar):
+                        block_def_directory: tkinter.StringVar, block_def_file_name: tkinter.StringVar
+                        ) -> tuple[bool, bool]:
     print_section_title(f"Checking if all information is provided...")
     test = True
+    only_survey_missing = False
 
     if dc_sys_directory.get() == "" or dc_sys_file_name.get() == "":
         print_log(f"DC_SYS is not selected.")
@@ -65,6 +79,8 @@ def is_everything_ready(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
     for survey_name, survey_info in survey_loc_dict.items():
         if survey_info["survey_directory"].get() == "" or survey_info["survey_file_name"].get() == "":
             print_log(f"For {survey_name}, Survey is not selected.")
+            if test is True and len(list(survey_loc_dict.keys())) == 1:  # only one survey
+                only_survey_missing = True
             test = False
             continue
         if survey_info["all_sheets"].get() is False and survey_info["survey_sheet"].get() == "":
@@ -88,4 +104,4 @@ def is_everything_ready(dc_sys_directory: tkinter.StringVar, dc_sys_file_name: t
 
     if test:
         print_log("OK all information is provided.")
-    return test
+    return test, only_survey_missing

@@ -37,13 +37,19 @@ def get_sheet_param(wb: xlrd.Book, sh_name: str) -> dict:
     if ws.nrows == 0:
         return {}
 
-    param_name_col_title = get_and_decode_xlrd_value(ws, 1, PARAM_NAME_COL)
+    param_name_column_on_sheet = PARAM_NAME_COL
+    param_name_col_title = get_and_decode_xlrd_value(ws, 1, param_name_column_on_sheet)
+    # Sometimes an extra column is added in the DC_PAR sheet for comments or computation.
+    while param_name_col_title is not None and param_name_col_title.upper() != PARAM_NAME_TITLE:
+        param_name_column_on_sheet += 1
+        param_name_col_title = get_and_decode_xlrd_value(ws, 1, param_name_column_on_sheet)
+
     if param_name_col_title is None or param_name_col_title.upper() != PARAM_NAME_TITLE:
         return {}
 
     param_dict = dict()
     for row in range(START_ROW, ws.nrows + 1):
-        param_name = get_and_decode_xlrd_value(ws, row, PARAM_NAME_COL)
+        param_name = get_and_decode_xlrd_value(ws, row, param_name_column_on_sheet)
         if param_name is not None and param_name.upper() not in ["", "RESERVED"]:
             fr_name = get_and_decode_xlrd_value(ws, row, FR_NAME_COL)
             s_ns = get_and_decode_xlrd_value(ws, row, S_NS_COL)

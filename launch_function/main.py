@@ -44,6 +44,11 @@ def main():
     # ats_atc_sheet_verif(in_cbtc=False)  # NV, FRONTAM <-> ZC Interface, sheet "ATS_ATC"
     # r_tm_ats_itf_1(in_cbtc=False)  # NV, Wayside Remote supervision, ZC <-> ATS Interface, sheet "TM_PAS_ATS"
 
+    """Uncomment next line to verify the CBTC Signal Approach Zone so that it is greater than parameter 
+     train_to_home_signal_max_dist so to respect R_ZSM_3 at CBTC level.
+    @inputs: DC_SYS, CCTool-OO Schema, DC_PAR"""
+    check_cbtc_sig_apz()
+
     """Uncomment one of next lines to verify some constraints and rules about the IXL Signal Approach Zone.
     You can use argument apz_with_tc=True to consider than the default IXL approach zone is the Track Circuit containing
      the signal and not the IVB, indeed it can be explicitly said in the ZC-IXL ICDD that the IXL will lock the

@@ -585,9 +585,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- KMRC Kolkata -------------------------------#
         elif project_name == Projects.KMRC:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2A_C_D470_00_00_RC03\DC_SYS.xls"
-            self.block_def = (r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"
-                              r"\CIRCUIT_DE_VOIE_KMRC_PH2A_C_D470_00_00_RC03.xls")
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2_C_D470_00_RC04\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2_C_D470_00_RC04\DC_PAR.xls"
+            self.block_def = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\CIRCUIT_DE_VOIE_KMRC_PH2.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = [
                 r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata"

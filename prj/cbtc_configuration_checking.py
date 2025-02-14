@@ -148,6 +148,7 @@ def constraints():
     # check_signal_with_overlap()
     # TODO: fix template of CF_SIGNAL_12 and R_ZSM_3
     # Header sheet, en vrai reregarder pour la générer automatiquement ce sera plus propre
+    # check_cbtc_sig_apz()
     # cf_signal_12(apz_with_tc=False)  # TODO: write IXL APZ info in Header sheet
     # r_zsm_3(apz_with_tc=False)  # TODO: create a single template file to reduce the weight and delete the sheets
     #                                    depending on the verification to do.

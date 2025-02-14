@@ -114,14 +114,13 @@ def _add_info_cells(ws: xl_ws.Worksheet, row: int,
         survey_info = "\n - ".join(survey)
         if len(survey) > 1:
             survey_info = " - " + survey_info
-        create_cell(ws, survey_info,
-                    row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
+        create_cell(ws, survey_info, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # Block Definition file
     if block_def is not None:
         row += 1
         create_cell(ws, "Block Definition file:", row=row, column=TITLE_COLUMN, borders=True, bold=True)
-        create_cell(ws, block_def, row=row, column=INFO_COLUMN, borders=True)
+        create_cell(ws, block_def, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # Date
     row += 1
