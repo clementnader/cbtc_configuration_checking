@@ -28,7 +28,7 @@ def max_dist_local_tag_group(in_cbtc: bool = False):
     dict_max_dist = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
     for n, (tag_gr, tag_gr_value) in enumerate(tag_gr_dict.items()):
-        print_log(f"\r{progress_bar(n, nb_tag_gr)} processing distances inside local tag group {tag_gr}...", end="")
+        print_log_progress_bar(n, nb_tag_gr, f"processing distance inside local tag group {tag_gr}")
         tags = get_dc_sys_value(tag_gr_value, DCSYS.StaticTag_Group.TagList.Tag)
         for i, tag1 in enumerate(tags):
             seg1 = get_dc_sys_value(tag_dict[tag1], DCSYS.Bal.Seg)
@@ -42,8 +42,8 @@ def max_dist_local_tag_group(in_cbtc: bool = False):
                 else:
                     print_warning(f"Unable to compute interdistance of tag group {tag_gr},"
                                   f"\n no path between {tag1} and {tag2}.")
-    print_log(f"\r{progress_bar(nb_tag_gr, nb_tag_gr, end=True)} processing distances between "
-              f" inside local tag groups finished.\n")
+    print_log_progress_bar(nb_tag_gr, nb_tag_gr, "processing distances between inside local tag groups finished",
+                           end=True)
 
     dict_max_dist = {x: dict_max_dist[x] for x in sorted(dict_max_dist, key=lambda x: dict_max_dist[x])}
     max_dist = max(tags_value for tags_value in dict_max_dist.values())

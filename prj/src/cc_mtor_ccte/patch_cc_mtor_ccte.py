@@ -33,14 +33,14 @@ def patch_cc_mtor_ccte():
     nb_files = len(list_of_files)
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, file in enumerate(list_of_files):
-        print_log(f"\r{progress_bar(i, nb_files)} patching {file}...", end="")
+        print_log_progress_bar(i, nb_files, f"patching {file}")
         try:
             _patch_file(file)
         except KeyboardInterrupt:
             _patch_file(file)
             raise KeyboardInterrupt
-    print_log(f"\r{progress_bar(nb_files, nb_files, end=True)} patching of "
-              f"all MTOR and CCTE Plugs Verification files is done.")
+    print_log_progress_bar(nb_files, nb_files, "patching of all MTOR and CCTE Plugs Verification files is done.",
+                           end=True)
 
 
 def _patch_file(file):

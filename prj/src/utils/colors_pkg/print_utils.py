@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 import numpy.random
+import re
 from .colored_output import *
 from ..time_utils import *
 from ..common_utils import *
@@ -9,7 +11,8 @@ from ..common_utils import *
 
 __all__ = ["print_bar", "print_title", "print_section_title", "print_error", "print_warning", "print_success",
            "print_log", "progress_bar", "print_sub_variables", "print_variables", "print_final_value",
-           "test_moving_progress_bar", "ask_question_yes_or_no", "pretty_print_dict", "get_print_prefix"]
+           "test_moving_progress_bar", "ask_question_yes_or_no", "pretty_print_dict", "get_print_prefix",
+           "print_log_progress_bar"]
 
 
 def print_bar(length: int = 100, start="", end="\n"):
@@ -57,7 +60,7 @@ def print_error(*args, end: str = "\n", no_newline: bool = False, no_prefix: boo
 
 def print_warning(*args, end: str = "\n", no_newline: bool = False, no_prefix: bool = False):
     main_color = Color.orange
-    if not no_newline:
+    if not no_newline and not no_prefix:
         print("\n", end="")
     if not no_prefix:
         print(f"{csi_bg_color(main_color)}{Color.black}Warning{Color.reset}{main_color}: ", end="")
@@ -131,7 +134,8 @@ def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
 
     # Timer
     current_time = time.perf_counter()
-    elapsed_time = format_timespan(current_time - G_START_TIME)
+    # elapsed_time = format_timespan(current_time - G_START_TIME)
+    elapsed_time = format_timespan_simple(current_time - G_START_TIME)
     if end:
         s += f" (total elapsed time: {elapsed_time})"
         G_START_TIME = time.perf_counter()
@@ -139,6 +143,28 @@ def progress_bar(i: int, max_nb: int, end: bool = False, only_bar: bool = False,
     else:
         s += f" (elapsed time: {elapsed_time})"
     return s
+
+
+def print_log_progress_bar(i: int, max_nb: int, sentence: str, end: bool = False):
+    line = f"\r{progress_bar(i, max_nb, end=end)} {sentence.strip()}"
+    line = re.sub(r"\.*$", r"", line)
+    if not end:
+        line += "..."
+    else:
+        line += "."
+
+    # add space characters at the end so that the line is completely erased when doing \r Carriage Return
+    whole_len = 180  # number of columns in the *.bat file
+    len_line = len(remove_colors(line))
+    if len_line > whole_len:
+        print_title("LINE TOO LONG")
+    empty_len = whole_len - len_line if len_line < whole_len else 0
+    line += " "*empty_len
+
+    if not end:
+        print_log(line, end="")
+    else:
+        print_log(line, end="\n\n")
 
 
 def test_moving_progress_bar():
@@ -184,10 +210,11 @@ def _modify_variables_to_print(variables: dict[str, str]):
 
 
 def ask_question_yes_or_no(question: str) -> bool:
-    while (answer := (input(f"{Color.yellow}{question}{Color.reset} "
-                            f"{Color.light_yellow}(Y/N){Color.reset} ").upper().strip())
-           ) not in ["Y", "YES", "N", "NO"]:
-        pass
+    # Print is not showing if no newline even with the flush argument set to True or with a sys.stdout.flush(),
+    # we write the question on one line with a newline so to be flushed, and the input() call is on the next line.
+    print(f"{Color.yellow}{question}{Color.reset} {Color.light_yellow}(Y/N){Color.reset} ", flush=True)
+    while (answer := (input().upper().strip())) not in ["Y", "YES", "N", "NO"]:
+        print(f"{Color.yellow}{question}{Color.reset} {Color.light_yellow}(Y/N){Color.reset} ", flush=True)
 
     return answer in ["Y", "YES"]
 

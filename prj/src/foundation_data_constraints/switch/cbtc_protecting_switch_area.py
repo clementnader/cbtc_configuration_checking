@@ -22,8 +22,7 @@ def check_cbtc_protecting_switch_area(do_print_warning: bool = True) -> dict[str
     info_dict = dict()
     progress_bar(1, 1, end=True)  # reset progress bar
     for i, (sw_name, sw_val) in enumerate(sw_dict.items()):
-        print_log(f"\r{progress_bar(i, nb_sw)} verification of CBTC protecting switch area "
-                  f"of {sw_name}...", end="")
+        print_log_progress_bar(i, nb_sw, f"verification of CBTC protecting switch area of {sw_name}")
         sw_block_locking_area = get_dc_sys_value(sw_val, DCSYS.Aig.SwitchBlockLockingArea.Ivb)
         cbtc_protecting_switch_area = get_dc_sys_value(sw_val, DCSYS.Aig.CbtcProtectingSwitchArea.Ivb)
         if not sw_block_locking_area:
@@ -83,8 +82,7 @@ def check_cbtc_protecting_switch_area(do_print_warning: bool = True) -> dict[str
         print(f"cbtc_protecting_switch_area = {cbtc_protecting_switch_area_to_print}")
         print(f"list_ivb_to_protect = {list_ivb_to_protect_to_print}")
 
-    print_log(f"\r{progress_bar(nb_sw, nb_sw, end=True)} verification of CBTC protecting switch area "
-              f"finished.")
+    print_log_progress_bar(nb_sw, nb_sw, "verification of CBTC protecting switch area finished", end=True)
 
     return info_dict
 

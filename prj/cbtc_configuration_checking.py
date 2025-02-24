@@ -62,9 +62,9 @@ def parameters_constraints():
 
 def dc_par_add_on_param():
     # get_max_slope(in_cbtc=False)
-    # get_block_min_length(in_cbtc=False)
-    # get_block_max_length(in_cbtc=False)
-    # min_switch_area_length(in_cbtc=False)
+    # pretty_print_dict(get_block_min_length(in_cbtc=True))
+    # pretty_print_dict(get_block_max_length(in_cbtc=False))
+    # pretty_print_dict(min_switch_area_length(in_cbtc=False))
     return
 
 
@@ -76,14 +76,16 @@ def route_and_overlap():
     # load_control_tables(
     #     CONTROL_TABLE_TYPE.route, use_csv_file=False,
     #     # supersede_input_file_number=1,
-    #     # supersede_specific_pages=45,
-    #     debug=True,
+    #     # supersede_specific_pages=2,
+    #     # debug=True,
+    #     # print_pdf_code=True,
     # )
     # load_control_tables(
     #     CONTROL_TABLE_TYPE.overlap, use_csv_file=False,
     #     # supersede_input_file_number=1,
     #     # supersede_specific_pages=2,
     #     # debug=True,
+    #     # print_pdf_code=True,
     # )
 
     # Analyze DC_SYS with CSV files
@@ -92,6 +94,7 @@ def route_and_overlap():
     # verify_switches_along_the_routes()  # TODO
     # TODO: verif overlap: du signal jusqu'au VSP tous les IVB et aiguilles (+position) qu'on passe
     #  doivent être côté IXL et toutes les aiguilles (+position) doivent être côté CBTC
+    # TODO: refaire les tests de correspondence sans dépendre de la variable PROJECT_NAME
     return
 
 
@@ -141,16 +144,15 @@ def constraints():
     #                                       -> it seems multiple ZC can do the job sometimes,
     #                                       and tool shall gives multiple ZC these times,
     #                                       re-work the way ZC is assigned.
-    # r_tm_ats_itf_1(in_cbtc=True)
-    # ats_atc_sheet_verif(in_cbtc=True)  # TODO: Check if extra flows exist for object that does not exist per type,
+    # r_tm_ats_itf_1(in_cbtc=False)
+    # ats_atc_sheet_verif(in_cbtc=False)  # TODO: Check if extra flows exist for object that does not exist per type,
     #                                           and if extra object type exists.
     # zcr_zc_sheet_verif(in_cbtc=False)
     # check_signal_with_overlap()
-    # TODO: fix template of CF_SIGNAL_12 and R_ZSM_3
-    # Header sheet, en vrai reregarder pour la générer automatiquement ce sera plus propre
+    # TODO: Header sheet, en vrai regarder pour la générer automatiquement ce sera plus propre
     # check_cbtc_sig_apz()
-    # cf_signal_12(apz_with_tc=False)  # TODO: write IXL APZ info in Header sheet
-    # r_zsm_3(apz_with_tc=False)  # TODO: create a single template file to reduce the weight and delete the sheets
+    # cf_signal_12(apz_with_tc=True)  # TODO: write IXL APZ info in Header sheet
+    # r_zsm_3(apz_with_tc=True)  # TODO: create a single template file to reduce the weight and delete the sheets
     #                                    depending on the verification to do.
     # verif_calib_distance()
     # ixl_overlap_platform_related()
@@ -168,7 +170,7 @@ def main():
     # test_rainbow()
     # test_moving_progress_bar()
 
-    # check_switch_flank_protection(in_cbtc=True)
+    # check_switch_flank_protection(in_cbtc=False)  # TODO
     # get_walkways_track_kp_pos()
     # pretty_print_dict(list(get_all_segs_in_cbtc_ter()), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Voie), max_lvl=0)

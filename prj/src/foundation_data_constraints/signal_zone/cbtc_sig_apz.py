@@ -62,6 +62,11 @@ def _compute_cbtc_sig_apz():
         res_dict[sig_name] = {"sig_name": sig_name, "sig_type": sig_type, "sig_direction": sig_direction,
                               "sig_with_imc": sig_with_imc}
 
+        if sig_type in [SignalType.HEURTOIR, SignalType.PERMANENT_ARRET]:
+            res_dict[sig_name]["status"] = "NA"
+            res_dict[sig_name]["comments"] = "Not a Home Signal."
+            continue
+
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig)
         ivb_lim_track, ivb_lim_kp = from_seg_offset_to_kp(ivb_lim_seg, ivb_lim_x)
         res_dict[sig_name].update({"downstream_seg": ivb_lim_seg, "downstream_x": ivb_lim_x,

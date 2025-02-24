@@ -23,7 +23,9 @@ def load_xlsx_wb(xl_file_address: str, template: bool = False, read_only: bool =
     warnings.filterwarnings("ignore", message="Data Validation extension is not supported and will be removed",
                             category=UserWarning, module="openpyxl")  # deactivate the warning for extension
     if template:
-        wb = openpyxl.load_workbook(xl_file_address, rich_text=True)
+        # It seems that rich_text argument is causing some issues on the saving depending on openpyxl version.
+        # wb = openpyxl.load_workbook(xl_file_address, rich_text=True)
+        wb = openpyxl.load_workbook(xl_file_address)
     elif read_only:
         wb = openpyxl.load_workbook(xl_file_address, data_only=True, read_only=True, keep_links=False)
     else:

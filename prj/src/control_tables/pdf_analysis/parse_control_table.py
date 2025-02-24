@@ -3,6 +3,7 @@
 
 from ...utils import *
 from ..control_tables_utils import *
+from ..ini_file import *
 
 
 __all__ = ["analyze_pdf_info"]
@@ -11,8 +12,10 @@ __all__ = ["analyze_pdf_info"]
 def analyze_pdf_info(table_type: str, num_page: int, pos_dict: dict[tuple[float, float], str],
                      max_pos: tuple[float, float],
                      debug: bool = False) -> Optional[dict[str, dict[str, str]]]:
-    titles_info = ROUTE_INFORMATION if table_type == CONTROL_TABLE_TYPE.route else OVERLAP_INFORMATION
-    title_pos_dict, pos_dict = _get_title_positions(table_type, num_page, pos_dict)
+    # titles_info = ROUTE_INFORMATION if table_type == CONTROL_TABLE_TYPE.route else OVERLAP_INFORMATION
+    route_information, overlap_information = get_control_tables_template_info()
+    titles_info = route_information if table_type == CONTROL_TABLE_TYPE.route else overlap_information
+    title_pos_dict, pos_dict = _get_title_positions(titles_info, num_page, pos_dict)
     if title_pos_dict is None:
         return None
     if debug:
@@ -27,6 +30,7 @@ def analyze_pdf_info(table_type: str, num_page: int, pos_dict: dict[tuple[float,
     for title, title_value in title_pos_dict.items():
         key_name = title_value["key_name"]
         title_pos = title_value["pos"]
+        csv_title = title_value["csv_title"]
         corresponding_title_info = titles_info[title]
         right = corresponding_title_info.get("right", False)
         if right:
@@ -36,7 +40,7 @@ def analyze_pdf_info(table_type: str, num_page: int, pos_dict: dict[tuple[float,
 
         if not _check_complete_expression(info):
             print_warning(f"Expression \"{info}\" is not complete for key {key_name} on page {num_page}.")
-        page_dict[title] = {"key_name": key_name, "info": info}
+        page_dict[title] = {"key_name": key_name, "info": info, "csv_title": csv_title}
 
     return page_dict
 
@@ -60,10 +64,12 @@ def _get_corresponding_info_bottom(num_page: int, key_name: str, title_pos: tupl
                                    max_pos: tuple[float, float], pos_dict: dict[tuple[float, float], str]
                                    ) -> Optional[str]:
     title_x, title_y = title_pos
-    tol_neg_x = -200. * (max_pos[1] / 1000.)
-    tol_pos_x = 5. * (max_pos[1] / 1000.)
+    neg_tol_x = 350. * (max_pos[0] / 1000.)
+    neg_tol_y = 120. * (max_pos[1] / 1000.)
+    pos_tol_x = 5. * (max_pos[0] / 1000.)
+
     info_bottom_dict = [((x, y), text) for (x, y), text in pos_dict.items()
-                        if tol_neg_x < (x - title_x) < tol_pos_x and y < title_y]
+                        if (title_x - neg_tol_x) < x < (title_x + pos_tol_x) and (title_y - neg_tol_y) < y < title_y]
     # y-axis origin is at the bottom of the page
     if not info_bottom_dict:
         print_error(f"Unable to find corresponding info for key {key_name} on page {num_page}.")
@@ -72,8 +78,8 @@ def _get_corresponding_info_bottom(num_page: int, key_name: str, title_pos: tupl
     def _sort_function(x: float, y: float) -> float:
         delta_x = abs((x-title_x))
         delta_y = abs((y-title_y))
-        return 5*delta_y + delta_x  # setting more weight to delta y, for similar delta y,
-        # the delta x will be considered to get the corresponding info
+        return 5*delta_y + delta_x  # setting more weight to delta y,
+        # for similar delta y, the delta x will be considered to get the corresponding info
 
     info_bottom_dict.sort(key=lambda a: _sort_function(a[0][0], a[0][1]))
     return info_bottom_dict[0][1]
@@ -94,55 +100,30 @@ def _check_complete_expression(expression: str) -> bool:
     return True
 
 
-def _get_title_positions(table_type: str, num_page: int, pos_dict: dict[tuple[float, float], str]
+def _get_title_positions(titles_info, num_page: int, pos_dict: dict[tuple[float, float], str],
                          ) -> tuple[Optional[dict[str, dict[str, Union[str, tuple[float, float]]]]],
                                     dict[tuple[float, float], str]]:
-    titles_info = ROUTE_INFORMATION if table_type == CONTROL_TABLE_TYPE.route else OVERLAP_INFORMATION
-    title_pos_dict = dict()
-    keys_to_del = list()
+    title_pos_dict = {key: dict() for key in titles_info}
+    keys_to_del = list()  # we remove the key titles from the dictionary
     for pos, text in pos_dict.items():
         for title, info in titles_info.items():
-            possible_names = info["names"]
-            if any(possible_name in text for possible_name in possible_names):
-                title_pos_dict[title] = {"key_name": text, "pos": pos}
+            if info["name"] in text:
+                title_pos_dict[title] = {"key_name": text, "pos": pos, "csv_title": info["csv_name"]}
                 keys_to_del.append(pos)
 
-    if all(title not in title_pos_dict for title in titles_info
-           if titles_info[title].get("optional", False) is False and title != "name"):  # only "name" title appears
+    if all(not title_pos_dict[title] for title in titles_info if title != "name"):  # only "name" title appears
         # word "Name" can appear on a page without being a Control Table page
         return None, pos_dict
-    if "name" not in title_pos_dict:
+    if not title_pos_dict["name"]:
         # "Name" is missing
         return None, pos_dict
 
-    missing_titles_names = [titles_info[title]["names"] for title in titles_info
-                            if title not in title_pos_dict and titles_info[title].get("optional", False) is False]
-    if missing_titles_names:  # non-optional titles are missing
+    missing_titles_names = [titles_info[title]["name"] for title in titles_info if not title_pos_dict[title]]
+    if missing_titles_names:  # titles are missing
         print_error(f"Tool was not able to analyze the whole page {num_page}: some information is missing:")
         print(missing_titles_names)
         return None, pos_dict
 
     for key in keys_to_del:
         del pos_dict[key]
-    return _sort_title_pos_dict(title_pos_dict), pos_dict
-
-
-def _sort_title_pos_dict(title_pos_dict: dict[str, Any]):
-    def convert_alnum_for_sort(alpha_numeric: str) -> tuple[int, str]:  # it has to work with 1a and 1b also
-        i = 0
-        while i < len(alpha_numeric):
-            c = alpha_numeric[i]
-            if not c.isnumeric():
-                break
-            i += 1
-        if i == 0:
-            return 100_000, alpha_numeric
-        return int(alpha_numeric[:i]), alpha_numeric[i:]
-
-    def split_key(key):
-        key_name = title_pos_dict[key]["key_name"]
-        if "[" not in key_name:  # there is no "[" only for Name key name, which has to appear first
-            return -1, ""
-        return convert_alnum_for_sort(key_name.split("[", 1)[1].split("]", 1)[0])
-
-    return {key: title_pos_dict[key] for key in sorted(title_pos_dict, key=split_key)}
+    return title_pos_dict, pos_dict

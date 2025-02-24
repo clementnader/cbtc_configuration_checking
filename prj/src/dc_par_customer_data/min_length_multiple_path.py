@@ -27,8 +27,8 @@ def min_length_multiple_path(in_cbtc: bool = False):
     multiple_path_len_dict = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (start_seg, start_downstream) in enumerate(sw_point_segs):
-        print_log(f"\r{progress_bar(i, nb_sw_point_segs)} processing length of multiple path "
-                  f"from point segment {start_seg}...", end="")
+        print_log_progress_bar(i, nb_sw_point_segs, f"processing multiple path length from point segment "
+                               f"{start_seg}")
         for end_seg, end_downstream in sw_point_segs[i + 1:]:
             end_upstream = not end_downstream
             dist, short_path, list_of_paths, _ = get_downstream_path(start_seg, end_seg,
@@ -56,8 +56,8 @@ def min_length_multiple_path(in_cbtc: bool = False):
                     "Long Path Switch": get_switch_on_path(long_path),
                 }
 
-    print_log(f"\r{progress_bar(nb_sw_point_segs, nb_sw_point_segs, end=True)} processing length of multiple paths "
-              f"(rhombus or trapezoid) finished.\n")
+    print_log_progress_bar(nb_sw_point_segs, nb_sw_point_segs, "processing length of multiple paths (rhombus "
+                           "or trapezoid) finished", end=True)
 
     multiple_path_len_dict = {x: multiple_path_len_dict[x]
                               for x in sorted(multiple_path_len_dict,

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-__all__ = ["Projects", "PROJECT_NAME", "DATABASE_LOC"]
+__all__ = ["DATABASE_LOC"]
 
 
 class Projects:
@@ -117,6 +117,7 @@ class ProjectDatabaseLoc:
     kit_c121_d470_dir = r""
     control_tables_route = ControlTablesLoc()
     control_tables_overlap = ControlTablesLoc()
+    control_tables_config_ini_file = r""
     ixl_apz = IxlApz()
     fouling_point_addr = r""
 
@@ -156,6 +157,16 @@ class ProjectDatabaseLoc:
             self.survey_loc.type_col = [4, 2]
             self.survey_loc.track_col = [2, 3]
             self.survey_loc.survey_kp_col = [3, 5]
+            # -- Control Tables -- #
+            self.control_tables_config_ini_file = "control_tables_configuration_ank.ini"
+            self.control_tables_route.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\Ank\Control Tables\B20AC0500161315E_04_01 - Route L2.pdf"]
+            self.control_tables_route.all_pages = [False]
+            self.control_tables_route.specific_pages = [(24, 104)]
+            self.control_tables_overlap.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\Ank\Control Tables\B20AC0500161316E_04_01 - Overlap L2.pdf"]
+            self.control_tables_overlap.all_pages = [False]
+            self.control_tables_overlap.specific_pages = [(18, 93)]
 
         # ------------------------------- Brussels -------------------------------#
         elif project_name.startswith("Brussels"):
@@ -173,6 +184,7 @@ class ProjectDatabaseLoc:
                     r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey.xlsx",
                     r"C:\Users\naderc\Desktop\BXL\AFS_BXL_1B0.xlsx"]
                 # -- Control Tables -- #
+                self.control_tables_config_ini_file = "control_tables_configuration_bxl.ini"
                 self.control_tables_route.control_tables_addr = [
                     r"C:\Users\naderc\Desktop\BXL\CONTROL TABLES\Control Tables Erasme Antenna 90000534.L02.FR 04.00"
                     r"\90000536.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.01.pdf",
@@ -204,6 +216,7 @@ class ProjectDatabaseLoc:
                     r"C:\Users\naderc\Desktop\BXL\BXL_Photobook_survey_1B2.xlsx",
                     r"C:\Users\naderc\Desktop\BXL\AFS_BXL_1B0.xlsx"]
                 # -- Control Tables -- #
+                self.control_tables_config_ini_file = "control_tables_configuration_bxl.ini"
                 self.control_tables_route.control_tables_addr = [
                     r"C:\Users\naderc\Desktop\BXL\PHASE 2\CONTROL TABLES"
                     r"\90000528.L02.FR-BXL_IXL_LISTE DES ITINÉRAIRES + PARAMÈTRES DES ITINÉRAIRES_FR_rev03.00.pdf",
@@ -419,8 +432,20 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Panama -------------------------------#
         elif project_name == Projects.Panama:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Panama\PAN_C_D470_08_03_00_V03\DC_SYS.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\Panama\PAN_C_D470_08_03_00_V03\DC_SYS.xls"
+            # self.dc_sys_addr = r"C:\Users\naderc\Desktop\Panama\PAN_C_D470_08_03_00_V03\DC_SYS_route.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Panama\PAN_C_D470_08_03_00_V03\DC_SYS_patch_track.xls"
             self.dc_par_addr = r"C:\Users\naderc\Desktop\Panama\PAN_C_D470_08_03_00_V03\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\Users\naderc\Desktop\Panama\PAN_C_D470_08_03_00_V03\C64_D413\DC_BOP.xls"
+            # -- Control Tables -- #
+            self.control_tables_route.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\Panama\CONTROL TABLES\PAN.SIG.IXL.A07.56EN_02.00 – Annex2.pdf"]
+            self.control_tables_route.all_pages = [True]
+            self.control_tables_route.specific_pages = [None]
+            self.control_tables_overlap.control_tables_addr = [
+                r"C:\Users\naderc\Desktop\Panama\CONTROL TABLES\PAN.SIG.IXL.A07.56EN_02.00 – Annex4.pdf"]
+            self.control_tables_overlap.all_pages = [True]
+            self.control_tables_overlap.specific_pages = [None]
 
         # ------------------------------- Riyadh -------------------------------#
         elif project_name == Projects.Riyadh:
@@ -572,9 +597,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Chennai CMRL -------------------------------#
         elif project_name == Projects.Chennai_CMRL:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_08_03_00_V00_02\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_08_03_00_V00_02\DC_PAR.xls"
-            self.dc_bop_addr = (r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_08_03_00_V00_02"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_S1_08_03_00_V01_01\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_S1_08_03_00_V01_01\DC_PAR.xls"
+            self.dc_bop_addr = (r"C:\Users\naderc\Desktop\INDIA\CHENNAI - CMRL\CMRL_C_D470_S1_08_03_00_V01_01"
                                 r"\C64_D413\DC_BOP.xls")
             # -- Control Tables -- #
             self.control_tables_route.control_tables_addr = [
@@ -721,6 +746,7 @@ class ProjectDatabaseLoc:
         self.kit_c121_d470_dir = r""
         self.control_tables_route = self.ControlTablesLoc()
         self.control_tables_overlap = self.ControlTablesLoc()
+        self.control_tables_config_ini_file = r""
         self.ixl_apz = self.IxlApz()
         self.fouling_point_addr = r""
 

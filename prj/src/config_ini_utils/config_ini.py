@@ -14,7 +14,7 @@ CONFIG_INI_FILE = "config.ini"
 
 
 def update_cctool_oo():
-    print_section_title(f"Read {CONFIG_INI_FILE} file to set up the CCTool-OO Schema file used by the tool.")
+    print_section_title(f"Read \"{CONFIG_INI_FILE}\" file to set up the CCTool-OO Schema file used by the tool.")
     DATABASE_LOC.reset()
     config = configparser.ConfigParser()
     config.read(CONFIG_INI_FILE, encoding="utf-8")
@@ -29,7 +29,7 @@ def update_cctool_oo():
 
 
 def update_config_info():
-    print_section_title(f"Read {CONFIG_INI_FILE} file to set up the database files used by the tool.")
+    print_section_title(f"Read \"{CONFIG_INI_FILE}\" file to set up the database files used by the tool.")
     DATABASE_LOC.reset()
     config = configparser.ConfigParser()
     config.read(CONFIG_INI_FILE, encoding="utf-8")
@@ -162,12 +162,16 @@ def update_apz_ixl_info(config: configparser.ConfigParser):
         print_log(f"\tCorresponding APZ number of columns is {Color.default}\"{ini_apz_nb_columns}\"{Color.reset}.")
         DATABASE_LOC.ixl_apz.apz_nb_columns = ini_apz_nb_columns
 
-    if any(not value for value in [DATABASE_LOC.ixl_apz.ixl_apz_file,
-                                   DATABASE_LOC.ixl_apz.ixl_apz_sheet_name,
-                                   DATABASE_LOC.ixl_apz.start_line,
-                                   DATABASE_LOC.ixl_apz.sig_column,
-                                   DATABASE_LOC.ixl_apz.apz_start_column,
-                                   DATABASE_LOC.ixl_apz.apz_nb_columns]):
+    list_info_not_present = [not value for value in [DATABASE_LOC.ixl_apz.ixl_apz_file,
+                                                     DATABASE_LOC.ixl_apz.ixl_apz_sheet_name,
+                                                     DATABASE_LOC.ixl_apz.start_line,
+                                                     DATABASE_LOC.ixl_apz.sig_column,
+                                                     DATABASE_LOC.ixl_apz.apz_start_column,
+                                                     DATABASE_LOC.ixl_apz.apz_nb_columns]]
+    if all(list_info_not_present):
+        # No IXL APZ specified
+        return
+    if any(list_info_not_present):
         print_warning(f"The IXL Approach Zone file information is not coherent, some info is missing.")
 
 

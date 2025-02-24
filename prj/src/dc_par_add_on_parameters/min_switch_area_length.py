@@ -22,7 +22,7 @@ def min_switch_area_length(in_cbtc: bool = False):
     dict_switch_area_length = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (sw, sw_value) in enumerate(sw_dict.items()):
-        print_log(f"\r{progress_bar(i, nb_sw)} processing length of switch area of {sw}...", end="")
+        print_log_progress_bar(i, nb_sw, f"processing length of switch area for {sw}")
         dict_switch_area_length[sw] = dict()
         sw_block_name, sw_block_value = get_block_associated_to_sw(sw_value)
         dict_switch_area_length[sw]["len_point_side_dict"] = get_len_point_side(sw_block_value, sw_value)
@@ -30,7 +30,7 @@ def min_switch_area_length(in_cbtc: bool = False):
         dict_switch_area_length[sw]["switch_area_length"] = (
                 dict_switch_area_length[sw]["min_flank_area_length_dict"]["min_flank_area_length"]
                 + dict_switch_area_length[sw]["len_point_side_dict"]["len_point_side"])
-    print_log(f"\r{progress_bar(nb_sw, nb_sw, end=True)} processing length of switches area finished.\n")
+    print_log_progress_bar(nb_sw, nb_sw, "processing length of switch areas finished", end=True)
 
     min_switch_area_len = min(value["switch_area_length"] for sw, value in dict_switch_area_length.items())
     corresponding_sw = [sw for sw, value in dict_switch_area_length.items()

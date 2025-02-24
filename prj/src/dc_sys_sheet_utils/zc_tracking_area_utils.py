@@ -127,6 +127,8 @@ def _get_zc_managing_ivb(ivb_name: str) -> Optional[str]:
 
 
 def _get_zc_managing_maz(maz_name: str) -> tuple[str, str]:
+    if not maz_name:
+        return None, None
     ls = get_line_section_of_obj(DCSYS.Zaum, maz_name)[0]
     zc = get_zc_managing_ls(ls)
     info = f"{maz_name} -> {ls} -> {zc}"
@@ -155,9 +157,10 @@ def _get_zc_managing_maz_on_zone(obj_type, obj_name: str) -> tuple[list[str], st
     info_list = list()
     for maz in maz_list:
         zc, info = _get_zc_managing_maz(maz)
-        info_list.append(info)
+        if info is not None:
+            info_list.append(info)
 
-        if zc not in zc_list:
+        if zc is not None and zc not in zc_list:
             zc_list.append(zc)
     return zc_list, "\n\t".join(info_list)
 

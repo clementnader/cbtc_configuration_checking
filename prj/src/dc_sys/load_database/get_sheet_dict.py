@@ -37,7 +37,7 @@ def get_generic_sh_dict(ws: xlrd.sheet, columns_dict: dict[str, Any], generic_ob
             key = get_generic_sh_object_key(cols, info_for_object)
             temp_dict[key] = info_for_object
     temp_dict = {key: temp_dict[key] for key in sorted(temp_dict.keys())}
-    sh_dict = {f"{ws.name}_{row+1}": val for row, val in enumerate(temp_dict.values())}
+    sh_dict = {f"{ws.name}_row{row}": val for row, val in enumerate(temp_dict.values(), start=3)}
     return sh_dict
 
 

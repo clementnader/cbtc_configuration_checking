@@ -6,10 +6,10 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 from ...dc_sys_sheet_utils.overlap_utils import get_overlap
 from ...dc_sys_draw_path.dc_sys_get_zones import get_zones_on_point
-from ...database_location import *
 from ..load_control_tables import *
 from ..control_tables_utils import *
 from .common_utils import *
+from .format_utils import *
 
 
 __all__ = ["check_overlap_control_tables"]
@@ -18,7 +18,7 @@ __all__ = ["check_overlap_control_tables"]
 def check_overlap_control_tables(use_csv_file: bool = False):
     ovl_dict = get_overlap()
     ovl_control_tables = load_control_tables(CONTROL_TABLE_TYPE.overlap, use_csv_file)
-    ovl_control_tables = _update_ovl_control_tables(ovl_control_tables)
+    ovl_control_tables = _update_ovl_control_tables_normal_reverse(ovl_control_tables)
 
     print_title("Overlap verification...", color=Color.mint_green)
     list_missing_ovl = list()
@@ -42,19 +42,16 @@ def _check_ovl(ovl: str, ovl_val: dict[str, str], ovl_control_tables: dict[str, 
     ovl_control_table, table_name = _find_ovl_control_table(ovl, ovl_control_tables)
     if not ovl_control_table:
         return None, ovl
-    destination_point = [ovl_control_table[key].upper() for key in ovl_control_table.keys()
-                         if key.startswith(OVL_DESTINATION_POINT_CONTROL_TABLE)][0]
-    ovl_sw = [ovl_control_table[key].upper() for key in ovl_control_table.keys()
-              if key.startswith(OVL_SW_CONTROL_TABLE)][0]
-    ovl_path = [ovl_control_table[key].upper() for key in ovl_control_table.keys()
-                if key.startswith(OVL_PATH_CONTROL_TABLE)][0]  # TODO use it to determine DC_SYS VSP
+    ct_destination_point = ovl_control_table[OVERLAP_SIGNAL_NAME_KEY].upper().strip()
+    ct_ovl_path = ovl_control_table[OVERLAP_IVB_LIST_KEY].upper().strip()
+    ct_ovl_sw = ovl_control_table[OVERLAP_SWITCHES_LIST_KEY].upper().strip()
 
     result = True
-    if _check_ovl_destination_point(ovl, ovl_val, destination_point, table_name) is False:
+    if _check_ovl_destination_point(ovl, ovl_val, ct_destination_point, table_name) is False:
         result = False
-    if _check_ovl_sw(ovl, ovl_val, ovl_sw, ovl_path, table_name) is False:
+    if _check_ovl_path(ovl, ovl_val, ct_ovl_path, table_name) is False:
         result = False
-    if _check_ovl_path(ovl, ovl_val, ovl_path, table_name) is False:
+    if _check_ovl_sw(ovl, ovl_val, ct_ovl_sw, ct_ovl_path, table_name) is False:
         result = False
     return result, None
 
@@ -63,129 +60,128 @@ def _find_ovl_control_table(ovl_dc_sys: str, ovl_control_tables: dict[str, dict[
     for ovl_control_table, ovl_val in ovl_control_tables.items():
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys):
             return ovl_val, ovl_control_table
+    # If failed, we try to associate the overlap names using the corresponding normal and reverse positions
+    for ovl_control_table, ovl_val in ovl_control_tables.items():
+        if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, test_with_ovl_pos=True,
+                                                    ovl_val=ovl_val):
+            return ovl_val, ovl_control_table
+    # If failed, we try to associate the overlap names removing the leading zeros in the signal name
     for ovl_control_table, ovl_val in ovl_control_tables.items():
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, remove_zero=True):
-            return ovl_val, ovl_control_table
-    for ovl_control_table, ovl_val in ovl_control_tables.items():
-        if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys,
-                                                    test_with_ovl_pos=True, ovl_val=ovl_val):
             return ovl_val, ovl_control_table
     return {}, ""
 
 
-def _correspondence_ovl_control_table_dc_sys(ovl_control_table: str, ovl_dc_sys: str, remove_zero: bool = False,
+def _correspondence_ovl_control_table_dc_sys(ct_ovl: str, dc_sys_ovl: str, remove_zero: bool = False,
                                              test_with_ovl_pos: bool = False, ovl_val: dict[str, Any] = None):
-    if remove_zero is True:
-        # try removing leading 0 in sig names
-        split_text = [sig.removeprefix("0") for sig in ovl_dc_sys.split("_")]
-    else:
-        split_text = [sig for sig in ovl_dc_sys.split("_")]
-    end = split_text[-1]
-    if len(end) > 2:
-        ovl_dc_sys = end
-    else:
-        ovl_dc_sys = split_text[-2] + end
-    split_text = ovl_control_table.split("-", 1)
-    sig = split_text[0]
-    if test_with_ovl_pos and PROJECT_NAME.startswith("Glasgow"):
-        end = split_text[1].removeprefix(sig).removeprefix("o").removesuffix("o")
-        sig = "S" + sig
-    elif test_with_ovl_pos and ovl_val["nb_occurrences"] == 1:
-        sig = sig.removesuffix("N").removesuffix("R")
-        end = ""
-    elif test_with_ovl_pos and "ovl_pos" in ovl_val:
-        end = ovl_val["ovl_pos"]
-    else:
-        end = split_text[1].removeprefix(sig).removeprefix("o").removesuffix("o")
+    # Control Tables Overlap
+    split_text = ct_ovl.split("-", 1)
+    ct_sig = split_text[0]
+    ct_ovl = split_text[1]
 
-    if remove_zero is True:
-        # try removing leading 0 in sig names
-        ovl_control_table = sig.removeprefix("0") + (end if end else "")
-    else:
-        ovl_control_table = sig + (end if end else "")
-    return ovl_dc_sys == ovl_control_table
-
-
-def _update_ovl_control_tables(ovl_control_tables: dict[str, dict[str, Any]]):
-    for ovl_control_table, ovl_val in ovl_control_tables.items():
-        ovl_sw = [ovl_val[key].upper() for key in ovl_val.keys() if key.startswith(OVL_SW_CONTROL_TABLE)][0]
-        sig = ovl_control_table.split("-", 1)[0]
-        list_occurrences = [key for key in ovl_control_tables if key.split("-", 1)[0] == sig]
-        ovl_control_tables[ovl_control_table]["nb_occurrences"] = len(list_occurrences)
-        if len(list_occurrences) == 2:
-            if ovl_sw.endswith("N"):
-                ovl_control_tables[ovl_control_table]["ovl_pos"] = "N"
-            elif ovl_sw.endswith("R"):
-                ovl_control_tables[ovl_control_table]["ovl_pos"] = "R"
-    return ovl_control_tables
-
-
-def _check_ovl_destination_point(ovl: str, ovl_val: dict[str, Any], destination_point: str, table_name: str):
-    dc_sys_destination_signal: str = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.DestinationSignal)
-    if dc_sys_destination_signal.endswith(destination_point.removeprefix("0")):
+    if dc_sys_ovl.endswith(ct_ovl):
         return True
-    print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, DC_SYS Destination Signal {Color.yellow}"
-                f"{dc_sys_destination_signal}{Color.reset} does not correspond to the Control Table {Color.green}"
-                f"{table_name}{Color.reset} where Destination Point is {Color.yellow}{destination_point}{Color.reset}.")
+
+    if test_with_ovl_pos and ovl_val["nb_occurrences"] == 1:  # if there is only 1 overlap for this signal in DC_SYS,
+        # we only consider the signal name as the overlap name
+        ct_end = ""
+    elif test_with_ovl_pos and "ovl_pos" in ovl_val:  # if there are 2 overlaps for this signal in DC_SYS,
+        # we use the corresponding R/N suffix using the switch R/N position
+        ct_end = ovl_val["ovl_pos"]
+    else:
+        # The IXL overlap name is signal-signalEND
+        ct_end = ct_ovl.removeprefix(ct_sig).removeprefix("o").removesuffix("o")
+
+    ct_ovl = ct_sig + (("_" + ct_end) if ct_end else "")
+
+    if dc_sys_ovl.endswith(ct_ovl):
+        return True
+
+    if remove_zero is True:
+        # try removing leading 0 in sig names
+        ct_ovl = ct_ovl.removeprefix("0")
+        dc_sys_ovl = "_".join(sig.removeprefix("0") for sig in dc_sys_ovl.split("_"))
+        if dc_sys_ovl.endswith(ct_ovl):
+            return True
     return False
 
 
-def _check_ovl_sw(ovl: str, ovl_val: dict[str, Any], ovl_sw: str, ovl_path: str, table_name: str):
+def _update_ovl_control_tables_normal_reverse(ovl_control_tables: dict[str, dict[str, Any]]):
+    for ovl_control_table, ovl_val in ovl_control_tables.items():
+        ct_ovl_sw = ovl_val[OVERLAP_SWITCHES_LIST_KEY].upper().strip()
+        ct_ovl_sw_list = get_control_tables_switch_list(ct_ovl_sw)
+
+        sig = ovl_control_table.split("-", 1)[0]
+        # Get all overlaps for this signal
+        list_occurrences = [key for key in ovl_control_tables if key.split("-", 1)[0] == sig]
+        ovl_control_tables[ovl_control_table]["nb_occurrences"] = len(list_occurrences)
+
+        # In case there are 2 overlaps for this same signal, we try and find the normal and reverse one.
+        if len(list_occurrences) == 2:
+            print("here", ct_ovl_sw_list)
+            if ct_ovl_sw_list[0].endswith("N"):
+                ovl_control_tables[ovl_control_table]["ovl_pos"] = "N"
+            elif ct_ovl_sw_list[0].endswith("R"):
+                ovl_control_tables[ovl_control_table]["ovl_pos"] = "R"
+
+    return ovl_control_tables
+
+
+def _check_ovl_destination_point(ovl: str, ovl_val: dict[str, Any], ct_destination_point: str, table_name: str):
+    dc_sys_destination_signal: str = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.DestinationSignal)
+    if dc_sys_destination_signal.endswith(ct_destination_point.removeprefix("0")):
+        return True
+    print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, DC_SYS Destination Signal {Color.yellow}"
+                f"{dc_sys_destination_signal}{Color.reset} does not correspond to the Control Table {Color.green}"
+                f"{table_name}{Color.reset} where Destination Point is {Color.yellow}{ct_destination_point}{Color.reset}.")
+    return False
+
+
+def _check_ovl_sw(ovl: str, ovl_val: dict[str, Any], ct_ovl_sw: str, ct_ovl_path: str, table_name: str):
     dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]
-    if ovl_sw == "--":
-        ovl_sw_list = []
-    else:
-        ovl_sw_list = ovl_sw.split(",")
-        ovl_sw_list = [sw.strip().removeprefix("0") for sw in ovl_sw_list]
-        if PROJECT_NAME == Projects.Copenhagen or PROJECT_NAME == Projects.Thessaloniki:
-            ovl_sw_list = [sw for sw in ovl_sw_list if len(sw) < 5]  # In Control Table, when on diamond crossing,
-            # an extra switch appears with 4 digits (and the letter R or N at the end)
-        elif PROJECT_NAME == Projects.Milan:
-            ovl_sw_list = [sw for sw in ovl_sw_list if not sw.startswith('I') and not sw.startswith("SC")]
-            # In Control Table, when on diamond crossing, an extra switch appears starting by an 'I' or 'SC'
-        elif PROJECT_NAME == Projects.Riyadh:
-            ovl_sw_list = [sw.replace("-", "") for sw in ovl_sw_list]  # In Control Table, there is a hyphen
-            # in the switches name that does not appear in the DC_SYS
+    ct_ovl_sw_list = get_control_tables_switch_list(ct_ovl_sw)
 
     result = True
-
-    if len(ovl_sw_list) != len(dc_sys_ovl_sw):
+    if len(ct_ovl_sw_list) != len(dc_sys_ovl_sw):
         dc_sys_ovl_sw_str = ', '.join(dc_sys_ovl_sw) if dc_sys_ovl_sw else "None"
         print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, DC_SYS Overlap Switch does not have the same "
                     f"number of switches {Color.yellow}({len(dc_sys_ovl_sw)}){Color.reset} as in the Control Table "
-                    f"{Color.green}{table_name}{Color.reset} {Color.yellow}({len(ovl_sw_list)}){Color.reset}.\n"
+                    f"{Color.green}{table_name}{Color.reset} {Color.yellow}({len(ct_ovl_sw_list)}){Color.reset}.\n"
                     f"DC_SYS Overlap Switch: {Color.white}{dc_sys_ovl_sw_str}{Color.reset}\n"
-                    f"Control Table Switch Overlap Path: {Color.beige}{ovl_sw}{Color.reset}"
-                    f"\n{Color.default}Control Table Overlap IVB Path: {ovl_path}")
+                    f"Control Table Switch Overlap Path: {Color.beige}{ct_ovl_sw}{Color.reset}"
+                    f"\n{Color.default}Control Table Overlap IVB Path: {ct_ovl_path}")
         result = False
 
-    for dc_sys_sw, control_table_sw in zip(dc_sys_ovl_sw, ovl_sw_list):
-        if not dc_sys_sw.endswith(control_table_sw):
+    for dc_sys_sw, control_table_sw in zip(dc_sys_ovl_sw, ct_ovl_sw_list):
+        if not are_sw_names_matching(control_table_sw, dc_sys_sw):
             dc_sys_ovl_sw_str = f"{csi_bg_color(Color.yellow)}{Color.black}{dc_sys_sw}{Color.reset}{Color.white}".join(
                 ', '.join(dc_sys_ovl_sw).split(dc_sys_sw))
             ovl_sw_str = f"{csi_bg_color(Color.yellow)}{Color.black}{control_table_sw}{Color.reset}{Color.white}".join(
-                ovl_sw.split(control_table_sw))
-            if any(sw.endswith(control_table_sw) for sw in dc_sys_ovl_sw):
+                ct_ovl_sw.split(control_table_sw))
+            if any(are_sw_names_matching(control_table_sw, sw) for sw in dc_sys_ovl_sw):
+                corresponding_sw = [sw for sw in dc_sys_ovl_sw if are_sw_names_matching(control_table_sw, sw)][0]
+                dc_sys_ovl_sw_str = (f"{csi_bg_color(Color.light_red)}{Color.black}{corresponding_sw}"
+                                     f"{Color.reset}{Color.white}").join(dc_sys_ovl_sw_str.split(corresponding_sw))
                 print_warning(f"For Overlap {Color.green}{ovl}{Color.reset}, the order of the switches does not "
                               f"correspond to the Control Table {Color.green}{table_name}{Color.reset}:\n"
                               f"{Color.blue}{dc_sys_sw = }{Color.reset} does not correspond to "
                               f"{Color.blue}{control_table_sw = }{Color.reset}.\n"
                               f"DC_SYS Overlap Switch: {Color.white}{dc_sys_ovl_sw_str}{Color.reset}\n"
                               f"Control Table Switch Overlap Path: {Color.beige}{ovl_sw_str}{Color.reset}"
-                              f"\n{Color.default}Control Table Overlap IVB Path: {ovl_path}")
+                              f"\n{Color.default}Control Table Overlap IVB Path: {ct_ovl_path}")
             else:
                 print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, switch {Color.blue}{dc_sys_sw = }"
                             f"{Color.reset} does not correspond to switch {Color.blue}{control_table_sw = }"
                             f"{Color.reset} in the Control Table {Color.green}{table_name}{Color.reset}.\n"
                             f"DC_SYS Overlap Switch: {Color.white}{dc_sys_ovl_sw_str}{Color.reset}\n"
                             f"Control Table Switch Overlap Path: {Color.beige}{ovl_sw_str}{Color.reset}"
-                            f"\n{Color.default}Control Table Overlap IVB Path: {ovl_path}")
+                            f"\n{Color.default}Control Table Overlap IVB Path: {ct_ovl_path}")
             result = False
 
     return result
 
 
-def _check_ovl_path(ovl_name: str, ovl_val: dict[str, Any], ovl_path: str, table_name: str):
+def _check_ovl_path(ovl_name: str, ovl_val: dict[str, Any], ct_ovl_path: str, table_name: str):
     result = True
     # dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]  # TODO use the switch to determine
     #                                                               which IVB limit is the correct one
@@ -204,8 +200,7 @@ def _check_ovl_path(ovl_name: str, ovl_val: dict[str, Any], ovl_path: str, table
     ivb_on_vsp = _get_ivb_on_vsp(ovl_name, vsp_seg, vsp_x, vsp_direction)
 
     # Work on Control Table
-    ovl_path_list = ovl_path.split(",")
-    ovl_path_list = [ivb.strip() for ivb in ovl_path_list]
+    ovl_path_list = get_control_tables_ivb_list(ct_ovl_path)
     last_ivb = ovl_path_list[-1]
     corresponding_last_ivb = _get_corresponding_ivb(last_ivb)
 
@@ -223,14 +218,14 @@ def _check_ovl_path(ovl_name: str, ovl_val: dict[str, Any], ovl_path: str, table
                         f"It is inside {Color.white}{ivb_on_vsp}{Color.reset} "
                         f"{Color.default}(it is at KP {vsp_kp} on track {vsp_track}){Color.reset}.\n"
                         f"{Color.default}In Control Table {Color.green}{table_name}{Color.default}, "
-                        f"the path is {Color.yellow}{ovl_path = }{Color.default} "
+                        f"the path is {Color.yellow}{ct_ovl_path = }{Color.default} "
                         f"(last IVB: {Color.beige}{last_ivb} -> {corresponding_last_ivb}{Color.default})")
             result = False
 
     if corresponding_last_ivb is None:
         print_error(f"For Overlap {Color.green}{ovl_name}{Color.reset}, corresponding to Control Table "
                     f"{Color.green}{table_name}{Color.reset},\n"
-                    f"last IVB of the path {Color.yellow}{ovl_path = }{Color.reset} is not found in the DC_SYS.\n"
+                    f"last IVB of the path {Color.yellow}{ct_ovl_path = }{Color.reset} is not found in the DC_SYS.\n"
                     f"Control Table Overlap last IVB: {Color.beige}{last_ivb} -> {corresponding_last_ivb}{Color.reset}"
                     f"\n{Color.default}DC_SYS Overlap last IVB: {Color.white}{ivb_on_vsp}{Color.reset} "
                     f"{Color.default}(on joint with {ivb_downstream_vsp})")
@@ -240,7 +235,7 @@ def _check_ovl_path(ovl_name: str, ovl_val: dict[str, Any], ovl_path: str, table
         print_error(f"For Overlap {Color.green}{ovl_name}{Color.reset}, corresponding to Control Table "
                     f"{Color.green}{table_name}{Color.reset},\n"
                     f"VSP {Color.blue}({vsp_seg}, {vsp_x}){Color.reset} does not correspond to the last IVB of "
-                    f"the path {Color.yellow}{ovl_path = }{Color.reset} in the Control Table.\n"
+                    f"the path {Color.yellow}{ct_ovl_path = }{Color.reset} in the Control Table.\n"
                     f"DC_SYS Overlap last IVB: {Color.white}{ivb_on_vsp}{Color.reset} "
                     f"{Color.default}(on joint with {ivb_downstream_vsp}){Color.reset}\n"
                     f"Control Table Overlap last IVB: {Color.beige}{last_ivb} -> {corresponding_last_ivb}{Color.reset}")
@@ -295,11 +290,13 @@ def _is_ovl_in_dc_sys(ovl_control_table: str, ovl_val: dict[str, Any], ovl_dict:
     for ovl_dc_sys in ovl_dict.keys():
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys):
             return None
+    # If failed, we try to associate the overlap names using the corresponding normal and reverse positions
+    for ovl_dc_sys in ovl_dict.keys():
+        if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, test_with_ovl_pos=True,
+                                                    ovl_val=ovl_val):
+            return f"{ovl_dc_sys} -> {ovl_control_table}"
+    # If failed, we try to associate the overlap names removing the leading zeros in the signal name
     for ovl_dc_sys in ovl_dict.keys():
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, remove_zero=True):
             return None
-    for ovl_dc_sys in ovl_dict.keys():
-        if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys,
-                                                    test_with_ovl_pos=True, ovl_val=ovl_val):
-            return f"{ovl_dc_sys} -> {ovl_control_table}"
     return False

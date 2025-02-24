@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
 from ..dc_sys_get_cbtc_territory import *
@@ -26,6 +27,7 @@ def get_block_min_length(in_cbtc: bool = False):
     print(f"The minimum block length is, {print_in_cbtc(in_cbtc)}:"
           f"\n{min_block = }"
           f"\n > for {list_min_block}")
+    print_bar()
     return sort_dict(dict_len_block)
 
 

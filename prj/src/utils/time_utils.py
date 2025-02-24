@@ -30,15 +30,15 @@ def format_timespan_simple(seconds: float) -> str:
     hr, mn, s, ms = split_time(seconds)
     list_time_str = list()
     if hr > 0:
-        list_time_str.append(f"{hr} hr")
+        list_time_str.append(f"{hr}hr")
     if mn > 0:
-        list_time_str.append(f"{mn} mn")
+        list_time_str.append(f"{mn}mn")
     if s > 0:
-        list_time_str.append(f"{s} s")
+        list_time_str.append(f"{s}s")
     if ms > 0:
-        list_time_str.append(f"{ms} ms")
+        list_time_str.append(f"{ms}ms")
     if not list_time_str:
-        return "0 s"
+        return "0s"
     return " ".join(list_time_str)
 
 

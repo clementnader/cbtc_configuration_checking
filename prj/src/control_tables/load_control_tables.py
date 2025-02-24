@@ -7,6 +7,7 @@ from ..database_location import *
 from .control_tables_utils import *
 from .pdf_analysis import *
 from .csv_control_tables import *
+from .ini_file import *
 
 
 __all__ = ["load_control_tables"]
@@ -15,12 +16,14 @@ __all__ = ["load_control_tables"]
 def load_control_tables(control_table_type: str, use_csv_file: bool = False,
                         supersede_input_file_number: int = None,
                         supersede_specific_pages: Union[int, tuple[int, int]] = None,
-                        debug: bool = False):
+                        debug: bool = False, print_pdf_code: bool = False):
 
     if control_table_type not in [CONTROL_TABLE_TYPE.route, CONTROL_TABLE_TYPE.overlap]:
         print_error(f"{Color.yellow}{control_table_type = }{Color.reset} is unknown, expected "
                     f"{CONTROL_TABLE_TYPE.route} or {CONTROL_TABLE_TYPE.overlap}.")
         raise UnknownControlTablesType
+
+    get_control_tables_template_info()  # Read the information from the .ini file
 
     control_tables_loc_info = list(_get_control_tables_loc_info(control_table_type))
     result_files_name = _get_result_files_name(control_tables_loc_info)
@@ -38,8 +41,9 @@ def load_control_tables(control_table_type: str, use_csv_file: bool = False,
             specific_pages = supersede_specific_pages if supersede_specific_pages is not None else specific_pages
             all_pages = False if supersede_specific_pages is not None else all_pages
             control_table_info = _load_control_table_info(control_table_type, control_table_addr, all_pages,
-                                                          specific_pages, i, nb_of_control_tables, debug=debug)
-            create_csv_file_control_table(control_table_info, result_file_name)
+                                                          specific_pages, i, nb_of_control_tables, debug=debug,
+                                                          print_pdf_code=print_pdf_code)
+            control_table_info = create_csv_file_control_table(control_table_info, result_file_name)
 
         else:
             control_table_info = analyze_csv_file_control_table(result_file_name)
@@ -51,7 +55,7 @@ def load_control_tables(control_table_type: str, use_csv_file: bool = False,
 
 def _load_control_table_info(control_table_type: str, control_table_addr: str, all_pages: bool,
                              specific_pages: Union[int, tuple[int, int]], i: int, nb_of_control_tables: int,
-                             debug: bool = False):
+                             debug: bool = False, print_pdf_code: bool = False):
     if all_pages:
         print(f"\n {i}/{nb_of_control_tables} - "
               f"{Color.white}{Color.underline}Conversion of {Color.yellow}{control_table_type.title()}"
@@ -75,7 +79,7 @@ def _load_control_table_info(control_table_type: str, control_table_addr: str, a
                                if isinstance(specific_pages, tuple)
                                else [specific_pages])
     control_table_info = control_tables_pdf_parsing(control_table_type, control_table_addr, list_specific_pages,
-                                                    debug=debug)
+                                                    debug=debug, print_pdf_code=print_pdf_code)
     return control_table_info
 
 

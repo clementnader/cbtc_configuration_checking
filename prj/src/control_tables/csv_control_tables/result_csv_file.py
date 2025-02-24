@@ -14,7 +14,8 @@ def analyze_csv_file_control_table(result_file: str) -> dict:
         csv[i] = line.removesuffix("\n")
     res_dict = dict()
     headers = csv[0].split(";")
-    for line in csv[1:]:
+    # Line 1 (second line) gives the key names from the PDF file, they are for information only.
+    for line in csv[2:]:
         info = line.split(";")
         name = info[0].strip()
         res_dict[name] = dict()
@@ -23,16 +24,19 @@ def analyze_csv_file_control_table(result_file: str) -> dict:
     return res_dict
 
 
-def create_csv_file_control_table(res_dict: dict, result_file: str) -> None:
+def create_csv_file_control_table(res_dict: dict, result_file: str) -> dict:
+    control_table_info = dict()
     csv = str()
-    for tables_dict in res_dict.values():
+    for name, tables_dict in res_dict.items():
+        control_table_info[name] = {val["csv_title"]: val["text"] for val in tables_dict.values()}
         if not csv:
-            csv = ";".join([key_name for key_name in tables_dict.keys()]) + "\n"
-        csv += ";".join([val for val in tables_dict.values()]) + "\n"
-    if not csv.strip():
-        return
-    result_file = _create_csv(csv, result_file)
-    print_success(f"The result CSV file can be accessed at \"{result_file}\".")
+            csv = ";".join([val["csv_title"] for val in tables_dict.values()]) + "\n"
+            csv += ";".join([key_name for key_name in tables_dict.keys()]) + "\n"
+        csv += ";".join([val["text"] for val in tables_dict.values()]) + "\n"
+    if csv.strip():
+        result_file = _create_csv(csv, result_file)
+        print_success(f"The result CSV file can be accessed at \"{result_file}\".")
+    return control_table_info
 
 
 def _create_csv(csv: str, result_file: str) -> str:

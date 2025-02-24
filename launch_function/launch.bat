@@ -1,7 +1,7 @@
 @echo off
 title CBTC SA Verification Tool
 @REM Configure cmd window size.
-mode con: cols=160 lines=40
+mode con: cols=180 lines=40
 @REM Configure cmd window buffer size to 9000 lines.
 powershell -command "& {$pshost = Get-Host; $pswindow = $pshost.UI.RawUI; $newsize = $pswindow.BufferSize; $newsize.Height = 9000; $pswindow.BufferSize = $newsize}"
 @REM Set current directory to the directory containing the batch file.

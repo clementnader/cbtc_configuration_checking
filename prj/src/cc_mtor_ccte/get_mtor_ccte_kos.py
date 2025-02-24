@@ -28,7 +28,7 @@ def get_mtor_ccte_ko():
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, file in enumerate(list_of_files):
         first_ko = True
-        print_log(f"\r{progress_bar(i, nb_files)} analyzing {file}...", end="")
+        print_log_progress_bar(i, nb_files, f"analyzing {file}")
         temp_dict, mtor = _analyze_mtor_ccte_file(file)
         if temp_dict is None:
             continue
@@ -48,8 +48,8 @@ def get_mtor_ccte_ko():
                     print(f"A different KO is seen on key {Color.blue}{key}{Color.reset}, "
                           f"old KO is {Color.light_yellow}\"{dict_of_kos[sub_dict_name][key]}\"{Color.reset}, "
                           f"new KO is {Color.yellow}\"{val}\"{Color.reset}\".")
-    print_log(f"\r{progress_bar(nb_files, nb_files, end=True)} analysis of "
-              f"all MTOR and CCTE Plugs Verification files is done.")
+    print_log_progress_bar(nb_files, nb_files, "analysis of all MTOR and CCTE Plugs Verification files is done",
+                           end=True)
 
 
 def _analyze_mtor_ccte_file(file):

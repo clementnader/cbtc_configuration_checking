@@ -7,3 +7,4 @@ CVS
 .cvsignore
 *.log
 *.xls*
+*.csv

@@ -25,7 +25,8 @@ def r_mes_pas_itf_3(in_cbtc: bool = False):
     print_title(f"Verification of R_MES_PAS_ITF_3\nZC -> IXL Interface", color=Color.mint_green)
     _rule_3_check_plt(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.QUAI), in_cbtc)
     _rule_3_check_signal(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.SIGNAL), in_cbtc)
-    _rule_3_check_block(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.CDV), in_cbtc)
+    if "AFiabiliser" in get_class_attr_dict(DCSYS.CDV):
+        _rule_3_check_block(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.CDV), in_cbtc)
     _rule_3_check_ivb(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.IVB), in_cbtc)
     _rule_3_check_switch(get_sub_dict_zc_ixl_itf(TypeClasseObjetPASMES.AIGUILLE), in_cbtc)
     if "GES" in get_class_attr_dict(DCSYS) and "CBTC_PROTECTION_ZONE" in get_class_attr_dict(GESType):
@@ -98,14 +99,15 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
                           TypeNomLogiqueInfoPASMES.CBTC_APZ, shall_be_vital=True) is False:
             success = False
 
-        with_arc = (is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Da_Passage) == YesOrNo.O
-                    and get_dc_sys_value(sig, DCSYS.Sig.TypeDa) in [TypeDA.SECTIONAL_RELEASE,
-                                                                    TypeDA.TRAIN_PASSAGE_PROVING])
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_arc, "flag [With ARC] set to 'Y' and "
-                          "[ARC Type] = 'SECTIONAL_RELEASE' or 'TRAIN_PASSAGE_PROVING'",
-                          TypeNomLogiqueInfoPASMES.TRAIN_PASS_HS, shall_be_vital=True,
-                          only_one_zc=True, sig_upstream_ivb=False) is False:
-            success = False
+        if "TypeDa" in get_class_attr_dict(DCSYS.Sig):
+            with_arc = (is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Da_Passage) == YesOrNo.O
+                        and get_dc_sys_value(sig, DCSYS.Sig.TypeDa) in [TypeDA.SECTIONAL_RELEASE,
+                                                                        TypeDA.TRAIN_PASSAGE_PROVING])
+            if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_arc, "flag [With ARC] set to 'Y' and "
+                              "[ARC Type] = 'SECTIONAL_RELEASE' or 'TRAIN_PASSAGE_PROVING'",
+                              TypeNomLogiqueInfoPASMES.TRAIN_PASS_HS, shall_be_vital=True,
+                              only_one_zc=True, sig_upstream_ivb=False) is False:
+                success = False
 
         related_ovl_list = get_related_overlaps(sig_name)
         ovl_names = [ovl[0] for ovl in related_ovl_list]

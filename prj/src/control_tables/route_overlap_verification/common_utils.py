@@ -24,17 +24,17 @@ def print_route_overlap_results(route_overlap_str: str, result: bool, nb_in_dc_s
     if not list_missing_in_dc_sys and list_missing_in_control_tables:
         print_warning(f"All {route_overlap_str}s from the Control Tables are implemented, "
                       f"but extra {route_overlap_str}s appear in the DC_SYS.\n",
-                      no_newline=True, no_prefix=True)
+                      no_prefix=True)
     elif list_missing_in_dc_sys and not list_missing_in_control_tables:
         print_warning(f"All {route_overlap_str}s in the DC_SYS appear in the Control Tables, "
                       f"but extra {route_overlap_str}s in the Control Tables are missing in the DC_SYS.\n",
-                      no_newline=True, no_prefix=True)
+                      no_prefix=True)
     elif list_missing_in_dc_sys and list_missing_in_control_tables:
         print_warning(f"{route_overlap_str.title()}s are missing between the DC_SYS and the Control Tables.\n",
-                      no_newline=True, no_prefix=True)
+                      no_prefix=True)
     else:
         print_success(f"All {route_overlap_str}s have been found between the DC_SYS and the Control Tables.\n",
-                      no_newline=True, no_prefix=True)
+                      no_prefix=True)
 
     if list_missing_in_control_tables:
         print_section_title(f"Missing information for {route_overlap_str.title()}:")

@@ -63,7 +63,7 @@ def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any
     nb_sigs = len(zsm_sigs_dict)
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (sig_name, related_zsm_list) in enumerate(zsm_sigs_dict.items()):
-        print_log(f"\r{progress_bar(i, nb_sigs)} processing verification of R_ZSM_3 of {sig_name}...", end="")
+        print_log_progress_bar(i, nb_sigs, f"processing verification of R_ZSM_3 of {sig_name}")
         sig_type = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.Type)
         sig_direction = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.Sens)
         res_dict[sig_name] = {"sig_name": sig_name, "sig_type": sig_type, "sig_direction": sig_direction}
@@ -92,7 +92,7 @@ def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any
                                    "upstream_track": corresponding_entrance_track,
                                    "upstream_kp": corresponding_entrance_kp})
 
-    print_log(f"\r{progress_bar(nb_sigs, nb_sigs, end=True)} verification of R_ZSM_3 finished.\n")
+    print_log_progress_bar(nb_sigs, nb_sigs, "verification of R_ZSM_3 finished", end=True)
 
     return res_dict
 

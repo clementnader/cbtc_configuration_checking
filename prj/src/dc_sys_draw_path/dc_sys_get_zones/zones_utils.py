@@ -63,6 +63,7 @@ def _update_segs_within_zones(obj_type_name: str) -> None:
 def _get_next_segments(obj_type_name: str, obj_name: str, start_seg: str, start_x: float, downstream: bool,
                       zone_limits: list[tuple[str, float, bool]]) -> None:
     global ZONE_SEGMENTS
+    direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
 
     if _is_first_seg_on_another_limit(obj_type_name, obj_name, start_seg, start_x, downstream, zone_limits):
         return
@@ -77,7 +78,8 @@ def _get_next_segments(obj_type_name: str, obj_name: str, start_seg: str, start_
             print_warning(f"{Color.beige}{obj_type_name}{Color.reset} {Color.yellow}{obj_name}{Color.reset} is open, "
                           f"an end of track has been reached while inside the zone. "
                           f"The zone was traveled by starting by the point {(start_seg, start_x)} in direction "
-                          f"{'downstream' if downstream else 'upstream'}.")
+                          f"{direction}.")
+            print(f"{obj_name}:", load_sheet(obj_type_name)[obj_name])
 
         for next_seg in get_linked_segs(seg, inner_downstream):
             if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
@@ -109,7 +111,9 @@ G_ALREADY_PRINTED = list()
 def _is_first_seg_on_another_limit(obj_type_name: str, obj_name: str, start_seg: str, start_x: float, downstream: bool,
                                   zone_limits: list[tuple[str, float, bool]]) -> bool:
     global G_ALREADY_PRINTED
+    direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
     for limit_seg, limit_x, limit_downstream in zone_limits:
+        limit_direction = Direction.CROISSANT if limit_downstream else Direction.DECROISSANT
         if (limit_seg, limit_x, limit_downstream) == (start_seg, start_x, downstream):  # the limit corresponding to the
             # start point
             continue
@@ -119,31 +123,35 @@ def _is_first_seg_on_another_limit(obj_type_name: str, obj_name: str, start_seg:
                 return True
             G_ALREADY_PRINTED.append((obj_type_name, obj_name, start_seg, start_x, downstream))
             print_warning(f"Zone {Color.beige}{obj_type_name}{Color.reset} {Color.yellow}{obj_name}{Color.reset} "
-                          f"is punctual: there are 2 limits on the same point in opposite directions.")
-            print((start_seg, start_x, downstream))
+                          f"is one point: there are 2 limits on the same point in opposite directions.")
+            print_warning((start_seg, start_x), no_prefix=True)
+            print(f"{obj_name}:", load_sheet(obj_type_name)[obj_name])
             return True
         if start_seg == limit_seg:
             if (downstream and start_x <= limit_x) or (not downstream and start_x >= limit_x):
                 if not downstream == limit_downstream:
                     return True
                 print_error(f"Reach a limit for {Color.beige}{obj_type_name}{Color.reset} "
-                            f"{Color.yellow}{obj_name}{Color.reset} but with a different direction.")
-                print(f"{start_seg = }, {start_x = }, {downstream = }")
-                print((limit_seg, limit_x, limit_downstream))
+                            f"{Color.yellow}{obj_name}{Color.reset} but with a different direction:")
+                print_warning(f"{start_seg = }, {start_x = }, {direction = }", no_prefix=True)
+                print_warning((limit_seg, limit_x, limit_direction), no_prefix=True)
+                print(f"{obj_name}:", load_sheet(obj_type_name)[obj_name])
                 return True
     return False
 
 
 def _is_seg_end_limit(obj_type_name: str, obj_name: str, seg: str, downstream: bool,
                      zone_limits: list[tuple[str, float, bool]]) -> bool:
+    direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
     if (seg, not downstream) in [(limit_seg, limit_downstream)
                                  for limit_seg, _, limit_downstream in zone_limits]:
         return True
     if seg in [limit_seg for limit_seg, _, _ in zone_limits]:
         print_warning(f"Reach a limit for {Color.beige}{obj_type_name}{Color.reset} "
-                      f"{Color.yellow}{obj_name}{Color.reset} but with a different direction.")
-        print(f"{seg = }, {downstream = }")
-        print([limit_seg for limit_seg, _, _ in zone_limits if seg == limit_seg])
+                      f"{Color.yellow}{obj_name}{Color.reset} but with a different direction:")
+        print_warning(f"{seg = }, {direction = }", no_prefix=True)
+        print_warning([limit_seg for limit_seg, _, _ in zone_limits if seg == limit_seg], no_prefix=True)
+        print(f"{obj_name}:", load_sheet(obj_type_name)[obj_name])
         return True
     return False
 
@@ -170,6 +178,7 @@ def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str
         if len(limits_on_point) > 1:
             print_warning(f"Weird zone for {obj_type_name} {Color.blue}{obj_name}{Color.reset} with multiple limits "
                           f"defined on the same point:\n{limits_on_point}")
+            print(f"{obj_name}:", load_sheet(obj_type_name)[obj_name])
         lim_downstream = limits_on_point[0][2]
         if direction is not None:
             if lim_downstream != (direction == Direction.CROISSANT):  # for a single point object,

@@ -10,6 +10,9 @@ __all__ = ["get_line_section_of_obj"]
 
 
 def get_line_section_of_obj(obj_type, obj_name: str, plt_end: str = None) -> Optional[list[str]]:
+    if not obj_name:
+        return None
+
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Aig):  # a dedicated function for switches
         return _get_line_section_of_switch(obj_name)
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai) and plt_end in ["normal", "reverse"]:
