@@ -22,7 +22,7 @@ This tool helps with some verifications.
 - <ins>**Block_Definition**</ins>: It is an optional file useful for the survey verification. It is used to establish the mapping between the block names from DC_SYS and the joint names given in the Survey. It is an Excel file containing the denomination of the block limits (joints and buffers). It has to be formatted as follows:
   - 2 lines of header.
   - 1 column named CDV_ID (usually first column). It contains all blocks names from DC_SYS (sheet CDV).
-  - 2 columns LISTE EXTREMITES::LISTE SEGMENT_ID and LISTE EXTREMITES::LISTE EXT_ABS_SEG (usually the second and third columns). They contain respectively the list of limits segments and the list of the limits offsets. The elements of the lists are separated with commas ';'.
+  - 2 columns LISTE EXTREMITES::LISTE SEGMENT_ID and LISTE EXTREMITES::LISTE EXT_ABS_SEG (usually the second and third columns). They contain respectively the list of limits segments and the list of the limits offsets. The elements of the lists are separated with semicolon ';'.
   - and multiple columns named OBJET EXTREMITE N, with N from 1 to the maximum number of block limits. Each column contains the name of the correspond limit that will appear in the survey.
 
   The position of the columns is not relevant for the tool but the name of the columns is.

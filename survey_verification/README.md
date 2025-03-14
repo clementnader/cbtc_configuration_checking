@@ -34,7 +34,7 @@ The tool lists every element from the DC_SYS of these types, and its position an
 - *Optionally* <ins>**Block Def.**</ins>: It is an optional file used to establish the mapping between the block names from DC_SYS and the joint names given in the Survey. It is an Excel file containing the denomination of the block limits (joints and buffers). It has to be formatted as follows:
   - 2 lines of header.
   - 1 column named CDV_ID (usually first column). It contains all blocks names from DC_SYS (sheet CDV).
-  - 2 columns LISTE EXTREMITES::LISTE SEGMENT_ID and LISTE EXTREMITES::LISTE EXT_ABS_SEG (usually the second and third columns). They contain respectively the list of limits segments and the list of the limits offsets. The elements of the lists are separated with commas ';'.
+  - 2 columns LISTE EXTREMITES::LISTE SEGMENT_ID and LISTE EXTREMITES::LISTE EXT_ABS_SEG (usually the second and third columns). They contain respectively the list of limits segments and the list of the limits offsets. The elements of the lists are separated with semicolon ';'.
   - and multiple columns named OBJET EXTREMITE N, with N from 1 to the maximum number of block limits. Each column contains the name of the correspond limit that will appear in the survey. 
   
   The position of the columns is not relevant for the tool but the name of the columns is.
@@ -78,7 +78,7 @@ If this file is not provided, the tool will automatically try to find the block 
    
    Projects can have various survey files. In that case, user have to specify path and information for all these files. They have to be **added in chronological order**, with the oldest first and the most recent last. (The tool will consider that the newer values supersede the older ones. A comment is nevertheless written to inform the user of different values for a same object.)
 
-Tool will display in the logs the list of all other survey types that are not parsed by the tool. In case of another name for an object, one can modify the file prj/src/survey/survey_types.py and add the extra name to the list "survey_type_names" inside the corresponding sub dictionary inside dictionary SURVEY_TYPES_DICT.
+Tool will display in the logs the list of all other survey types that are not parsed by the tool. In case of another name for an object, one can modify the file _prj/src/survey/survey_types.py and add the extra name to the list "survey_type_names" inside the corresponding sub dictionary inside dictionary SURVEY_TYPES_DICT.
 
 ---
 ### 3.2. Steps to use the tool to compare the DC_SYS information with the survey file(s):

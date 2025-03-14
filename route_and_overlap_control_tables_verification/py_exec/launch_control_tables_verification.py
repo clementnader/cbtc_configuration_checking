@@ -3,10 +3,8 @@
 
 import os
 import sys
-
 sys.path.append(os.path.join("..", ".."))
-
-from prj.src import *
+from _prj.src import *
 
 
 def main():
