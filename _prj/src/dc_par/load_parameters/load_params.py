@@ -40,7 +40,8 @@ def get_sheet_param(wb: xlrd.Book, sh_name: str) -> dict:
     param_name_column_on_sheet = PARAM_NAME_COL
     param_name_col_title = get_and_decode_xlrd_value(ws, 1, param_name_column_on_sheet)
     # Sometimes an extra column is added in the DC_PAR sheet for comments or computation.
-    while param_name_col_title is not None and param_name_col_title.upper() != PARAM_NAME_TITLE:
+    while (param_name_column_on_sheet <= ws.ncols + 1
+           and (param_name_col_title is None or param_name_col_title.upper() != PARAM_NAME_TITLE)):
         param_name_column_on_sheet += 1
         param_name_col_title = get_and_decode_xlrd_value(ws, 1, param_name_column_on_sheet)
 

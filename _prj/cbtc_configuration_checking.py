@@ -216,6 +216,7 @@ def main():
     parameters_constraints()
 
     cc()
+    zc()
 
     compare_dc_sys()
     return

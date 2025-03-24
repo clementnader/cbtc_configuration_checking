@@ -326,17 +326,15 @@ class ProjectDatabaseLoc:
             elif cbtc:
                 self.control_tables_config_ini_file = "control_tables_configuration_gw.ini"
                 self.control_tables_route.control_tables_addr = [
-                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC\rev 02.00"
-                    r"\GWISIGIXL0400-02.00-ATT002 - Appendix B_Routes_Rev00.pdf",
-                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC\rev 02.00"
-                    r"\GWISIGIXL0401-02.00-ATT002 - Appendix L_Routes_Rev00.pdf",
-                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC\rev 02.00"
-                    r"\GWISIGIXL0366-00.00-Appendix B_Routes.pdf"]
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC\rev 03.00"
+                    r"\GWISIGIXL0400-03.00-ATT002 - Appendix B_Routes_Rev00.pdf",
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC\rev 03.00"
+                    r"\GWISIGIXL0401-03.00-ATT002 - Appendix L_Routes_Rev00.pdf"]
                 self.control_tables_route.all_pages = [True, True, True]
                 self.control_tables_route.specific_pages = [None, None, None]
                 self.control_tables_overlap.control_tables_addr = [
-                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC\rev 02.00"
-                    r"\GWISIGIXL0400-02.00-ATT006 - Appendix F_Overlap_Rev00.pdf"]
+                    r"C:\Users\naderc\Desktop\Glasgow\Control Tables\CBTC\rev 03.00"
+                    r"\GWISIGIXL0400-03.00-ATT006 - Appendix F_Overlap_Rev00.pdf"]
                 self.control_tables_overlap.all_pages = [True]
                 self.control_tables_overlap.specific_pages = [None]
             # -- IXL Approach Zone -- #
@@ -629,8 +627,8 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- KMRC Kolkata -------------------------------#
         elif project_name == Projects.KMRC:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2_C_D470_00_RC06\DC_SYS.xls"
-            self.dc_par_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2_C_D470_00_RC06\DC_PAR.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2_C_D470_00_RC07\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\KMRC_PH2_C_D470_00_RC07\DC_PAR.xls"
             self.block_def = r"C:\Users\naderc\Desktop\INDIA\KMRC Kolkata\CIRCUIT_DE_VOIE_KMRC_PH2.xls"
             # -- Survey -- #
             self.survey_loc.survey_addr = [
