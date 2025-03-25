@@ -13,29 +13,29 @@ __all__ = ["get_objects_in_cbtc_ter"]
 def get_objects_in_cbtc_ter(obj_type) -> dict[str, dict]:
     obj_type = get_sh_name(obj_type)
 
+    if "Voie" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Voie):
+        return _get_track_in_cbtc_ter()
     if "IXL_Overlap" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.IXL_Overlap):
         return _get_overlap_in_cbtc_ter()
-    elif "StaticTag_Group" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.StaticTag_Group):
+    if "StaticTag_Group" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.StaticTag_Group):
         return _get_tag_gr_in_cbtc_ter()
-    elif "Voie" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Voie):
-        return _get_track_in_cbtc_ter()
-    elif "Traffic_Stop" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Traffic_Stop):
+    if "Traffic_Stop" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Traffic_Stop):
         return _get_traffic_stop_in_cbtc_ter()
-    else:
-        obj_dict = load_sheet(obj_type)
 
-        within_cbtc_object_dict = dict()
-        for obj_name, obj_value in obj_dict.items():
-            position = get_obj_position(obj_type, obj_name)
-            if position is None:
-                continue
-            if isinstance(position, tuple):  # single point object
-                if _test_for_single_point(position, obj_type, obj_name):
-                    within_cbtc_object_dict[obj_name] = obj_value
-            else:  # zone object
-                if _test_for_zone(position, obj_type, obj_name):
-                    within_cbtc_object_dict[obj_name] = obj_value
-        return within_cbtc_object_dict
+    obj_dict = load_sheet(obj_type)
+
+    within_cbtc_object_dict = dict()
+    for obj_name, obj_value in obj_dict.items():
+        position = get_obj_position(obj_type, obj_name)
+        if position is None:
+            continue
+        if isinstance(position, tuple):  # single point object
+            if _test_for_single_point(position, obj_type, obj_name):
+                within_cbtc_object_dict[obj_name] = obj_value
+        else:  # zone object
+            if _test_for_zone(position, obj_type, obj_name):
+                within_cbtc_object_dict[obj_name] = obj_value
+    return within_cbtc_object_dict
 
 
 def _test_for_single_point(position: tuple[str, float], obj_type: str, obj_name: str) -> bool:
@@ -72,6 +72,18 @@ def _test_for_zone(position: list[tuple[str, float]], obj_type: str, obj_name: s
     return test
 
 
+def _get_track_in_cbtc_ter():
+    seg_dict = load_sheet(DCSYS.Seg)
+    list_tracks = list()
+    for seg in get_all_segs_in_cbtc_ter():
+        track = get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
+        if track not in list_tracks:
+            list_tracks.append(track)
+    track_dict = load_sheet(DCSYS.Voie)
+    within_cbtc_track_dict = {key: track_dict[key] for key in sorted(list_tracks)}
+    return within_cbtc_track_dict
+
+
 def _get_overlap_in_cbtc_ter():
     ovl_dict = load_sheet(DCSYS.IXL_Overlap)
     sig_in_cbtc = get_objects_in_cbtc_ter(DCSYS.Sig)
@@ -97,18 +109,6 @@ def _get_tag_gr_in_cbtc_ter():
                           f"It is still taken into account.")
             within_cbtc_tag_gr_dict[tag_gr_name] = tag_gr_value
     return within_cbtc_tag_gr_dict
-
-
-def _get_track_in_cbtc_ter():
-    seg_dict = load_sheet(DCSYS.Seg)
-    list_tracks = list()
-    for seg in get_all_segs_in_cbtc_ter():
-        track = get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
-        if track not in list_tracks:
-            list_tracks.append(track)
-    track_dict = load_sheet(DCSYS.Voie)
-    within_cbtc_track_dict = {key: track_dict[key] for key in sorted(list_tracks)}
-    return within_cbtc_track_dict
 
 
 def _get_traffic_stop_in_cbtc_ter():

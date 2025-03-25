@@ -47,9 +47,14 @@ def get_all_segments_in_zone(obj_type, obj_name: str) -> set[str]:
 def _update_segs_within_zones(obj_type_name: str) -> None:
     global ZONE_SEGMENTS, ZONE_LIMITS
 
-    obj_dict = load_sheet(obj_type_name)
+    if obj_type_name == get_sh_name(DCSYS.PAS):
+        obj_list = get_all_zc()
+    else:
+        obj_dict = load_sheet(obj_type_name)
+        obj_list = list(obj_dict.keys())
+
     warning_has_been_printed_on_the_sheet = False
-    for obj_name, obj_info in obj_dict.items():
+    for obj_name in obj_list:
         zone_limits = get_oriented_limits_of_obj(obj_type_name, obj_name)
         if not zone_limits:
             return
@@ -224,8 +229,13 @@ def is_seg_in_zone(obj_type, obj_name: str, seg: str) -> Optional[bool]:
 
 def get_zones_on_point(obj_type, seg: str, x: float, direction: str = None) -> Optional[list[str]]:
     list_obj = list()
-    obj_dict = load_sheet(obj_type)
-    for obj_name in obj_dict.keys():
+    if get_sh_name(obj_type) == get_sh_name(DCSYS.PAS):
+        obj_list = get_all_zc()
+    else:
+        obj_dict = load_sheet(obj_type)
+        obj_list = list(obj_dict.keys())
+
+    for obj_name in obj_list:
         if is_point_in_zone(obj_type, obj_name, seg, x, direction) is True:
             list_obj.append(obj_name)
     if not list_obj:
@@ -236,8 +246,13 @@ def get_zones_on_point(obj_type, seg: str, x: float, direction: str = None) -> O
 
 def get_zones_on_segment(obj_type, seg: str) -> Optional[list[str]]:
     list_obj = list()
-    obj_dict = load_sheet(obj_type)
-    for obj_name in obj_dict.keys():
+    if get_sh_name(obj_type) == get_sh_name(DCSYS.PAS):
+        obj_list = get_all_zc()
+    else:
+        obj_dict = load_sheet(obj_type)
+        obj_list = list(obj_dict.keys())
+
+    for obj_name in obj_list:
         if is_seg_in_zone(obj_type, obj_name, seg) is True:
             list_obj.append(obj_name)
     if not list_obj:

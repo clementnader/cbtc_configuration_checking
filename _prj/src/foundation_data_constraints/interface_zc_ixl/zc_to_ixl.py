@@ -5,7 +5,7 @@ from ...utils import *
 from ...cctool_oo_schema import *
 from ...dc_sys import *
 from ...dc_sys_sheet_utils.msg_itf_utils import get_sub_dict_zc_ixl_itf
-from ...dc_sys_sheet_utils.zc_tracking_area_utils import get_all_zc
+from ...dc_sys_sheet_utils.zc_utils import get_all_zc
 from ...dc_sys_sheet_utils.signal_utils import get_related_overlaps
 from ...dc_sys_get_cbtc_territory import *
 from ...dc_par import *

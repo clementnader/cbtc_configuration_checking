@@ -36,6 +36,7 @@ def cc():
 
 def zc():
     # check_pz_ze()
+    # verify_if_ze_impacte_fu()
     # check_ze_impacte_fu()
     return
 

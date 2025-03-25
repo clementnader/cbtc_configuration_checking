@@ -5,7 +5,7 @@ from ...utils import *
 from ...cctool_oo_schema import *
 from ...dc_sys import *
 from ...dc_sys_sheet_utils.msg_itf_utils import get_sub_dict_zc_ats_supervision
-from ...dc_sys_sheet_utils.zc_tracking_area_utils import *
+from ...dc_sys_sheet_utils.zc_utils import *
 from ...dc_sys_get_cbtc_territory import *
 
 

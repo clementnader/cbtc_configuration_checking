@@ -41,4 +41,10 @@ GENERIC_OBJ_NAME = {
          "type": str},
         {"attr": DCSYS.Traction_Profiles.Speed, "type": float}
     ]},
+    "PAS": {"cols": [
+        {"attr": DCSYS.PAS.TrackingAreaSubsetName, "type": str}
+    ]},
+    "Traffic_Stop": {"cols": [
+        {"attr": DCSYS.Traffic_Stop.TrafficStopSubsetName, "type": str}
+    ]},
 }

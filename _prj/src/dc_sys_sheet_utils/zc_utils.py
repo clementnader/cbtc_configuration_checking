@@ -10,13 +10,8 @@ from .line_section_utils import *
 from .maz_utils import *
 
 
-__all__ = ["get_all_zc", "is_point_in_zc", "get_zc_of_point", "get_zc_of_obj",
+__all__ = ["is_point_in_zc", "get_zc_of_point", "get_zc_of_obj",
            "get_zc_managing_obj", "get_ls_managed_by_zc", "get_zc_managing_ls"]
-
-
-def get_all_zc():
-    zc_dict = load_sheet(DCSYS.PAS)
-    return list(zc_dict.keys())
 
 
 def is_point_in_zc(zc_name: str, seg: str, x: float, direction: str = None) -> Optional[bool]:
@@ -70,8 +65,8 @@ def get_zc_of_obj(obj_type, obj_name: str) -> list[str]:
 
 
 def get_ls_managed_by_zc(zc_name: str) -> list[str]:
-    zc_dict = load_sheet(DCSYS.PAS)
-    list_ls = get_dc_sys_value(zc_dict[zc_name], DCSYS.PAS.TronconsGeresParLePas.Troncon)
+    zc_value = get_zc_value(zc_name)
+    list_ls = get_dc_sys_value(zc_value, DCSYS.PAS.TronconsGeresParLePas.Troncon)
     return list_ls
 
 
