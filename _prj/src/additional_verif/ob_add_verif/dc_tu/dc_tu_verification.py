@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ...utils import *
+from ....utils import *
 from .dc_tu_analysis import *
 from .dc_tu_result_file import *
 from .load_dc_tu import *
@@ -10,7 +10,7 @@ from .load_dc_tu import *
 __all__ = ["dc_tu_verification", "DC_TU_CHECKING_VERSION"]
 
 
-DC_TU_CHECKING_VERSION = "v1.4"
+DC_TU_CHECKING_VERSION = "v1.4.1"
 
 
 def dc_tu_verification():

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ....utils import *
-from ....database_location import *
+from .....utils import *
+from .....database_location import *
 
 
 __all__ = ["update_database_loc"]

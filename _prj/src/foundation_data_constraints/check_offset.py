@@ -14,6 +14,7 @@ START_LINE = 3
 
 
 def check_dc_sys_track_kp_definition():
+    check_dc_sys_global_definition()
     print_title(f"Verification of the Correspondence between (Segment, Offset) <-> (Track, KP)")
     success = True
     wb = load_dc_sys_wb()

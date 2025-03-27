@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ....utils import *
+from .....utils import *
 
 
 __all__ = ["launch_function", "is_everything_ready"]

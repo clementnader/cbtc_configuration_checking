@@ -92,12 +92,19 @@ def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, 
     obj_sh = get_sheet_class_from_name(obj_type)
     sh_attrs = get_class_attr_dict(obj_sh).keys()
 
-    if obj_type == get_sh_name(DCSYS.Quai):  # a dedicated function for platforms
+    if "Quai" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Quai):
+        # a dedicated function for platforms
         limits = _get_platform_oriented_limits(obj_val)
         return limits
-    if obj_type == get_sh_name(DCSYS.PAS):  # a dedicated function for ZC
+    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
+        # a dedicated function for ZC
         limits = _get_zc_oriented_limits(obj_name)
         return limits
+    if "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
+        # a dedicated function for DCS Elementary Zones
+        limits = _get_dcs_ez_oriented_limits(obj_name)
+        return limits
+
     if "Limit" in sh_attrs:
         limits = _get_obj_limits(obj_val, obj_sh.Limit)
         return limits
@@ -126,6 +133,10 @@ def get_obj_oriented_zone_limits(obj_type, obj_name: str) -> Union[None, list[tu
     if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
         # a dedicated function for ZC
         limits = _get_zc_oriented_limits(obj_name)
+        return limits
+    if "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
+        # a dedicated function for DCS Elementary Zones
+        limits = _get_dcs_ez_oriented_limits(obj_name)
         return limits
 
     obj_dict = load_sheet(obj_type)
@@ -181,9 +192,35 @@ def _get_platform_oriented_limits(plt_val) -> list[tuple[str, float, str]]:
 def _get_zc_oriented_limits(zc_name):
     zc_dict = load_sheet(DCSYS.PAS)
     # A ZC can be split between multiple ZC subsets for a matter of maximal number of limits.
-    zc_subset_value_list = [zc for zc in zc_dict.values() if get_dc_sys_value(zc, DCSYS.PAS.Nom) == zc_name]
+    zc_subset_value_list = [zc for zc in zc_dict.values()
+                            if get_dc_sys_value(zc, DCSYS.PAS.Nom) == zc_name]
     limits = list()
     for zc_subset_value in zc_subset_value_list:
         zc_subset_limit = _get_obj_oriented_limits(zc_subset_value, DCSYS.PAS.ExtremiteSuivi)
         limits.extend(zc_subset_limit)
-    return limits
+    return _remove_common_limits(limits)
+
+
+def _get_dcs_ez_oriented_limits(dcs_ez_name):
+    dcs_ez_dict = load_sheet(DCSYS.DCS_Elementary_Zones)
+    # A DCS Elementary Zone can be split between multiple DCS EZ subsets for a matter of maximal number of limits.
+    dcs_ez_subset_value_list = [dcs_ez for dcs_ez in dcs_ez_dict.values()
+                                if get_dc_sys_value(dcs_ez, DCSYS.DCS_Elementary_Zones.Name) == dcs_ez_name]
+    limits = list()
+    for dcs_ez_subset_value in dcs_ez_subset_value_list:
+        dcs_ez_subset_limit = _get_obj_oriented_limits(dcs_ez_subset_value, DCSYS.DCS_Elementary_Zones.Limit)
+        limits.extend(dcs_ez_subset_limit)
+    return _remove_common_limits(limits)
+
+
+def _remove_common_limits(limits: list[tuple[str, float, str]]) -> list[tuple[str, float, str]]:
+    common_limits = list()
+
+    for i, (seg1, x1, lim_dir1) in enumerate(limits):
+        if (seg1, x1, get_reverse_direction(lim_dir1)) in limits[i + 1:]:
+            common_limits.append((seg1, x1))
+
+    if not common_limits:
+        return limits
+
+    return [(seg, x, lim_dir) for (seg, x, lim_dir) in limits if (seg, x) not in common_limits]

@@ -39,13 +39,13 @@ def _remove_intersection_diamond_switch(ct_sw_list: list[str]) -> list[str]:
                   if not (re.match(r"^SC[0-9]+[NR]$", sw) is not None
                           or re.match(r"^I[0-9]+[NR]$", sw) is not None)]
 
-    # if PROJECT_NAME == Projects.Copenhagen or PROJECT_NAME == Projects.Thessaloniki:
+    # if PROJECT_NAME == Projects.Copenhagen_KCR or PROJECT_NAME == Projects.Thessaloniki_TSK:
     #     ct_sw_list = [sw for sw in ovl_sw_list if len(sw) < 5]  # In Control Table, when on diamond crossing,
     #     # an extra switch appears with 4 digits (and the letter R or N at the end)
-    # elif PROJECT_NAME == Projects.Milan:
+    # elif PROJECT_NAME == Projects.Milan_ML4:
     #     ct_sw_list = [sw for sw in ovl_sw_list if not sw.startswith("I") and not sw.startswith("SC")]
     #     # In Control Table, when on diamond crossing, an extra switch appears starting by an 'I' or 'SC'
-    # elif PROJECT_NAME == Projects.Riyadh:
+    # elif PROJECT_NAME == Projects.Riyadh_RL3:
     #     ct_sw_list = [sw.replace("-", "") for sw in ovl_sw_list]  # In Control Table, there is a hyphen
     #     # in the switches name that does not appear in the DC_SYS
 

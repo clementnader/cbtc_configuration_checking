@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os.path
 
+import os
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *

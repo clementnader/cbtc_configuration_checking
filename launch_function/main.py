@@ -16,6 +16,10 @@ def main():
      config.ini file.
     """
 
+    """Uncomment next line to check the global coherence of the object names in all sheets in the DC_SYS.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #check_dc_sys_global_definition()
+
     """Uncomment next line to check the coherence of all zones defined in the DC_SYS.
     @inputs: DC_SYS and CCTool-OO Schema"""
     #check_dc_sys_zones_definition()

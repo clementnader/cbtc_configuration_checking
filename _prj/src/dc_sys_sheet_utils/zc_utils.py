@@ -27,7 +27,7 @@ def _get_zc_of_traffic_stop(obj_name: str) -> list[str]:
     obj_val = obj_dict[obj_name]
     list_zc = list()
     for plt_name in get_dc_sys_value(obj_val, DCSYS.Traffic_Stop.PlatformList.Name):
-        list_zc.extend([zc for zc in get_zc_of_obj(DCSYS.Quai, plt_name) if zc not in list_zc])
+        list_zc.extend([zc_name for zc_name in get_zc_of_obj(DCSYS.Quai, plt_name) if zc_name not in list_zc])
     return list_zc
 
 
@@ -43,9 +43,9 @@ def _get_zc_of_overlap(obj_name: str) -> list[str]:
         dict_zc_on_limits[(seg, x)] = zc_list
 
     list_zc = list()
-    for zc in get_all_zc():
-        if all(zc in zc_on_limit for zc_on_limit in dict_zc_on_limits.values()):
-            list_zc.append(zc)
+    for zc_name in get_all_zc():
+        if all(zc_name in zc_on_limit for zc_on_limit in dict_zc_on_limits.values()):
+            list_zc.append(zc_name)
     return list_zc
 
 
@@ -91,8 +91,8 @@ def _get_zc_managing_platform(plt_name: str) -> Optional[str]:
     related_ws_eqpt_is_a_zc = (related_ws_eqpt is not None
                                and get_dc_sys_value(ws_eqpt_dict[related_ws_eqpt],
                                                     DCSYS.Wayside_Eqpt.Function.Zc) == YesOrNo.O)
-    zc = related_ws_eqpt if related_ws_eqpt_is_a_zc else None
-    return zc
+    zc_name = related_ws_eqpt if related_ws_eqpt_is_a_zc else None
+    return zc_name
 
 
 def _get_zc_managing_signal(sig_name: str, sig_upstream_ivb: bool) -> Optional[str]:
@@ -102,10 +102,10 @@ def _get_zc_managing_signal(sig_name: str, sig_upstream_ivb: bool) -> Optional[s
     downstream_ivb = get_dc_sys_value(sig_value, DCSYS.Sig.IvbJoint.DownstreamIvb)
 
     if sig_upstream_ivb:
-        zc = _get_zc_managing_ivb(upstream_ivb)
+        zc_name = _get_zc_managing_ivb(upstream_ivb)
     else:
-        zc = _get_zc_managing_ivb(downstream_ivb)
-    return zc
+        zc_name = _get_zc_managing_ivb(downstream_ivb)
+    return zc_name
 
 
 def _get_zc_managing_ivb(ivb_name: str) -> Optional[str]:
@@ -121,27 +121,27 @@ def _get_zc_managing_ivb(ivb_name: str) -> Optional[str]:
     return dedicated_zc
 
 
-def _get_zc_managing_maz(maz_name: str) -> tuple[str, str]:
+def _get_zc_managing_maz(maz_name: str) -> tuple[Optional[str], Optional[str]]:
     if not maz_name:
         return None, None
     ls = get_line_section_of_obj(DCSYS.Zaum, maz_name)[0]
-    zc = get_zc_managing_ls(ls)
-    info = f"{maz_name} -> {ls} -> {zc}"
-    return zc, info
+    zc_name = get_zc_managing_ls(ls)
+    info = f"{maz_name} -> {ls} -> {zc_name}"
+    return zc_name, info
 
 
 def _get_zc_managing_sw(sw_name: str) -> tuple[Optional[str], str]:
     ivb_on_switch = get_zones_on_point(DCSYS.IVB, *get_obj_position(DCSYS.Aig, sw_name))[0]
-    zc = _get_zc_managing_ivb(ivb_on_switch)
-    info = f"{sw_name} -> {ivb_on_switch} -> {zc}"
-    return zc, info
+    zc_name = _get_zc_managing_ivb(ivb_on_switch)
+    info = f"{sw_name} -> {ivb_on_switch} -> {zc_name}"
+    return zc_name, info
 
 
 def _get_zc_managing_platform_end(plt_name: str, plt_end: str) -> tuple[str, str]:
     ls = get_line_section_of_obj(DCSYS.Quai, plt_name, plt_end=plt_end)[0]
-    zc = get_zc_managing_ls(ls)
-    info = f"{plt_name}::{plt_end.upper()} -> {ls} -> {zc}"
-    return zc, info
+    zc_name = get_zc_managing_ls(ls)
+    info = f"{plt_name}::{plt_end.upper()} -> {ls} -> {zc_name}"
+    return zc_name, info
 
 
 def _get_zc_managing_maz_on_zone(obj_type, obj_name: str) -> tuple[list[str], str]:
@@ -151,12 +151,12 @@ def _get_zc_managing_maz_on_zone(obj_type, obj_name: str) -> tuple[list[str], st
     zc_list = list()
     info_list = list()
     for maz in maz_list:
-        zc, info = _get_zc_managing_maz(maz)
+        zc_name, info = _get_zc_managing_maz(maz)
         if info is not None:
             info_list.append(info)
 
-        if zc is not None and zc not in zc_list:
-            zc_list.append(zc)
+        if zc_name is not None and zc_name not in zc_list:
+            zc_list.append(zc_name)
     return zc_list, "\n\t".join(info_list)
 
 
@@ -164,28 +164,28 @@ def get_zc_managing_obj(obj_type, obj_name: str, sig_upstream_ivb: bool = None, 
                         ) -> tuple[list[str], Optional[str]]:
     # Platform End
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai) and plt_end in ["normal", "reverse"]:
-        zc, info = _get_zc_managing_platform_end(obj_name, plt_end)
-        return [zc], info
+        zc_name, info = _get_zc_managing_platform_end(obj_name, plt_end)
+        return [zc_name], info
     # Platform
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai):
-        zc = _get_zc_managing_platform(obj_name)
-        return [zc], None
+        zc_name = _get_zc_managing_platform(obj_name)
+        return [zc_name], None
     # Signal
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Sig):
-        zc = _get_zc_managing_signal(obj_name, sig_upstream_ivb)
-        return [zc], None
+        zc_name = _get_zc_managing_signal(obj_name, sig_upstream_ivb)
+        return [zc_name], None
     # Switch
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Aig):
-        zc, info = _get_zc_managing_sw(obj_name)
-        return [zc], info
+        zc_name, info = _get_zc_managing_sw(obj_name)
+        return [zc_name], info
     # IVB
     if get_sh_name(obj_type) == get_sh_name(DCSYS.IVB):
-        zc = _get_zc_managing_ivb(obj_name)
-        return [zc], None
+        zc_name = _get_zc_managing_ivb(obj_name)
+        return [zc_name], None
     # MAZ
     if get_sh_name(obj_type) == get_sh_name(DCSYS.Zaum):
-        zc, info = _get_zc_managing_maz(obj_name)
-        return [zc], info
+        zc_name, info = _get_zc_managing_maz(obj_name)
+        return [zc_name], info
     # GES, CBTC_Protection_Zone, Protection Zone and Traction Power Zone
     if (("GES" in get_class_attr_dict(DCSYS)
          and get_sh_name(obj_type) == get_sh_name(DCSYS.GES))

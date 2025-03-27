@@ -45,6 +45,9 @@ def additional_verif():
     # dc_tu_verification()  # v1.4
     # dc_tu_window()
 
+    # get_sum_len_route_physical_blocks()
+    # get_first_zc_overlay_route_physical_blocks()
+
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
@@ -108,7 +111,7 @@ def dc_par_customer_data():
 
 
 def survey():
-    # check_survey()  # v2.8
+    # check_survey()  # v2.8.1
     # survey_window()
     # cctool_oo_schema_window()
     return
@@ -137,6 +140,7 @@ def check_cdz_signals():
 
 
 def constraints():
+    # check_dc_sys_global_definition()
     # check_dc_sys_zones_definition()
     # check_dc_sys_track_kp_definition()
     # get_zones_kp_limits(DCSYS.Protection_Zone)

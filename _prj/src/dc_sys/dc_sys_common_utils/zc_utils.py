@@ -20,7 +20,8 @@ def get_all_zc():
 
 def get_zc_value(zc_name: str):
     zc_dict = load_sheet(DCSYS.PAS)
-    zc_subset_value = [zc for zc in zc_dict.values() if get_dc_sys_value(zc, DCSYS.PAS.Nom) == zc_name][0]
+    zc_subset_value = [zc for zc in zc_dict.values()
+                       if get_dc_sys_value(zc, DCSYS.PAS.Nom) == zc_name][0]
     # When the ZC is split between multiple ZC subsets for a matter of maximal number of limits reached,
     # the information concerning the ZC is on the first subset.
     return zc_subset_value

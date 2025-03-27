@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from ...utils import *
+from ....utils import *
 from .gui_dc_tu_utils import *
 from .dc_tu_verification import *
 
