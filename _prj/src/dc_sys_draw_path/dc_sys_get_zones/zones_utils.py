@@ -9,7 +9,7 @@ from .get_oriented_limits import *
 
 __all__ = ["get_segments_within_zone", "get_zone_limits", "get_all_segments_in_zone",
            "is_point_in_zone", "is_seg_in_zone", "get_zones_on_point", "get_zones_on_segment",
-           "get_zones_intersecting_zone"]
+           "get_zones_intersecting_zone", "are_zone_objects_intersecting"]
 
 
 ZONE_SEGMENTS = dict()
@@ -47,14 +47,7 @@ def get_all_segments_in_zone(obj_type, obj_name: str) -> set[str]:
 def _update_segs_within_zones(obj_type: str) -> None:
     global ZONE_SEGMENTS, ZONE_LIMITS
 
-    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
-        obj_list = get_all_zc()
-    elif "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
-        obj_list = get_all_dcs_elementary_zones()
-    else:
-        obj_dict = load_sheet(obj_type)
-        obj_list = list(obj_dict.keys())
-
+    obj_list = get_objects_list(obj_type)
     warning_has_been_printed_on_the_sheet = False
     for obj_name in obj_list:
         zone_limits = get_oriented_limits_of_obj(obj_type, obj_name)
@@ -232,14 +225,8 @@ def is_seg_in_zone(obj_type, obj_name: str, seg: str) -> Optional[bool]:
 def get_zones_on_point(obj_type, seg: str, x: float, direction: str = None) -> Optional[list[str]]:
     obj_type = get_sh_name(obj_type)
     list_obj = list()
-    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
-        obj_list = get_all_zc()
-    elif "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
-        obj_list = get_all_dcs_elementary_zones()
-    else:
-        obj_dict = load_sheet(obj_type)
-        obj_list = list(obj_dict.keys())
 
+    obj_list = get_objects_list(obj_type)
     for obj_name in obj_list:
         if is_point_in_zone(obj_type, obj_name, seg, x, direction) is True:
             list_obj.append(obj_name)
@@ -252,14 +239,8 @@ def get_zones_on_point(obj_type, seg: str, x: float, direction: str = None) -> O
 def get_zones_on_segment(obj_type, seg: str) -> Optional[list[str]]:
     obj_type = get_sh_name(obj_type)
     list_obj = list()
-    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
-        obj_list = get_all_zc()
-    elif "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
-        obj_list = get_all_dcs_elementary_zones()
-    else:
-        obj_dict = load_sheet(obj_type)
-        obj_list = list(obj_dict.keys())
 
+    obj_list = get_objects_list(obj_type)
     for obj_name in obj_list:
         if is_seg_in_zone(obj_type, obj_name, seg) is True:
             list_obj.append(obj_name)
@@ -270,22 +251,39 @@ def get_zones_on_segment(obj_type, seg: str) -> Optional[list[str]]:
 
 
 def get_zones_intersecting_zone(zones_obj_type, my_obj_type, my_obj_name: str) -> list[str]:
-    my_zone_segments = get_segments_within_zone(my_obj_type, my_obj_name)
-    my_zone_limits = get_zone_limits(my_obj_type, my_obj_name)
-
     list_obj = list()
-    for seg in my_zone_segments:
-        zones = get_zones_on_segment(zones_obj_type, seg)
-        if zones is not None:
-            list_obj.extend([obj for obj in zones if obj not in list_obj])
+    obj_list = get_objects_list(zones_obj_type)
+    for obj_name in obj_list:
+        if are_zone_objects_intersecting(zones_obj_type, obj_name, my_obj_type, my_obj_name):
+            list_obj.append(obj_name)
+    return list_obj
 
-    # TODO manage when no segment inside zone
-    for seg, x, downstream in my_zone_limits:
+
+def are_zone_objects_intersecting(obj_type1, obj_name1: str, obj_type2, obj_name2: str):
+    zone_segments1 = get_segments_within_zone(obj_type1, obj_name1)
+    zone_limits1 = get_zone_limits(obj_type1, obj_name1)
+    zone_segments2 = get_segments_within_zone(obj_type2, obj_name2)
+    zone_limits2 = get_zone_limits(obj_type2, obj_name2)
+
+    for seg in zone_segments1:
+        if is_seg_in_zone(obj_type2, obj_name2, seg):
+            return True
+    for seg in zone_segments2:
+        if is_seg_in_zone(obj_type1, obj_name1, seg):
+            return True
+
+    for seg, x, downstream in zone_limits1:
         direction = get_reverse_direction(Direction.CROISSANT if downstream else Direction.DECROISSANT)
         # for a single point object, we consider it belongs to the zone upstream of it,
         # behavior is mimicked for the zone too
-        zones = get_zones_on_point(zones_obj_type, seg, x, direction)
-        if zones is not None:
-            list_obj.extend([obj for obj in zones if obj not in list_obj])
+        if is_point_in_zone(obj_type2, obj_name2, seg, x, direction):
+            return True
 
-    return list_obj
+    for seg, x, downstream in zone_limits2:
+        direction = get_reverse_direction(Direction.CROISSANT if downstream else Direction.DECROISSANT)
+        # for a single point object, we consider it belongs to the zone upstream of it,
+        # behavior is mimicked for the zone too
+        if is_point_in_zone(obj_type1, obj_name1, seg, x, direction):
+            return True
+
+    return False
