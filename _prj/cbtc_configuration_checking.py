@@ -140,14 +140,17 @@ def check_cdz_signals():
 
 
 def constraints():
+    # Global DC_SYS verifications
     # check_dc_sys_global_definition()
     # check_dc_sys_zones_definition()
     # check_dc_sys_track_kp_definition()
     # get_zones_kp_limits(DCSYS.Protection_Zone)
 
+    # get_all_possible_border_areas()  # TODO in progress
+
     # check_upstream_and_downstream_ivb_of_all_signals()
     # check_cbtc_protecting_switch_area(do_print_warning=False)
-    #
+
     # r_cdv_5(print_ok=True)  # TODO for r_cdv_5:
     #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
     #                             plutôt que faire une diff avec le kit C11
@@ -155,9 +158,27 @@ def constraints():
     #                               vérifier l'histoire de tag_accurate_laying_uncertainty:
     #                                   ce n'est pas du tout marqué dans la contrainte donc peut-être à désactiver;
     #                               faire R_IVB_1 aussi.
-    # check_psr_41_42()
+
+    # check_psr_41_42()  # TODO in progress
     # r_dyntag_3()
     # cf_zsm_cbtc_10()
+
+    # Block zone definition constraints
+    # r_cdv_10()
+    # cf_ivb_1_2()
+    # cf_ivb_2()
+    # cc_cv_16()
+    # cc_cv_18()
+    # cc_cv_20()
+
+    # MAZ constraints
+    # cf_zaum_1()
+    # cf_zaum_11()
+
+    # Walkway constraints
+    # cf_walkway_2()
+
+    # Messages constraints
     # cf_dg_1()  # TODO: check correct Line Section
     # cf_dg_2()
     # r_mes_pas_itf_1(in_cbtc=False)  # TODO: find info to check if ZC receiving the Signal information
@@ -175,11 +196,13 @@ def constraints():
     # ats_atc_sheet_verif(in_cbtc=False)  # TODO: Check if extra flows exist for object that does not exist per type,
     #                                           and if extra object type exists.
     # zcr_zc_sheet_verif(in_cbtc=False)
+
     # check_signal_with_overlap()
 
     # check_cbtc_sig_apz()
     # cf_signal_12(apz_with_tc=False)  # TODO: write IXL APZ info in Header sheet
     # r_zsm_3(apz_with_tc=False)
+
     # verif_calib_distance()
     # ixl_overlap_platform_related()
     # get_closest_vsp_in_rear()

@@ -15,7 +15,7 @@ START_LINE = 3
 
 def check_dc_sys_track_kp_definition():
     check_dc_sys_global_definition()
-    print_title(f"Verification of the Correspondence between (Segment, Offset) <-> (Track, KP)")
+    print_title(f"Verification of the Correspondence between (Segment, Offset) and (Track, KP)")
     success = True
     wb = load_dc_sys_wb()
     sheet_names = get_xl_sheet_names(wb)
@@ -29,7 +29,7 @@ def check_dc_sys_track_kp_definition():
             success = False
     if success:
         print_log("No KO has been raised in the verification of the correspondence between "
-                  "(Segment, Offset) <-> (Track, KP).")
+                  "(Segment, Offset) and (Track, KP).")
 
 
 def check_integers(ws: xlrd.sheet):

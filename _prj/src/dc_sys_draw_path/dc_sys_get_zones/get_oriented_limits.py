@@ -19,6 +19,10 @@ def get_oriented_limits_of_obj(obj_type: str, obj_name: str) -> Optional[list[tu
     zone_limits = get_obj_zone_limits(obj_type, obj_name)
     if zone_limits is None:
         return None
+    if len(zone_limits[0]) == 3:  # oriented zone limits
+        print_warning(f"\"{obj_type}\" object limits are oriented, \"get_obj_oriented_zone_limits\" function should "
+                      f"not return None.")
+        return _convert_oriented_limits(zone_limits)
 
     zone_limits, common_oriented_limits = _remove_common_limits(zone_limits)
 

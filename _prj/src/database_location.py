@@ -19,6 +19,7 @@ class Projects:
     Riyadh_RL3 = "Riyadh_RL3"
     Thessaloniki_TSK = "Thessaloniki_TSK"
 
+    OCTYS_L3 = "OCTYS_L3"
     OCTYS_L6 = "OCTYS_L6"
 
     Baltimore_MTA = "Baltimore_MTA"
@@ -69,6 +70,7 @@ class Projects:
 PROJECT_NAME = Projects.Thessaloniki_TSK
 
 # --- OCTYS --- #
+# PROJECT_NAME = Projects.OCTYS_L3
 # PROJECT_NAME = Projects.OCTYS_L6
 
 # --- USA --- #
@@ -589,6 +591,11 @@ class ProjectDatabaseLoc:
 
         # --- OCTYS --- #
 
+        # ------------------------------- OCTYS_L3 -------------------------------#
+        elif project_name == Projects.OCTYS_L3:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\OCTYS\Ligne 3\L3C_O_D470_0417\DC_SYS_L3_04_17.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\OCTYS\Ligne 3\L3C_O_D470_0417\DC_PAR_L3.xls"
+
         # ------------------------------- OCTYS_L6 -------------------------------#
         elif project_name == Projects.OCTYS_L6:
             self.dc_sys_addr = (r"C:\Users\naderc\Desktop\OCTYS\Ligne 6\OCTYS_L6C_D405-6_0502"
@@ -600,7 +607,8 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Baltimore MTA -------------------------------#
         elif project_name == Projects.Baltimore_MTA:
-            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\MTA_C_D470_V_02_01_RC2\DC_SYS.xls"
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\MTA_C_D470_03_00_RC3\DC_SYS.xls"
+            self.dc_par_addr = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\MTA_C_D470_03_00_RC3\DC_PAR.xls"
             # -- Survey -- #
             self.block_def = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\CIRCUIT_DE_VOIE (12).xls"
             self.survey_loc.survey_addr = r"C:\Users\naderc\Desktop\USA\Baltimore MTA\MTA_D932.xlsx"

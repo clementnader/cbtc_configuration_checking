@@ -6,9 +6,11 @@ from ...cctool_oo_schema import *
 from ..load_database import *
 from .common_utils import *
 from .switch_utils import *
+from .kp_utils import *
 
 
-__all__ = ["get_obj_position", "get_obj_zone_limits", "get_obj_oriented_zone_limits"]
+__all__ = ["get_obj_position", "get_obj_zone_limits", "get_obj_oriented_zone_limits",
+           "get_vsp_position"]
 
 
 def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[str, float, str],
@@ -25,12 +27,23 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[
      list[tuple[str, float, str]] for oriented zone object, None if it was unable to find the position
     """
     obj_type = get_sh_name(obj_type)
+
+    # Object with no direct corresponding DC_SYS sheet
+    if ("Sig" in get_class_attr_dict(DCSYS) and "DistPap" in get_class_attr_dict(DCSYS.Sig)
+            and obj_type == get_sh_name(DCSYS.Sig.DistPap)):
+        # a dedicated function for signal VSP
+        return get_vsp_position(obj_name)
+
+    limits = get_obj_zone_limits(obj_type, obj_name)  # zone object, we put it first to manage the zone subsets objects
+    if limits is not None:
+        return limits
+
     obj_dict = load_sheet(obj_type)
     obj_val = obj_dict[obj_name]
     obj_sh = get_sheet_class_from_name(obj_type)
     sh_attrs = get_class_attr_dict(obj_sh).keys()
 
-    if obj_type == get_sh_name(DCSYS.Aig):
+    if "Aig" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Aig):
         # a dedicated function for switches
         return get_sw_pos(obj_val)
     if "IXL_Overlap" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.IXL_Overlap):
@@ -46,10 +59,6 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[
         if direction is not None:
             return seg, x, direction
         return seg, x
-
-    limits = get_obj_zone_limits(obj_type, obj_name)  # zone object
-    if limits is not None:
-        return limits
 
     return None
 
@@ -86,7 +95,20 @@ def _get_direction_of_point(obj_type, obj_name: str) -> Optional[str]:
 
 
 def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, float]], list[tuple[str, float, str]]]:
+    """ Return the list of limits (seg, offset) or (seg, offset, direction) if the object is a zone
+     else it returns None. """
     obj_type = get_sh_name(obj_type)
+
+    # Zones with subsets
+    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
+        # a dedicated function for ZC
+        limits = _get_zc_oriented_limits(obj_name)
+        return limits
+    if "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
+        # a dedicated function for DCS Elementary Zones
+        limits = _get_dcs_ez_oriented_limits(obj_name)
+        return limits
+
     obj_dict = load_sheet(obj_type)
     obj_val = obj_dict[obj_name]
     obj_sh = get_sheet_class_from_name(obj_type)
@@ -95,14 +117,6 @@ def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, 
     if "Quai" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Quai):
         # a dedicated function for platforms
         limits = _get_platform_oriented_limits(obj_val)
-        return limits
-    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
-        # a dedicated function for ZC
-        limits = _get_zc_oriented_limits(obj_name)
-        return limits
-    if "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
-        # a dedicated function for DCS Elementary Zones
-        limits = _get_dcs_ez_oriented_limits(obj_name)
         return limits
 
     if "Limit" in sh_attrs:
@@ -129,40 +143,23 @@ def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, 
 
 
 def get_obj_oriented_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, float, str]]]:
-    obj_type = get_sh_name(obj_type)
-    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
-        # a dedicated function for ZC
-        limits = _get_zc_oriented_limits(obj_name)
-        return limits
-    if "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
-        # a dedicated function for DCS Elementary Zones
-        limits = _get_dcs_ez_oriented_limits(obj_name)
-        return limits
-
-    obj_dict = load_sheet(obj_type)
-    obj_val = obj_dict[obj_name]
-    obj_sh = get_sheet_class_from_name(obj_type)
-    sh_attrs = get_class_attr_dict(obj_sh).keys()
-
-    if "Quai" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Quai):
-        # a dedicated function for platforms
-        limits = _get_platform_oriented_limits(obj_val)
-        return limits
-
-    if "Limit" in sh_attrs:
-        limits = _get_obj_oriented_limits(obj_val, obj_sh.Limit)
-        return limits
-    if "Extremite" in sh_attrs:
-        limits = _get_obj_oriented_limits(obj_val, obj_sh.Extremite)
-        return limits
+    """ Return the list of oriented limits (seg, offset, direction) if the object is an oriented zone
+     else it returns None. """
+    zone_limits = get_obj_zone_limits(obj_type, obj_name)
+    if zone_limits is None:  # not a zone object
+        return None
+    if len(zone_limits[0]) == 3:  # oriented limits
+        return zone_limits
     return None
 
 
 def _get_obj_limits(obj_val: dict[str, Any], obj_limit_attr
-                   ) -> Union[list[tuple[str, float]], list[tuple[str, float, str]]]:
+                   ) -> Union[None, list[tuple[str, float]], list[tuple[str, float, str]]]:
     limits = _get_obj_oriented_limits(obj_val, obj_limit_attr)
     if limits is None:  # non-oriented limits
         limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X))
+    if not limits:
+        return None
     return limits
 
 
@@ -174,6 +171,8 @@ def _get_obj_oriented_limits(obj_val: dict[str, Any], obj_limit_attr) -> Union[N
         limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X, obj_limit_attr.Sens))
     else:
         limits = None
+    if not limits:
+        return None
     return limits
 
 
@@ -224,3 +223,14 @@ def _remove_common_limits(limits: list[tuple[str, float, str]]) -> list[tuple[st
         return limits
 
     return [(seg, x, lim_dir) for (seg, x, lim_dir) in limits if (seg, x) not in common_limits]
+
+
+def get_vsp_position(sig_name: str) -> tuple[str, float, str]:
+    sig_seg, sig_x, sig_direction = get_obj_position(DCSYS.Sig, sig_name)
+    sig_dict = load_sheet(DCSYS.Sig)
+    vsp_dist = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.DistPap)
+    if vsp_dist is None:
+        vsp_dist = 0
+    vsp_dist = vsp_dist if sig_direction == Direction.CROISSANT else -vsp_dist
+    vsp_seg, vsp_x = from_kp_to_seg_offset(*from_seg_offset_to_kp(sig_seg, sig_x + vsp_dist))
+    return vsp_seg, vsp_x, sig_direction

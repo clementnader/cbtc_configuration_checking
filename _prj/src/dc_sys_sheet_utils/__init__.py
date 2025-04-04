@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .block_utils import *
+from .border_area_utils import *
 from .consist_osp_utils import *
 from .ivb_utils import *
 from .line_section_utils import *

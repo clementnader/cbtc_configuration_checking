@@ -122,10 +122,10 @@ class Color:
         57,  56,  55,  54,  53,   # blue to purple
     ]]
     progress_pride = duplicate_each_elem([csi_color_seq(_i) for _i in [
-        15,  213, 51,  95,  0,
+        15, 213, 51, 95, 0,
         # white, pink, cyan, brown, black
     ]], 3) + duplicate_each_elem([csi_color_seq(_i) for _i in [
-        196, 208, 220, 46,  27,  90,
+        196, 208, 220, 46, 27, 90,
         # red, orange, yellow, green, blue, purple
     ]], 3)
 

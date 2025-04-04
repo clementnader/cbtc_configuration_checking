@@ -23,6 +23,8 @@ def get_line_name_and_version() -> str:
     line_value = list(line_dict.values())[0]
     line_name = get_dc_sys_value(line_value, DCSYS.Ligne.Nom)
     version = get_dc_sys_value(line_value, DCSYS.Ligne.Version)
+    if version is None:
+        return line_name
     return f"{line_name}_{version}"
 
 

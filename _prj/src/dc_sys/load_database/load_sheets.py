@@ -30,6 +30,7 @@ def load_sheet(ws, old: bool = False) -> dict[str, dict[str, Any]]:
             wb_old = load_dc_sys_wb(old=True)
             LOADED_SHEETS_OLD[sh_name] = get_sheet(wb_old, sh_name)
         return LOADED_SHEETS_OLD[sh_name]
+
     else:
         global LOADED_SHEETS
         if not LOADED_SHEETS[sh_name]:

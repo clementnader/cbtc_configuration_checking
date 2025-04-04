@@ -111,10 +111,13 @@ def _get_zc_managing_signal(sig_name: str, sig_upstream_ivb: bool) -> Optional[s
 def _get_zc_managing_ivb(ivb_name: str) -> Optional[str]:
     ivb_dict = load_sheet(DCSYS.IVB)
     dedicated_zc = get_dc_sys_value(ivb_dict[ivb_name], DCSYS.IVB.ZcName)
-    if dedicated_zc is None:
-        print_warning(f"IVB {ivb_name} is not managed by a ZC.")
-        return None
     list_of_zc_covering_ivb = get_zc_of_obj(DCSYS.IVB, ivb_name)
+    if dedicated_zc is None:  # some IVB are not sent to the IXL and thus don't have a dedicated ZC sending it
+        if len(list_of_zc_covering_ivb) == 1:
+            return list_of_zc_covering_ivb[0]
+        print_warning(f"IVB {ivb_name} is not managed by a ZC and it is in overlay: {list_of_zc_covering_ivb}.")
+        return None
+
     if dedicated_zc not in list_of_zc_covering_ivb:
         print_error(f"The dedicated ZC of {ivb_name} given in IVB sheet ({dedicated_zc}) does not cover the IVB.\n"
                     f"({list_of_zc_covering_ivb = })")

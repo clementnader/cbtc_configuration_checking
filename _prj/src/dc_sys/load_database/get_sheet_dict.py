@@ -38,8 +38,8 @@ def _get_generic_sh_dict(ws: xlrd.sheet, columns_dict: dict[str, Any], generic_o
             info_for_object = get_info_for_object(ws, row, columns_dict)
             key = _get_generic_sh_object_key(cols, info_for_object)
             temp_dict[key] = info_for_object
-    temp_dict = {key: temp_dict[key] for key in sorted(temp_dict.keys())}
-    sh_dict = {f"{ws.name}_row{row}": val for row, val in enumerate(temp_dict.values(), start=START_ROW)}
+    # temp_dict = {key: temp_dict[key] for key in sorted(temp_dict.keys())}
+    sh_dict = {f"{ws.name}_row{val['ws_row']}": val for val in temp_dict.values()}
     return sh_dict
 
 
@@ -124,12 +124,14 @@ def check_value_has_spaces(sh_name, value, row, column, key):
                           f"value: {Color.white}\"{value}\"{Color.reset}")
             # G_LIST_OF_VALUES_WITH_LEADING_SPACES.append(value)
 
-    if ((sh_name, key) not in [("Quai", "Nom"),
-                               ("Driving_Modes", "Name"),
-                               ("Wayside_Eqpt", "Location"),
-                               ("Flux_PAS_MES", "ClasseObjet"),
-                               ("Flux_MES_PAS", "ClasseObjet"),]
-            and isinstance(value, str) and " " in value[1:-1]):
+    if ((sh_name, key) in [("Quai", "Nom"), ("Quai", "Abreviation"),
+                           ("Driving_Modes", "Name"),
+                           ("Wayside_Eqpt", "Location"),
+                           ("Flux_PAS_MES", "ClasseObjet"),
+                           ("Flux_MES_PAS", "ClasseObjet"),]
+            or "Comment" in key):
+        return  # Some cells can have space inside.
+    if isinstance(value, str) and " " in value[1:-1]:
         # Space in the cell, some information can contain spaces
         if not any(value.endswith(old_val) for old_val in G_LIST_OF_VALUES_WITH_TRAILING_SPACES):
             print_warning(f"There is a space inside the word in sheet {Color.yellow}{sh_name}{Color.reset} "

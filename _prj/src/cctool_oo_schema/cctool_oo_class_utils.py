@@ -16,6 +16,11 @@ def get_all_sheet_names() -> list[str]:
 def get_sh_name(ws) -> str:
     if isinstance(ws, str):
         return ws
+    if isinstance(ws, dict):
+        if "sub_attr_name" in ws:
+            return f"{ws['sh_name']}__{ws['attr_name']}__{ws['sub_attr_name']}"
+        else:
+            return f"{ws['sh_name']}__{ws['attr_name']}"
     return ws.__class__.__name__
 
 

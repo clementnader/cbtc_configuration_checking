@@ -10,12 +10,16 @@ from .interface_ats_atc import *
 from .interface_zc_ats import *
 from .interface_zc_ixl import *
 from .interface_zcr_zc import *
+from .ivb import *
 from .ixl_overlap import *
+from .maz import *
 from .platform import *
 from .psr import *
 from .signal import *
 from .signal_zone import *
 from .sw_flank_protection import *
 from .switch import *
+from .virtual_block import *
+from .walkway import *
 
 from .check_offset import *

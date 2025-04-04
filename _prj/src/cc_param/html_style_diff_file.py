@@ -6,7 +6,7 @@ __all__ = ["additional_css_style"]
 
 
 def additional_css_style():
-    html_code = "div.view  {width: 100%; overflow-x: scroll; white-space: nowrap;}\n"
+    html_code = "div.view {width: 100%; overflow-x: scroll; white-space: nowrap;}\n"
     html_code += "table.diff-table {overflow: hidden;}\n"
     html_code += "th, td {position: relative;}\n"
     html_code += "tr:hover {background: #EEEEFF;}\n"

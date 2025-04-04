@@ -10,7 +10,7 @@ from .joint_names_utils import *
 __all__ = ["get_joint_name_in_survey"]
 
 
-def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_info:  dict[str, Any],
+def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_info: dict[str, Any],
                              limit_position: tuple[str, float],
                              end_of_track_suffix: str = "", block_def_limit_name: str = None,
                              buffer_survey_info: dict[str, dict[str, float]] = None,
@@ -40,7 +40,7 @@ def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_in
 
 
 def _get_corresponding_two_limits_in_survey(limit_position: tuple[str, float], other_limit_position: tuple[str, float],
-                                            survey_names: list[str], survey_info:  dict[str, Any]):
+                                            survey_names: list[str], survey_info: dict[str, Any]):
     dc_sys_limits = [limit_position, other_limit_position]
     associated_survey_dict = {(lim_track, lim_kp): None for (lim_track, lim_kp)
                               in dc_sys_limits}
@@ -51,7 +51,7 @@ def _get_corresponding_two_limits_in_survey(limit_position: tuple[str, float], o
     return associated_survey_dict[limit_position]
 
 
-def _find_survey_name_using_block_def(block_def_limit_name: str, track: str, survey_info:  dict[str, Any],
+def _find_survey_name_using_block_def(block_def_limit_name: str, track: str, survey_info: dict[str, Any],
                                       buffer_survey_info: dict[str, dict[str, float]]
                                       ) -> tuple[Optional[str], bool]:
     if f"{block_def_limit_name.upper()}__{track}" in survey_info:

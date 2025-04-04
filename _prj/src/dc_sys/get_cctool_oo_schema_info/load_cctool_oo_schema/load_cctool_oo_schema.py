@@ -18,7 +18,6 @@ COLUMN_COL = 4
 
 LOADED_CCTOOL_OO_SCHEMA = dict()
 
-
 DC_SYS_SHEET_NAMES_TO_FIX = {
     "Coupling_area": "Coupling_Area",
     "Odometric_Zones": "Odometric_Zone",
@@ -48,8 +47,8 @@ def get_cctool_oo_schema(ws: xlrd.sheet) -> dict:
         column = int(get_xlrd_value(ws, row, COLUMN_COL))
         if "::" not in title:
             if title in info_dict[sheet_name]:
-                print_error(f"In CCTOOL-OO Schema, there is multiple times Title {Color.blue}{title}{Color.reset}"
-                            f" for Spreadsheet {Color.blue}{sheet_name}{Color.reset}.")
+                print_error(f"In CCTOOL-OO Schema, there is multiple times Title {Color.blue}{title}{Color.reset} "
+                            f"for Spreadsheet {Color.blue}{sheet_name}{Color.reset}.")
             else:
                 info_dict[sheet_name][title] = column
         else:
@@ -72,7 +71,8 @@ def get_list_attr_names(title: str):
 
 def get_clean_cell(ws: xlrd.sheet, row: int, col: int):
     cell_str = unidecode.unidecode(f"{get_xlrd_value(ws, row, col)}").strip()  # translate non-ASCII characters
-    cell_str = cell_str.replace("'", " ").replace(".", " ").replace("-", " ").replace("/", " ")  # remove special chars
+    cell_str = (cell_str.replace("'", " ").replace(".", " ")
+                .replace("-", " ").replace("/", " "))  # remove special chars
     cell_str = cell_str.replace("#", "Number")  # remove special char
     cell_str = cell_str.replace("1st", "First").replace("2nd", "Second")  # remove leading numbers
     cell_str = cell_str.title().replace(" ", "")  # CamelCase

@@ -10,7 +10,7 @@ __all__ = ["get_cc_param_location"]
 
 
 def get_cc_param_location(input_dir: str):
-    """ Return a  dictionary listing for every train unit, every cab and for every cab,
+    """ Return a dictionary listing for every train unit, every cab and for every cab,
      the corresponding CCParameter.csv path. """
     # input_dir is a C11_D470 directory
     dict_train_units = _get_train_units_dirs(input_dir)  # dictionary containing an empty dictionary for each TU

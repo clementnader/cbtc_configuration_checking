@@ -9,7 +9,8 @@ from .get_oriented_limits import *
 
 __all__ = ["get_segments_within_zone", "get_zone_limits", "get_all_segments_in_zone",
            "is_point_in_zone", "is_seg_in_zone", "get_zones_on_point", "get_zones_on_segment",
-           "get_zones_intersecting_zone", "are_zone_objects_intersecting"]
+           "get_zones_intersecting_zone", "are_zone_objects_intersecting",
+           "get_objects_in_zone", "is_zone_completely_included_in_zone"]
 
 
 ZONE_SEGMENTS = dict()
@@ -97,9 +98,13 @@ def _get_next_segments(obj_type: str, obj_name: str, start_seg: str, start_x: fl
             else:
                 next_inner_downstream = inner_downstream
 
-            if _is_seg_end_limit(obj_type, obj_name, next_seg, next_inner_downstream, zone_limits,
-                                 start_point_and_direction):
-                ZONE_SEGMENTS[obj_type][obj_name].extend(path)  # only append path if another limit is reached
+            test, correct_direction = _is_seg_end_limit(obj_type, obj_name, next_seg, next_inner_downstream, zone_limits,
+                                                        start_point_and_direction)
+            if test:
+                if correct_direction:
+                    ZONE_SEGMENTS[obj_type][obj_name].extend(path)  # only append path if another limit is reached
+                # if a limit of the object is reached but not in the correct direction, we stop the progression,
+                # but we don't add the path
                 continue
 
             if (next_seg, next_inner_downstream) in ZONE_SEGMENTS[obj_type][obj_name]:  # already managed
@@ -132,10 +137,12 @@ def _is_first_seg_on_another_limit(obj_type: str, obj_name: str, start_seg: str,
         if (limit_seg, limit_x, limit_downstream) == (start_seg, start_x, downstream):  # the limit corresponding to the
             # start point
             continue
+
         if (limit_seg, limit_x, limit_downstream) == (start_seg, start_x, not downstream):  # limit corresponding to the
             # start point in opposite direction
             if (obj_type, obj_name, start_seg, start_x, not downstream) in G_ALREADY_PRINTED:
-                return True, warning_has_been_printed
+                return True, warning_has_been_printed  # avoid repeating the message
+
             G_ALREADY_PRINTED.append((obj_type, obj_name, start_seg, start_x, downstream))
             print_warning(f"Zone {Color.beige}{obj_type}{Color.reset} {Color.yellow}{obj_name}{Color.reset} "
                           f"is one point: there are 2 limits on the same point {(start_seg, start_x)}"
@@ -143,10 +150,13 @@ def _is_first_seg_on_another_limit(obj_type: str, obj_name: str, start_seg: str,
             print_warning(f"The zone was traveled by starting by the point {start_point_and_direction}.")
             warning_has_been_printed = True
             return True, warning_has_been_printed
+
         if start_seg == limit_seg:
             if (downstream and start_x <= limit_x) or (not downstream and start_x >= limit_x):
                 if not downstream == limit_downstream:
                     return True, warning_has_been_printed
+
+                # Limit reached in the wrong direction
                 print_error(f"Reach a limit for {Color.beige}{obj_type}{Color.reset} "
                             f"{Color.yellow}{obj_name}{Color.reset} but not in opposite direction:")
                 print_error(limit_seg, limit_x, limit_direction, no_prefix=True)
@@ -154,14 +164,16 @@ def _is_first_seg_on_another_limit(obj_type: str, obj_name: str, start_seg: str,
                             no_prefix=True)
                 warning_has_been_printed = True
                 return True, warning_has_been_printed
+
     return False, warning_has_been_printed
 
 
 def _is_seg_end_limit(obj_type: str, obj_name: str, seg: str, downstream: bool,
-                     zone_limits: list[tuple[str, float, bool]], start_point_and_direction: str) -> bool:
+                     zone_limits: list[tuple[str, float, bool]], start_point_and_direction: str
+                      ) -> tuple[bool, Optional[bool]]:
     if (seg, not downstream) in [(limit_seg, limit_downstream)
                                  for limit_seg, _, limit_downstream in zone_limits]:
-        return True
+        return True, True
     if seg in [limit_seg for limit_seg, _, _ in zone_limits]:
         print_error(f"Reach a limit for {Color.beige}{obj_type}{Color.reset} "
                     f"{Color.yellow}{obj_name}{Color.reset} but not in opposite direction:")
@@ -169,8 +181,8 @@ def _is_seg_end_limit(obj_type: str, obj_name: str, seg: str, downstream: bool,
                     for limit_seg, limit_x, limit_downstream in zone_limits if seg == limit_seg]), no_prefix=True)
         print_error(f"The zone was traveled by starting by the point {start_point_and_direction}.",
                     no_prefix=True)
-        return True
-    return False
+        return True, False
+    return False, None
 
 
 def _update_zone_limits(obj_type: str, obj_name: str, zone_limits: list[tuple[str, float, bool]]) -> None:
@@ -220,6 +232,27 @@ def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str
 def is_seg_in_zone(obj_type, obj_name: str, seg: str) -> Optional[bool]:
     zone_segments = get_all_segments_in_zone(obj_type, obj_name)
     return seg in zone_segments
+
+
+def get_objects_in_zone(obj_type, zone_obj_type, zone_name: str) -> Optional[list[str]]:
+    obj_type = get_sh_name(obj_type)
+    list_obj = list()
+
+    obj_list = get_objects_list(obj_type)
+    for obj_name in obj_list:
+        obj_position = get_obj_position(obj_type, obj_name)
+        if obj_position is None:
+            continue
+
+        if isinstance(obj_position, tuple):  # single point object
+            if is_point_in_zone(zone_obj_type, zone_name, *obj_position):
+                list_obj.append(obj_name)
+        else:  # zone object
+            if are_zone_objects_intersecting(zone_obj_type, zone_name, obj_type, obj_name):
+                list_obj.append(obj_name)
+    if not list_obj:
+        return None
+    return list_obj
 
 
 def get_zones_on_point(obj_type, seg: str, x: float, direction: str = None) -> Optional[list[str]]:
@@ -273,17 +306,38 @@ def are_zone_objects_intersecting(obj_type1, obj_name1: str, obj_type2, obj_name
             return True
 
     for seg, x, downstream in zone_limits1:
-        direction = get_reverse_direction(Direction.CROISSANT if downstream else Direction.DECROISSANT)
+        limit_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
+        test_direction = get_reverse_direction(limit_direction)
         # for a single point object, we consider it belongs to the zone upstream of it,
-        # behavior is mimicked for the zone too
-        if is_point_in_zone(obj_type2, obj_name2, seg, x, direction):
+        # behavior is mimicked for the zone limits too
+        if is_point_in_zone(obj_type2, obj_name2, seg, x, test_direction):
             return True
 
     for seg, x, downstream in zone_limits2:
-        direction = get_reverse_direction(Direction.CROISSANT if downstream else Direction.DECROISSANT)
+        limit_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
+        test_direction = get_reverse_direction(limit_direction)
         # for a single point object, we consider it belongs to the zone upstream of it,
-        # behavior is mimicked for the zone too
-        if is_point_in_zone(obj_type1, obj_name1, seg, x, direction):
+        # behavior is mimicked for the zone limits too
+        if is_point_in_zone(obj_type1, obj_name1, seg, x, test_direction):
             return True
 
     return False
+
+
+def is_zone_completely_included_in_zone(small_obj_type, small_obj_name: str, big_obj_type, big_obj_name: str
+                                        ) -> tuple[bool, list[tuple[str, float, str]]]:
+    test = True
+    list_limits_not_in_big_zone = list()
+
+    small_zone_limits = get_zone_limits(small_obj_type, small_obj_name)
+
+    for seg, x, downstream in small_zone_limits:
+        limit_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
+        test_direction = get_reverse_direction(limit_direction)
+        # for a single point object, we consider it belongs to the zone upstream of it,
+        # behavior is mimicked for the zone limits too
+        if not is_point_in_zone(big_obj_type, big_obj_name, seg, x, test_direction):
+            test = False
+            list_limits_not_in_big_zone.append((seg, x, limit_direction))
+
+    return test, list_limits_not_in_big_zone

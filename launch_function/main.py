@@ -61,8 +61,8 @@ def main():
     #cf_dg_2()  # LF General Data, sheet "Flux_Variant_BF"
     #r_mes_pas_itf_1(in_cbtc=False)  # IXL -> ZC Interface, sheet "Flux_MES_PAS"
     #r_mes_pas_itf_3(in_cbtc=False)  # ZC -> IXL Interface, sheet "Flux_PAS_MES"
-    #ats_atc_sheet_verif(in_cbtc=False)  # Non Vital, FRONTAM <-> ZC Interface, sheet "ATS_ATC"
-    #r_tm_ats_itf_1(in_cbtc=False)  # Non Vital, Wayside Remote supervision, ZC <-> ATS Interface, sheet "TM_PAS_ATS"
+    #ats_atc_sheet_verif(in_cbtc=False)  # Non-Vital, FRONTAM <-> ZC Interface, sheet "ATS_ATC"
+    #r_tm_ats_itf_1(in_cbtc=False)  # Non-Vital, Wayside Remote supervision, ZC <-> ATS Interface, sheet "TM_PAS_ATS"
 
     """Uncomment next line to verify the CBTC Signal Approach Zone so that it is greater than parameter 
      train_to_home_signal_max_dist so to respect R_ZSM_3 at CBTC level.
