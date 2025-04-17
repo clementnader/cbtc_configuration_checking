@@ -10,7 +10,7 @@ from .ivb_utils import get_next_ivb_limits_from_point
 
 
 __all__ = ["get_related_overlaps", "get_routes_starting_from_signal", "get_ivb_limit_of_a_signal",
-           "check_upstream_and_downstream_ivb_of_all_signals"]
+           "check_upstream_and_downstream_ivb_of_all_signals", "list_signal_vsp_on_switch"]
 
 
 def get_related_overlaps(sig_name: str):
@@ -104,3 +104,17 @@ def check_upstream_and_downstream_ivb_of_a_signal(sig_name: str) -> None:
     if downstream_ivb != dc_sys_downstream_ivb:
         print_error(f"For {sig_name}, tool has computed IVB {downstream_ivb} as the downstream IVB but in DC_SYS, "
                     f"{dc_sys_downstream_ivb} is configured.")
+
+
+def list_signal_vsp_on_switch() -> list[tuple[str, str]]:
+    vsp_on_switch = list()
+    vsp_list = get_objects_list(DCSYS.Sig.DistPap)
+    sw_list = get_objects_list(DCSYS.Aig)
+    for sig_name in vsp_list:
+        vsp_position = get_object_position(DCSYS.Sig.DistPap, sig_name)
+        vsp_seg, vsp_x, _ = vsp_position
+        for sw_name in sw_list:
+            sw_position = get_object_position(DCSYS.Aig, sw_name)
+            if are_points_matching(vsp_seg, vsp_x, *sw_position):
+                vsp_on_switch.append((sig_name, sw_name))
+    return vsp_on_switch

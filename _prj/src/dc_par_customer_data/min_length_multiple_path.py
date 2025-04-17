@@ -37,10 +37,11 @@ def min_length_multiple_path(in_cbtc: bool = False):
             if dist is None:
                 continue
             if len(list_of_paths) == 2:  # if there are two paths
-                dist -= (get_seg_len(start_seg) + get_seg_len(end_seg))
+                dist -= (get_segment_length(start_seg) + get_segment_length(end_seg))
                 long_path = [path for direction, path in list_of_paths
                              if (direction, path) != (end_upstream, short_path)][0]
-                long_path_length = get_path_len(long_path) - (get_seg_len(start_seg) + get_seg_len(end_seg))
+                long_path_length = get_path_len(long_path) - (
+                        get_segment_length(start_seg) + get_segment_length(end_seg))
                 downstream_str = {True: "downstream", False: "upstream"}[start_downstream]
                 upstream_str = {True: "downstream", False: "upstream"}[not end_upstream]
                 multiple_path_len_dict[f"{start_seg} {downstream_str} to {end_seg} {upstream_str}"] = {
@@ -87,16 +88,16 @@ def get_all_sw_point_segs(seg_list: Union[set[str], list[str]], limits_cbtc_ter:
                           ) -> list[tuple[str, bool]]:
     sw_point_segs = list()
     for seg in seg_list:
-        if is_seg_upstream_of_a_switch(seg):
+        if is_segment_upstream_of_a_switch(seg):
             sw_point_segs.append((seg, True))
-        if is_seg_downstream_of_a_switch(seg):
+        if is_segment_downstream_of_a_switch(seg):
             sw_point_segs.append((seg, False))
 
     for lim in limits_cbtc_ter:
         seg, _, downstream = lim
-        if downstream and is_seg_upstream_of_a_switch(seg):
+        if downstream and is_segment_upstream_of_a_switch(seg):
             sw_point_segs.append((seg, True))
-        if not downstream and is_seg_downstream_of_a_switch(seg):
+        if not downstream and is_segment_downstream_of_a_switch(seg):
             sw_point_segs.append((seg, False))
 
     return sw_point_segs
@@ -105,11 +106,11 @@ def get_all_sw_point_segs(seg_list: Union[set[str], list[str]], limits_cbtc_ter:
 def get_switch_on_path(path: list[str]):
     list_sw = list()
     for seg, next_seg in zip(path[:-1], path[1:]):
-        if is_seg_upstream_of_a_switch(seg) or is_seg_downstream_of_a_switch(seg):
+        if is_segment_upstream_of_a_switch(seg) or is_segment_downstream_of_a_switch(seg):
             sw_name, sw_pos = get_heel_position(seg, next_seg)
             if sw_name is not None:
                 list_sw.append([sw_name, sw_pos])
-        if is_seg_upstream_of_a_switch(next_seg) or is_seg_downstream_of_a_switch(next_seg):
+        if is_segment_upstream_of_a_switch(next_seg) or is_segment_downstream_of_a_switch(next_seg):
             sw_name, sw_pos = get_heel_position(next_seg, seg)
             if sw_name is not None:
                 list_sw.append([sw_name, sw_pos])

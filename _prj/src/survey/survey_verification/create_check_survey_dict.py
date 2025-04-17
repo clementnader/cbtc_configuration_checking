@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ...utils import *
+from ...dc_sys import *
 from ..survey_types import *
 
 
@@ -97,42 +98,8 @@ def _order_survey_verif_dict(verif_dict: dict):
 
 def _get_track_to_order_dict(x, verif_dict):
     """ Get track name inside the verif dict dictionary, from the DC_SYS or survey according to which one exists. """
-    return (_split_track(verif_dict[x]["dc_sys_track"]) if verif_dict[x]["dc_sys_track"] is not None
-            else _split_track(verif_dict[x]["survey_track"]))
-
-
-def _split_track(track: str) -> tuple[Union[str, int], ...]:
-    """ Split track into a tuple to separate the numeric and the alphabetic words.
-    For example, TRACK_2 and TRACK_11 would become ("TRACK_", 2) and ("TRACK_", 11),
-     so that the TRACK_2 would be ordered before the 11. If doing a simple sort, the 11 is taken as a string
-     and is ordered before the 2. """
-    if all(not c.isnumeric() for c in track):  # no number if the track name
-        return (track.lower(),)
-    list_words = list()
-    pos = 0
-    char_type = "num" if track[pos].isnumeric() else "other"
-    if char_type == "num":
-        list_words.append("")
-    current_word = track[pos]
-    while pos < len(track) - 1:
-        pos += 1
-        new_char_type = "num" if track[pos].isnumeric() else "other"
-        if new_char_type == char_type:
-            current_word += track[pos]
-        else:
-            if char_type == "num":
-                current_word = int(current_word)
-            else:
-                current_word = current_word.lower()
-            list_words.append(current_word)
-            current_word = track[pos]
-        char_type = new_char_type
-    if char_type == "num":
-        current_word = int(current_word)
-    else:
-        current_word = current_word.lower()
-    list_words.append(current_word)
-    return tuple(list_words)
+    return (split_track_to_order_them(verif_dict[x]["dc_sys_track"]) if verif_dict[x]["dc_sys_track"] is not None
+            else split_track_to_order_them(verif_dict[x]["survey_track"]))
 
 
 def _get_kp_to_order_dict(x, verif_dict):

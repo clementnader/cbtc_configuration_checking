@@ -35,9 +35,9 @@ def cc():
 
 
 def zc():
+    # create_computed_result_file_ze_impacte_fu()
+    # compare_results_ze_impacte_fu()
     # check_pz_ze()
-    # verify_if_ze_impacte_fu()
-    # check_ze_impacte_fu()
     return
 
 
@@ -89,11 +89,12 @@ def route_and_overlap():
     #     # print_pdf_code=True,
     # )
 
-    # Analyze DC_SYS with CSV files
+    # Analyze DC_SYS with the created CSV files
     # TODO: full rework of the association IXL name / DC_SYS name, take inspiration from the survey.
     # TODO: generate a result file and list at the end the missing info so that the alignment can be done manually.
     # check_route_control_tables(use_csv_file=True)
     # check_overlap_control_tables(use_csv_file=True)
+
     # verify_switches_along_the_routes()  # TODO
     # TODO: verif overlap: du signal jusqu'au VSP tous les IVB et aiguilles (+position) qu'on passe
     #  doivent être côté IXL et toutes les aiguilles (+position) doivent être côté CBTC
@@ -123,7 +124,7 @@ def check_cdz_signals():
     for cdz_name, cdz in cdz_dict.items():
         list_sigs = get_dc_sys_value(cdz, DCSYS.ZSM_CBTC.SignauxZsm.Sigman)
         for i, zsm_sig in enumerate(list_sigs, start=1):
-            seg, x, direction = get_obj_position(DCSYS.Sig, zsm_sig)
+            seg, x, direction = get_object_position(DCSYS.Sig, zsm_sig)
             signal_ivb = get_dc_sys_value(sig_dict[zsm_sig], DCSYS.Sig.IvbJoint.UpstreamIvb)
 
             if is_point_in_zone(DCSYS.ZSM_CBTC, cdz_name, seg, x, direction):  # if signal in CDZ
@@ -140,29 +141,44 @@ def check_cdz_signals():
 
 
 def constraints():
-    # Global DC_SYS verifications
+    # for seg in get_objects_list(DCSYS.Seg):
+    #     for x in (0., get_segment_length(seg)):
+    #         min_slope, max_slope = get_min_and_max_slopes_at_point(seg, x)  # TODO with Mock-up1 fix slope sign with depol
+    #         print(seg, x, f"{min_slope:.2%}", f"{max_slope:.2%}")
+
+    # --- Global DC_SYS verifications --- #
     # check_dc_sys_global_definition()
     # check_dc_sys_zones_definition()
     # check_dc_sys_track_kp_definition()
+
+    # --- Functions related to zone objects customizable specifying the sheet name --- #
     # get_zones_kp_limits(DCSYS.Protection_Zone)
+    # print(get_objects_in_zone(DCSYS.Zaum, DCSYS.PAS, "ZC_02"))
+    # print(get_zones_on_object(DCSYS.PAS, DCSYS.Zaum, "MAZ_STB_110"))
+
+    # get_whole_object_type_kp_limits(DCSYS.PAS)  # TODO raise a message when there is overlapping
+    # TODO create a function to do unions between zones to manage for ZC when it's normal to have overlapping.
+
+    # list_signal_vsp_on_switch()  # TODO list signals with VSP not on IVB limit, and in that case check if there are not on switch
 
     # get_all_possible_border_areas()  # TODO in progress
 
     # check_upstream_and_downstream_ivb_of_all_signals()
     # check_cbtc_protecting_switch_area(do_print_warning=False)
 
-    # r_cdv_5(print_ok=True)  # TODO for r_cdv_5:
-    #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
-    #                             plutôt que faire une diff avec le kit C11
-    #                               plus: retourner un fichier de vérif pour pouvoir montrer les données;
-    #                               vérifier l'histoire de tag_accurate_laying_uncertainty:
-    #                                   ce n'est pas du tout marqué dans la contrainte donc peut-être à désactiver;
-    #                               faire R_IVB_1 aussi.
-
     # check_psr_41_42()  # TODO in progress
-    # r_dyntag_3()
-    # cf_zsm_cbtc_10()
 
+    # verif_calib_distance()
+    # ixl_overlap_platform_related()
+    # get_closest_vsp_in_rear()
+
+    # check_signal_with_overlap()
+
+    # get_par_worst_suspect_coupling_overrun_additionnal_dist()  # TODO ça marche comme l'outil de Damien mais à voir pour speeder ça (13mn sur KCR)
+    return
+
+
+def rules():
     # Block zone definition constraints
     # r_cdv_10()
     # cf_ivb_1_2()
@@ -171,12 +187,23 @@ def constraints():
     # cc_cv_18()
     # cc_cv_20()
 
+    # CBTC Direction Zone constraints
+    # cf_zsm_cbtc_4()
+    # cf_zsm_cbtc_10()
+
+    # Floor Level constraints
+    # cf_flr_lvl_1()
+
     # MAZ constraints
     # cf_zaum_1()
     # cf_zaum_11()
 
     # Walkway constraints
     # cf_walkway_2()
+
+    # OSP constraints
+    # cc_quai_6()  # Allow Accel Calibration at platform OSP TODO slope shall be constant before and after
+    #                                                         in addition to over the accel car: to test with BXL file
 
     # Messages constraints
     # cf_dg_1()  # TODO: check correct Line Section
@@ -197,17 +224,23 @@ def constraints():
     #                                           and if extra object type exists.
     # zcr_zc_sheet_verif(in_cbtc=False)
 
-    # check_signal_with_overlap()
-
+    # Constraints related to signal Approach Zone
     # check_cbtc_sig_apz()
     # cf_signal_12(apz_with_tc=False)  # TODO: write IXL APZ info in Header sheet
     # r_zsm_3(apz_with_tc=False)
 
-    # verif_calib_distance()
-    # ixl_overlap_platform_related()
-    # get_closest_vsp_in_rear()
+    # Extra constraints
+    # cf_calib_4()
+    # r_dyntag_3()
 
-    # get_par_worst_suspect_coupling_overrun_additionnal_dist()  # TODO ça marche comme l'outil de Damien mais à voir pour speeder ça (13mn sur KCR)
+    # r_cdv_5(print_ok=True)  # TODO for R_CDV_5:
+    #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
+    #                             plutôt que faire une diff avec le kit C11
+    #                               plus: retourner un fichier de vérif pour pouvoir montrer les données;
+    #                               vérifier l'histoire de tag_accurate_laying_uncertainty:
+    #                                   ce n'est pas du tout marqué dans la contrainte donc peut-être à désactiver;
+    #                               faire R_IVB_1 aussi.
+
     return
 
 
@@ -236,6 +269,7 @@ def main():
     route_and_overlap()
 
     constraints()
+    rules()
 
     additional_verif()
 

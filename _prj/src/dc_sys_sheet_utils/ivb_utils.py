@@ -40,7 +40,7 @@ def get_next_ivb_limits_from_point(seg: str, x: float, downstream: bool):
 
     def inner_recurs_seg(current_seg):
         nonlocal next_ivb_limits
-        next_segs = get_linked_segs(current_seg, downstream)
+        next_segs = get_linked_segments(current_seg, downstream)
         for next_seg in next_segs:
             next_ivb_limit = _get_next_ivb_limit_on_a_seg(next_seg, downstream, list(dict_ivb_limits.keys()))
             if next_ivb_limit is not None:

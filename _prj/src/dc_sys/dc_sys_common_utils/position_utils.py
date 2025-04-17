@@ -6,19 +6,22 @@ from ...cctool_oo_schema import *
 from ..load_database import *
 from .common_utils import *
 from .switch_utils import *
-from .kp_utils import *
+from .segments_utils import get_correct_seg_offset
+from .plt_osp_utils import *
 
 
-__all__ = ["get_obj_position", "get_obj_zone_limits", "get_obj_oriented_zone_limits",
-           "get_vsp_position"]
+__all__ = ["get_object_position", "get_obj_zone_limits", "get_obj_oriented_zone_limits",
+           "_get_vsp_position"]
 
 
-def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[str, float, str],
-                                                       list[tuple[str, float]],
-                                                       list[tuple[str, float, str]], None]:
+def get_object_position(obj_type, obj_name: str) -> Union[tuple[str, float],
+                                                          tuple[str, float, str],
+                                                          list[tuple[str, float]],
+                                                          list[tuple[str, float, str]], None]:
     """
     Returns the position of an object:
-        - if it is a point, returns a tuple (segment, offset)
+        - if it is a point, returns a tuple (segment, offset) and if this point is oriented, returns its oriented
+        position (segment, offset, direction)
         - if it is a zone, returns a list of its extremities (segment, offset) and if these extremities are oriented,
         returns a list of its oriented extremities (segment, offset, direction)
     :param obj_type: type of the object, using DCSYS class attributes
@@ -28,11 +31,16 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[
     """
     obj_type = get_sh_name(obj_type)
 
-    # Object with no direct corresponding DC_SYS sheet
+    # Objects with no direct corresponding DC_SYS sheet
     if ("Sig" in get_class_attr_dict(DCSYS) and "DistPap" in get_class_attr_dict(DCSYS.Sig)
             and obj_type == get_sh_name(DCSYS.Sig.DistPap)):
         # a dedicated function for signal VSP
-        return get_vsp_position(obj_name)
+        return _get_vsp_position(obj_name)
+
+    if ("Quai" in get_class_attr_dict(DCSYS) and "PointDArret" in get_class_attr_dict(DCSYS.Quai)
+            and obj_type == get_sh_name(DCSYS.Quai.PointDArret)):
+        # a dedicated function for platform OSP
+        return _get_plt_osp_position(obj_name)
 
     limits = get_obj_zone_limits(obj_type, obj_name)  # zone object, we put it first to manage the zone subsets objects
     if limits is not None:
@@ -45,13 +53,7 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[
 
     if "Aig" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Aig):
         # a dedicated function for switches
-        return get_sw_pos(obj_val)
-    if "IXL_Overlap" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.IXL_Overlap):
-        # a dedicated function for overlaps
-        return _get_ovl_pos(obj_val)
-    if "Calib" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Calib):
-        # a dedicated function for calibration bases
-        return _get_calib_pos(obj_val)
+        return get_switch_position(obj_val)
 
     if "Seg" in sh_attrs and "X" in sh_attrs:  # one point object
         seg, x = get_dc_sys_values(obj_val, obj_sh.Seg, obj_sh.X)
@@ -61,21 +63,6 @@ def get_obj_position(obj_type, obj_name: str) -> Union[tuple[str, float], tuple[
         return seg, x
 
     return None
-
-
-def _get_ovl_pos(obj_val: dict[str, Any]) -> list[tuple[str, float, str]]:
-    vsp_direction = get_dc_sys_value(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
-    # The zone of the overlap is upstream the VSP and downstream the release point
-    rp_seg, rp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.ReleasePoint.Seg,
-                                     DCSYS.IXL_Overlap.ReleasePoint.X)
-    vsp_seg, vsp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg,
-                                       DCSYS.IXL_Overlap.VitalStoppingPoint.X)
-    return [(rp_seg, rp_x, get_reverse_direction(vsp_direction)), (vsp_seg, vsp_x, vsp_direction)]
-
-
-def _get_calib_pos(obj_val: dict[str, Any]) -> list[tuple[str, float]]:
-    start_tag, end_tag = get_dc_sys_values(obj_val, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
-    return [get_obj_position(DCSYS.Bal, start_tag), get_obj_position(DCSYS.Bal, end_tag)]
 
 
 def _get_direction_of_point(obj_type, obj_name: str) -> Optional[str]:
@@ -118,6 +105,16 @@ def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, 
         # a dedicated function for platforms
         limits = _get_platform_oriented_limits(obj_val)
         return limits
+    if "Seg" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Seg):
+        # a dedicated function for segments
+        limits = _get_segment_oriented_limits(obj_val)
+        return limits
+    if "IXL_Overlap" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.IXL_Overlap):
+        # a dedicated function for overlaps
+        return _get_overlap_oriented_limits(obj_val)
+    if "Calib" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Calib):
+        # a dedicated function for calibration bases
+        return _get_calibration_base_oriented_limits(obj_val)
 
     if "Limit" in sh_attrs:
         limits = _get_obj_limits(obj_val, obj_sh.Limit)
@@ -188,6 +185,31 @@ def _get_platform_oriented_limits(plt_val) -> list[tuple[str, float, str]]:
     return limits
 
 
+def _get_segment_oriented_limits(seg_val) -> list[tuple[str, float, str]]:
+    seg_name = get_dc_sys_value(seg_val, DCSYS.Seg.Nom)
+    seg_length = get_dc_sys_value(seg_val, DCSYS.Seg.Longueur)
+    begin_limit = (seg_name, 0., Direction.CROISSANT)
+    end_limit = (seg_name, seg_length, Direction.DECROISSANT)
+    return [begin_limit, end_limit]
+
+
+def _get_overlap_oriented_limits(obj_val: dict[str, Any]) -> list[tuple[str, float, str]]:
+    vsp_direction = get_dc_sys_value(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
+    # The zone of the overlap is upstream the VSP and downstream the release point
+    rp_seg, rp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.ReleasePoint.Seg,
+                                     DCSYS.IXL_Overlap.ReleasePoint.X)
+    vsp_seg, vsp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg,
+                                       DCSYS.IXL_Overlap.VitalStoppingPoint.X)
+    return [(rp_seg, rp_x, get_reverse_direction(vsp_direction)), (vsp_seg, vsp_x, vsp_direction)]
+
+
+def _get_calibration_base_oriented_limits(obj_val: dict[str, Any]) -> list[tuple[str, float]]:
+    start_tag, end_tag = get_dc_sys_values(obj_val, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
+    calib_direction = get_dc_sys_value(obj_val, DCSYS.Calib.SensCalib)
+    return [(*get_object_position(DCSYS.Bal, start_tag), calib_direction),
+            (*get_object_position(DCSYS.Bal, end_tag), get_reverse_direction(calib_direction))]
+
+
 def _get_zc_oriented_limits(zc_name):
     zc_dict = load_sheet(DCSYS.PAS)
     # A ZC can be split between multiple ZC subsets for a matter of maximal number of limits.
@@ -225,12 +247,21 @@ def _remove_common_limits(limits: list[tuple[str, float, str]]) -> list[tuple[st
     return [(seg, x, lim_dir) for (seg, x, lim_dir) in limits if (seg, x) not in common_limits]
 
 
-def get_vsp_position(sig_name: str) -> tuple[str, float, str]:
-    sig_seg, sig_x, sig_direction = get_obj_position(DCSYS.Sig, sig_name)
+def _get_vsp_position(sig_name: str) -> tuple[str, float, str]:
+    sig_seg, sig_x, sig_direction = get_object_position(DCSYS.Sig, sig_name)
     sig_dict = load_sheet(DCSYS.Sig)
     vsp_dist = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.DistPap)
     if vsp_dist is None:
         vsp_dist = 0
     vsp_dist = vsp_dist if sig_direction == Direction.CROISSANT else -vsp_dist
-    vsp_seg, vsp_x = from_kp_to_seg_offset(*from_seg_offset_to_kp(sig_seg, sig_x + vsp_dist))
+    vsp_seg, vsp_x = get_correct_seg_offset(sig_seg, sig_x + vsp_dist)
     return vsp_seg, vsp_x, sig_direction
+
+
+def _get_plt_osp_position(osp_name: str) -> tuple[str, float, str]:
+    plt_value = get_plt_osp_value(osp_name)
+    osp_value = [(seg, x, direction) for (name, seg, x, direction) in get_dc_sys_zip_values(
+        plt_value, DCSYS.Quai.PointDArret.Name, DCSYS.Quai.PointDArret.Seg, DCSYS.Quai.PointDArret.X,
+        DCSYS.Quai.PointDArret.SensAssocie) if name == osp_name][0]
+    osp_seg, osp_x, osp_direction = osp_value
+    return osp_seg, osp_x, osp_direction

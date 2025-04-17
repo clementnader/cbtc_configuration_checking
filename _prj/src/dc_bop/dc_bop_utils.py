@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils import *
 from ..cctool_oo_schema import *
 from .load_bop import *
 
@@ -16,8 +17,10 @@ def convert_switch_pos_to_ixl(sw_name: str, left_or_right: str) -> str:
             return "N"  # Normal
         else:
             return "R"  # Reverse
-    if left_or_right.upper().strip() == Switch_Position.DROITE:
+    elif left_or_right.upper().strip() == Switch_Position.DROITE:
         if reverse_equals_right:
             return "R"  # Reverse
         else:
             return "N"  # Normal
+    else:
+        raise UnknownSwitchPosition(left_or_right.upper().strip())

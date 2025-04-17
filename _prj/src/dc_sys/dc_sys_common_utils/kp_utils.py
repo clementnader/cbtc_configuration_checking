@@ -6,10 +6,11 @@ from ...cctool_oo_schema import *
 from ..load_database import *
 
 
-__all__ = ["from_seg_offset_to_kp", "from_kp_to_seg_offset"]
+__all__ = ["from_seg_offset_to_track_kp", "from_track_kp_to_seg_offset",
+           "add_track_kp_to_position", "add_track_kp_to_zone_limits"]
 
 
-def from_seg_offset_to_kp(seg: str, x: float) -> tuple[str, float]:
+def from_seg_offset_to_track_kp(seg: str, x: float) -> tuple[str, float]:
     seg_dict = load_sheet(DCSYS.Seg)
     seg_track = get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
     seg_orig_kp = float(get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Origine))
@@ -24,7 +25,7 @@ def from_seg_offset_to_kp(seg: str, x: float) -> tuple[str, float]:
     return seg_track, kp
 
 
-def from_kp_to_seg_offset(track: str, kp: float) -> tuple[Optional[str], Optional[float]]:
+def from_track_kp_to_seg_offset(track: str, kp: float) -> tuple[Optional[str], Optional[float]]:
     seg_dict = load_sheet(DCSYS.Seg)
     for seg_name, seg_value in seg_dict.items():
         seg_track = get_dc_sys_value(seg_value, DCSYS.Seg.Voie)
@@ -43,3 +44,22 @@ def from_kp_to_seg_offset(track: str, kp: float) -> tuple[Optional[str], Optiona
                 return seg_name, x
     print_error(f"Unable to find a corresponding (segment, offset) for {(track, kp) = })")
     return None, None
+
+
+def add_track_kp_to_position(position: Union[tuple[str, float, str],
+                                             tuple[str, float]]
+                             ) -> Union[tuple[str, float, str, str, float],
+                                        tuple[str, float, str, float]]:
+    seg, x = position[0], position[1]
+    track, kp = from_seg_offset_to_track_kp(seg, x)
+    return position + (track, kp)
+
+
+def add_track_kp_to_zone_limits(zone_limits: Union[list[tuple[str, float, str]],
+                                                   list[tuple[str, float]]]
+                                ) -> Union[list[tuple[str, float, str, str, float]],
+                                           list[tuple[str, float, str, float]]]:
+    zone_limits_with_track_kp = list()
+    for limit in zone_limits:
+        zone_limits_with_track_kp.append(add_track_kp_to_position(limit))
+    return zone_limits_with_track_kp

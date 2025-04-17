@@ -43,7 +43,7 @@ def _verify_flank(sw_name: str, sw_value: dict[str, Any], fp_dist: float) -> boo
                                                        DCSYS.Aig.AreaRightPositionFlank.EndSeg,
                                                        DCSYS.Aig.AreaRightPositionFlank.EndX,
                                                        DCSYS.Aig.AreaRightPositionFlank.Direction))
-    sw_seg, sw_x = get_sw_pos(sw_value)
+    sw_seg, sw_x = get_switch_position(sw_value)
     is_sw_upstream = is_sw_point_seg_upstream(sw_value)
     left_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTg)
     right_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTd)
@@ -66,7 +66,7 @@ def _verify_direct_flank(sw_name: str, fp_dist: float, heel_seg: str,
                          corresponding_flank_area_list: list[tuple[str, float, str, float, str]],
                          is_sw_upstream: bool, sw_seg: str, sw_x: float, left_or_right: str) -> bool:
     status = True
-    start_x_test_flank = 0 if is_sw_upstream else get_seg_len(heel_seg)
+    start_x_test_flank = 0 if is_sw_upstream else get_segment_length(heel_seg)
     first_flanks = [(start_seg, start_x, end_seg, end_x, direction)
                     for start_seg, start_x, end_seg, end_x, direction in corresponding_flank_area_list
                     if (start_seg, start_x) == (heel_seg, start_x_test_flank)

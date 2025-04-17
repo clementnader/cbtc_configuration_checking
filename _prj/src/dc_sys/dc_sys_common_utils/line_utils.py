@@ -22,10 +22,13 @@ def get_line_name_and_version() -> str:
     line_dict = load_sheet(DCSYS.Ligne)
     line_value = list(line_dict.values())[0]
     line_name = get_dc_sys_value(line_value, DCSYS.Ligne.Nom)
-    version = get_dc_sys_value(line_value, DCSYS.Ligne.Version)
-    if version is None:
+    line_version = get_dc_sys_value(line_value, DCSYS.Ligne.Version)
+    if line_version is None:
         return line_name
-    return f"{line_name}_{version}"
+    if isinstance(line_version, float):
+        if int(line_version) == line_version:
+            line_version = int(line_version)
+    return f"{line_name}__{line_version}"
 
 
 def get_current_version() -> str:

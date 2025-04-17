@@ -2,7 +2,7 @@
 
 ## Manually launch functions
 You can launch manually any functions from the tool without graphic interface. <br />
-The required information is specified in a config.ini file and then you uncomment the function(s) you want to launch from a main.py file. <br />
+The required information is specified in a config.ini file, and then you uncomment the function(s) you want to launch from a main.py file. <br />
 Open the **"launch_function"** folder and check the README there to get more details.
 
 ## Correspondence with Site Survey

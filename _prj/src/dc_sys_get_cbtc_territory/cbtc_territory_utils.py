@@ -87,8 +87,8 @@ def get_next_segments(start_seg: str, start_x: float, downstream: bool,
 
     def inner_recurs_next_seg(seg: str, inner_downstream: bool):
         global CBTC_TER_SEGMENTS
-        for next_seg in get_linked_segs(seg, inner_downstream):
-            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
+        for next_seg in get_linked_segments(seg, inner_downstream):
+            if is_segment_depolarized(next_seg) and seg in get_associated_depolarization(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
@@ -136,8 +136,9 @@ def update_list_seg_lim(cbtc_limits: list[tuple[str, float, bool]]) -> None:
         for seg, x, downstream in limits_on_seg:
             if (seg, x, not downstream) in cbtc_limits:  # a limit between two IN CBTC Territory
                 left_limits_on_seg.remove((seg, x, downstream))
-            if ((downstream and x == 0 and not get_linked_segs(seg, downstream=False))
-                    or (not downstream and x == get_seg_len(seg) and not get_linked_segs(seg, downstream=True))):
+            if ((downstream and x == 0 and not get_linked_segments(seg, downstream=False))
+                    or (not downstream and x == get_segment_length(seg) and not get_linked_segments(seg,
+                                                                                                    downstream=True))):
                 left_limits_on_seg.remove((seg, x, downstream))
         if not left_limits_on_seg:
             CBTC_TER_SEGMENTS.append((current_seg, None))

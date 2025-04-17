@@ -75,10 +75,10 @@ def does_path_exist_within_block(seg1: str, seg2: str, block_value, downstream: 
             return False
 
     def inner_recurs_seg(seg: str, end_seg: str, inner_downstream: bool):
-        for next_seg in get_linked_segs(seg, inner_downstream):
+        for next_seg in get_linked_segments(seg, inner_downstream):
             if next_seg == end_seg:
                 return True
-            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
+            if is_segment_depolarized(next_seg) and seg in get_associated_depolarization(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
@@ -91,7 +91,7 @@ def does_path_exist_within_block(seg1: str, seg2: str, block_value, downstream: 
 
 def get_block_associated_to_sw(sw_value: dict) -> Optional[tuple[str, dict]]:
     """ Get the block associated to a switch. """
-    point_seg, x = get_sw_pos(sw_value)
+    point_seg, x = get_switch_position(sw_value)
     list_blocks = get_zones_on_point(DCSYS.CDV, point_seg, x)
     if not list_blocks:
         print_error(f"Unable to find block associated to switch:\n{sw_value}")

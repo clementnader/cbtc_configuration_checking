@@ -6,116 +6,118 @@ from ...cctool_oo_schema import *
 from ..load_database import *
 
 
-__all__ = ["is_seg_upstream_of_a_switch", "is_seg_downstream_of_a_switch",
-           "get_seg_len", "are_points_matching", "get_seg_track",
-           "is_seg_depolarized", "get_depolarized_segs", "get_associated_depol",
-           "get_linked_segs", "get_straight_linked_segs", "get_correct_seg_offset"]
+__all__ = ["is_segment_upstream_of_a_switch", "is_segment_downstream_of_a_switch",
+           "get_segment_length", "are_points_matching", "get_segment_track",
+           "is_segment_depolarized", "get_depolarized_segments", "get_associated_depolarization",
+           "get_linked_segments", "get_straight_linked_segments", "get_correct_seg_offset"]
 
 
 DEPOLARIZED_SEGMENTS = list()
 
 
-def is_seg_upstream_of_a_switch(seg: str) -> bool:
-    if len(get_linked_segs(seg, downstream=True)) == 2:
+def is_segment_upstream_of_a_switch(segment_name: str) -> bool:
+    if len(get_linked_segments(segment_name, downstream=True)) == 2:
         return True
     return False
 
 
-def is_seg_downstream_of_a_switch(seg: str) -> bool:
-    if len(get_linked_segs(seg, downstream=False)) == 2:
+def is_segment_downstream_of_a_switch(segment_name: str) -> bool:
+    if len(get_linked_segments(segment_name, downstream=False)) == 2:
         return True
     return False
 
 
-def get_seg_len(seg_name: str) -> float:
+def get_segment_length(segment_name: str) -> float:
     seg_dict = load_sheet(DCSYS.Seg)
-    return round(float(get_dc_sys_value(seg_dict[seg_name], DCSYS.Seg.Longueur)), 3)
+    return round(float(get_dc_sys_value(seg_dict[segment_name], DCSYS.Seg.Longueur)), 3)
 
 
 def are_points_matching(seg1: str, x1: float, seg2: str, x2: float, tolerance: float = .0) -> bool:
     if seg1 == seg2 and round(abs(x1 - x2), 2) <= tolerance:
         return True
-    len_seg1 = get_seg_len(seg1)
-    len_seg2 = get_seg_len(seg2)
+    len_seg1 = get_segment_length(seg1)
+    len_seg2 = get_segment_length(seg2)
     if x1 == len_seg1 and x2 == 0:
-        next_segs = get_linked_segs(seg1, downstream=True)
-        if seg2 in next_segs:
+        next_segs1 = get_linked_segments(seg1, downstream=True)
+        previous_segs2 = get_linked_segments(seg2, downstream=False)
+        if seg2 in next_segs1 and seg1 in previous_segs2:  # second test is necessary to manage depolarization points
             return True
         return False
     if x2 == len_seg2 and x1 == 0:
-        next_segs = get_linked_segs(seg2, downstream=True)
-        if seg1 in next_segs:
+        previous_segs1 = get_linked_segments(seg1, downstream=False)
+        next_segs2 = get_linked_segments(seg2, downstream=True)
+        if seg1 in next_segs2 and seg2 in previous_segs1:  # second test is necessary to manage depolarization points
             return True
         return False
     # Manage depolarization points
     if x1 == len_seg1 and x2 == len_seg2:
-        next_segs1 = get_linked_segs(seg1, downstream=True)
-        next_segs2 = get_linked_segs(seg2, downstream=True)
+        next_segs1 = get_linked_segments(seg1, downstream=True)
+        next_segs2 = get_linked_segments(seg2, downstream=True)
         if seg2 in next_segs1 and seg1 in next_segs2:
             return True
         return False
     if x1 == 0 and x2 == 0:
-        next_segs1 = get_linked_segs(seg1, downstream=False)
-        next_segs2 = get_linked_segs(seg2, downstream=False)
-        if seg2 in next_segs1 and seg1 in next_segs2:
+        previous_segs1 = get_linked_segments(seg1, downstream=False)
+        previous_segs2 = get_linked_segments(seg2, downstream=False)
+        if seg2 in previous_segs1 and seg1 in previous_segs2:
             return True
         return False
     return False
 
 
-def get_seg_track(seg: str) -> str:
+def get_segment_track(segment_name: str) -> str:
     seg_dict = load_sheet(DCSYS.Seg)
-    return get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
+    return get_dc_sys_value(seg_dict[segment_name], DCSYS.Seg.Voie)
 
 
-def is_seg_depolarized(seg: str) -> bool:
+def is_segment_depolarized(segment_name: str) -> bool:
     global DEPOLARIZED_SEGMENTS
     if not DEPOLARIZED_SEGMENTS:
-        _update_depol_segs()
-    return any(seg in sub_list for sub_list in DEPOLARIZED_SEGMENTS)
+        _update_depolarized_segments()
+    return any(segment_name in sub_list for sub_list in DEPOLARIZED_SEGMENTS)
 
 
-def get_associated_depol(seg: str) -> Optional[list[str]]:
+def get_associated_depolarization(seg: str) -> Optional[list[str]]:
     global DEPOLARIZED_SEGMENTS
-    if not is_seg_depolarized(seg):
+    if not is_segment_depolarized(seg):
         return None
     for sub_list in DEPOLARIZED_SEGMENTS:
         if seg in sub_list:
             return sub_list
 
 
-def get_depolarized_segs() -> list[list[str]]:
+def get_depolarized_segments() -> list[list[str]]:
     global DEPOLARIZED_SEGMENTS
     if not DEPOLARIZED_SEGMENTS:
-        _update_depol_segs()
+        _update_depolarized_segments()
     return DEPOLARIZED_SEGMENTS
 
 
-def _update_depol_segs() -> None:
+def _update_depolarized_segments() -> None:
     global DEPOLARIZED_SEGMENTS
     line_dict = load_sheet(DCSYS.Ligne)
     for line_info in line_dict.values():
         for depol_seg in get_dc_sys_value(line_info, DCSYS.Ligne.SegmentsDepolarises.Cell):
             if depol_seg is not None:
-                DEPOLARIZED_SEGMENTS.append(_get_second_depol_seg(depol_seg))
+                DEPOLARIZED_SEGMENTS.append(_get_second_depolarized_segment(depol_seg))
 
 
-def _get_second_depol_seg(depol_seg: str):
-    list_depols = [depol_seg]
-    downstream_segs = get_linked_segs(depol_seg, downstream=True)
-    upstream_segs = get_linked_segs(depol_seg, downstream=False)
+def _get_second_depolarized_segment(depolarized_seg: str):
+    list_depolarized_segments = [depolarized_seg]
+    downstream_segs = get_linked_segments(depolarized_seg, downstream=True)
+    upstream_segs = get_linked_segments(depolarized_seg, downstream=False)
     for downstream_seg in downstream_segs:
-        if depol_seg in get_linked_segs(downstream_seg, downstream=True):
-            # depol_seg is downstream of its downstream seg
-            list_depols.append(downstream_seg)
+        if depolarized_seg in get_linked_segments(downstream_seg, downstream=True):
+            # depolarized_seg is downstream of its downstream seg
+            list_depolarized_segments.append(downstream_seg)
     for upstream_seg in upstream_segs:
-        if depol_seg in get_linked_segs(upstream_seg, downstream=False):
-            # depol_seg is upstream of its upstream seg
-            list_depols.append(upstream_seg)
-    return list_depols
+        if depolarized_seg in get_linked_segments(upstream_seg, downstream=False):
+            # depolarized_seg is upstream of its upstream seg
+            list_depolarized_segments.append(upstream_seg)
+    return list_depolarized_segments
 
 
-def get_linked_segs(seg: str, downstream: bool) -> list[str]:
+def get_linked_segments(seg: str, downstream: bool) -> list[str]:
     seg_dict = load_sheet(DCSYS.Seg)
     attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     linked_segs = list()
@@ -125,8 +127,8 @@ def get_linked_segs(seg: str, downstream: bool) -> list[str]:
     return linked_segs
 
 
-def get_straight_linked_segs(seg: str, downstream: bool, depth: int = 10, verbose: bool = False
-                             ) -> Generator[str, None, None]:
+def get_straight_linked_segments(seg: str, downstream: bool, depth: int = 10, verbose: bool = False
+                                 ) -> Generator[str, None, None]:
     seg_dict = load_sheet(DCSYS.Seg)
     attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     previous_seg = seg
@@ -147,18 +149,20 @@ def get_straight_linked_segs(seg: str, downstream: bool, depth: int = 10, verbos
 
 
 def get_correct_seg_offset(seg: str, x: float) -> tuple[str, float]:
-    len_seg = get_seg_len(seg)
-    downstream_segs = get_straight_linked_segs(seg, downstream=True, verbose=True)
-    upstream_segs = get_straight_linked_segs(seg, downstream=False, verbose=True)
+    len_seg = get_segment_length(seg)
+    downstream_segs = get_straight_linked_segments(seg, downstream=True, verbose=True)
+    upstream_segs = get_straight_linked_segments(seg, downstream=False, verbose=True)
 
     while x > len_seg:
         x -= len_seg
         seg = downstream_segs.__next__()
-        len_seg = get_seg_len(seg)
+        len_seg = get_segment_length(seg)
 
     while x < 0:
         seg = upstream_segs.__next__()
-        len_seg = get_seg_len(seg)
+        len_seg = get_segment_length(seg)
         x += len_seg
 
-    return seg, x
+    # We use a round for the offset because the floating computations are not precised,
+    # and we know that only 2 digits are relevant, so rounding at 5 digits causes no impact.
+    return seg, round(x, 5)

@@ -81,8 +81,8 @@ def print_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name
 
 def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str,
                              downstream: bool = None, avoid_zero: bool = False) -> Optional[float]:
-    loc1 = get_obj_position(obj_type_1, obj_name_1)
-    loc2 = get_obj_position(obj_type_2, obj_name_2)
+    loc1 = get_object_position(obj_type_1, obj_name_1)
+    loc2 = get_object_position(obj_type_2, obj_name_2)
     if loc1 is None or loc2 is None:
         return None
     if isinstance(loc1, tuple):
@@ -140,9 +140,9 @@ def get_dist_downstream(seg1: str, x1: float, seg2: str, x2: float, downstream: 
     if downstream:  # seg2 is downstream of seg1
         dist -= x1
     else:  # seg2 is upstream of seg1
-        dist -= (get_seg_len(seg1) - x1)
+        dist -= (get_segment_length(seg1) - x1)
     if upstream:  # seg1 is upstream of seg2
-        dist -= (get_seg_len(seg2) - x2)
+        dist -= (get_segment_length(seg2) - x2)
     else:  # seg1 is downstream of seg2
         dist -= x2
     return round(dist, 3)
@@ -171,25 +171,25 @@ def get_min_path_downstream(start_seg: str, end_seg: str, downstream: bool
             # if we reach a segment not accessible from the end segment in the other direction, we can stop,
             # this path will not lead to the end segment
             return
-        for next_seg in get_linked_segs(seg, inner_downstream):
+        for next_seg in get_linked_segments(seg, inner_downstream):
             if next_seg in path:  # a whole loop has been made
                 continue
-            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
+            if is_segment_depolarized(next_seg) and seg in get_associated_depolarization(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
             inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg],
-                                  round(path_len + get_seg_len(next_seg), 3))
+                                  round(path_len + get_segment_length(next_seg), 3))
 
     for upstream, accessible_segs_from_end in get_upstream_segs_according_to_direction(end_seg, start_seg, downstream):
-        inner_recurs_next_seg(start_seg, downstream, [start_seg], get_seg_len(start_seg))
+        inner_recurs_next_seg(start_seg, downstream, [start_seg], get_segment_length(start_seg))
 
     if min_len == -1:
         return None, [], None
     return min_len, min_path, associated_upstream
 
 
-def get_list_of_paths(seg1: str, seg2: str, verbose: bool = False):
+def get_list_of_paths(seg1: str, seg2: str, verbose: bool = False) -> list[tuple[bool, list[str]]]:
     """ Return the list of paths between seg1 and seg2. """
     _, _, list_paths, _, _ = get_min_dist_and_list_of_paths(seg1, seg2, verbose=verbose)
     return list_paths
@@ -242,10 +242,10 @@ def get_downstream_path(start_seg: str, end_seg: str, start_downstream: bool, ma
             return
         if max_nb_paths is not None and len(list_paths) > max_nb_paths:
             return
-        for next_seg in get_linked_segs(seg, inner_downstream):
+        for next_seg in get_linked_segments(seg, inner_downstream):
             if next_seg in path:  # a whole loop has been made
                 continue
-            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
+            if is_segment_depolarized(next_seg) and seg in get_associated_depolarization(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream
@@ -300,7 +300,7 @@ def get_smallest_path(list_paths: list[tuple[bool, list[str]]]) -> tuple[float, 
 
 def get_path_len(path: list[str]) -> float:
     """ Return the length of a path: the sum of the segments lengths. """
-    return round(sum([get_seg_len(seg) for seg in path]), 3)
+    return round(sum([get_segment_length(seg) for seg in path]), 3)
 
 
 def get_virtual_seg_ordered_extremities(seg1: str, x1: float, seg2: str, x2: float):
@@ -309,7 +309,7 @@ def get_virtual_seg_ordered_extremities(seg1: str, x1: float, seg2: str, x2: flo
     else:
         if is_seg_downstream(seg1, seg2, x1, x2, downstream=True):
             return seg1, x1, seg2, x2
-        elif is_seg_downstream(seg1, seg2, x1, x2, downstream=False):
+        elif is_seg_downstream(seg2, seg1, x2, x1, downstream=True):
             return seg2, x2, seg1, x1
         else:
             return None, None, None, None
@@ -344,7 +344,7 @@ def is_point_between(seg: str, x: float, limit_seg_1: str, limit_x_1: float, lim
         return None
 
     def inner_recurs_seg(current_seg: str, end_seg: str):
-        next_segs = get_linked_segs(current_seg, downstream=True)
+        next_segs = get_linked_segments(current_seg, downstream=True)
         for next_seg in next_segs:
             if next_seg == end_seg:
                 return True

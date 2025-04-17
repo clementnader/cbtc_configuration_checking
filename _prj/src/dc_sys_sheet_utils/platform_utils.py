@@ -1,15 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
-from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream
 
 
-__all__ = ["get_atb_zone_related_to_plt", "is_platform_limit_1_upstream_limit_2"]
+__all__ = ["get_platform_start_and_end_limits", "get_atb_zone_related_to_plt",
+           "is_accelerometer_calibration_authorized_at_platform"]
 
 
-def get_atb_zone_related_to_plt(plt_name):
+def get_platform_start_and_end_limits(plt_name: str) -> tuple[tuple[str, float, str], tuple[str, float, str]]:
+    plt_limits = get_object_position(DCSYS.Quai, plt_name)
+    start_limit = [(seg, x, direction) for (seg, x, direction) in plt_limits if direction == Direction.CROISSANT][0]
+    end_limit = [(seg, x, direction) for (seg, x, direction) in plt_limits if direction == Direction.DECROISSANT][0]
+    return start_limit, end_limit
+
+
+def get_atb_zone_related_to_plt(plt_name: str):
     atb_zone_dict = load_sheet(DCSYS.ZCRA)
     related_atb_mvt = list()
     for atb_zone_name, atb_zone in atb_zone_dict.items():
@@ -18,16 +26,11 @@ def get_atb_zone_related_to_plt(plt_name):
     return related_atb_mvt
 
 
-def is_platform_limit_1_upstream_limit_2(plt_name):  # corresponds to attribute SensExt
+def is_accelerometer_calibration_authorized_at_platform(plt_name: str) -> Optional[bool]:
     plt_dict = load_sheet(DCSYS.Quai)
-    plt = plt_dict[plt_name]
-    (seg_lim1, x_lim1), (seg_lim2, x_lim2) = get_dc_sys_zip_values(plt, DCSYS.Quai.ExtremiteDuQuai.Seg,
-                                                                   DCSYS.Quai.ExtremiteDuQuai.X)
-    is_seg1_upstream = is_seg_downstream(seg_lim2, seg_lim1, x_lim2, x_lim1, downstream=False)
-    is_seg1_downstream = is_seg_downstream(seg_lim2, seg_lim1, x_lim2, x_lim1, downstream=True)
-    if is_seg1_upstream:
-        return True
-    if is_seg1_downstream:
-        return False
-    raise Exception(f"Unable to find a path between the two limits of platform {plt_name}:\n"
-                    f"No path between {(seg_lim1, x_lim1)} and {(seg_lim2, x_lim2)}.")
+    plt_value = plt_dict[plt_name]
+    if "AllowAccelerometerCalibration" in get_class_attr_dict(DCSYS.Quai):
+        return get_dc_sys_value(plt_value, DCSYS.Quai.AllowAccelerometerCalibration) == YesOrNo.O
+
+    if "AllowAccelerometersCalibration" in get_class_attr_dict(DCSYS.Quai):
+        return get_dc_sys_value(plt_value, DCSYS.Quai.AllowAccelerometersCalibration) == YesOrNo.O

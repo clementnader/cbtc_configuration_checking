@@ -53,6 +53,7 @@ class Projects:
     Mock_up_3 = "Mock-up 3"
     Mock_up_4 = "Mock-up 4"
     Mock_up_5 = "Mock-up 5"
+    Mock_up_6 = "Mock-up 6"
 
 
 # --- Main projects --- #
@@ -109,6 +110,7 @@ PROJECT_NAME = Projects.Thessaloniki_TSK
 # PROJECT_NAME = Projects.Mock_up_3
 # PROJECT_NAME = Projects.Mock_up_4
 # PROJECT_NAME = Projects.Mock_up_5
+# PROJECT_NAME = Projects.Mock_up_6
 
 
 class ProjectDatabaseLoc:
@@ -832,7 +834,7 @@ class ProjectDatabaseLoc:
 
         # --- Mock-up --- #
 
-        # ------------------------------- Mock-up -------------------------------#
+        # ------------------------------- Mock-up 1 -------------------------------#
         elif project_name == Projects.Mock_up:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\Mock-Up DC_SYS\DC_SYS_mock-up.xls"
 
@@ -851,6 +853,10 @@ class ProjectDatabaseLoc:
         # ------------------------------- Mock-up 5 -------------------------------#
         elif project_name == Projects.Mock_up_5:
             self.dc_sys_addr = r"C:\Users\naderc\Desktop\Mock-Up DC_SYS\DC_SYS_mock-up5.xls"
+
+        # ------------------------------- Mock-up 6 -------------------------------#
+        elif project_name == Projects.Mock_up_6:
+            self.dc_sys_addr = r"C:\Users\naderc\Desktop\Mock-Up DC_SYS\DC_SYS_mock-up6.xls"
 
     def reset(self):
         self.cctool_oo_schema = r""

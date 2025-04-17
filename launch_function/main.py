@@ -8,6 +8,7 @@ from _prj.src import *
 
 # ------------------------------------------------------------------------------------------------------ #
 
+
 def main():
     """
     Select the function you want to launch by removing the '#' symbol in front of the line to uncomment it.
@@ -16,6 +17,8 @@ def main():
      config.ini file.
     """
 
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Global DC_SYS consistency checks ---------- #
     """Uncomment next line to check the global coherence of the object names in all sheets in the DC_SYS.
     @inputs: DC_SYS and CCTool-OO Schema"""
     #check_dc_sys_global_definition()
@@ -29,18 +32,37 @@ def main():
     @inputs: DC_SYS"""
     #check_dc_sys_track_kp_definition()
 
-    """Uncomment next line to get the KP limits on every track of the specified zones type.
-    You have to specify the sheet name from DC_SYS as the argument from which you want to get the track/KP definition.
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Functions about DC_SYS zones that are configurable using DC_SYS sheet names ---------- #
+    """Uncomment one of next lines to get from what KP to what KP each track is covered by each object of the
+     specified type (examples below are for GES and Protection_Zone sheets).
+    You have to specify the sheet name from DC_SYS as the argument to select the object type.
     The tool figures the zone path and will display multiple rows for a same track if there are multiple section of
      a same track covered by a same zone.
     @inputs: DC_SYS and CCTool-OO Schema"""
     #get_zones_kp_limits("GES")
     #get_zones_kp_limits("Protection_Zone")
 
+    """Uncomment next line to get list of objects of a specified type intersecting a specified zone (example below is
+     to print the list of MAZ (sheet Zaum) intersecting the ZC (sheet PAS) called "ZC_02").
+    You have to specify the sheet names from DC_SYS as the arguments to select the object types.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #print(get_objects_in_zone("Zaum", "PAS", "ZC_02"))
+
+    """Uncomment next line to get list of zones covering the specified object (example below is to print the list of ZC
+     (sheet PAS) covering the MAZ (sheet Zaum) called "MAZ_STB_110").
+    You have to specify the sheet names from DC_SYS as the arguments to select the object types.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #print(get_zones_on_object("PAS", "Zaum", "MAZ_STB_110"))
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Survey Checking ---------- #
     """Uncomment next line to use the survey checking tool.
     @inputs: DC_SYS, CCTool-OO Schema, optionally Block Definition, and Survey information"""
     #check_survey()
 
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- DC_PAR Checking Customer Data computations ---------- #
     """Uncomment next line to compute the minimal length of a multiple path configuration (trapezoid or rhombus)
      used for Customer Data CD_min_length_multiple_path in DC_PAR_Checking tool.
     It corresponds to trapezoid_length in SA_Parameters file.
@@ -48,6 +70,40 @@ def main():
     @inputs: DC_SYS and CCTool-OO Schema"""
     #min_length_multiple_path(in_cbtc=False)
 
+    """Uncomment next line to calculate the smallest size of a switch block heel
+     used for Customer Data CD_smallest_size_of_a_switch_block_heel in DC_PAR_Checking tool.
+    You can use argument in_cbtc=True to limit the function to inside CBTC Territory instead of the whole line.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #smallest_size_of_a_switch_block_heel(in_cbtc=False)
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: zones definition ---------- #
+    """Uncomment one of next lines to verify some constraints and rules about zone objects definition in DC_SYS.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    # --- Block zone definition constraints --- #
+    #r_cdv_10()
+    #cf_ivb_1_2()
+    #cf_ivb_2()
+    #cc_cv_16()
+    #cc_cv_18()
+    #cc_cv_20()
+
+    # --- CBTC Direction Zone constraints --- #
+    #cf_zsm_cbtc_4()
+    #cf_zsm_cbtc_10()
+
+    # --- Floor Level constraints --- #
+    #cf_flr_lvl_1()
+
+    # --- MAZ constraints --- #
+    #cf_zaum_1()
+    #cf_zaum_11()
+
+    # --- Walkway constraints --- #
+    #cf_walkway_2()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: messages ---------- #
     """Uncomment one of next lines to verify some constraints and rules about the flows:
         CF_DG_1 about HF General Data, sheet "Flux_Variant_HF"
         CF_DG_2 about LF General Data, sheet "Flux_Variant_BF"
@@ -64,11 +120,15 @@ def main():
     #ats_atc_sheet_verif(in_cbtc=False)  # Non-Vital, FRONTAM <-> ZC Interface, sheet "ATS_ATC"
     #r_tm_ats_itf_1(in_cbtc=False)  # Non-Vital, Wayside Remote supervision, ZC <-> ATS Interface, sheet "TM_PAS_ATS"
 
-    """Uncomment next line to verify the CBTC Signal Approach Zone so that it is greater than parameter 
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: Signal Approach Zone at CBTC level ---------- #
+    """Uncomment next line to verify the CBTC Signal Approach Zone so that it is greater than parameter
      train_to_home_signal_max_dist so to respect R_ZSM_3 at CBTC level.
     @inputs: DC_SYS, CCTool-OO Schema, DC_PAR"""
     #check_cbtc_sig_apz()
 
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: Signal Approach Zone at IXL level ---------- #
     """Uncomment one of next lines to verify some constraints and rules about the IXL Signal Approach Zone:
         CF_SIGNAL_12
         R_ZSM_3
@@ -84,25 +144,26 @@ def main():
     #cf_signal_12(apz_with_tc=False)  # DLT distance
     #r_zsm_3(apz_with_tc=False)
 
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- ZC APPLI IF ---------- #
+    """Uncomment next line to compute the ZC APPLI IF "ZE_IMPACTE_FU". Take into account that the directions are
+    computed by the tool according to the segments direction, so if there is a depolarization point inside the ZC,
+    the directions will not match.
+    @inputs: DCSYS, CCTool-OO Schema and DC_PAR"""
+    #create_computed_result_file_ze_impacte_fu()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- CC Additional Verification about DC_TU files ---------- #
     """Uncomment next line to verify the unicity of the IP addresses and of the SSH keys of the DC_TU files
      from every Train Unit (TU) folder of the C11.
     @inputs: C11_D470"""
     #dc_tu_verification()
 
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- CC Additional Verification about md5sum regeneration ---------- #
     """Uncomment next line to regenerate the C11 MD5 Checksum and compare it to the one already present in the C11.
     @inputs: C11_D470"""
     #verification_of_the_md5_checksum()
-
-    """Uncomment next line to get slope at platform.
-    You can use argument in_cbtc=True to limit the function to inside CBTC Territory instead of the whole line.
-    @inputs: DC_SYS and CCTool-OO Schema"""
-    #pretty_print_dict(get_slope_at_plt(in_cbtc=False))
-
-    """Uncomment next line to calculate the smallest size of a switch block heel
-     used for Customer Data CD_smallest_size_of_a_switch_block_heel in DC_PAR_Checking tool.
-    You can use argument in_cbtc=True to limit the function to inside CBTC Territory instead of the whole line.
-    @inputs: DC_SYS and CCTool-OO Schema"""
-    #smallest_size_of_a_switch_block_heel(in_cbtc=False)
 
     return
 
@@ -119,9 +180,9 @@ if __name__ == "__main__":
         # window using the default sys.stdout and written inside the log_file.
         sys.stdout = Logger(log_file)
 
-        # Initialization Functions to regenerate the CCTool-OO Schema Python files (in _prj/src/cctool_oo_schema folder)
+        # Initialization function to regenerate the CCTool-OO Schema Python files (in _prj/src/cctool_oo_schema folder)
         # and re-launch a Python instance if needed to take these newly generated files into account.
         init(args, main_file=__file__, log_file_instance=log_file, log_file_name=log_file_name)
 
-        # Main Functions
+        # Main function defined above to launch the selected functions
         main()

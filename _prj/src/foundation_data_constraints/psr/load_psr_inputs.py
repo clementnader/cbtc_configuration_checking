@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 from ...utils import *
 
 
 __all__ = ["get_psr_definition"]
+
 
 PSR_INPUT_FILE = (r"C:\Users\naderc\Desktop\KCR"
                   r"\CR-ASTS-GEN=Gen-PF=PW=TRA-DES-REP-108100-01.00"

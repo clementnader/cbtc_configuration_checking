@@ -109,5 +109,5 @@ def _get_dc_sys_position(dc_sys_sheet, obj_val) -> tuple[str, float]:
         track, kp = get_dc_sys_values(obj_val, dc_sys_sheet.Voie, dc_sys_sheet.Pk)
     else:
         seg, x = get_dc_sys_values(obj_val, dc_sys_sheet.Seg, dc_sys_sheet.X)
-        track, kp = from_seg_offset_to_kp(seg, x)
+        track, kp = from_seg_offset_to_track_kp(seg, x)
     return track, kp

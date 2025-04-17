@@ -33,7 +33,7 @@ def cc_cv_18():
     cv_list = get_objects_list(DCSYS.CV)
     for cv_name in cv_list:
         sw_on_cv = get_objects_in_zone(DCSYS.Aig, DCSYS.CV, cv_name)
-        cv_limits = len(get_obj_position(DCSYS.CV, cv_name))
+        cv_limits = len(get_object_position(DCSYS.CV, cv_name))
         if (sw_on_cv is not None) != (cv_limits == 3):
             print_error(f"VB {cv_name} number of limits is not coherent with the presence of switch on the VB:"
                         f"\n{sw_on_cv = }\n{cv_limits = }")
@@ -57,7 +57,7 @@ def cc_cv_20():
     cv_list = get_objects_list(DCSYS.CV)
     for cv_name in cv_list:
         sw_on_cv = get_objects_in_zone(DCSYS.Aig, DCSYS.CV, cv_name)
-        cv_limits = len(get_obj_position(DCSYS.CV, cv_name))
+        cv_limits = len(get_object_position(DCSYS.CV, cv_name))
         if (sw_on_cv is not None) != (cv_limits == 3):
             print_error(f"VB {cv_name} number of limits is not coherent with the presence of switch on the VB:"
                         f"\n{sw_on_cv = }\n{cv_limits = }")
@@ -69,7 +69,7 @@ def cc_cv_20():
         if (sw_on_cv is not None) or (cv_limits == 3):  # switch on VB
             vsp_on_cv = get_objects_in_zone(DCSYS.Sig.DistPap, DCSYS.CV, cv_name)
             if vsp_on_cv:
-                vsp_info = [f"VSP of signal {sig_name} {get_obj_position(DCSYS.Sig.DistPap, sig_name)}"
+                vsp_info = [f"VSP of signal {sig_name} {get_object_position(DCSYS.Sig.DistPap, sig_name)}"
                             for sig_name in vsp_on_cv]
                 print(f"VB {cv_name} on switch {sw_on_cv} has a signal VSP inside: {vsp_info}.\n"
                       f"\tVerify that this signal VSP is correctly not on the switch heel part on the VB, "

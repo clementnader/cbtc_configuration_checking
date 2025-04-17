@@ -54,7 +54,7 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
             continue
 
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig)
-        ivb_lim_track, ivb_lim_kp = from_seg_offset_to_kp(ivb_lim_seg, ivb_lim_x)
+        ivb_lim_track, ivb_lim_kp = from_seg_offset_to_track_kp(ivb_lim_seg, ivb_lim_x)
         res_dict[sig_name].update({"downstream_seg": ivb_lim_seg, "downstream_x": ivb_lim_x,
                                    "downstream_track": ivb_lim_track, "downstream_kp": ivb_lim_kp})
 
@@ -70,7 +70,7 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
 
         res_dict[sig_name]["ixl_apz_dist"] = apz_dist
 
-        corresponding_entrance_track, corresponding_entrance_kp = from_seg_offset_to_kp(*corresponding_entrance)
+        corresponding_entrance_track, corresponding_entrance_kp = from_seg_offset_to_track_kp(*corresponding_entrance)
         res_dict[sig_name].update({"upstream_seg": corresponding_entrance[0],
                                    "upstream_x": corresponding_entrance[1],
                                    "upstream_track": corresponding_entrance_track,

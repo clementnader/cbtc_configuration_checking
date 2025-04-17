@@ -26,7 +26,7 @@ def get_objects_in_cbtc_ter(obj_type) -> dict[str, dict]:
 
     within_cbtc_object_dict = dict()
     for obj_name, obj_value in obj_dict.items():
-        position = get_obj_position(obj_type, obj_name)
+        position = get_object_position(obj_type, obj_name)
         if position is None:
             continue
         if isinstance(position, tuple):  # single point object

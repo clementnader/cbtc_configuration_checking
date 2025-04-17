@@ -51,12 +51,12 @@ def _get_generic_sh_object_key(cols: list, info_for_object):
         if "col" in col_attr:
             try:
                 key = col_type(info_for_object[col_attr["attr_name"]])
-            except ValueError:
+            except (ValueError, TypeError):
                 key = info_for_object[col_attr["attr_name"]]
         else:
             try:
                 key = col_type(info_for_object[col_attr["attr_name"]][col_attr["sub_attr_name"]][0])
-            except ValueError:
+            except (ValueError, TypeError):
                 key = info_for_object[col_attr["attr_name"]]
         keys.append(key)
     return tuple(keys)
@@ -130,7 +130,7 @@ def check_value_has_spaces(sh_name, value, row, column, key):
                            ("Flux_PAS_MES", "ClasseObjet"),
                            ("Flux_MES_PAS", "ClasseObjet"),]
             or "Comment" in key):
-        return  # Some cells can have space inside.
+        return  # Some cells can have space inside in a standard way.
     if isinstance(value, str) and " " in value[1:-1]:
         # Space in the cell, some information can contain spaces
         if not any(value.endswith(old_val) for old_val in G_LIST_OF_VALUES_WITH_TRAILING_SPACES):

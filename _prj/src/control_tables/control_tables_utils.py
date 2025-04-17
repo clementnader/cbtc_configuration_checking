@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils import *
 
-__all__ = ["CONTROL_TABLE_TYPE",
+
+__all__ = ["CONTROL_TABLE_TYPE", "UnknownControlTablesType",
            "ROUTE_NAME_KEY", "ROUTE_ORIGIN_SIGNAL_KEY", "ROUTE_IVB_LIST_KEY", "ROUTE_SWITCHES_LIST_KEY",
            "OVERLAP_NAME_KEY", "OVERLAP_SIGNAL_NAME_KEY", "OVERLAP_IVB_LIST_KEY", "OVERLAP_SWITCHES_LIST_KEY"]
 
@@ -10,6 +12,12 @@ __all__ = ["CONTROL_TABLE_TYPE",
 class CONTROL_TABLE_TYPE:
     route = "route"
     overlap = "overlap"
+
+
+class UnknownControlTablesType(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+        print_error(f"Control Tables Type \"{message}\" should be in {get_class_values(CONTROL_TABLE_TYPE)}.")
 
 
 ROUTE_NAME_KEY = "Route Name"

@@ -32,7 +32,7 @@ def compute_cbtc_sig_apz():
             continue
 
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig)
-        ivb_lim_track, ivb_lim_kp = from_seg_offset_to_kp(ivb_lim_seg, ivb_lim_x)
+        ivb_lim_track, ivb_lim_kp = from_seg_offset_to_track_kp(ivb_lim_seg, ivb_lim_x)
         res_dict[sig_name].update({"downstream_seg": ivb_lim_seg, "downstream_x": ivb_lim_x,
                                    "downstream_track": ivb_lim_track, "downstream_kp": ivb_lim_kp})
 
@@ -49,7 +49,7 @@ def compute_cbtc_sig_apz():
 
         sig_apz_limit_track_list, sig_apz_limit_kp_list = list(), list()
         for sig_apz_limit_seg, sig_apz_limit_x in zip(sig_apz_limit_seg_list, sig_apz_limit_x_list):
-            sig_apz_limit_track, sig_apz_limit_kp = from_seg_offset_to_kp(sig_apz_limit_seg, sig_apz_limit_x)
+            sig_apz_limit_track, sig_apz_limit_kp = from_seg_offset_to_track_kp(sig_apz_limit_seg, sig_apz_limit_x)
             sig_apz_limit_track_list.append(sig_apz_limit_track)
             sig_apz_limit_kp_list.append(sig_apz_limit_kp)
         res_dict[sig_name].update({"sig_apz_limit_track_list": sig_apz_limit_track_list,

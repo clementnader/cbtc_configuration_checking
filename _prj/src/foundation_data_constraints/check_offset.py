@@ -3,7 +3,6 @@
 
 import re
 from ..utils import *
-from ..dc_sys.load_database.load_xl import *
 from ..dc_sys import *
 
 
@@ -87,9 +86,9 @@ def verify_sheet(ws: xlrd.sheet):
 def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name) -> Optional[bool]:
     success = True
     if first_cell is None:
-        return
+        return None
     if seg is None and x is None:
-        return
+        return None
     if seg is None or x is None:
         print_warning(f"Strange pair (segment/offset) ({seg} / {x}) in sheet {Color.blue}{sh_name}{Color.reset}: "
                       f"{Color.yellow}{get_xl_column_letter(seg_col)}{row}{Color.reset} and "
@@ -104,7 +103,7 @@ def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name)
                         f"is not a number.")
             return False
     x = round(x, 3)
-    len_seg = get_seg_len(seg)
+    len_seg = get_segment_length(seg)
     if not (0 <= x):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "
                     f"Offset ({x}) at cell {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
@@ -121,9 +120,9 @@ def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name)
 def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col, sh_name) -> Optional[bool]:
     success = True
     if first_cell is None:
-        return
+        return None
     if track is None and kp is None:
-        return
+        return None
     if track is None or kp is None:
         print_warning(f"Strange pair (track/KP) ({track} / {kp}) in sheet {Color.blue}{sh_name}{Color.reset}: "
                       f"{Color.yellow}{get_xl_column_letter(track_col)}{row}{Color.reset} and "
@@ -225,7 +224,7 @@ def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_c
     x = round(get_xl_float_value(ws, row=row, column=x_col), 4)
     kp = round(get_xl_float_value(ws, row=row, column=kp_col), 4)
 
-    test_seg, test_x = from_kp_to_seg_offset(track, kp)
+    test_seg, test_x = from_track_kp_to_seg_offset(track, kp)
     if test_seg is None or test_x is None:
         print(f"Error in sheet {Color.blue}{sh_name}{Color.reset}: at row {row}.")
         success = False
@@ -233,7 +232,7 @@ def test_match_x_kp(ws, row: int, seg_col: int, x_col: int, track_col: int, kp_c
     else:
         test_x = round(test_x, 4)
         skip_verif_seg_x = False
-    test_track, test_kp = from_seg_offset_to_kp(seg, x)
+    test_track, test_kp = from_seg_offset_to_track_kp(seg, x)
     test_kp = round(test_kp, 4)
 
     if not skip_verif_seg_x and not are_points_matching(seg, x, test_seg, test_x, tolerance=tolerance):

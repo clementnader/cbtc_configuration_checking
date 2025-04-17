@@ -9,6 +9,7 @@ from ..xl_pkg import XlBgColor
 from .gui_open_buttons import *
 from .gui_utils import *
 
+
 __all__ = ["cctool_oo_schema_window"]
 
 

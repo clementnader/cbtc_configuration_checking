@@ -41,22 +41,22 @@ def create_window(window_title: str, min_width: Optional[int] = 300, min_height:
     return window
 
 
-def disable_frame(frame: Union[tkinter.Tk, tkinter.Frame]):
+def disable_frame(frame: Union[tkinter.Tk, tkinter.Frame]) -> None:
     for child in frame.winfo_children():
         wtype = child.winfo_class()
         if wtype in ("Frame", "Labelframe", "TFrame", "TLabelframe"):  # child is a frame
             disable_frame(child)  # recursive call
         else:
-            child.configure(state=tkinter.DISABLED)
+            child.configure(state=tkinter.DISABLED)  # disable the object
 
 
-def enable_frame(frame: Union[tkinter.Tk, tkinter.Frame]):
+def enable_frame(frame: Union[tkinter.Tk, tkinter.Frame]) -> None:
     for child in frame.winfo_children():
         wtype = child.winfo_class()
-        if wtype not in ("Frame", "Labelframe", "TFrame", "TLabelframe"):
-            child.configure(state=tkinter.NORMAL)
-        else:  # child is a frame
+        if wtype in ("Frame", "Labelframe", "TFrame", "TLabelframe"):  # child is a frame
             enable_frame(child)  # recursive call
+        else:
+            child.configure(state=tkinter.NORMAL)  # enable the object
 
 
 def gui_add_dir_and_file_open_button(frame: Union[tkinter.Tk, tkinter.Frame], ref_row: int,

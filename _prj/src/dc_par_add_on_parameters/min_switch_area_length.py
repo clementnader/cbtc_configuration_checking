@@ -54,7 +54,7 @@ def min_switch_area_length(in_cbtc: bool = False):
 
 def get_len_point_side(sw_block, sw_value):
     """ Return the part of the switch block on the point side only """
-    point_seg, point_x = get_sw_pos(sw_value)
+    point_seg, point_x = get_switch_position(sw_value)
 
     list_upstream_limits = list()
     for seg, x in get_dc_sys_zip_values(sw_block, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X):

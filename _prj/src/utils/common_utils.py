@@ -11,6 +11,7 @@ __all__ = ["DESKTOP_DIRECTORY",
            "Optional", "Union", "Generator", "Callable", "Any",
            "ascii_uppercase", "columns_from_to", "sort_dict",
            "get_file_directory_path", "get_full_path", "get_class_attr_dict",
+           "get_class_keys", "get_class_values",
            "remove_common_min_max_kp"]
 
 
@@ -40,6 +41,16 @@ def get_class_attr_dict(cl) -> dict[str, Any]:
     else:
         return {key: val for key, val in cl.__class__.__dict__.items()
                 if not (key.startswith("__") and key.endswith("__"))}
+
+
+def get_class_keys(cl) -> list[Any]:
+    class_attr_dict = get_class_attr_dict(cl)
+    return list(class_attr_dict.keys())
+
+
+def get_class_values(cl) -> list[Any]:
+    class_attr_dict = get_class_attr_dict(cl)
+    return list(class_attr_dict.values())
 
 
 def columns_from_to(first: str, last: str) -> list[str]:
@@ -75,14 +86,11 @@ def remove_common_min_max_kp(list_min_max_kp: list[tuple[float, float]]) -> list
     list_min_max_kp = sorted(list_min_max_kp)
     old_mini = list_min_max_kp[0][0]
     old_maxi = list_min_max_kp[0][0]
+    # function uses the fact that mini < maxi
     final_list_min_max_kp = list()
     for mini, maxi in list_min_max_kp:
         if old_maxi == mini:  # KP are continuing, the old mini is kept and the new maxi becomes the old maxi.
             old_maxi = maxi
-        elif old_mini == maxi:  # KP are continuing in decreasing order.
-            # It happens for tracks where KP decreases when segment increases.
-            # The old maxi is kept and the new mini becomes the old mini.
-            old_mini = mini
         else:
             final_list_min_max_kp.append((old_mini, old_maxi))
             old_mini = mini

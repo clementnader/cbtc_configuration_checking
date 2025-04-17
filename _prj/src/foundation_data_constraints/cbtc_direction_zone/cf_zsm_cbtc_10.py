@@ -24,7 +24,7 @@ def initialize_res_dict():
     limits_seg_dict = get_cbtc_ter_limits()
 
     res_dict = {seg: {
-        "seg_limits": (0.0, get_seg_len(seg)),
+        "seg_limits": (0.0, get_segment_length(seg)),
         "list_limits": list(),
         "list_limits_diff": list()
     } for seg in seg_dict if seg is not None}
@@ -32,7 +32,7 @@ def initialize_res_dict():
     for seg, x, downstream in limits_seg_dict:
         if downstream:
             res_dict[seg] = {
-                "seg_limits": (x, get_seg_len(seg)),
+                "seg_limits": (x, get_segment_length(seg)),
                 "list_limits": list(),
                 "list_limits_diff": list()
             }
@@ -64,13 +64,13 @@ def get_zsm_limits():
 def manage_zsm_limits_on_different_segs(res_dict):
     for seg, seg_value in res_dict.items():
         for x, other_seg in seg_value["list_limits_diff"]:
-            len_seg = get_seg_len(seg)
+            len_seg = get_segment_length(seg)
 
             if is_seg_downstream(seg, other_seg, downstream=True):  # if other_seg is downstream
-                linked_segs = get_straight_linked_segs(seg, downstream=True)
+                linked_segs = get_straight_linked_segments(seg, downstream=True)
                 res_dict[seg]["list_limits"].append((x, len_seg))
             elif is_seg_downstream(seg, other_seg, downstream=False):  # if other_seg is upstream
-                linked_segs = get_straight_linked_segs(seg, downstream=False)
+                linked_segs = get_straight_linked_segments(seg, downstream=False)
                 res_dict[seg]["list_limits"].append((0, x))
             else:
                 print_error(f"other_seg not in downstream_segs or upstream_segs"
@@ -83,7 +83,7 @@ def manage_zsm_limits_on_different_segs(res_dict):
                     break
                 # linked_seg is entirely in a zsm
                 if not res_dict[linked_seg]["list_limits"]:  # no limits defined yet
-                    res_dict[linked_seg]["list_limits"] = [(0, get_seg_len(linked_seg))]
+                    res_dict[linked_seg]["list_limits"] = [(0, get_segment_length(linked_seg))]
 
 
 def concatenate_zsm_limits(res_dict):
@@ -150,8 +150,8 @@ def get_sw_dict():
         point_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentPointe)
         right_heel_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTd)
         left_heel_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTg)
-        downstream_point_segs = get_linked_segs(point_seg, downstream=True)
-        upstream_point_segs = get_linked_segs(point_seg, downstream=False)
+        downstream_point_segs = get_linked_segments(point_seg, downstream=True)
+        upstream_point_segs = get_linked_segments(point_seg, downstream=False)
         if left_heel_seg in downstream_point_segs and right_heel_seg in downstream_point_segs:
             sw_dict[sw]["Direction"] = "INCREASING"
         elif left_heel_seg in upstream_point_segs and right_heel_seg in upstream_point_segs:

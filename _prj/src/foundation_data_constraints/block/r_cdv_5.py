@@ -49,7 +49,7 @@ def r_cdv_5(print_ok: bool = False):
 def test_sw_danger_point(sw_name, sw_value, sw_block, is_sw_upstream, upstream_limits, downstream_limits,
                          print_ok: bool):
     relative_limits = upstream_limits if is_sw_upstream else downstream_limits
-    sw_seg, sw_x = get_sw_pos(sw_value)
+    sw_seg, sw_x = get_switch_position(sw_value)
     error_count = 0
     for seg, x in relative_limits:
         dist = get_dist(sw_seg, sw_x, seg, x)
@@ -113,14 +113,14 @@ def get_min_dist(local_slope, is_danger_point_a_switch: bool = False):
 def test_fouling_point_danger_point(sw_name, sw_value, sw_block, is_sw_upstream, upstream_limits, downstream_limits,
                                     print_ok: bool, fp_dict):
     relative_limits = downstream_limits if is_sw_upstream else upstream_limits
-    sw_seg, sw_x = get_sw_pos(sw_value)
+    sw_seg, sw_x = get_switch_position(sw_value)
     error_count = 0
     fp_dist = fp_dict.get(sw_name)
     if not fp_dist:
         print_error(f"No fouling point information is found about switch {sw_name}.")
         error_count += 1
         return error_count
-    fp_seg, fp_x = from_kp_to_seg_offset(*from_seg_offset_to_kp(sw_seg, sw_x + (1 if is_sw_upstream else -1)*fp_dist))
+    fp_seg, fp_x = get_correct_seg_offset(sw_seg, sw_x + (1 if is_sw_upstream else -1)*fp_dist)
 
     for seg, x in relative_limits:
         min_slope, max_slope = get_min_and_max_slopes_on_virtual_seg(seg, x, seg, x)
@@ -129,7 +129,7 @@ def test_fouling_point_danger_point(sw_name, sw_value, sw_block, is_sw_upstream,
         dist = get_dist(fp_seg, fp_x, seg, x)
         if dist is None:
             print(f"Block {Color.yellow}{sw_block}{Color.reset} respects R_CDV_5:"
-                  f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
+                  f" · with danger point: the {Color.turquoise}fouling point{Color.reset} "
                   f"of {Color.turquoise}{sw_name}{Color.reset}"
                   f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
                   f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
@@ -140,7 +140,7 @@ def test_fouling_point_danger_point(sw_name, sw_value, sw_block, is_sw_upstream,
         test = (dist >= final_value)
         if not test:
             print_error(f"Block {Color.yellow}{sw_block}{Color.reset} does not respect R_CDV_5:")
-            print(f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
+            print(f" · with danger point: the {Color.turquoise}fouling point{Color.reset} "
                   f"of {Color.turquoise}{sw_name}{Color.reset},"
                   f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
                   f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()
@@ -152,7 +152,7 @@ def test_fouling_point_danger_point(sw_name, sw_value, sw_block, is_sw_upstream,
             error_count += 1
         elif print_ok:
             print_success(f"Block {Color.yellow}{sw_block}{Color.reset} respects R_CDV_5:")
-            print(f" · with danger point: the {Color.turquoise}{heel_direction} fouling point{Color.reset} "
+            print(f" · with danger point: the {Color.turquoise}fouling point{Color.reset} "
                   f"of {Color.turquoise}{sw_name}{Color.reset},"
                   f"\n\twith fouling point position {(fp_seg,fp_x)},"  # from_seg_offset_to_kp()
                   f"\n\twith block limit {(seg, x)},"  # from_seg_offset_to_kp()

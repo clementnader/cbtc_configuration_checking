@@ -7,6 +7,9 @@ from ...dc_sys import *
 from .load_psr_inputs import get_psr_definition
 
 
+__all__ = ["check_psr_41_42", "load_psr_info_tracks_41_42"]
+
+
 def check_psr_41_42():
     input_psr_dict = get_psr_definition()
     dc_sys_psr_dict = load_psr_info_tracks_41_42()

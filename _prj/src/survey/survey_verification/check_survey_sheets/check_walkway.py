@@ -52,7 +52,7 @@ def _clean_walkway_extremity_name(ww_lim_name: str) -> str:
 
 def _get_ww_limits(ww_val: dict) -> list[tuple[str, float]]:
     limits = list(get_dc_sys_zip_values(ww_val, DCSYS.Walkways_Area.Limit.Seg, DCSYS.Walkways_Area.Limit.X))
-    track_kp_limits = [from_seg_offset_to_kp(seg, x) for seg, x in limits]
+    track_kp_limits = [from_seg_offset_to_track_kp(seg, x) for seg, x in limits]
     return track_kp_limits
 
 

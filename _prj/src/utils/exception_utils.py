@@ -2,12 +2,17 @@
 # -*- coding: utf-8 -*-
 
 
-__all__ = ["UnableToSaveFileException", "UnknownControlTablesType"]
+__all__ = ["UnableToSaveFileException",
+           "UnknownExcelWorkbookType", "UnknownExcelWorksheetType"]
 
 
 class UnableToSaveFileException(Exception):
     pass
 
 
-class UnknownControlTablesType(Exception):
+class UnknownExcelWorkbookType(Exception):
+    pass
+
+
+class UnknownExcelWorksheetType(Exception):
     pass

@@ -7,14 +7,14 @@ from ...dc_sys import *
 from ..dc_sys_path_and_distances import is_seg_downstream
 
 
-__all__ = ["get_oriented_limits_of_obj"]
+__all__ = ["get_oriented_limits_of_obj", "convert_oriented_limits"]
 
 
 def get_oriented_limits_of_obj(obj_type: str, obj_name: str) -> Optional[list[tuple[str, float, bool]]]:
     obj_type = get_sh_name(obj_type)
     oriented_zone_limits = get_obj_oriented_zone_limits(obj_type, obj_name)
     if oriented_zone_limits is not None:
-        return _convert_oriented_limits(oriented_zone_limits)
+        return convert_oriented_limits(oriented_zone_limits)
 
     zone_limits = get_obj_zone_limits(obj_type, obj_name)
     if zone_limits is None:
@@ -22,14 +22,14 @@ def get_oriented_limits_of_obj(obj_type: str, obj_name: str) -> Optional[list[tu
     if len(zone_limits[0]) == 3:  # oriented zone limits
         print_warning(f"\"{obj_type}\" object limits are oriented, \"get_obj_oriented_zone_limits\" function should "
                       f"not return None.")
-        return _convert_oriented_limits(zone_limits)
+        return convert_oriented_limits(zone_limits)
 
     zone_limits, common_oriented_limits = _remove_common_limits(zone_limits)
 
     return common_oriented_limits + _get_orientation_of_zone_limits(obj_type, obj_name, zone_limits)
 
 
-def _convert_oriented_limits(oriented_zone_limits: list[tuple[str, float, str]]) -> list[tuple[str, float, bool]]:
+def convert_oriented_limits(oriented_zone_limits: list[tuple[str, float, str]]) -> list[tuple[str, float, bool]]:
     zone_limits = [(seg, x, (direction == Direction.CROISSANT)) for seg, x, direction in oriented_zone_limits]
     return zone_limits
 
@@ -150,13 +150,13 @@ def _find_other_limits(start_limit: tuple[str, float, bool], zone_limits: list[t
         nonlocal other_limits, wrong_limit_direction, all_accessed_segs
         if wrong_limit_direction:
             return
-        if not get_linked_segs(seg, inner_downstream):  # reach end of track
+        if not get_linked_segments(seg, inner_downstream):  # reach end of track
             wrong_limit_direction = True
             return
 
         all_accessed_segs.append((seg, inner_downstream))
-        for next_seg in get_linked_segs(seg, inner_downstream):
-            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
+        for next_seg in get_linked_segments(seg, inner_downstream):
+            if is_segment_depolarized(next_seg) and seg in get_associated_depolarization(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream

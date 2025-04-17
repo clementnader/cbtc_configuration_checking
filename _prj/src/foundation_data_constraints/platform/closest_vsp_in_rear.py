@@ -58,22 +58,22 @@ def _get_train_rear_position(osp_name: str, osp_seg: str, osp_x: float, osp_type
     if osp_type == StoppingPointType.AVANT:
         train_front = (osp_seg, osp_x)
         if osp_dir == Direction.CROISSANT:
-            train_rear = from_kp_to_seg_offset(*from_seg_offset_to_kp(osp_seg, osp_x - max_train_length_at_osp))
+            train_rear = get_correct_seg_offset(osp_seg, osp_x - max_train_length_at_osp)
         else:
-            train_rear = from_kp_to_seg_offset(*from_seg_offset_to_kp(osp_seg, osp_x + max_train_length_at_osp))
+            train_rear = get_correct_seg_offset(osp_seg, osp_x + max_train_length_at_osp)
     elif osp_type == StoppingPointType.ARRIERE:
         train_rear = (osp_seg, osp_x)
         if osp_dir == Direction.CROISSANT:
-            train_front = from_kp_to_seg_offset(*from_seg_offset_to_kp(osp_seg, osp_x + max_train_length_at_osp))
+            train_front = get_correct_seg_offset(osp_seg, osp_x + max_train_length_at_osp)
         else:
-            train_front = from_kp_to_seg_offset(*from_seg_offset_to_kp(osp_seg, osp_x - max_train_length_at_osp))
+            train_front = get_correct_seg_offset(osp_seg, osp_x - max_train_length_at_osp)
     elif osp_type == StoppingPointType.CENTRE:
         if osp_dir == Direction.CROISSANT:
-            train_front = from_kp_to_seg_offset(*from_seg_offset_to_kp(osp_seg, osp_x + max_train_length_at_osp/2))
-            train_rear = from_kp_to_seg_offset(*from_seg_offset_to_kp(osp_seg, osp_x - max_train_length_at_osp/2))
+            train_front = get_correct_seg_offset(osp_seg, osp_x + max_train_length_at_osp/2)
+            train_rear = get_correct_seg_offset(osp_seg, osp_x - max_train_length_at_osp/2)
         else:
-            train_front = from_kp_to_seg_offset(*from_seg_offset_to_kp(osp_seg, osp_x - max_train_length_at_osp/2))
-            train_rear = from_kp_to_seg_offset(*from_seg_offset_to_kp(osp_seg, osp_x + max_train_length_at_osp/2))
+            train_front = get_correct_seg_offset(osp_seg, osp_x - max_train_length_at_osp/2)
+            train_rear = get_correct_seg_offset(osp_seg, osp_x + max_train_length_at_osp/2)
     else:
         return None
 
@@ -93,7 +93,7 @@ def _get_closest_civil_infrastructure_vsp_upstream(seg: str, x: float, direction
 
     downstream = False if direction == Direction.CROISSANT else True
     while vsp_in_rear is None:
-        next_segs = get_linked_segs(seg, downstream)
+        next_segs = get_linked_segments(seg, downstream)
         if not next_segs or len(next_segs) == 2:
             break
         seg = next_segs[0]
@@ -127,8 +127,8 @@ def _get_civil_infrastructure_vsp_dict() -> dict[str, dict[str, Any]]:
             continue
 
         if sig_direction == Direction.CROISSANT:
-            vsp_seg, vsp_x = from_kp_to_seg_offset(*from_seg_offset_to_kp(sig_seg, sig_x + dist_vsp))
+            vsp_seg, vsp_x = get_correct_seg_offset(sig_seg, sig_x + dist_vsp)
         else:
-            vsp_seg, vsp_x = from_kp_to_seg_offset(*from_seg_offset_to_kp(sig_seg, sig_x - dist_vsp))
+            vsp_seg, vsp_x = get_correct_seg_offset(sig_seg, sig_x - dist_vsp)
         civil_infrastructure_vsp[sig_name] = {"vsp_seg": vsp_seg, "vsp_x": vsp_x, "vsp_direction": sig_direction}
     return civil_infrastructure_vsp

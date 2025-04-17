@@ -1,15 +1,118 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from ....utils import *
 from ....dc_sys import *
 from ....dc_par import *
 from ....cctool_oo_schema import *
 from ....dc_sys_draw_path.dc_sys_path_and_distances import *
+from ....dc_sys_draw_path.dc_sys_get_zones import get_zones_intersecting_zone
 from ....dc_sys_sheet_utils import *
+from .file_format_utils import *
 
 
-__all__ = ["verify_if_ze_impacte_fu", "check_ze_impacte_fu"]
+__all__ = ["compute_ze_impacte_fu", "create_computed_result_file_ze_impacte_fu",
+           "compare_results_ze_impacte_fu", "verify_ze_impacte_fu_are_correct"]
+
+
+def compute_ze_impacte_fu() -> dict[str, dict[str, list[tuple[str, ...]]]]:
+    eb_max_dist = get_param_value("eb_max_dist")
+    list_zc = get_all_zc()
+    results = {zc_name: dict() for zc_name in list_zc}
+    vb_dict = load_sheet(DCSYS.CV)
+    maz_dict = load_sheet(DCSYS.Zaum)
+    vb_per_zc = {zc_name: sorted([vb_name for vb_name in vb_dict if zc_name in get_zc_of_obj(DCSYS.CV, vb_name)])
+                 for zc_name in list_zc}
+    maz_per_zc = {zc_name: sorted([maz_name for maz_name in maz_dict if zc_name in get_zc_of_obj(DCSYS.Zaum, maz_name)])
+                  for zc_name in list_zc}
+
+    for zc_name in list_zc:
+        progress_bar(1, 1, end=True)  # reset progress_bar
+        nb_vb = len(vb_per_zc[zc_name])
+        for i, vb_name in enumerate(vb_per_zc[zc_name]):
+            print_log_progress_bar(i, nb_vb, f"processing ZE_IMPACTE_FU for {vb_name} in {zc_name}")
+            cv_ze_impacte_fu = list()
+            maz_in_vb = get_zones_intersecting_zone(DCSYS.Zaum, DCSYS.CV, vb_name)
+
+            for maz_index, maz_name in enumerate(maz_per_zc[zc_name], start=1):
+
+                if maz_name in maz_in_vb:
+                    cv_ze_impacte_fu.append(("ZE_"+maz_name, str(maz_index), "CROISSANT"))
+                    cv_ze_impacte_fu.append(("ZE_"+maz_name, str(maz_index), "DECROISSANT"))
+                    continue
+
+                # for MAZ outside of VB we compute the distance in both directions and compare it to eb_max_dist
+                downstream_dist = get_dist_between_objects(DCSYS.CV, vb_name, DCSYS.Zaum, maz_name, downstream=True,
+                                                           avoid_zero=True)
+                if downstream_dist is not None and 0 < downstream_dist <= eb_max_dist:
+                    cv_ze_impacte_fu.append(("ZE_"+maz_name, str(maz_index), "CROISSANT"))
+
+                upstream_dist = get_dist_between_objects(DCSYS.CV, vb_name, DCSYS.Zaum, maz_name, downstream=False,
+                                                         avoid_zero=True)
+                if upstream_dist is not None and 0 < upstream_dist <= eb_max_dist:
+                    cv_ze_impacte_fu.append(("ZE_"+maz_name, str(maz_index), "DECROISSANT"))
+
+            results[zc_name][vb_name] = list(zip(*cv_ze_impacte_fu))
+
+        print_log_progress_bar(nb_vb, nb_vb, f"ZE_IMPACTE_FU computed on {zc_name}", end=True)
+
+    return results
+
+
+OUTPUT_DIRECTORY = "."
+VERIF_FILE_NAME = "ZC_APPLI_IF_VERIF - ZE_IMPACTE_FU.xlsx"
+FILE_TITLE = "Verification of ZC Appli IF \"ZE_IMPACTE_FU\""
+
+
+def create_computed_result_file_ze_impacte_fu() -> None:
+    results = compute_ze_impacte_fu()
+    res_file_path = _create_verif_file(results)
+    open_excel_file(res_file_path)
+
+
+def _create_verif_file(results: dict[str, dict[str, list[tuple[str, ...]]]]) -> str:
+    wb = create_empty_verification_file()
+    # Update Header sheet
+    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())
+    # Create Verification sheet for each ZC
+    first_sheet = True
+    for zc_name, sub_dict in results.items():
+        ws, row = create_empty_verif_sheet(wb, zc_name, first_sheet)
+        first_sheet = False
+        # Update Verification sheet
+        _update_verif_sheet(ws, row, sub_dict)
+
+    # Save workbook
+    verif_file_name = f" - {get_current_version()}".join(os.path.splitext(VERIF_FILE_NAME))
+    res_file_path = os.path.realpath(os.path.join(OUTPUT_DIRECTORY, verif_file_name))
+    save_xl_file(wb, res_file_path)
+    print_success(f"\"Verification of CBTC Approach Zone\" verification file is available at:\n"
+                  f"{Color.blue}{res_file_path}{Color.reset}")
+    return res_file_path
+
+
+def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[str, list[tuple[str, ...]]]) -> None:
+    for row, (vb_name, info) in enumerate(verif_dict.items(), start=start_row):
+        tuple_ze_name, tuple_ze_index, tuple_directions = info
+        _add_line_info(ws, row, vb_name, tuple_ze_name, tuple_ze_index, tuple_directions)
+
+
+def _add_line_info(ws: xl_ws.Worksheet, row: int, vb_name: str, tuple_ze_name: tuple[str, ...],
+                   tuple_ze_index: tuple[str, ...], tuple_directions: tuple[str, ...]) -> None:
+    # VB name
+    create_cell(ws, vb_name, row=row, column=VB_NAME_COL)
+    # List of ZE impacted by EB
+    tuple_ze_name_str = ";".join(tuple_ze_name)
+    create_cell(ws, tuple_ze_name_str, row=row, column=ZE_IMPACTED_BY_EB_COL)
+    # List of the corresponding ZE ID
+    tuple_ze_index_str = ";".join(tuple_ze_index)
+    create_cell(ws, tuple_ze_index_str, row=row, column=ZE_ID_COL)
+    # List of the corresponding directions
+    tuple_directions_str = ";".join(tuple_directions)
+    create_cell(ws, tuple_directions_str, row=row, column=DIRECTION_COL)
+    # Cell with space to not have the list of directions spreading to other columns
+    create_cell(ws, " ", row=row, column=AUTOMATIC_COMMENTS_COL)
 
 
 ZC_01 = """VB_DE_TT_T101G	ZE_MAZ_TT_R;ZE_MAZ_TT_R;ZE_MAZ_TT_SA;ZE_MAZ_TT_SA	27;27;28;28	CROISSANT;DECROISSANT;CROISSANT;DECROISSANT
@@ -139,7 +242,6 @@ VB_S08_T115D_2	ZE_MAZ_S06_S07;ZE_MAZ_S07_PL2;ZE_MAZ_S07_S08;ZE_MAZ_S07_S08;ZE_MA
 VB_S08_T116D_1	ZE_MAZ_S06_S07;ZE_MAZ_S07_PL1;ZE_MAZ_S07_S08;ZE_MAZ_S07_S08	20;21;23;23	DECROISSANT;DECROISSANT;CROISSANT;DECROISSANT
 VB_S08_T116D_2	ZE_MAZ_S06_S07;ZE_MAZ_S07_PL1;ZE_MAZ_S07_S08;ZE_MAZ_S07_S08;ZE_MAZ_S08_PL1;ZE_MAZ_S08_PL2;ZE_MAZ_S08_S09	20;21;23;23;24;25;26	DECROISSANT;DECROISSANT;CROISSANT;DECROISSANT;CROISSANT;CROISSANT;CROISSANT"""
 
-
 ZC_02 = """VB_S06_T101C	ZE_MAZ_S05_S06;ZE_MAZ_S05_S06;ZE_MAZ_S06_PL2;ZE_MAZ_S06_PL2;ZE_MAZ_S06_S07;ZE_MAZ_S06_S07	1;1;3;3;4;4	CROISSANT;DECROISSANT;CROISSANT;DECROISSANT;CROISSANT;DECROISSANT
 VB_S06_T102C	ZE_MAZ_S05_S06;ZE_MAZ_S05_S06;ZE_MAZ_S06_PL1;ZE_MAZ_S06_PL1;ZE_MAZ_S06_S07;ZE_MAZ_S06_S07	1;1;2;2;4;4	CROISSANT;DECROISSANT;CROISSANT;DECROISSANT;CROISSANT;DECROISSANT
 VB_S07_T117D	ZE_MAZ_S06_S07;ZE_MAZ_S06_S07;ZE_MAZ_S07_PL2;ZE_MAZ_S07_PL2;ZE_MAZ_S07_S08;ZE_MAZ_S07_S08	4;4;6;6;7;7	CROISSANT;DECROISSANT;CROISSANT;DECROISSANT;CROISSANT;DECROISSANT
@@ -212,49 +314,8 @@ VB_S12_T105E	ZE_MAZ_S10_S11;ZE_MAZ_S11_PL2;ZE_MAZ_S11_S12;ZE_MAZ_S11_S12;ZE_MAZ_
 VB_S12_T106E	ZE_MAZ_S10_S11;ZE_MAZ_S11_PL1;ZE_MAZ_S11_S12;ZE_MAZ_S11_S12;ZE_MAZ_S12_PL1;ZE_MAZ_S12_PL2	16;17;19;19;20;21	DECROISSANT;DECROISSANT;CROISSANT;DECROISSANT;CROISSANT;CROISSANT"""
 
 
-def verify_if_ze_impacte_fu():
-    eb_max_dist = get_param_value("eb_max_dist")
-    for zc_name, zc_info in [("ZC_01", ZC_01), ("ZC_02", ZC_02)]:
-        print_section_title(zc_name)
-        for line in zc_info.splitlines():
-            vb_name, maz_names, _, directions = line.split("\t")
-
-            for maz_name, direction in zip(maz_names.split(";"), directions.split(";")):
-                maz_name = maz_name.removeprefix("ZE_")
-                downstream = True if direction == Direction.CROISSANT else False
-                dist = get_dist_between_objects(DCSYS.CV, vb_name, DCSYS.Zaum, maz_name, downstream=downstream)
-                if dist is None:
-                    print(f"No path found between {vb_name} and {maz_name} in direction {direction}.")
-                elif dist > eb_max_dist:
-                    print(f"Distance between {vb_name} and ZE_{maz_name} in direction {direction} is equal to {dist}.")
-
-
-def check_ze_impacte_fu():
-    eb_max_dist = get_param_value("eb_max_dist")
-    list_zc = get_all_zc()
-    results = {zc_name: dict() for zc_name in list_zc}
-    vb_dict = load_sheet(DCSYS.CV)
-    maz_dict = load_sheet(DCSYS.Zaum)
-    vb_per_zc = {zc_name: sorted([vb_name for vb_name in vb_dict if zc_name in get_zc_of_obj(DCSYS.CV, vb_name)])
-                 for zc_name in list_zc}
-    maz_per_zc = {zc_name: sorted([maz_name for maz_name in maz_dict if zc_name in get_zc_of_obj(DCSYS.Zaum, maz_name)])
-                  for zc_name in list_zc}
-
-    for zc_name in list_zc:
-        for vb_name in vb_per_zc[zc_name]:
-            cv_ze_impacte_fu = list()
-            for maz_index, maz_name in enumerate(maz_per_zc[zc_name], start=1):
-                downstream_dist = get_dist_between_objects(DCSYS.CV, vb_name, DCSYS.Zaum, maz_name, downstream=True,
-                                                           avoid_zero=True)
-                if downstream_dist is not None and 0 < downstream_dist <= eb_max_dist:
-                    cv_ze_impacte_fu.append(("ZE_"+maz_name, maz_index, "CROISSANT"))
-
-                upstream_dist = get_dist_between_objects(DCSYS.CV, vb_name, DCSYS.Zaum, maz_name, downstream=False,
-                                                         avoid_zero=True)
-                if upstream_dist is not None and 0 < upstream_dist <= eb_max_dist:
-                    cv_ze_impacte_fu.append(("ZE_"+maz_name, maz_index, "DECROISSANT"))
-            results[zc_name][vb_name] = list(zip(*cv_ze_impacte_fu))
-
+def compare_results_ze_impacte_fu():
+    results = compute_ze_impacte_fu()
     for zc_name, zc_info in [("ZC_01", ZC_01), ("ZC_02", ZC_02)]:
         print_section_title(zc_name)
         for line in zc_info.splitlines():
@@ -286,3 +347,23 @@ def check_ze_impacte_fu():
                 if extra_ze:
                     multiple = len(extra_ze) > 1
                     print(f"{'These ZE are' if multiple else 'This ZE is'} defined in extra: {extra_ze}.")
+
+
+def verify_ze_impacte_fu_are_correct():
+    # Verify that the ZE given in the export are indeed at a distance of eb_max_dist,
+    # BUT it does not verify that all the ZE are correctly present.
+    eb_max_dist = get_param_value("eb_max_dist")
+    for zc_name, zc_info in [("ZC_01", ZC_01), ("ZC_02", ZC_02)]:
+        print_section_title(zc_name)
+        for line in zc_info.splitlines():
+            vb_name, maz_names, _, directions = line.split("\t")
+
+            for maz_name, direction in zip(maz_names.split(";"), directions.split(";")):
+                maz_name = maz_name.removeprefix("ZE_")
+                downstream = True if direction == Direction.CROISSANT else False
+                dist = get_dist_between_objects(DCSYS.CV, vb_name, DCSYS.Zaum, maz_name, downstream=downstream)
+                if dist is None:
+                    print(f"No path found between {vb_name} and {maz_name} in direction {direction}.")
+                elif dist > eb_max_dist:
+                    print(
+                        f"Distance between {vb_name} and ZE_{maz_name} in direction {direction} is equal to {dist}.")

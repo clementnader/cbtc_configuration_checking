@@ -23,7 +23,7 @@ def associate_block_def_to_dc_sys(block_def_dict: Optional[dict[str, list[tuple[
                 track, kp = None, None
             else:
                 try:
-                    track, kp = from_seg_offset_to_kp(seg, x)
+                    track, kp = from_seg_offset_to_track_kp(seg, x)
                 except KeyError:
                     track, kp = None, None
             track_list.append(((seg, x, track, kp), limit_name))
@@ -108,12 +108,12 @@ def _find_correct_order_two_limits_on_track(dc_sys_kp1: float, dc_sys_kp2: float
         # the segment lengths can have changed and then the translation from seg, x to track, kp
         # can be wrong if offsets are larger than segment lengths, we set the offsets at zero to only
         # test the polarity of the segments
-        _, seg1_kp = from_seg_offset_to_kp(block_def_seg1, 0)
-        _, seg2_kp = from_seg_offset_to_kp(block_def_seg2, 0)
+        _, seg1_kp = from_seg_offset_to_track_kp(block_def_seg1, 0)
+        _, seg2_kp = from_seg_offset_to_track_kp(block_def_seg2, 0)
         same_polarity = (dc_sys_kp1 >= dc_sys_kp2) == (seg1_kp >= seg2_kp)
     else:  # on the same segment, there is no problem of wrong kp order
-        _, seg1_kp = from_seg_offset_to_kp(block_def_seg1, block_def_x1)
-        _, seg2_kp = from_seg_offset_to_kp(block_def_seg2, block_def_x2)
+        _, seg1_kp = from_seg_offset_to_track_kp(block_def_seg1, block_def_x1)
+        _, seg2_kp = from_seg_offset_to_track_kp(block_def_seg2, block_def_x2)
         same_polarity = (dc_sys_kp1 >= dc_sys_kp2) == (seg1_kp >= seg2_kp)
 
     if same_polarity:  # normal order

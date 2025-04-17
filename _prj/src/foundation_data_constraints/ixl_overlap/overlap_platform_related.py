@@ -61,7 +61,7 @@ def get_sigs_and_plt_upstream(sig_name, sig_seg, sig_x, sig_direction):
     seg = sig_seg
     downstream = False if sig_direction == Direction.CROISSANT else True
     while plt is None and sig is None:
-        next_segs = get_linked_segs(seg, downstream)
+        next_segs = get_linked_segments(seg, downstream)
         if not next_segs or len(next_segs) == 2:
             break
         seg = next_segs[0]

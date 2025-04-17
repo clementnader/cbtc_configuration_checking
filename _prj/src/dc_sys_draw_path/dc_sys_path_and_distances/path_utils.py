@@ -43,11 +43,11 @@ def get_all_accessible_segments_from(start_seg: str, downstream: bool) -> set[tu
     def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str]):
         nonlocal list_segs
         list_segs.add((seg, inner_downstream))
-        linked_segs = get_linked_segs(seg, inner_downstream)
+        linked_segs = get_linked_segments(seg, inner_downstream)
         if not linked_segs:
             return
         for next_seg in linked_segs:
-            if is_seg_depolarized(next_seg) and seg in get_associated_depol(next_seg):
+            if is_segment_depolarized(next_seg) and seg in get_associated_depolarization(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
                 next_inner_downstream = inner_downstream

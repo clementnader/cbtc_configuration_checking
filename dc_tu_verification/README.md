@@ -15,7 +15,7 @@ The objective to verify the unicity of PMC encryption keys and PMC addresses, an
 >   - The CC ID,
 >   - The CC hardware version,
 >   - The PMC number (that means there is 3 keys per CC unit),
-> 
+>
 > That means especially that for each "DC_TU.csv" delivered files, for each CC'x'_ID to be installed, and for each PMC'y' with y = 1 or 2 or 3, then each CC'x'_PMC'y'_SSH_RSA_PUBLIC_KEY shall have a unique value, with no noticed collision with others CC'x'_PMC'y'_SSH_RSA_PUBLIC_KEY.
 
 ---
@@ -59,7 +59,7 @@ The tool generates an Excel verification file. The aim is to use this file as an
 
 Sheet **"PMC_IP_Address"** contains the list of the alpha and beta IP addresses for PMC 1, 2 and 3 for all train units.
 
-Sheet **"PMC_SSH_Key"** contains the list of the SSH public keys for PMC 1, 2 and 3 for all train units. 
+Sheet **"PMC_SSH_Key"** contains the list of the SSH public keys for PMC 1, 2 and 3 for all train units.
 
 A conditional formatting rule is set to identify if an entry is appearing multiple times and thus a KO. <br />
 The column Unicity is filled by the tool and a KO is raised if an entry corresponds to a previous entry. <br />

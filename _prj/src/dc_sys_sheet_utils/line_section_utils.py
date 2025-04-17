@@ -23,7 +23,7 @@ def get_line_section_of_obj(obj_type, obj_name: str, plt_end: str = None) -> Opt
     if dedicated_ls is not None:
         return [dedicated_ls]
 
-    position = get_obj_position(obj_type, obj_name)
+    position = get_object_position(obj_type, obj_name)
     if isinstance(position, tuple):
         return [get_line_section_of_seg(position[0])]
     if isinstance(position, list):

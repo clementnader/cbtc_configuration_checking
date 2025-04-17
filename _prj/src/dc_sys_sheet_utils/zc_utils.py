@@ -10,12 +10,8 @@ from .line_section_utils import *
 from .maz_utils import *
 
 
-__all__ = ["is_point_in_zc", "get_zc_of_point", "get_zc_of_obj",
+__all__ = ["get_zc_of_point", "get_zc_of_obj",
            "get_zc_managing_obj", "get_ls_managed_by_zc", "get_zc_managing_ls"]
-
-
-def is_point_in_zc(zc_name: str, seg: str, x: float, direction: str = None) -> Optional[bool]:
-    return is_point_in_zone(DCSYS.PAS, zc_name, seg, x, direction)
 
 
 def get_zc_of_point(seg: str, x: float, direction: str = None) -> list[str]:
@@ -33,10 +29,10 @@ def _get_zc_of_traffic_stop(obj_name: str) -> list[str]:
 
 def _get_zc_of_overlap(obj_name: str) -> list[str]:
     # For a ZC to manage an overlap, it has to contain both RP and VSP
-    position = get_obj_position(DCSYS.IXL_Overlap, obj_name)
+    position = get_object_position(DCSYS.IXL_Overlap, obj_name)
     dict_zc_on_limits = dict()
     for seg, x, direction in position:
-        zc_list = get_zc_of_point(seg, x, direction)
+        zc_list = get_zones_on_point(DCSYS.PAS, seg, x, direction)
         if zc_list is None:
             print_error(f"Point {(seg, x, direction)} for overlap {obj_name} is on no ZC.")
             zc_list = []
@@ -54,11 +50,12 @@ def get_zc_of_obj(obj_type, obj_name: str) -> list[str]:
         return _get_zc_of_traffic_stop(obj_name)
     if get_sh_name(obj_type) == get_sh_name(DCSYS.IXL_Overlap):  # a dedicated function for overlaps
         return _get_zc_of_overlap(obj_name)
-    position = get_obj_position(obj_type, obj_name)
-    if isinstance(position, tuple):
-        list_zc = get_zc_of_point(*position)
+
+    position = get_object_position(obj_type, obj_name)
+    if isinstance(position, tuple):  # single point object
+        list_zc = get_zones_on_point(DCSYS.PAS, *position)
         return list_zc if list_zc is not None else []
-    if isinstance(position, list):
+    if isinstance(position, list):  # zone object
         list_zc = get_zones_intersecting_zone(DCSYS.PAS, obj_type, obj_name)
         return list_zc if list_zc is not None else []
     return []
@@ -134,7 +131,7 @@ def _get_zc_managing_maz(maz_name: str) -> tuple[Optional[str], Optional[str]]:
 
 
 def _get_zc_managing_sw(sw_name: str) -> tuple[Optional[str], str]:
-    ivb_on_switch = get_zones_on_point(DCSYS.IVB, *get_obj_position(DCSYS.Aig, sw_name))[0]
+    ivb_on_switch = get_zones_on_point(DCSYS.IVB, *get_object_position(DCSYS.Aig, sw_name))[0]
     zc_name = _get_zc_managing_ivb(ivb_on_switch)
     info = f"{sw_name} -> {ivb_on_switch} -> {zc_name}"
     return zc_name, info
@@ -149,7 +146,7 @@ def _get_zc_managing_platform_end(plt_name: str, plt_end: str) -> tuple[str, str
 
 def _get_zc_managing_maz_on_zone(obj_type, obj_name: str) -> tuple[list[str], str]:
     """ Function that shall work for both GES, CBTC Protection Zones, Protection Zones and Traction Power Zones. """
-    zone_limits = get_obj_position(obj_type, obj_name)
+    zone_limits = get_object_position(obj_type, obj_name)
     maz_list = get_maz_of_extremities(zone_limits)
     zc_list = list()
     info_list = list()

@@ -21,7 +21,7 @@ def load_control_tables(control_table_type: str, use_csv_file: bool = False,
     if control_table_type not in [CONTROL_TABLE_TYPE.route, CONTROL_TABLE_TYPE.overlap]:
         print_error(f"{Color.yellow}{control_table_type = }{Color.reset} is unknown, expected "
                     f"{CONTROL_TABLE_TYPE.route} or {CONTROL_TABLE_TYPE.overlap}.")
-        raise UnknownControlTablesType
+        raise UnknownControlTablesType(control_table_type)
 
     get_control_tables_template_info()  # Read the information from the .ini file, initialize the global dictionaries.
 

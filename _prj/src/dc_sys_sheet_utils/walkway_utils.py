@@ -19,7 +19,7 @@ def get_walkways_track_kp_pos():
                                                 start=1):
             if i > nb_max_limits:
                 nb_max_limits = i
-            track, kp = from_seg_offset_to_kp(seg, x)
+            track, kp = from_seg_offset_to_track_kp(seg, x)
             csv += f"{track};{kp};{direction};"
         csv += "\n"
     header = "Walkways Area;" + ";".join([f"Limit {i};;" for i in range(1, nb_max_limits+1)])

@@ -35,8 +35,8 @@ The tool lists every element from the DC_SYS of these types, and its position an
   - 2 lines of header.
   - 1 column named CDV_ID (usually first column). It contains all blocks names from DC_SYS (sheet CDV).
   - 2 columns LISTE EXTREMITES::LISTE SEGMENT_ID and LISTE EXTREMITES::LISTE EXT_ABS_SEG (usually the second and third columns). They contain respectively the list of limits segments and the list of the limits offsets. The elements of the lists are separated with semicolon ';'.
-  - and multiple columns named OBJET EXTREMITE N, with N from 1 to the maximum number of block limits. Each column contains the name of the correspond limit that will appear in the survey. 
-  
+  - and multiple columns named OBJET EXTREMITE N, with N from 1 to the maximum number of block limits. Each column contains the name of the correspond limit that will appear in the survey.
+
   The position of the columns is not relevant for the tool but the name of the columns is.
 
 If this file is not provided, the tool will automatically try to find the block limit names by mixing the two blocks of the limit (e.g. JOI_AAA_MMM_BBB_NNN for joint between TC_AAA_MMM and TC_BBB_NNN). It will create various name patterns to try to adapt to the different projects.
@@ -71,11 +71,11 @@ If this file is not provided, the tool will automatically try to find the block 
        **IATPM_TAG**, **IATPM TAG**, **IATPM_TAGS**, **IATPM TAGS**,<br />
        **IATP_BAL**, **IATP BAL**, **IATP_BALISE**, **IATP BALISE**,<br />
        **IATP_TAG**, **IATP TAG**, **IATP_TAGS** or **IATP TAGS**.
-       - for flood gates, type shall be:<br />
+       - for floodgates, type shall be:<br />
        **FLOOD_GATE**, **FLOOD GATE**, **FLOODGATE** or **FLOODGATES**.
      - track: track of the element,
      - surveyed KP: kilometer point surveyed by a geometer.
-   
+
    Projects can have various survey files. In that case, user have to specify path and information for all these files. They have to be **added in chronological order**, with the oldest first and the most recent last. (The tool will consider that the newer values supersede the older ones. A comment is nevertheless written to inform the user of different values for a same object.)
 
 Tool will display in the logs the list of all other survey types that are not parsed by the tool. In case of another name for an object, one can modify the file _prj/src/survey/survey_types.py and add the extra name to the list "survey_type_names" inside the corresponding sub dictionary inside dictionary SURVEY_TYPES_DICT.
@@ -84,7 +84,7 @@ Tool will display in the logs the list of all other survey types that are not pa
 ### 3.2. Steps to use the tool to compare the DC_SYS information with the survey file(s):
 
 0. A preliminary step to take once in order to install the required Python libraries:
-   - Modify the file "**install_python_modules.bat**" to add to the PATH your Python 3.9 executable (remove the “REM ” in front of a line to uncomment it) and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
+   - Modify the file "**install_python_modules.bat**" to add to the PATH your Python 3.9 executable (remove the "REM " in front of a line to uncomment it) and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
      (for python.exe -> "set PYTHON_EXE=python", for python39.exe -> "set PYTHON_EXE=python39", etc.) <br />
      Or modify you environment variable PATH at user level to add the folder containing the python executable. And copy and rename the Python executable to be python39.exe.
    - Launch "**install_python_modules.bat**". This executable will **install the required Python libraries**. <br />
@@ -141,7 +141,7 @@ For each type of objects that is automated, there is **a dedicated sheet** conta
 - a sheet **"Block"** containing the block joints (JOI_*BLOCK1*\_*BLOCK2* or JOI_*BLOCK1*__end_of_track), if a Block Def. file has been specified, an extra column will appear to display the associated joint name or buffer name.
 - a sheet **"Signal"** containing the home signals (type MANOEUVRE), the permanently red signals (type PERMANENT_ARRET) and the buffers (type HEURTOIR). The different objects types have different colors.
 - a sheet **"Tag"** containing the localization tags and the dynamic tags. The different objects types have different colors.
-- a sheet **"FloodGate"** containing the flood gate ends (*FG_NAME*__Limit_N).
+- a sheet **"FloodGate"** containing the floodgate ends (*FG_NAME*__Limit_N).
 
 ### 4.2 Verification sheet structure
 Each sheet follows the same structure:
@@ -156,7 +156,7 @@ Each sheet follows the same structure:
 
   - "_L" and "_R" for the left and right heel points (corresponding to position on the heels of the switch).
 
-  For platform ends and flood gates ends, it is the name of the object plus a prefix "__Limit_X" to specify the number of the object end. <br />
+  For platform ends and floodgates ends, it is the name of the object plus a prefix "__Limit_X" to specify the number of the object end. <br />
 
   For block joints, the name is generated by mixing the two blocks that have this common limit.
 
@@ -182,10 +182,10 @@ Each sheet follows the same structure:
 
 The results are ordered by track and then KP from the DC_SYS if they exist, else from the survey.
 
-- **<ins>Column I</ins>** contains the computation of the **difference** between the two KP values. 
+- **<ins>Column I</ins>** contains the computation of the **difference** between the two KP values.
 
     If the object is not found in the survey, "**Not Surveyed**" is written.
-    
+
     If the object is found in the survey but not in the DC_SYS, "**Not in DC_SYS**" is written.
 
 
@@ -197,7 +197,7 @@ The results are ordered by track and then KP from the DC_SYS if they exist, else
 - **<ins>Column K</ins>** contains **automatic comments**. Comments can be written by the tool in some specific cases (for example, if the same object has been found in different survey files, if the same object has been found multiple times in the same survey file, if the KP value in the survey appears to be with a different sign from the DC_SYS KP value...). The column is hidden if no automatic comments are written.
 
 
-- **<ins>Column L</ins>** is left free for the **manual verification** status. 
+- **<ins>Column L</ins>** is left free for the **manual verification** status.
 
 
-- **<ins>Column M</ins>** is left free for **comments** from the user. 
+- **<ins>Column M</ins>** is left free for **comments** from the user.

@@ -5,7 +5,8 @@ from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
 
-__all__ = ["get_train_length"]
+
+__all__ = ["get_train_length", "get_car_length", "get_car_names"]
 
 
 def get_train_length(train_name: str) -> Optional[float]:
@@ -50,3 +51,22 @@ def _get_unit_length(unit_name: str) -> Optional[float]:
         return get_dc_sys_value(unit_info, DCSYS.Flatbed_Types.Length)
     else:
         return None
+
+
+def get_car_length(car_name: str) -> float:
+    car_dict = load_sheet(DCSYS.Car)
+    car_value = car_dict[car_name]
+    return get_dc_sys_value(car_value, DCSYS.Car.Length)
+
+
+def get_car_names(train_type: str) -> dict[int, Optional[str]]:
+    train_types_dict = load_sheet(DCSYS.Train_Types)
+    dict_of_cars = dict()
+    for car_number, car_name in enumerate(get_dc_sys_values(
+            train_types_dict[train_type],
+            DCSYS.Train_Types.Car1, DCSYS.Train_Types.Car2, DCSYS.Train_Types.Car3, DCSYS.Train_Types.Car4,
+            DCSYS.Train_Types.Car5, DCSYS.Train_Types.Car6, DCSYS.Train_Types.Car7, DCSYS.Train_Types.Car8,
+            DCSYS.Train_Types.Car9, DCSYS.Train_Types.Car10), start=1):
+
+        dict_of_cars[car_number] = car_name
+    return dict_of_cars

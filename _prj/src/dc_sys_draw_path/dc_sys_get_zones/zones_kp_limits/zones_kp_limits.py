@@ -8,18 +8,25 @@ from ..zones_utils import get_segments_within_zone, get_zone_limits
 from .result_file import *
 
 
-__all__ = ["get_zones_kp_limits"]
+__all__ = ["get_zones_kp_limits", "get_dict_of_zones_kp_limits"]
 
 
 def get_zones_kp_limits(sheet_name: str):
     sheet_name = get_sh_name(sheet_name)
-    res_dict = dict()
-    sheet_dict = load_sheet(sheet_name)
-    for obj_name in sheet_dict.keys():
-        res_dict[obj_name] = _get_limits_on_every_track(sheet_name, obj_name)
+
+    res_dict = get_dict_of_zones_kp_limits(sheet_name)
 
     res_file_path = create_verif_file(sheet_name, res_dict)
     open_excel_file(res_file_path)
+
+
+def get_dict_of_zones_kp_limits(sheet_name: str):
+    sheet_name = get_sh_name(sheet_name)
+    res_dict = dict()
+    objects_list = get_objects_list(sheet_name)
+    for obj_name in objects_list:
+        res_dict[obj_name] = _get_limits_on_every_track(sheet_name, obj_name)
+    return res_dict
 
 
 def _get_limits_on_every_track(obj_type, obj_name: str) -> Optional[dict[str, list[tuple[float, float]]]]:
@@ -55,7 +62,7 @@ def _get_track_dict_for_within_zone_segs(segs_in_zone: set[str]):
     for seg in segs_in_zone:
         seg_val = seg_dict[seg]
         track = get_dc_sys_value(seg_val, DCSYS.Seg.Voie)
-        start_kp, end_kp = get_dc_sys_values(seg_val, DCSYS.Seg.Origine, DCSYS.Seg.Fin)
+        start_kp, end_kp = sorted(get_dc_sys_values(seg_val, DCSYS.Seg.Origine, DCSYS.Seg.Fin))
         if track not in res_dict:
             res_dict[track] = list()
         res_dict[track].append((start_kp, end_kp))
@@ -67,29 +74,29 @@ def _get_track_dict_for_limits(zone_limits: list[tuple[str, float, bool]]):
     res_dict = dict()
     seg_dict = load_sheet(DCSYS.Seg)
     for (seg, x, downstream) in zone_limits:
-        track, kp = from_seg_offset_to_kp(seg, x)
+        track, kp = from_seg_offset_to_track_kp(seg, x)
         if track not in res_dict:
             res_dict[track] = list()
 
         other_limit_offset_on_seg = _get_other_limit_on_seg(seg, x, downstream, zone_limits)
 
         if other_limit_offset_on_seg is not None:
-            _, other_kp = from_seg_offset_to_kp(seg, other_limit_offset_on_seg)
-            if (kp, other_kp) in res_dict[track] or (other_kp, kp) in res_dict[track]:
+            _, other_kp = from_seg_offset_to_track_kp(seg, other_limit_offset_on_seg)
+            kp, other_kp = sorted((kp, other_kp))
+            if (kp, other_kp) in res_dict[track]:
                 # Already inside the dictionary due to the other limit on segment, don't duplicate it.
                 continue
 
-            if downstream:
-                res_dict[track].append((kp, other_kp))
-            else:
-                res_dict[track].append((other_kp, kp))
+            res_dict[track].append((kp, other_kp))
 
         else:
             seg_val = seg_dict[seg]
             start_kp, end_kp = get_dc_sys_values(seg_val, DCSYS.Seg.Origine, DCSYS.Seg.Fin)
             if downstream:
+                kp, end_kp = sorted((kp, end_kp))
                 res_dict[track].append((kp, end_kp))
             else:
+                start_kp, kp = sorted((start_kp, kp))
                 res_dict[track].append((start_kp, kp))
 
     return res_dict
