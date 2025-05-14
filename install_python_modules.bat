@@ -28,7 +28,7 @@ echo. && echo ---------------------------------------------- && echo.
 for %%x in (numpy openpyxl xlrd Unidecode comtypes tk pdfreader) do (
     echo. && echo Install library %%x.
     @REM Uncomment next line if launching it while connected to Hitachi network, on site or with VPN.
-    %PYTHON_EXE% -m pip install %%x --proxy %PROXY_ADDR%
+    %PYTHON_EXE% -m pip install %%x --proxy %PROXY_ADDR% --trusted-host pypi.org
     @REM Uncomment next line if launching it disconnected from VPN.
     REM %PYTHON_EXE% -m pip install %%x
 )
