@@ -43,109 +43,31 @@ The tool automates the verification for the following elements:
  If an error occurs saying that pip is not installed, try to launch the command "python39 -m ensurepip --default-pip" (to update with the name or your Python 3.9 executable). It will install the default version of pip.
 
 
-1. Modify the file "**survey_verification.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
+1. Modify the file "**route_and_overlap_control_tables_verification.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
 (Set it up in the same way as "install_python_modules.bat".)
 
 
-2. Launch "**survey_verification.bat**". It will launch the Python script to check the correspondence with the site survey.
+2. Launch "**route_and_overlap_control_tables_verification.bat**". It will launch the Python script to check the correspondence of the Route and Overlap with the PDF Control Tables.
 
 
 3. A window will appear and ask for the **CCTool-OO Schema file** applicable to your version. <br />
 (It is used for the tool to read the DC_SYS in order to know the columns corresponding to each attribute.)
 
 
-4. Then, another window will appear and ask for the **DC_SYS**, optionally the **Block Def.**, and the **survey file(s)**. <br />
-To select a Block Def. file, you need to uncheck **automatic joint names** and select the correspond file.<br />
-Once the survey file has been selected, you need to specify:
-   - the **Survey Sheet** name, or you can select the checkbox so that the tool uses **All Sheets** of the survey file to get the survey data,
-   - the **First Data Row** containing the surveyed information (after the header),
-   - and the different columns for the data the tool will use (note that you can use either the letter of the column or the corresponding number):
-     - **Reference Column** (the column containing the objects name),
-     - **Type Column** (the column containing the objects type (e.g. SWP, TC, TAG...)),
-     - **Track Column** (the column containing the objects track),
-     - **Surveyed KP Column** (the column containing the objects surveyed KP).
+4. Then, another window will appear and ask for the type of Control Table (either Route or Overlap), then the Control Tables configuration .ini file that can be found in the folder "control_tables_configuration", and then the Control Tables PDF. <br />
+Once the Control Table PDF file has been selected, you need to select the pages of the PDF that contain the information: either all the pages, or only a range of pages (not that if there are only extra introduction pages, you can select "all pages").
 
-You will also have the possibility to add other survey files (some projects have various files for the survey). If it is the case, you have to **add the survey files in chronological order**, with the oldest first and the most recent last. (The tool will consider that the newer values supersede the older ones. A comment is nevertheless written to inform the user of different values for a same object.)
+Note that you can add multiple Control Tables Files by clicking the button "ass another control table file".
 
 
-5. Once all the information has been specified, you can press the button **"Launch Survey Verification"**. <br />
+5. Once these pieces of information have been specified, you can press the button **"Launch Control Table Translation"**. It will extract the info from the PDF and create CSV files. <br />
 Information logs are provided in the command window during the execution.
 
 
-6. The result Excel file is placed in the tool directory and is opened automatically in a new session of Excel.
-
----
-## 4 Results
-The tool generates an Excel verification file called "Correspondence with Site Survey - *DC_SYS_FOLDER_NAME*.xlsx".
-
-### 4.1 Result file structure
-Sheet **"Header"** is pre-filled with the Author name corresponding to the Windows session user, the C_D470 corresponding to the name of the folder containing the specified DC_SYS, the date and the tool version.
-
-Sheet **"Survey"** contains the exhaustive list of objects to verify given in the attached file in §3.2 of the System DPSA. The aim is to use this file directly as the verification result file to add to the DPSR.
-
-For each type of objects that is automated, there is **a dedicated sheet** containing the results of the verification:
-- a sheet **"Switch"** containing the center (*SWP*_C), the left (*SWP*_L) and right (*SWP*_R) points of the switches.
-- a sheet **"Platform"** containing the platform ends (*PLT_NAME*__Limit_N), the platform OSPs and the not platform related OSPs. The different objects types have different colors.
-- a sheet **"Block"** containing the block joints (JOI_*BLOCK1*\_*BLOCK2* or JOI_*BLOCK1*__end_of_track), if a Block Def. file has been specified, an extra column will appear to display the associated joint name or buffer name.
-- a sheet **"Signal"** containing the home signals (type MANOEUVRE), the permanently red signals (type PERMANENT_ARRET) and the buffers (type HEURTOIR). The different objects types have different colors.
-- a sheet **"Tag"** containing the localization tags and the dynamic tags. The different objects types have different colors.
-- a sheet **"FloodGate"** containing the floodgate ends (*FG_NAME*__Limit_N).
-
-### 4.2 Verification sheet structure
-Each sheet follows the same structure:
-
-- **<ins>Column A</ins>** contains the **data name**.
-
-    For signals, buffers, tags and OSPs, it corresponds directly to the name in DC_SYS.
-
-    For switches, it is the switch name plus a suffix:
-
-  - "_C" for the center point (corresponding to position on the point segment of the switch).
-
-  - "_L" and "_R" for the left and right heel points (corresponding to position on the heels of the switch).
-
-  For platform ends and floodgates ends, it is the name of the object plus a prefix "__Limit_X" to specify the number of the object end. <br />
-
-  For block joints, the name is generated by mixing the two blocks that have this common limit.
+6. Then, you can add DC_SYS and DC_BOP info in the window (DC_BOP is often inside folder C64_D413 inside PRJ_C_D470), to launch the verification.
 
 
-- **<ins>Column B</ins>** contains the **DC_SYS object type** from which the data is extracted (useful for platform to differentiate platform ends, platform OSPs and not platform related OSPs, for signals to differentiate home signals, permanently reds and buffers, and for tags to differentiate static and dynamic tags).
+7. Once these pieces of information have been specified, you can press the button **"Launch Control Table Verification"**. It will use the extracted info from the CSV files and verify them with the DC_SYS using the DC_BOP for the correspondence between NORMAL/REVERSE use at IXL level and LEFT/RIGHT used at Core CBTC level. <br />
 
 
-- **<ins>Columns C and D</ins>** contain the **positioning (track, KP)** collected from the **DC_SYS**.
-
-
-- If a Block Def. is used, an extra column will appear in sheet "Block" containing the corresponding limit name from the block definition file.
-
-
-- **<ins>Column E</ins>** contains the object **reference name** from the **survey**.
-
-
-- **<ins>Column F</ins>** contains the information set in the **type** column in the **survey** (useful for platform to differentiate platform ends and OSPs, for signals to differentiate signals and buffers, for tags to differentiate static and dynamic tags, and for blocks to differentiate joints and buffers if buffers are specified inside the Block Def. file).
-
-
-- **<ins>Columns G and H</ins>** contain the **positioning (track, KP)** collected from the **survey file(s)**.
-
-    A comment is put on cells in column H to specify from which survey the information was collected (can be useful in multiple survey files are used).
-
-The results are ordered by track and then KP from the DC_SYS if they exist, else from the survey.
-
-- **<ins>Column I</ins>** contains the computation of the **difference** between the two KP values.
-
-    If the object is not found in the survey, "**Not Surveyed**" is written.
-
-    If the object is found in the survey but not in the DC_SYS, "**Not in DC_SYS**" is written.
-
-
-- **<ins>Column J</ins>** contains the **status of the verification**: if the difference is lower (in absolute value) than the tolerance (set in cell B1), the status is OK, else it is KO.
-
-    If one data is missing, the same message ("Not Surveyed" or "Not in DC_SYS") is written as in the Difference column.
-
-
-- **<ins>Column K</ins>** contains **automatic comments**. Comments can be written by the tool in some specific cases (for example, if the same object has been found in different survey files, if the same object has been found multiple times in the same survey file, if the KP value in the survey appears to be with a different sign from the DC_SYS KP value...). The column is hidden if no automatic comments are written.
-
-
-- **<ins>Column L</ins>** is left free for the **manual verification** status.
-
-
-- **<ins>Column M</ins>** is left free for **comments** from the user.
+8. Result logs are written in the command window during the execution.
