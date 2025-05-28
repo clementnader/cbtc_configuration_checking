@@ -1,6 +1,6 @@
 # ROUTE AND OVERLAP CONTROL TABLES VERIFICATION TOOL
 
-This tool helps with the **Verification of the Route and Overlap** verification at SA level asked by the *System DPSA* (C_D413-2) in §??.
+This tool helps with the **Verification of the Route and Overlap** verification at SA level asked by the *System DPSA* (C_D413-2) during activity "Foundation Data Validation Plan Table". This tool is compatible only with WSP technology of IXL.
 
 ---
 ## 1. Description of the Route and Overlap Verification activity
@@ -26,6 +26,9 @@ The tool automates the verification for the following elements:
 
 
 - <ins>**DC_BOP**</ins>: It is used for the verification of routes and overlaps. It is an Excel file (.xls) provided in the project database C_D470 (directly in the folder or inside subfolder C64_D413) containing the correspondence between the switches position at CBTC level (left/right) and at IXL level (normal/reverse).
+
+
+- <ins>**Control Tables**</ins>: They are PDF files provided by IXL containing the Routes definition and the Overlaps definition (in two different files). Multiple Route and multiple Overlap Control Tables can exist on a project when there are multiple IXLs.  
 
 
 ---
