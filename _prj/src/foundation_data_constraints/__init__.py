@@ -16,7 +16,7 @@ from .ixl_overlap import *
 from .maz import *
 from .osp import *
 from .platform import *
-from .psr import *
+from .sieving_limit import *
 from .signal import *
 from .signal_zone import *
 from .sw_flank_protection import *

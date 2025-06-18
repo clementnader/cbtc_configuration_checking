@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 from ....utils import *
 from .gui_dc_tu_utils import *
 from .dc_tu_verification import *
@@ -45,7 +44,7 @@ def dc_tu_window():
         dc_tu_verification()
     else:
         print_error("Execution aborted.")
-        sys.exit(1)
+        exit(1)
 
 
 def add_launch_dc_tu_button(window: tkinter.Tk, frame: tkinter.Frame, c11_d470_directory: tkinter.StringVar) -> None:

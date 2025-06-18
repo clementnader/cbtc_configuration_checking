@@ -9,6 +9,9 @@ from .common_utils import *
 from .check_platform import get_corresponding_plt_survey_extremities
 
 
+__all__ = ["check_walkway"]
+
+
 # Walkway
 def check_walkway(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
                   set_of_survey_tracks: set[str], plt_survey_info: dict):

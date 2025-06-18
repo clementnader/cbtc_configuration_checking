@@ -29,7 +29,7 @@ def min_length_multiple_path(in_cbtc: bool = False):
     for i, (start_seg, start_downstream) in enumerate(sw_point_segs):
         print_log_progress_bar(i, nb_sw_point_segs, f"processing multiple path length from point segment "
                                f"{start_seg}")
-        for end_seg, end_downstream in sw_point_segs[i + 1:]:
+        for end_seg, end_downstream in sw_point_segs[i+1:]:
             end_upstream = not end_downstream
             dist, short_path, list_of_paths, _ = get_downstream_path(start_seg, end_seg,
                                                                      start_downstream=start_downstream,
@@ -65,7 +65,7 @@ def min_length_multiple_path(in_cbtc: bool = False):
                                               key=lambda x: multiple_path_len_dict[x]["Minimal Length"])}
     min_len = min(path_len["Minimal Length"] for path_len in multiple_path_len_dict.values())
     corresponding_paths = [path for path, path_len in multiple_path_len_dict.items()
-                           if path_len['Minimal Length'] == min_len]
+                           if path_len["Minimal Length"] == min_len]
     print(f"The minimum length of a multiple path structure (rhombus or trapezoid) is, {print_in_cbtc(in_cbtc)}:"
           f"\n{Color.green}{min_len = } m{Color.reset}"
           f"\n > for: "

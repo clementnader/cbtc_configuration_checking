@@ -10,10 +10,14 @@ from .segments_utils import *
 __all__ = ["is_sw_point_seg_upstream", "get_switch_position", "is_switch_on_diamond_crossing"]
 
 
-def is_sw_point_seg_upstream(switch_value):
+def is_sw_point_seg_upstream(switch_value: Union[str, dict[str, Any]]):
     """Returns True if the point segment of the switch is upstream of the two heels segments (divergent switch),
     returns False if it is downstream (convergent switch),
     raises an error if it is neither the first nor the second."""
+    if isinstance(switch_value, str):
+        switch_dict = load_sheet(DCSYS.Aig)
+        switch_value = switch_dict[switch_value]
+
     point_seg = get_dc_sys_value(switch_value, DCSYS.Aig.SegmentPointe)
     right_heel = get_dc_sys_value(switch_value, DCSYS.Aig.SegmentTd)
     left_heel = get_dc_sys_value(switch_value, DCSYS.Aig.SegmentTg)
@@ -30,7 +34,7 @@ def is_sw_point_seg_upstream(switch_value):
     raise Exception("The point segment is not found upstream or downstream of the heels.")
 
 
-def get_switch_position(switch_value: dict[str, Any]) -> tuple[str, float]:
+def get_switch_position(switch_value: Union[str, dict[str, Any]]) -> tuple[str, float]:
     """Returns the position of the switch with the segment and offset. """
     point_seg = get_dc_sys_value(switch_value, DCSYS.Aig.SegmentPointe)
     upstream = is_sw_point_seg_upstream(switch_value)

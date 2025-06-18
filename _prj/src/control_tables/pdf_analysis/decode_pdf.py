@@ -6,9 +6,9 @@
 
 # Check pdfreader Documentation: https://pdfreader.readthedocs.io/en/latest/
 
-import sys
 import re
 import pdfreader
+import PyPDF2
 import logging
 from ...utils import *
 from .parse_control_table import *
@@ -25,6 +25,15 @@ def control_tables_pdf_parsing(table_type: str, pdf_file: str, specific_pages: l
         viewer = pdfreader.SimplePDFViewer(pdf)
         logging.disable(logging.NOTSET)  # reset the logs to default
         nbpages = len([p for p in viewer.doc.pages()])
+
+        pypdf2_reader = PyPDF2.PdfReader(pdf)
+        nbpages_with_pypdf2 = len(pypdf2_reader.pages)
+        if nbpages != nbpages_with_pypdf2:
+            print_error(f"Error reading the PDF file {Color.yellow}\"{pdf_file}\"{Color.reset} "
+                        f"with pdfreader library.\nIt reads only {nbpages} pages instead of {nbpages_with_pypdf2}.")
+            print(f"{Color.white}Try opening and re-saving the PDF with Adobe Acrobat Reader.{Color.reset}")
+            exit(1)
+
         progress_bar(1, 1, end=True)  # reset progress_bar
         for num_page in range(1, nbpages + 1):
             if specific_pages is not None and num_page not in specific_pages:
@@ -52,14 +61,14 @@ def control_tables_pdf_parsing(table_type: str, pdf_file: str, specific_pages: l
                 pretty_print_dict(pos_dict)
                 print_bar()
             if print_pdf_code:
-                sys.exit(1)
+                exit(1)
             # Interpret the collected info using the Control Tables template
             page_dict = analyze_pdf_info(table_type, num_page, pos_dict, max_pos, debug=debug)
             if debug:
                 print()
                 pretty_print_dict(page_dict)
                 print_bar()
-                sys.exit(1)
+                exit(1)
             if page_dict:
                 res_dict[page_dict["name"]["info"]] = {
                     info["key_name"]: {"text": info["info"], "csv_title": info["csv_title"]}

@@ -8,6 +8,9 @@ from ...survey_utils import clean_track_name
 from .common_utils import *
 
 
+__all__ = ["check_tag"]
+
+
 # Tag and IATPM_Tag
 def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dict[str, float]],
               set_of_survey_tracks: set[str], dyn_tag_survey_info: dict[str, dict[str, float]],

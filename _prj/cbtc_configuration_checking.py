@@ -45,14 +45,14 @@ def additional_verif():
     # dc_tu_verification()  # v1.4
     # dc_tu_window()
 
-    # get_sum_len_route_physical_blocks()
-    # get_first_zc_overlay_route_physical_blocks()
-
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
-    # pretty_print_dict(get_slope_at_plt(in_cbtc=False))
-    # pretty_print_dict(get_slope_at_overshoot_recovery_area(in_cbtc=False))
+    # pretty_print_dict(get_min_and_max_slope_at_all_platforms(in_cbtc=False))
+    # pretty_print_dict(get_min_and_max_slope_at_all_overshoot_recovery_areas(in_cbtc=False))
+
+    # get_sum_len_route_physical_blocks()  # for wayside additional verifications in 6.3.5
+    # get_first_zc_overlay_route_physical_blocks()  # for wayside additional verifications in 6.3.5
     return
 
 
@@ -104,9 +104,9 @@ def route_and_overlap():
 
 def dc_par_customer_data():
     # min_length_multiple_path(in_cbtc=False)  # trapezoid_length
+    # pretty_print_dict(smallest_size_of_a_switch_block_heel(in_cbtc=False))
     # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
     #                                                                    with a buffer just down the line
-    # smallest_size_of_a_switch_block_heel(in_cbtc=False)
     # max_dist_local_tag_group(in_cbtc=False)
     return
 
@@ -140,22 +140,22 @@ def check_cdz_signals():
                             f"Zone {Color.beige}\"{cdz_name}\"{Color.reset}.")
 
 
-def constraints():
-    # for seg in get_objects_list(DCSYS.Seg):
-    #     for x in (0., get_segment_length(seg)):
-    #         min_slope, max_slope = get_min_and_max_slopes_at_point(seg, x)  # TODO with Mock-up1 fix slope sign with depol
-    #         print(seg, x, f"{min_slope:.2%}", f"{max_slope:.2%}")
-
+def foundation_data_constraints():
     # --- Global DC_SYS verifications --- #
     # check_dc_sys_global_definition()
     # check_dc_sys_zones_definition()
     # check_dc_sys_track_kp_definition()
 
     # --- Functions related to zone objects customizable specifying the sheet name --- #
+    # get_zones_kp_limits(DCSYS.Walkways_Area)
     # get_zones_kp_limits(DCSYS.Protection_Zone)
     # print(get_objects_in_zone(DCSYS.Zaum, DCSYS.PAS, "ZC_02"))
     # print(get_zones_on_object(DCSYS.PAS, DCSYS.Zaum, "MAZ_STB_110"))
 
+    # --- Verify Sieving Limits definition --- #
+    # check_sieving_limit_definition()
+
+    # get_whole_object_type_kp_limits(DCSYS.CDV)
     # get_whole_object_type_kp_limits(DCSYS.PAS)  # TODO raise a message when there is overlapping
     # TODO create a function to do unions between zones to manage for ZC when it's normal to have overlapping.
 
@@ -164,9 +164,7 @@ def constraints():
     # get_all_possible_border_areas()  # TODO in progress
 
     # check_upstream_and_downstream_ivb_of_all_signals()
-    # check_cbtc_protecting_switch_area(do_print_warning=False)
-
-    # check_psr_41_42()  # TODO in progress
+    # check_cbtc_protecting_switch_area()
 
     # verif_calib_distance()
     # ixl_overlap_platform_related()
@@ -174,11 +172,13 @@ def constraints():
 
     # check_signal_with_overlap()
 
+    # check_switch_flank_protection(in_cbtc=False)  # TODO
+
     # get_par_worst_suspect_coupling_overrun_additionnal_dist()  # TODO ça marche comme l'outil de Damien mais à voir pour speeder ça (13mn sur KCR)
     return
 
 
-def rules():
+def constraints_and_rules():
     # Block zone definition constraints
     # r_cdv_10()
     # cf_ivb_1_2()
@@ -202,10 +202,10 @@ def rules():
     # cf_walkway_2()
 
     # OSP constraints
-    # cc_quai_6()  # Allow Accel Calibration at platform OSP TODO slope shall be constant before and after
-    #                                                         in addition to over the accel car: to test with BXL file
+    # cc_quai_6(in_cbtc=False)  # Allow Accel Calibration at platform OSPs
+    # r_point_arret_ato_10(in_cbtc=False)  # Allow Accel Calibration at not platform related OSPs
 
-    # Messages constraints
+    # Interface messages constraints
     # cf_dg_1()  # TODO: check correct Line Section
     # cf_dg_2()
     # r_mes_pas_itf_1(in_cbtc=False)  # TODO: find info to check if ZC receiving the Signal information
@@ -233,26 +233,18 @@ def rules():
     # cf_calib_4()
     # r_dyntag_3()
 
-    # r_cdv_5(print_ok=True)  # TODO for R_CDV_5:
-    #                             regarder pour prendre un param plutôt avec le hardware/hardware reference
-    #                             plutôt que faire une diff avec le kit C11
-    #                               plus: retourner un fichier de vérif pour pouvoir montrer les données;
-    #                               vérifier l'histoire de tag_accurate_laying_uncertainty:
-    #                                   ce n'est pas du tout marqué dans la contrainte donc peut-être à désactiver;
-    #                               faire R_IVB_1 aussi.
-
+    # r_cdv_5(r_ivb_1=False, print_ok=True)  # TODO for R_CDV_5:
+    #                                           - regarder pour prendre un param plutôt avec le
+    #                                           hardware/hardware reference plutôt que faire une diff avec le kit C11
+    #                                           - retourner un fichier de vérif pour pouvoir montrer les données
     return
 
 
 def main():
-    # print(get_user_full_name())
     # print_named_colors()
     # print_all_colors()
-    # test_rainbow()
     # test_moving_progress_bar()
 
-    # check_switch_flank_protection(in_cbtc=False)  # TODO
-    # get_walkways_track_kp_pos()
     # pretty_print_dict(list(get_all_segs_in_cbtc_ter()), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Voie), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Profil), max_lvl=0)
@@ -268,8 +260,8 @@ def main():
 
     route_and_overlap()
 
-    constraints()
-    rules()
+    foundation_data_constraints()
+    constraints_and_rules()
 
     additional_verif()
 
@@ -306,8 +298,8 @@ if __name__ == "__main__":
             # to take into account the regenerated files.
             print_log(f"Launch another Python instance to take into account the CCTool-OO Schema.")
             python_exe = sys.executable
-            launch_cmd(f"{python_exe} \"cbtc_configuration_checking.py\" skip_regen")
-            sys.exit(0)
+            launch_cmd(f"\"{python_exe}\" \"cbtc_configuration_checking.py\" skip_regen")
+            exit(0)
 
         print_title(f"Working on {Color.cyan}{get_current_version()}{Color.reset}\n"
                     f"with CCTool-OO Schema version: "

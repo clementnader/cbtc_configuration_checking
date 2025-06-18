@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..dc_bop import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
+from ..dc_bop import *
 from .ivb_utils import get_related_block_of_ivb
 
 

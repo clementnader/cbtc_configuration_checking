@@ -9,7 +9,8 @@ from .draw_segments_in_zone import *
 
 __all__ = ["is_point_in_zone", "is_seg_in_zone", "get_zones_on_point", "get_zones_on_segment",
            "get_zones_intersecting_zone", "are_zones_intersecting",
-           "get_objects_in_zone", "is_zone_completely_included_in_zone", "get_zones_on_object"]
+           "get_objects_in_zone", "is_zone_completely_included_in_zone", "get_zones_on_object",
+           "depolarization_in_zone"]
 
 
 def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str = None) -> Optional[bool]:
@@ -73,6 +74,37 @@ def get_objects_in_zone(obj_type, zone_obj_type, zone_name: str) -> Optional[lis
     if not list_obj:
         return None
     return list_obj
+
+
+def depolarization_in_zone(obj_type, obj_name: str) -> list[list[str]]:
+    depolarized_segments = get_depolarized_segments()
+    all_depolarized_segments = [segment_name for sub_list in depolarized_segments for segment_name in sub_list]
+    segments_in_zone = get_all_segments_in_zone(obj_type, obj_name)
+    if not any(seg in segments_in_zone for seg in all_depolarized_segments):
+        return []
+
+    list_depol_in_zone = list()
+    for depol_group in depolarized_segments:
+        if len(depol_group) == 2:
+            if all(seg in segments_in_zone for seg in depol_group):
+                list_depol_in_zone.append(depol_group)
+        else:  # len(depol_group) == 3
+            if all(seg in segments_in_zone for seg in depol_group):
+                list_depol_in_zone.append(depol_group)
+                continue
+
+            for i, depol_seg in enumerate(depol_group):
+                if depol_seg not in segments_in_zone:
+                    continue
+                for other_depol_seg in depol_group[i+1:]:
+                    if other_depol_seg not in segments_in_zone:
+                        continue
+                    # in a 3-segment group, there are the 2 heel segments of a switch and if there are only
+                    # these 2 segments, there is no depolarization in the zone, so we check if they are connected
+                    if (other_depol_seg not in get_linked_segments(depol_seg, downstream=True)
+                            and other_depol_seg not in get_linked_segments(depol_seg, downstream=False)):
+                        list_depol_in_zone.append([depol_seg, other_depol_seg])
+    return list_depol_in_zone
 
 
 def get_zones_on_object(zones_obj_type, obj_type, obj_name: str) -> Optional[list[str]]:

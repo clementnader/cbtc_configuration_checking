@@ -71,6 +71,7 @@ def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any
 
 
 def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
+    # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
     update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())

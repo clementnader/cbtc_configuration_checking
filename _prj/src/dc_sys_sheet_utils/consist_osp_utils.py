@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ..dc_sys import *
 from ..cctool_oo_schema import *
+from ..dc_sys import *
 from ..dc_sys_sheet_utils.train_utils import get_train_length
 
 

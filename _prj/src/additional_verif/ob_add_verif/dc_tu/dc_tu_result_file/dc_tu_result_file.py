@@ -21,6 +21,7 @@ FILE_TITLE = "Analysis of ADD_VERIF_XXX\nDC_TU Verification"
 
 
 def create_dc_tu_verif_file(ip_address_dict: dict, ssh_key_dict: dict, tool_version: str) -> str:
+    # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
     update_header_sheet_for_verif_file(wb, title=FILE_TITLE,

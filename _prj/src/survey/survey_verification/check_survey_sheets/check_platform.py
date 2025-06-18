@@ -9,6 +9,9 @@ from .common_utils import *
 from .check_osp import *
 
 
+__all__ = ["check_platform"]
+
+
 # Switch
 def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict,
                    set_of_survey_tracks: set[str], osp_survey_info: dict):

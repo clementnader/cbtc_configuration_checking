@@ -10,23 +10,32 @@ from ..dc_sys_path_and_distances import is_seg_downstream
 __all__ = ["get_oriented_limits_of_obj", "convert_oriented_limits"]
 
 
-def get_oriented_limits_of_obj(obj_type: str, obj_name: str) -> Optional[list[tuple[str, float, bool]]]:
+def get_oriented_limits_of_obj(obj_type: str, obj_name: str) -> Optional[list[tuple[str, float, str]]]:
     obj_type = get_sh_name(obj_type)
-    oriented_zone_limits = get_obj_oriented_zone_limits(obj_type, obj_name)
-    if oriented_zone_limits is not None:
-        return convert_oriented_limits(oriented_zone_limits)
-
     zone_limits = get_obj_zone_limits(obj_type, obj_name)
-    if zone_limits is None:
+    if zone_limits is None:  # not a zone object
         return None
     if len(zone_limits[0]) == 3:  # oriented zone limits
-        print_warning(f"\"{obj_type}\" object limits are oriented, \"get_obj_oriented_zone_limits\" function should "
-                      f"not return None.")
-        return convert_oriented_limits(zone_limits)
+        return zone_limits
 
-    zone_limits, common_oriented_limits = _remove_common_limits(zone_limits)
+    # non-oriented limits, we have to compute them
 
-    return common_oriented_limits + _get_orientation_of_zone_limits(obj_type, obj_name, zone_limits)
+    # If there are common limits, we consider them in both directions, and we remove them of the computation.
+    no_duplicate_zone_limits, common_oriented_limits = _remove_common_limits(zone_limits)
+    if common_oriented_limits:
+        print_warning(f"For {obj_type} {obj_name}, there are 2 limits on the same point: "
+                      f"{[(seg, x) for seg, x, _ in common_oriented_limits]}")
+
+    other_oriented_limits = _get_orientation_of_zone_limits(obj_type, obj_name, no_duplicate_zone_limits)
+
+    return _reorder_oriented_limits(common_oriented_limits + other_oriented_limits, zone_limits)
+
+
+def _reorder_oriented_limits(oriented_limits: list[tuple[str, float, str]], zone_limits: list[tuple[str, float]]):
+    # we keep the same order as the order of the non-oriented limits in DC_SYS,
+    # in case of double limit in DC_SYS we sort increasing direction before decreasing
+    return sorted(oriented_limits, key=lambda limit: (zone_limits.index((limit[0], limit[1])),
+                                                      not (limit[2] == Direction.CROISSANT)))
 
 
 def convert_oriented_limits(oriented_zone_limits: list[tuple[str, float, str]]) -> list[tuple[str, float, bool]]:
@@ -35,14 +44,14 @@ def convert_oriented_limits(oriented_zone_limits: list[tuple[str, float, str]]) 
 
 
 def _remove_common_limits(zone_limits: list[tuple[str, float]]) -> tuple[list[tuple[str, float]],
-                                                                         list[tuple[str, float, bool]]]:
+                                                                         list[tuple[str, float, str]]]:
     common_limits = list()
     oriented_limits = list()
     for i, (seg1, x1) in enumerate(zone_limits):
-        if (seg1, x1) in zone_limits[i + 1:]:
+        if (seg1, x1) in zone_limits[i+1:]:
             common_limits.append((seg1, x1))
-            oriented_limits.append((seg1, x1, True))
-            oriented_limits.append((seg1, x1, False))
+            oriented_limits.append((seg1, x1, Direction.CROISSANT))
+            oriented_limits.append((seg1, x1, Direction.DECROISSANT))
 
     if not common_limits:
         return zone_limits, list()
@@ -51,7 +60,7 @@ def _remove_common_limits(zone_limits: list[tuple[str, float]]) -> tuple[list[tu
 
 
 def _get_orientation_of_zone_limits(obj_type: str, obj_name: str, zone_limits: list[tuple[str, float]]
-                                    ) -> list[tuple[str, float, bool]]:
+                                    ) -> list[tuple[str, float, str]]:
     if not zone_limits:
         return list()
 
@@ -62,9 +71,9 @@ def _get_orientation_of_zone_limits(obj_type: str, obj_name: str, zone_limits: l
         are_other_limits_upstream = [is_seg_downstream(seg1, seg2, x1, x2, downstream=False)
                                      for seg2, x2 in zone_limits if (seg2, x2) != (seg1, x1)]
         if any(are_other_limits_downstream) and not any(are_other_limits_upstream):
-            direction = True
+            direction = Direction.CROISSANT
         elif any(are_other_limits_upstream) and not any(are_other_limits_downstream):
-            direction = False
+            direction = Direction.DECROISSANT
         elif any(are_other_limits_upstream) and any(are_other_limits_downstream):
             direction = None
         else:  # not any upstream and not any downstream
@@ -81,14 +90,14 @@ def _get_orientation_of_zone_limits(obj_type: str, obj_name: str, zone_limits: l
     return _update_missed_limits(obj_type, obj_name, oriented_zone_limits, zone_limits)
 
 
-def _get_missed_limits(oriented_zone_limits: list[tuple[str, float, bool]],
+def _get_missed_limits(oriented_zone_limits: list[tuple[str, float, str]],
                        zone_limits: list[tuple[str, float]]) -> list[tuple[str, float]]:
     return [limit for limit in zone_limits if limit not in [(seg, x) for seg, x, _ in oriented_zone_limits]]
 
 
 def _update_missed_limits(obj_type: str, obj_name: str,
-                          oriented_zone_limits: list[tuple[str, float, Optional[bool]]],
-                          zone_limits: list[tuple[str, float]]) -> list[tuple[str, float, Optional[bool]]]:
+                          oriented_zone_limits: list[tuple[str, float, Optional[str]]],
+                          zone_limits: list[tuple[str, float]]) -> list[tuple[str, float, Optional[str]]]:
     nb_limits = len(zone_limits)
     for cnt in range(nb_limits):
         missed_limits = _get_missed_limits(oriented_zone_limits, zone_limits)
@@ -110,11 +119,11 @@ def _update_missed_limits(obj_type: str, obj_name: str,
             cnt -= len(oriented_zone_limits)
             start_limit_seg, start_limit_x = missed_limits[cnt]
             # try in increasing direction
-            start_limit = (start_limit_seg, start_limit_x, True)
+            start_limit = (start_limit_seg, start_limit_x, Direction.CROISSANT)
             other_limits, wrong_limit_direction = _find_other_limits(start_limit, zone_limits)
             if wrong_limit_direction:
                 # try in decreasing direction
-                start_limit = (start_limit_seg, start_limit_x, False)
+                start_limit = (start_limit_seg, start_limit_x, Direction.DECROISSANT)
                 other_limits, wrong_limit_direction = _find_other_limits(start_limit, zone_limits)
                 if wrong_limit_direction:
                     print_error(f"Reached the end of track, the zone is not closed for "
@@ -135,10 +144,11 @@ def _update_missed_limits(obj_type: str, obj_name: str,
     return oriented_zone_limits
 
 
-def _find_other_limits(start_limit: tuple[str, float, bool], zone_limits: list[tuple[str, float]]
-                      ) -> tuple[list[tuple[str, float, bool]], bool]:
-    start_seg, start_x, downstream = start_limit
-    other_limit = _first_seg_on_another_limit(start_seg, start_x, downstream, zone_limits)
+def _find_other_limits(start_limit: tuple[str, float, str], zone_limits: list[tuple[str, float]]
+                      ) -> tuple[list[tuple[str, float, str]], bool]:
+    start_seg, start_x, start_direction = start_limit
+    downstream = start_direction == Direction.CROISSANT
+    other_limit = _first_seg_on_another_limit(start_seg, start_x, start_direction, downstream, zone_limits)
     if other_limit is not None:
         return [other_limit], False
 
@@ -167,7 +177,8 @@ def _find_other_limits(start_limit: tuple[str, float, bool], zone_limits: list[t
 
             reached_limit = _reached_other_limit(next_seg, next_inner_downstream, zone_limits)
             if reached_limit is not None:
-                other_limits.append(reached_limit)
+                if reached_limit not in other_limits:
+                    other_limits.append(reached_limit)
                 continue
             inner_recurs_next_seg(next_seg, next_inner_downstream)
 
@@ -175,18 +186,19 @@ def _find_other_limits(start_limit: tuple[str, float, bool], zone_limits: list[t
     return other_limits, wrong_limit_direction
 
 
-def _first_seg_on_another_limit(start_seg: str, start_x: float, downstream: bool,
-                               zone_limits: list[tuple[str, float]]) -> Optional[tuple[str, float, bool]]:
+def _first_seg_on_another_limit(start_seg: str, start_x: float, start_direction: str, downstream: bool,
+                               zone_limits: list[tuple[str, float]]) -> Optional[tuple[str, float, str]]:
     for limit_seg, limit_x in zone_limits:
         if start_seg == limit_seg:
             if (downstream and start_x < limit_x) or (not downstream and start_x > limit_x):
-                return limit_seg, limit_x, not downstream
+                return limit_seg, limit_x, get_reverse_direction(start_direction)
     return None
 
 
 def _reached_other_limit(start_seg: str, downstream: bool,
-                        zone_limits: list[tuple[str, float]]) -> Optional[tuple[str, float, bool]]:
+                        zone_limits: list[tuple[str, float]]) -> Optional[tuple[str, float, str]]:
+    start_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
     for limit_seg, limit_x in zone_limits:
         if start_seg == limit_seg:
-            return limit_seg, limit_x, not downstream
+            return limit_seg, limit_x, get_reverse_direction(start_direction)
     return None

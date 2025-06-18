@@ -15,7 +15,7 @@ from .format_utils import *
 __all__ = ["check_overlap_control_tables"]
 
 
-def check_overlap_control_tables(use_csv_file: bool = False):
+def check_overlap_control_tables(use_csv_file: bool = True):
     ovl_dict = get_overlap()
     ovl_control_tables = load_control_tables(CONTROL_TABLE_TYPE.overlap, use_csv_file)
     ovl_control_tables = _update_ovl_control_tables_normal_reverse(ovl_control_tables)

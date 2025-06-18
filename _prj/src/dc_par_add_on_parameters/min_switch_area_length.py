@@ -6,7 +6,8 @@ from ..cctool_oo_schema import *
 from ..dc_sys import *
 from ..dc_sys_get_cbtc_territory import *
 from ..dc_sys_sheet_utils.block_utils import *
-from ..dc_sys_draw_path import get_dist
+from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist_downstream, get_dist, is_seg_downstream
+from ..dc_sys_draw_path.dc_sys_get_zones import get_oriented_limits_of_obj
 
 
 __all__ = ["min_switch_area_length"]
@@ -21,15 +22,15 @@ def min_switch_area_length(in_cbtc: bool = False):
     nb_sw = len(sw_dict)
     dict_switch_area_length = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
-    for i, (sw, sw_value) in enumerate(sw_dict.items()):
-        print_log_progress_bar(i, nb_sw, f"processing length of switch area for {sw}")
-        dict_switch_area_length[sw] = dict()
-        sw_block_name, sw_block_value = get_block_associated_to_sw(sw_value)
-        dict_switch_area_length[sw]["len_point_side_dict"] = get_len_point_side(sw_block_value, sw_value)
-        dict_switch_area_length[sw]["min_flank_area_length_dict"] = get_min_flank_area_length(sw_value)
-        dict_switch_area_length[sw]["switch_area_length"] = (
-                dict_switch_area_length[sw]["min_flank_area_length_dict"]["min_flank_area_length"]
-                + dict_switch_area_length[sw]["len_point_side_dict"]["len_point_side"])
+    for i, (sw_name, sw_value) in enumerate(sw_dict.items()):
+        print_log_progress_bar(i, nb_sw, f"processing length of switch area for {sw_name}")
+        dict_switch_area_length[sw_name] = dict()
+        sw_block_name = get_block_associated_to_sw(sw_name)
+        dict_switch_area_length[sw_name]["len_point_side_dict"] = get_len_point_side(sw_block_name, sw_value)
+        dict_switch_area_length[sw_name]["min_flank_area_length_dict"] = get_min_flank_area_length(sw_value)
+        dict_switch_area_length[sw_name]["switch_area_length"] = (
+                dict_switch_area_length[sw_name]["min_flank_area_length_dict"]["min_flank_area_length"]
+                + dict_switch_area_length[sw_name]["len_point_side_dict"]["len_point_side"])
     print_log_progress_bar(nb_sw, nb_sw, "processing length of switch areas finished", end=True)
 
     min_switch_area_len = min(value["switch_area_length"] for sw, value in dict_switch_area_length.items())
@@ -40,8 +41,8 @@ def min_switch_area_length(in_cbtc: bool = False):
           f"\n{min_switch_area_len = } m"
           f"\n > for: "
           f"{corresponding_sw}\n")
-    for sw, value in dict_switch_area_length.items():
-        if sw in corresponding_sw:
+    for sw_name, value in dict_switch_area_length.items():
+        if sw_name in corresponding_sw:
             pretty_print_dict(value)
             print()
 
@@ -52,19 +53,22 @@ def min_switch_area_length(in_cbtc: bool = False):
     return dict_switch_area_length
 
 
-def get_len_point_side(sw_block, sw_value):
+def get_len_point_side(sw_block_name: str, sw_value):
     """ Return the part of the switch block on the point side only """
     point_seg, point_x = get_switch_position(sw_value)
+    sw_point_downstream = not(is_sw_point_seg_upstream(sw_value))
 
+    oriented_limits = get_oriented_limits_of_obj(DCSYS.CDV, sw_block_name)
     list_upstream_limits = list()
-    for seg, x in get_dc_sys_zip_values(sw_block, DCSYS.CDV.Extremite.Seg, DCSYS.CDV.Extremite.X):
-        if does_path_exist_within_block(seg, point_seg, sw_block, downstream=True):
-            list_upstream_limits.append((seg, x))
+    for lim_seg, lim_x, lim_direction in enumerate(oriented_limits):
+        if (is_seg_downstream(lim_seg, point_seg, lim_x, point_x, downstream=lim_direction == Direction.CROISSANT)
+                 and is_seg_downstream(point_seg, lim_seg, point_x, lim_x, downstream=sw_point_downstream)):
+            list_upstream_limits.append((lim_seg, lim_x))
 
     dict_len_point_side = dict()
-    for seg, x in list_upstream_limits:
-        dist = get_dist(point_seg, point_x, seg, x)
-        dict_len_point_side[f"from ({point_seg}, {point_x}) to ({seg}, {x})"] = dist
+    for lim_seg, lim_x in list_upstream_limits:
+        dist = get_dist_downstream(point_seg, point_x, lim_seg, lim_x, downstream=sw_point_downstream)
+        dict_len_point_side[f"from {(point_seg, point_x)} to {(lim_seg, lim_x)}"] = dist
 
     dist = min(dict_len_point_side.values())
     associated_key = [key for key, val in dict_len_point_side.items() if val == dist][0]

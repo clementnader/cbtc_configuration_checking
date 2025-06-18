@@ -11,10 +11,10 @@ __all__ = ["create_empty_verification_file", "create_empty_header_sheet"]
 
 
 XL_THEME_XML = os.path.join(TEMPLATE_DIRECTORY, "xl_default_theme.xml")
-LOGO_PATH = os.path.join(TEMPLATE_DIRECTORY, "logo_hitachi_cs.jpg")
+LOGO_PATH = os.path.join(TEMPLATE_DIRECTORY, "logo_hitachi_global.png")
 
-IMAGE_CELL = "B2"
-TITLE_CELL = "B11"
+IMAGE_CELL = "B3"
+TITLE_CELL = "B10"
 
 AUTHOR_COLUMN = "C"
 VERIFIER_COLUMN = "D"
@@ -50,7 +50,7 @@ def create_empty_header_sheet(wb: openpyxl.workbook.Workbook):
     header_ws.sheet_view.zoomScale = 100  # set zoom level to 100 %
     header_ws.sheet_view.showGridLines = False  # turn off gridlines display
     # Add logo
-    add_image(header_ws, LOGO_PATH, IMAGE_CELL)
+    add_image(header_ws, LOGO_PATH, IMAGE_CELL, target_width_cm=7.5, target_height_cm=4)
     # Select title cell
     select_cell(header_ws, TITLE_CELL)
 

@@ -8,6 +8,9 @@ from ...survey_utils import clean_track_name
 from .common_utils import *
 
 
+__all__ = ["check_signal"]
+
+
 # Signal and Buffer
 def check_signal(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, Union[str, float]]],
                  set_of_survey_tracks: set[str], buffer_survey_info: dict[str, dict[str, Union[str, float]]] = None):

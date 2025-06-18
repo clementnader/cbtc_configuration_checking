@@ -10,13 +10,7 @@ from .path_utils import *
 __all__ = ["get_dist", "get_dist_downstream", "get_list_of_paths", "get_min_dist_and_list_of_paths",
            "get_smallest_path", "get_path_len", "get_downstream_path", "get_min_path_downstream",
            "get_dist_between_objects", "print_dist_between_objects",
-           "get_virtual_seg_ordered_extremities",
-           "is_point_between", "is_seg_downstream", "are_segs_linked"]
-
-
-def are_segs_linked(seg1: str, seg2: str, x1: float = None, x2: float = None) -> bool:
-    return (is_seg_downstream(seg1, seg2, x1, x2, downstream=True, without_ring_loopback=True)
-            or is_seg_downstream(seg1, seg2, x1, x2, downstream=False, without_ring_loopback=True))
+           "is_seg_downstream"]
 
 
 def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x: float = None,
@@ -301,55 +295,3 @@ def get_smallest_path(list_paths: list[tuple[bool, list[str]]]) -> tuple[float, 
 def get_path_len(path: list[str]) -> float:
     """ Return the length of a path: the sum of the segments lengths. """
     return round(sum([get_segment_length(seg) for seg in path]), 3)
-
-
-def get_virtual_seg_ordered_extremities(seg1: str, x1: float, seg2: str, x2: float):
-    if seg1 == seg2 and x1 == x2:
-        return seg1, x1, seg2, x2
-    else:
-        if is_seg_downstream(seg1, seg2, x1, x2, downstream=True):
-            return seg1, x1, seg2, x2
-        elif is_seg_downstream(seg2, seg1, x2, x1, downstream=True):
-            return seg2, x2, seg1, x1
-        else:
-            return None, None, None, None
-
-
-def is_point_between(seg: str, x: float, limit_seg_1: str, limit_x_1: float, limit_seg_2: str, limit_x_2: float,
-                     extra_limit=None):
-    if limit_seg_1 is None:
-        return False
-
-    limit_seg_1, limit_x_1, limit_seg_2, limit_x_2 = (
-        get_virtual_seg_ordered_extremities(limit_seg_1, limit_x_1, limit_seg_2, limit_x_2))
-
-    if limit_seg_1 == limit_seg_2:
-        if seg != limit_seg_1:
-            return False
-        if float(limit_x_1) <= float(x) <= float(limit_x_2):
-            return True
-        return False
-
-    if seg == limit_seg_1:
-        if float(x) >= float(limit_x_1):
-            return True
-        else:
-            return False
-    if seg == limit_seg_2:
-        if float(x) <= float(limit_x_2):
-            return True
-        else:
-            return False
-    if extra_limit is not None and seg == extra_limit[0]:
-        return None
-
-    def inner_recurs_seg(current_seg: str, end_seg: str):
-        next_segs = get_linked_segments(current_seg, downstream=True)
-        for next_seg in next_segs:
-            if next_seg == end_seg:
-                return True
-            if not (next_seg == limit_seg_2 or (extra_limit is not None and next_seg == extra_limit[0])):
-                return inner_recurs_seg(next_seg, end_seg)
-        return False
-
-    return inner_recurs_seg(limit_seg_1, seg)

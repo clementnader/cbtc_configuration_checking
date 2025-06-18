@@ -26,6 +26,7 @@ def check_cbtc_sig_apz():
 
 
 def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> str:
+    # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
     update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())

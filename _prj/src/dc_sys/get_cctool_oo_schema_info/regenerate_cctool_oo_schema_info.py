@@ -60,10 +60,10 @@ def regen_cctool_oo_schema_wrapper_no_gui(file_to_launch: str,
 
     # we relaunch the new instance
     if log_file_name:
-        launch_cmd(f"{python_exe} \"{file_to_launch}\" -s -l \"{log_file_name}\"",
+        launch_cmd(f"\"{python_exe}\" \"{file_to_launch}\" -s -l \"{log_file_name}\"",
                    do_print=False)
     else:
-        launch_cmd(f"{python_exe} \"{file_to_launch}\" -s",
+        launch_cmd(f"\"{python_exe}\" \"{file_to_launch}\" -s",
                    do_print=False)
     # we exit the current instance
-    sys.exit(0)
+    exit(0)

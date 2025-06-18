@@ -82,6 +82,7 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
 
 
 def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
+    # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
     update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())
@@ -161,7 +162,7 @@ def _add_line_info(ws: xl_ws.Worksheet, row: int, sig_name: str,
     create_cell(ws, platform_related, row=row, column=PLATFORM_RELATED_COL, borders=True, line_wrap=True,
                 align_horizontal=XlAlign.center)
     if platform_related is not None:
-        set_bg_color(ws, XlBgColor.light_pink2, row=row, column=PLATFORM_RELATED_COL)
+        set_bg_color(ws, bg_color=XlBgColor.light_pink2, row=row, column=PLATFORM_RELATED_COL)
     # Downstream Seg
     create_cell(ws, downstream_seg, row=row, column=DOWNSTREAM_LIM_SEG_COL, borders=True)
     # Downstream x
@@ -204,7 +205,7 @@ def _add_value_to_remove(ws: xl_ws.Worksheet, row: int, status: Optional[str],
     create_cell(ws, formula, row=row, column=VALUE_TO_REMOVE_COL, borders=True,
                 align_horizontal=XlAlign.center, nb_of_digits=3)
     if not inhibit_simple_overshoot_recovery and platform_related is not None:
-        set_bg_color(ws, XlBgColor.light_pink2, row=row, column=VALUE_TO_REMOVE_COL)
+        set_bg_color(ws, bg_color=XlBgColor.light_pink2, row=row, column=VALUE_TO_REMOVE_COL)
 
 
 def _add_status(ws: xl_ws.Worksheet, row: int, status: Optional[str]) -> None:

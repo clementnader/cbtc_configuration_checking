@@ -12,6 +12,7 @@ class XlFontColor:
     ko = "9C0006"
     ok = "006100"
     na = "9C5700"
+    warning = "6E3700"
     # other colors
     dark_red = "9C0006"
     orange = "E97132"
@@ -22,6 +23,7 @@ class XlBgColor:
     ko = "FFC7CE"
     ok = "C6EFCE"
     na = "FFEB9C"
+    warning = "FFCC99"
     # main colors
     yellow = "FFD050"
     light_yellow = "FFFFBB"

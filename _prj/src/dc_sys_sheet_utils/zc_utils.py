@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
@@ -74,10 +73,10 @@ def get_zc_managing_ls(ls_name: str) -> str:
             list_zc.append(zc_name)
     if not list_zc:
         print_error(f"Line Section {ls_name} is managed by no ZC.")
-        sys.exit(1)
+        exit(1)
     if len(list_zc) > 1:
         print_error(f"Line Section {ls_name} is managed by multiple ZCs: {list_zc}.")
-        sys.exit(1)
+        exit(1)
     return list_zc[0]
 
 

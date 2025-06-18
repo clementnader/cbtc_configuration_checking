@@ -25,7 +25,7 @@ echo Installing the required Python libraries...
 echo. && echo ---------------------------------------------- && echo.
 
 @REM Inside the parentheses is the list of Python external libraries to install, that are used by the code.
-for %%x in (numpy openpyxl xlrd Unidecode comtypes tk pdfreader) do (
+for %%x in (numpy openpyxl xlrd unidecode comtypes tk pdfreader pypdf2) do (
     echo. && echo Install library %%x.
     @REM Uncomment next line if launching it while connected to Hitachi network, on site or with VPN.
     %PYTHON_EXE% -m pip install %%x --proxy %PROXY_ADDR% --trusted-host pypi.org

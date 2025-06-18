@@ -7,14 +7,8 @@ from ..dc_sys import *
 from .train_utils import *
 
 
-__all__ = ["get_osp_type", "get_train_front_position_at_osp"]
-
-
-def get_osp_type(osp_name):
-    plt_value = get_plt_osp_value(osp_name)
-    osp_value = [osp_type for (name, osp_type) in get_dc_sys_zip_values(
-        plt_value, DCSYS.Quai.PointDArret.Name, DCSYS.Quai.PointDArret.TypePtArretQuai) if name == osp_name][0]
-    return osp_value
+__all__ = ["get_train_front_position_at_osp",
+           "is_accelerometer_calibration_authorized_at_osp_not_platform_related"]
 
 
 def get_train_front_position_at_osp(train_type: str, osp_seg: str, osp_x: float, osp_direction: str, osp_type: str
@@ -34,3 +28,13 @@ def get_train_front_position_at_osp(train_type: str, osp_seg: str, osp_x: float,
         return train_front_seg, train_front_x
 
     print_error(f"OSP Type {osp_type} is unknown, it should be in {get_class_values(StoppingPointType)}")
+
+
+def is_accelerometer_calibration_authorized_at_osp_not_platform_related(osp_name: str) -> Optional[bool]:
+    osp_dict = load_sheet(DCSYS.PtA)
+    osp_value = osp_dict[osp_name]
+    if "AllowAccelerometerCalibration" in get_class_attr_dict(DCSYS.PtA):
+        return get_dc_sys_value(osp_value, DCSYS.PtA.AllowAccelerometerCalibration) == YesOrNo.O
+
+    if "AllowAccelerometersCalibration" in get_class_attr_dict(DCSYS.PtA):
+        return get_dc_sys_value(osp_value, DCSYS.PtA.AllowAccelerometersCalibration) == YesOrNo.O

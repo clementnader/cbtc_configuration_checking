@@ -3,8 +3,8 @@
 
 from ....utils import *
 from ....cctool_oo_schema import *
-from ....dc_sys import *
-from ..get_oriented_limits import *
+# from ....dc_sys import *
+# from ..get_oriented_limits import *
 
 
 __all__ = []

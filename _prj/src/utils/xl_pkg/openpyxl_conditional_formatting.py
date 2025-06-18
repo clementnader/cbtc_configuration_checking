@@ -84,7 +84,7 @@ def _get_differential_style(font_color: str = None, bg_color: str = None, bold: 
 
 
 def add_formula_conditional_formatting(ws: xl_ws.Worksheet, cell_range: str, formula: str,
-                                       font_color: str, bg_color: str, bold: bool = False) -> None:
+                                       font_color: str = None, bg_color: str = None, bold: bool = False) -> None:
     font, fill = _get_font_n_fill(font_color, bg_color, bold)
     if font is not None and fill is not None:
         formula_rule = xl_format_rule.FormulaRule(formula=[formula], stopIfTrue=True, font=font, fill=fill)

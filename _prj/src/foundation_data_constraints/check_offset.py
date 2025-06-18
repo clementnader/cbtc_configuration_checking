@@ -102,7 +102,7 @@ def verif_correct_offset_seg_x(seg, x, first_cell, row, seg_col, x_col, sh_name)
                         f"Offset ({x}) at {Color.yellow}{get_xl_column_letter(x_col)}{row}{Color.reset} "
                         f"is not a number.")
             return False
-    x = round(x, 3)
+    x = round(x, 4)
     len_seg = get_segment_length(seg)
     if not (0 <= x):
         print_error(f"In sheet {Color.blue}{sh_name}{Color.reset}: "

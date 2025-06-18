@@ -8,6 +8,9 @@ from ...survey_utils import clean_track_name
 from .common_utils import *
 
 
+__all__ = ["check_flood_gate"]
+
+
 # FloodGate
 def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
                      set_of_survey_tracks: set[str]):

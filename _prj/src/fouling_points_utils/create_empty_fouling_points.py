@@ -3,8 +3,8 @@
 
 import os
 from ..utils import *
-from ..dc_sys import *
 from ..cctool_oo_schema import *
+from ..dc_sys import *
 
 
 __all__ = ["init_fouling_points_file"]

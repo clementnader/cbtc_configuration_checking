@@ -33,7 +33,7 @@ def max_dist_local_tag_group(in_cbtc: bool = False):
         for i, tag1 in enumerate(tags):
             seg1 = get_dc_sys_value(tag_dict[tag1], DCSYS.Bal.Seg)
             x1 = float(get_dc_sys_value(tag_dict[tag1], DCSYS.Bal.X))
-            for tag2 in tags[i + 1:]:
+            for tag2 in tags[i+1:]:
                 seg2 = get_dc_sys_value(tag_dict[tag2], DCSYS.Bal.Seg)
                 x2 = float(get_dc_sys_value(tag_dict[tag2], DCSYS.Bal.X))
                 d = get_dist(seg1, x1, seg2, x2)

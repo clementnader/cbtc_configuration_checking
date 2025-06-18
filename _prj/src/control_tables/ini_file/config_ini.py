@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import configparser
 from ...database_location import *
 from ..control_tables_utils import *
@@ -72,11 +71,11 @@ def _split_ini_info(control_table_config: configparser.SectionProxy, option: str
     ini_info = control_table_config.get(option, "").strip()
     if not ini_info:
         print_error(f"No information given for {option}.")
-        sys.exit(1)
+        exit(1)
 
     if not ":" in ini_info:
         print_error(f"No colon \":\" found inside {option}.")
-        sys.exit(1)
+        exit(1)
 
     info_split = ini_info.split(":")
     name = info_split[0].strip()
@@ -88,7 +87,7 @@ def _split_ini_info(control_table_config: configparser.SectionProxy, option: str
     else:
         print_error(f"The relative position after the colon \":\" does not correspond "
                     f"to either \"right\" or \"down\".")
-        sys.exit(1)
+        exit(1)
 
     print_log(f"\tAttribute name for {option} is {Color.default}\"{name}\"{Color.reset} "
               f"and its relative position is {Color.default}\"{'right' if right else 'down'}\"{Color.reset}.")

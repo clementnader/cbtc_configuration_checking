@@ -5,8 +5,8 @@
 # Automatically generated Python file defining classes for the enumerates from the EnumList sheet  #
 # the CCTool-OO Schema file.                                                                       #
 # ------------------------------------------------------------------------------------------------ #
-# Revision: 07/03/03                                                                               #
-# Comments: Compliant with Ref Sys 07-03-03-00                                                     #
+# Revision: 08/03/00/00                                                                            #
+# Comments: Compliant with Ref Sys 08-03-00-00                                                     #
 # ------------------------------------------------------------------------------------------------ #
 
 
@@ -252,6 +252,7 @@ class TypeNomLogiqueInfoMESPAS:
     TSR_AREA_SPEED_SET_CMD = "TSR_AREA_SPEED_SET_CMD"
     TSR_AREA_SPEED_REMOVE_CMD = "TSR_AREA_SPEED_REMOVE_CMD"
     NO_PASSAGE = "NO_PASSAGE"
+    NO_PRESENCE = "NO_PRESENCE"
 
 
 class TypeNomLogiqueInfoPASATS:
@@ -274,7 +275,6 @@ class TypeNomLogiqueInfoPASATS:
 
 
 class TypeNomLogiqueInfoPASMES:
-    ZC_BLOCK = "ZC_BLOCK"
     TRAIN_PASS_HS = "TRAIN_PASS_HS"
     CBTC_APZ = "CBTC_APZ"
     STOP_ASSURE = "STOP_ASSURE"
@@ -500,6 +500,7 @@ class PV_TractionType:
 class SievingLimitType:
     BLOCK = "BLOCK"
     BUFFER = "BUFFER"
+    PRESENCE_DETECTOR = "PRESENCE_DETECTOR"
 
 
 class NV_PSR_Relaxation_Cause:

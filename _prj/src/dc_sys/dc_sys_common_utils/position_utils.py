@@ -10,8 +10,8 @@ from .segments_utils import get_correct_seg_offset
 from .plt_osp_utils import *
 
 
-__all__ = ["get_object_position", "get_obj_zone_limits", "get_obj_oriented_zone_limits",
-           "_get_vsp_position"]
+__all__ = ["get_object_position", "get_obj_zone_limits",
+           "remove_common_limits_of_oriented_limits"]
 
 
 def get_object_position(obj_type, obj_name: str) -> Union[tuple[str, float],
@@ -139,17 +139,6 @@ def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, 
     return None
 
 
-def get_obj_oriented_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, float, str]]]:
-    """ Return the list of oriented limits (seg, offset, direction) if the object is an oriented zone
-     else it returns None. """
-    zone_limits = get_obj_zone_limits(obj_type, obj_name)
-    if zone_limits is None:  # not a zone object
-        return None
-    if len(zone_limits[0]) == 3:  # oriented limits
-        return zone_limits
-    return None
-
-
 def _get_obj_limits(obj_val: dict[str, Any], obj_limit_attr
                    ) -> Union[None, list[tuple[str, float]], list[tuple[str, float, str]]]:
     limits = _get_obj_oriented_limits(obj_val, obj_limit_attr)
@@ -219,7 +208,7 @@ def _get_zc_oriented_limits(zc_name):
     for zc_subset_value in zc_subset_value_list:
         zc_subset_limit = _get_obj_oriented_limits(zc_subset_value, DCSYS.PAS.ExtremiteSuivi)
         limits.extend(zc_subset_limit)
-    return _remove_common_limits(limits)
+    return remove_common_limits_of_oriented_limits(limits)
 
 
 def _get_dcs_ez_oriented_limits(dcs_ez_name):
@@ -231,14 +220,14 @@ def _get_dcs_ez_oriented_limits(dcs_ez_name):
     for dcs_ez_subset_value in dcs_ez_subset_value_list:
         dcs_ez_subset_limit = _get_obj_oriented_limits(dcs_ez_subset_value, DCSYS.DCS_Elementary_Zones.Limit)
         limits.extend(dcs_ez_subset_limit)
-    return _remove_common_limits(limits)
+    return remove_common_limits_of_oriented_limits(limits)
 
 
-def _remove_common_limits(limits: list[tuple[str, float, str]]) -> list[tuple[str, float, str]]:
+def remove_common_limits_of_oriented_limits(limits: list[tuple[str, float, str]]) -> list[tuple[str, float, str]]:
     common_limits = list()
 
     for i, (seg1, x1, lim_dir1) in enumerate(limits):
-        if (seg1, x1, get_reverse_direction(lim_dir1)) in limits[i + 1:]:
+        if (seg1, x1, get_reverse_direction(lim_dir1)) in limits[i+1:]:
             common_limits.append((seg1, x1))
 
     if not common_limits:

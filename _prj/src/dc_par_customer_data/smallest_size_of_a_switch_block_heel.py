@@ -40,11 +40,13 @@ def smallest_size_of_a_switch_block_heel(in_cbtc: bool = False):
         for heel_vb in sw_value["heels"]:
             heel_vb_limits = list(get_dc_sys_zip_values(vb_dict[heel_vb], DCSYS.CV.Extremite.Seg, DCSYS.CV.Extremite.X))
             dict_min_heel[sw]["heels"][heel_vb]["len"] = get_len_vb(heel_vb_limits)
+        dict_min_heel[sw]["min_heel_length"] = min(heel_vb_value["len"]
+                                                   for heel_vb_value in dict_min_heel[sw]["heels"].values())
 
-    min_heel = min(min(heel_vb_value["len"] for heel_vb_value in sw_value["heels"].values())
+    min_heel = min(sw_value["min_heel_length"]
                    for sw_value in dict_min_heel.values())
     min_heel_sws = [sw for sw, sw_value in dict_min_heel.items()
-                    if min(heel_vb_value["len"] for heel_vb_value in sw_value["heels"].values()) == min_heel]
+                    if sw_value["min_heel_length"] == min_heel]
 
     min_heels = ((f"for sw = {min_heel_sw}", f"{dict_min_heel[min_heel_sw]}") for min_heel_sw in min_heel_sws)
     text = "\nand ".join(" -> ".join(heel) for heel in min_heels)
@@ -52,4 +54,8 @@ def smallest_size_of_a_switch_block_heel(in_cbtc: bool = False):
           f"\n{min_heel = }"
           f"\n{text}\n")
 
-    return dict_min_heel
+    min_sw_block_heel_length_dict = {x: dict_min_heel[x]
+                                     for x in sorted(dict_min_heel,
+                                                     key=lambda x: dict_min_heel[x]["min_heel_length"])}
+
+    return min_sw_block_heel_length_dict

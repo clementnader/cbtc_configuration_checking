@@ -5,8 +5,8 @@
 # Automatically generated Python file defining a DCSYS class containing the column information of  #
 # sheets and attributes from the CCTool-OO Schema sheet of the CCTool-OO Schema file.              #
 # ------------------------------------------------------------------------------------------------ #
-# Revision: 07/03/03                                                                               #
-# Comments: Compliant with Ref Sys 07-03-03-00                                                     #
+# Revision: 08/03/00/00                                                                            #
+# Comments: Compliant with Ref Sys 08-03-00-00                                                     #
 # ------------------------------------------------------------------------------------------------ #
 
 
@@ -136,28 +136,30 @@ class Quai__ExtremiteDuQuai:
 
 
 class Quai__PointDArret:
-    Name = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Name', 'cols': [25, 35, 45]}
-    Number = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Number', 'cols': [26, 36, 46]}
-    Seg = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Seg', 'cols': [27, 37, 47]}
-    X = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'X', 'cols': [28, 38, 48]}
-    SensAssocie = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'SensAssocie', 'cols': [29, 39, 49]}
-    SensApproche = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'SensApproche', 'cols': [30, 40, 50]}
-    TypePtArretQuai = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'TypePtArretQuai', 'cols': [31, 41, 51]}
-    StaticTest = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'StaticTest', 'cols': [32, 42, 52]}
-    Voie = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Voie', 'cols': [33, 43, 53]}
-    Pk = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Pk', 'cols': [34, 44, 54]}
+    Name = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Name', 'cols': [25, 37, 49, 61]}
+    Number = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Number', 'cols': [26, 38, 50, 62]}
+    Seg = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Seg', 'cols': [27, 39, 51, 63]}
+    X = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'X', 'cols': [28, 40, 52, 64]}
+    SensAssocie = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'SensAssocie', 'cols': [29, 41, 53, 65]}
+    SensApproche = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'SensApproche', 'cols': [30, 42, 54, 66]}
+    StoppingPointDistance = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'StoppingPointDistance', 'cols': [31, 43, 55, 67]}
+    TypePtArretQuai = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'TypePtArretQuai', 'cols': [32, 44, 56, 68]}
+    StaticTest = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'StaticTest', 'cols': [33, 45, 57, 69]}
+    TractionCutOffWhenApproachingOsp = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'TractionCutOffWhenApproachingOsp', 'cols': [34, 46, 58, 70]}
+    Voie = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Voie', 'cols': [35, 47, 59, 71]}
+    Pk = {'sh_name': 'Quai', 'attr_name': 'PointDArret', 'sub_attr_name': 'Pk', 'cols': [36, 48, 60, 72]}
 
 
 class Quai__PointDEntree:
-    Seg = {'sh_name': 'Quai', 'attr_name': 'PointDEntree', 'sub_attr_name': 'Seg', 'cols': [55, 59, 63, 67, 71, 75]}
-    X = {'sh_name': 'Quai', 'attr_name': 'PointDEntree', 'sub_attr_name': 'X', 'cols': [56, 60, 64, 68, 72, 76]}
-    Voie = {'sh_name': 'Quai', 'attr_name': 'PointDEntree', 'sub_attr_name': 'Voie', 'cols': [57, 61, 65, 69, 73, 77]}
-    Pk = {'sh_name': 'Quai', 'attr_name': 'PointDEntree', 'sub_attr_name': 'Pk', 'cols': [58, 62, 66, 70, 74, 78]}
+    Seg = {'sh_name': 'Quai', 'attr_name': 'PointDEntree', 'sub_attr_name': 'Seg', 'cols': [73, 77, 81, 85, 89, 93]}
+    X = {'sh_name': 'Quai', 'attr_name': 'PointDEntree', 'sub_attr_name': 'X', 'cols': [74, 78, 82, 86, 90, 94]}
+    Voie = {'sh_name': 'Quai', 'attr_name': 'PointDEntree', 'sub_attr_name': 'Voie', 'cols': [75, 79, 83, 87, 91, 95]}
+    Pk = {'sh_name': 'Quai', 'attr_name': 'PointDEntree', 'sub_attr_name': 'Pk', 'cols': [76, 80, 84, 88, 92, 96]}
 
 
 class Quai__FacadesDeQuai:
-    EqptCfq = {'sh_name': 'Quai', 'attr_name': 'FacadesDeQuai', 'sub_attr_name': 'EqptCfq', 'cols': [89]}
-    CoteFq = {'sh_name': 'Quai', 'attr_name': 'FacadesDeQuai', 'sub_attr_name': 'CoteFq', 'cols': [90]}
+    EqptCfq = {'sh_name': 'Quai', 'attr_name': 'FacadesDeQuai', 'sub_attr_name': 'EqptCfq', 'cols': [107]}
+    CoteFq = {'sh_name': 'Quai', 'attr_name': 'FacadesDeQuai', 'sub_attr_name': 'CoteFq', 'cols': [108]}
 
 
 class Quai:
@@ -170,24 +172,24 @@ class Quai:
     ExtremiteDuQuai = Quai__ExtremiteDuQuai()
     PointDArret = Quai__PointDArret()
     PointDEntree = Quai__PointDEntree()
-    AvecPassagers = {'sh_name': 'Quai', 'attr_name': 'AvecPassagers', 'col': 79}
-    AvecFq = {'sh_name': 'Quai', 'attr_name': 'AvecFq', 'col': 80}
-    PsdNumber = {'sh_name': 'Quai', 'attr_name': 'PsdNumber', 'col': 81}
-    PsdNumbering = {'sh_name': 'Quai', 'attr_name': 'PsdNumbering', 'col': 82}
-    AvecPrecPtArret = {'sh_name': 'Quai', 'attr_name': 'AvecPrecPtArret', 'col': 83}
-    RightSideOpeningTime = {'sh_name': 'Quai', 'attr_name': 'RightSideOpeningTime', 'col': 84}
-    LeftSideOpeningTime = {'sh_name': 'Quai', 'attr_name': 'LeftSideOpeningTime', 'col': 85}
-    DoublePlatformOpeningDelay = {'sh_name': 'Quai', 'attr_name': 'DoublePlatformOpeningDelay', 'col': 86}
-    DisableAutomaticDoorClosing = {'sh_name': 'Quai', 'attr_name': 'DisableAutomaticDoorClosing', 'col': 87}
-    RelatedWaysideEquip = {'sh_name': 'Quai', 'attr_name': 'RelatedWaysideEquip', 'col': 88}
+    AvecPassagers = {'sh_name': 'Quai', 'attr_name': 'AvecPassagers', 'col': 97}
+    AvecFq = {'sh_name': 'Quai', 'attr_name': 'AvecFq', 'col': 98}
+    PsdNumber = {'sh_name': 'Quai', 'attr_name': 'PsdNumber', 'col': 99}
+    PsdNumbering = {'sh_name': 'Quai', 'attr_name': 'PsdNumbering', 'col': 100}
+    AvecPrecPtArret = {'sh_name': 'Quai', 'attr_name': 'AvecPrecPtArret', 'col': 101}
+    RightSideOpeningTime = {'sh_name': 'Quai', 'attr_name': 'RightSideOpeningTime', 'col': 102}
+    LeftSideOpeningTime = {'sh_name': 'Quai', 'attr_name': 'LeftSideOpeningTime', 'col': 103}
+    DoublePlatformOpeningDelay = {'sh_name': 'Quai', 'attr_name': 'DoublePlatformOpeningDelay', 'col': 104}
+    DisableAutomaticDoorClosing = {'sh_name': 'Quai', 'attr_name': 'DisableAutomaticDoorClosing', 'col': 105}
+    RelatedWaysideEquip = {'sh_name': 'Quai', 'attr_name': 'RelatedWaysideEquip', 'col': 106}
     FacadesDeQuai = Quai__FacadesDeQuai()
-    NumeroPccQuai = {'sh_name': 'Quai', 'attr_name': 'NumeroPccQuai', 'col': 91}
-    NumeroPccStation = {'sh_name': 'Quai', 'attr_name': 'NumeroPccStation', 'col': 92}
-    WithEss = {'sh_name': 'Quai', 'attr_name': 'WithEss', 'col': 93}
-    WithTh = {'sh_name': 'Quai', 'attr_name': 'WithTh', 'col': 94}
-    WithTad = {'sh_name': 'Quai', 'attr_name': 'WithTad', 'col': 95}
-    PsdMessagesRouted = {'sh_name': 'Quai', 'attr_name': 'PsdMessagesRouted', 'col': 96}
-    Router = {'sh_name': 'Quai', 'attr_name': 'Router', 'col': 97}
+    NumeroPccQuai = {'sh_name': 'Quai', 'attr_name': 'NumeroPccQuai', 'col': 109}
+    NumeroPccStation = {'sh_name': 'Quai', 'attr_name': 'NumeroPccStation', 'col': 110}
+    WithEss = {'sh_name': 'Quai', 'attr_name': 'WithEss', 'col': 111}
+    WithTh = {'sh_name': 'Quai', 'attr_name': 'WithTh', 'col': 112}
+    WithTad = {'sh_name': 'Quai', 'attr_name': 'WithTad', 'col': 113}
+    PsdMessagesRouted = {'sh_name': 'Quai', 'attr_name': 'PsdMessagesRouted', 'col': 114}
+    Router = {'sh_name': 'Quai', 'attr_name': 'Router', 'col': 115}
 
 
 class PtA:
@@ -216,18 +218,10 @@ class OSP_ATS_Id:
 
 
 class CDV__Extremite:
-    Seg = {'sh_name': 'CDV', 'attr_name': 'Extremite', 'sub_attr_name': 'Seg', 'cols': [14, 16, 18, 20, 22, 24, 26, 28, 30, 32]}
-    X = {'sh_name': 'CDV', 'attr_name': 'Extremite', 'sub_attr_name': 'X', 'cols': [15, 17, 19, 21, 23, 25, 27, 29, 31, 33]}
-    Voie = {'sh_name': 'CDV', 'attr_name': 'Extremite', 'sub_attr_name': 'Voie', 'cols': [34, 36, 38, 40, 42, 44, 46, 48, 50, 52]}
-    Pk = {'sh_name': 'CDV', 'attr_name': 'Extremite', 'sub_attr_name': 'Pk', 'cols': [35, 37, 39, 41, 43, 45, 47, 49, 51, 53]}
-
-
-class CDV__AnticipationSecuritaire:
-    Ext = {'sh_name': 'CDV', 'attr_name': 'AnticipationSecuritaire', 'sub_attr_name': 'Ext', 'cols': [54, 55, 56, 57, 58, 59, 60, 61, 62, 63]}
-
-
-class CDV__AnticipationErgonomique:
-    Ext = {'sh_name': 'CDV', 'attr_name': 'AnticipationErgonomique', 'sub_attr_name': 'Ext', 'cols': [64, 65, 66, 67, 68, 69, 70, 71, 72, 73]}
+    Seg = {'sh_name': 'CDV', 'attr_name': 'Extremite', 'sub_attr_name': 'Seg', 'cols': [13, 15, 17, 19, 21, 23, 25, 27, 29, 31]}
+    X = {'sh_name': 'CDV', 'attr_name': 'Extremite', 'sub_attr_name': 'X', 'cols': [14, 16, 18, 20, 22, 24, 26, 28, 30, 32]}
+    Voie = {'sh_name': 'CDV', 'attr_name': 'Extremite', 'sub_attr_name': 'Voie', 'cols': [33, 35, 37, 39, 41, 43, 45, 47, 49, 51]}
+    Pk = {'sh_name': 'CDV', 'attr_name': 'Extremite', 'sub_attr_name': 'Pk', 'cols': [34, 36, 38, 40, 42, 44, 46, 48, 50, 52]}
 
 
 class CDV:
@@ -236,18 +230,16 @@ class CDV:
     DetectNcArb = {'sh_name': 'CDV', 'attr_name': 'DetectNcArb', 'col': 3}
     DetectNrb = {'sh_name': 'CDV', 'attr_name': 'DetectNrb', 'col': 4}
     DetectNcNrb = {'sh_name': 'CDV', 'attr_name': 'DetectNcNrb', 'col': 5}
-    AFiabiliser = {'sh_name': 'CDV', 'attr_name': 'AFiabiliser', 'col': 6}
-    ExtendedSievingAllowed = {'sh_name': 'CDV', 'attr_name': 'ExtendedSievingAllowed', 'col': 7}
-    RailRoadEntrance = {'sh_name': 'CDV', 'attr_name': 'RailRoadEntrance', 'col': 8}
-    BrokenRailDetection = {'sh_name': 'CDV', 'attr_name': 'BrokenRailDetection', 'col': 9}
-    DedicatedLineSection = {'sh_name': 'CDV', 'attr_name': 'DedicatedLineSection', 'col': 10}
-    ReachBlockAllowed = {'sh_name': 'CDV', 'attr_name': 'ReachBlockAllowed', 'col': 11}
-    IxlGivesBlockInitStatus = {'sh_name': 'CDV', 'attr_name': 'IxlGivesBlockInitStatus', 'col': 12}
-    IxlGivesNotHeldStatus = {'sh_name': 'CDV', 'attr_name': 'IxlGivesNotHeldStatus', 'col': 13}
+    ExtendedSievingAllowed = {'sh_name': 'CDV', 'attr_name': 'ExtendedSievingAllowed', 'col': 6}
+    RailRoadEntrance = {'sh_name': 'CDV', 'attr_name': 'RailRoadEntrance', 'col': 7}
+    BrokenRailDetection = {'sh_name': 'CDV', 'attr_name': 'BrokenRailDetection', 'col': 8}
+    DedicatedLineSection = {'sh_name': 'CDV', 'attr_name': 'DedicatedLineSection', 'col': 9}
+    ReachBlockAllowed = {'sh_name': 'CDV', 'attr_name': 'ReachBlockAllowed', 'col': 10}
+    IxlGivesBlockInitStatus = {'sh_name': 'CDV', 'attr_name': 'IxlGivesBlockInitStatus', 'col': 11}
+    IxlGivesNotHeldStatus = {'sh_name': 'CDV', 'attr_name': 'IxlGivesNotHeldStatus', 'col': 12}
     Extremite = CDV__Extremite()
-    AnticipationSecuritaire = CDV__AnticipationSecuritaire()
-    AnticipationErgonomique = CDV__AnticipationErgonomique()
-    AtsBlockId = {'sh_name': 'CDV', 'attr_name': 'AtsBlockId', 'col': 74}
+    AtsBlockId = {'sh_name': 'CDV', 'attr_name': 'AtsBlockId', 'col': 53}
+    DisplayableName = {'sh_name': 'CDV', 'attr_name': 'DisplayableName', 'col': 54}
 
 
 class IVB__Limit:
@@ -309,30 +301,49 @@ class Sig:
     DelayedLtDistance = {'sh_name': 'Sig', 'attr_name': 'DelayedLtDistance', 'col': 11}
     IvbJoint = Sig__IvbJoint()
     Da_Passage = {'sh_name': 'Sig', 'attr_name': 'Da_Passage', 'col': 14}
-    TypeDa = {'sh_name': 'Sig', 'attr_name': 'TypeDa', 'col': 15}
-    D_Echap = {'sh_name': 'Sig', 'attr_name': 'D_Echap', 'col': 16}
-    Du_Assistee = {'sh_name': 'Sig', 'attr_name': 'Du_Assistee', 'col': 17}
-    D_Libre = {'sh_name': 'Sig', 'attr_name': 'D_Libre', 'col': 18}
-    Enc_Dep = {'sh_name': 'Sig', 'attr_name': 'Enc_Dep', 'col': 19}
-    OverlapType = {'sh_name': 'Sig', 'attr_name': 'OverlapType', 'col': 20}
-    Annulable = {'sh_name': 'Sig', 'attr_name': 'Annulable', 'col': 21}
-    WithFunc_Stop = {'sh_name': 'Sig', 'attr_name': 'WithFunc_Stop', 'col': 22}
-    CbtcTrainAppProvided = {'sh_name': 'Sig', 'attr_name': 'CbtcTrainAppProvided', 'col': 23}
-    NumeroPcc = {'sh_name': 'Sig', 'attr_name': 'NumeroPcc', 'col': 24}
-    PositionForcee = {'sh_name': 'Sig', 'attr_name': 'PositionForcee', 'col': 25}
-    SortieTerritoireCbtc = {'sh_name': 'Sig', 'attr_name': 'SortieTerritoireCbtc', 'col': 26}
-    PresenceDynamicTag = {'sh_name': 'Sig', 'attr_name': 'PresenceDynamicTag', 'col': 27}
-    WithIatpDepCheck = {'sh_name': 'Sig', 'attr_name': 'WithIatpDepCheck', 'col': 28}
-    RelatedTag1 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag1', 'col': 29}
-    RelatedTag2 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag2', 'col': 30}
-    RelatedTag3 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag3', 'col': 31}
-    RelatedTag4 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag4', 'col': 32}
-    RelatedTag5 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag5', 'col': 33}
-    RelatedTag6 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag6', 'col': 34}
-    RelatedTag7 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag7', 'col': 35}
-    RelatedTag8 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag8', 'col': 36}
-    RelatedTag9 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag9', 'col': 37}
-    RelatedTag10 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag10', 'col': 38}
+    D_Echap = {'sh_name': 'Sig', 'attr_name': 'D_Echap', 'col': 15}
+    Du_Assistee = {'sh_name': 'Sig', 'attr_name': 'Du_Assistee', 'col': 16}
+    D_Libre = {'sh_name': 'Sig', 'attr_name': 'D_Libre', 'col': 17}
+    Enc_Dep = {'sh_name': 'Sig', 'attr_name': 'Enc_Dep', 'col': 18}
+    OverlapType = {'sh_name': 'Sig', 'attr_name': 'OverlapType', 'col': 19}
+    Annulable = {'sh_name': 'Sig', 'attr_name': 'Annulable', 'col': 20}
+    WithFunc_Stop = {'sh_name': 'Sig', 'attr_name': 'WithFunc_Stop', 'col': 21}
+    CbtcTrainAppProvided = {'sh_name': 'Sig', 'attr_name': 'CbtcTrainAppProvided', 'col': 22}
+    NumeroPcc = {'sh_name': 'Sig', 'attr_name': 'NumeroPcc', 'col': 23}
+    PositionForcee = {'sh_name': 'Sig', 'attr_name': 'PositionForcee', 'col': 24}
+    SortieTerritoireCbtc = {'sh_name': 'Sig', 'attr_name': 'SortieTerritoireCbtc', 'col': 25}
+    PresenceDynamicTag = {'sh_name': 'Sig', 'attr_name': 'PresenceDynamicTag', 'col': 26}
+    WithIatpDepCheck = {'sh_name': 'Sig', 'attr_name': 'WithIatpDepCheck', 'col': 27}
+    RelatedTag1 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag1', 'col': 28}
+    RelatedTag2 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag2', 'col': 29}
+    RelatedTag3 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag3', 'col': 30}
+    RelatedTag4 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag4', 'col': 31}
+    RelatedTag5 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag5', 'col': 32}
+    RelatedTag6 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag6', 'col': 33}
+    RelatedTag7 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag7', 'col': 34}
+    RelatedTag8 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag8', 'col': 35}
+    RelatedTag9 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag9', 'col': 36}
+    RelatedTag10 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag10', 'col': 37}
+    RelatedTag11 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag11', 'col': 38}
+    RelatedTag12 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag12', 'col': 39}
+    RelatedTag13 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag13', 'col': 40}
+    RelatedTag14 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag14', 'col': 41}
+    RelatedTag15 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag15', 'col': 42}
+    RelatedTag16 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag16', 'col': 43}
+    RelatedTag17 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag17', 'col': 44}
+    RelatedTag18 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag18', 'col': 45}
+    RelatedTag19 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag19', 'col': 46}
+    RelatedTag20 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag20', 'col': 47}
+    RelatedTag21 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag21', 'col': 48}
+    RelatedTag22 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag22', 'col': 49}
+    RelatedTag23 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag23', 'col': 50}
+    RelatedTag24 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag24', 'col': 51}
+    RelatedTag25 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag25', 'col': 52}
+    RelatedTag26 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag26', 'col': 53}
+    RelatedTag27 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag27', 'col': 54}
+    RelatedTag28 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag28', 'col': 55}
+    RelatedTag29 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag29', 'col': 56}
+    RelatedTag30 = {'sh_name': 'Sig', 'attr_name': 'RelatedTag30', 'col': 57}
 
 
 class Sig_Zone__ExtremitesZoneArmementDa:
@@ -529,27 +540,28 @@ class CBTC_TER:
 
 
 class PAS__ExtremiteSuivi:
-    Seg = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'Seg', 'cols': [4, 10, 16, 22, 28, 34, 40, 46, 52, 58, 64, 70, 76, 82, 88, 94, 100, 106, 112, 118, 124, 130, 136, 142, 148, 154, 160, 166, 172, 178]}
-    X = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'X', 'cols': [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71, 77, 83, 89, 95, 101, 107, 113, 119, 125, 131, 137, 143, 149, 155, 161, 167, 173, 179]}
-    Sens = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'Sens', 'cols': [6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180]}
-    Voie = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'Voie', 'cols': [7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 103, 109, 115, 121, 127, 133, 139, 145, 151, 157, 163, 169, 175, 181]}
-    Pk = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'Pk', 'cols': [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80, 86, 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, 164, 170, 176, 182]}
-    MaxDist = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'MaxDist', 'cols': [9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 87, 93, 99, 105, 111, 117, 123, 129, 135, 141, 147, 153, 159, 165, 171, 177, 183]}
+    Seg = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'Seg', 'cols': [5, 11, 17, 23, 29, 35, 41, 47, 53, 59, 65, 71, 77, 83, 89, 95, 101, 107, 113, 119, 125, 131, 137, 143, 149, 155, 161, 167, 173, 179]}
+    X = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'X', 'cols': [6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180]}
+    Sens = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'Sens', 'cols': [7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 103, 109, 115, 121, 127, 133, 139, 145, 151, 157, 163, 169, 175, 181]}
+    Voie = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'Voie', 'cols': [8, 14, 20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80, 86, 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, 164, 170, 176, 182]}
+    Pk = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'Pk', 'cols': [9, 15, 21, 27, 33, 39, 45, 51, 57, 63, 69, 75, 81, 87, 93, 99, 105, 111, 117, 123, 129, 135, 141, 147, 153, 159, 165, 171, 177, 183]}
+    MaxDist = {'sh_name': 'PAS', 'attr_name': 'ExtremiteSuivi', 'sub_attr_name': 'MaxDist', 'cols': [10, 16, 22, 28, 34, 40, 46, 52, 58, 64, 70, 76, 82, 88, 94, 100, 106, 112, 118, 124, 130, 136, 142, 148, 154, 160, 166, 172, 178, 184]}
 
 
 class PAS__TronconsGeresParLePas:
-    Troncon = {'sh_name': 'PAS', 'attr_name': 'TronconsGeresParLePas', 'sub_attr_name': 'Troncon', 'cols': [184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203]}
+    Troncon = {'sh_name': 'PAS', 'attr_name': 'TronconsGeresParLePas', 'sub_attr_name': 'Troncon', 'cols': [185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204]}
 
 
 class PAS:
     Nom = {'sh_name': 'PAS', 'attr_name': 'Nom', 'col': 1}
     TrackingAreaSubsetName = {'sh_name': 'PAS', 'attr_name': 'TrackingAreaSubsetName', 'col': 2}
     AtsZcId = {'sh_name': 'PAS', 'attr_name': 'AtsZcId', 'col': 3}
+    DisplayableName = {'sh_name': 'PAS', 'attr_name': 'DisplayableName', 'col': 4}
     ExtremiteSuivi = PAS__ExtremiteSuivi()
     TronconsGeresParLePas = PAS__TronconsGeresParLePas()
-    ConcealmentType = {'sh_name': 'PAS', 'attr_name': 'ConcealmentType', 'col': 204}
-    TracksMultiConsists = {'sh_name': 'PAS', 'attr_name': 'TracksMultiConsists', 'col': 205}
-    DynamicSievingEnabled = {'sh_name': 'PAS', 'attr_name': 'DynamicSievingEnabled', 'col': 206}
+    ConcealmentType = {'sh_name': 'PAS', 'attr_name': 'ConcealmentType', 'col': 205}
+    TracksMultiConsists = {'sh_name': 'PAS', 'attr_name': 'TracksMultiConsists', 'col': 206}
+    DynamicSievingEnabled = {'sh_name': 'PAS', 'attr_name': 'DynamicSievingEnabled', 'col': 207}
 
 
 class Sas_ZSM_CBTC:
@@ -650,11 +662,11 @@ class ZCI:
 
 
 class Zaum__Extremite:
-    Seg = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'Seg', 'cols': [12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54]}
-    X = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'X', 'cols': [13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 52, 55]}
-    Sens = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'Sens', 'cols': [14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56]}
-    Voie = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'Voie', 'cols': [57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85]}
-    Pk = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'Pk', 'cols': [58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86]}
+    Seg = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'Seg', 'cols': [13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 52, 55]}
+    X = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'X', 'cols': [14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56]}
+    Sens = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'Sens', 'cols': [15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57]}
+    Voie = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'Voie', 'cols': [58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86]}
+    Pk = {'sh_name': 'Zaum', 'attr_name': 'Extremite', 'sub_attr_name': 'Pk', 'cols': [59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79, 81, 83, 85, 87]}
 
 
 class Zaum:
@@ -663,12 +675,13 @@ class Zaum:
     QuaiAlarme2 = {'sh_name': 'Zaum', 'attr_name': 'QuaiAlarme2', 'col': 3}
     TronconPreferentiel = {'sh_name': 'Zaum', 'attr_name': 'TronconPreferentiel', 'col': 4}
     AtsId = {'sh_name': 'Zaum', 'attr_name': 'AtsId', 'col': 5}
-    DriverlessAuthorized = {'sh_name': 'Zaum', 'attr_name': 'DriverlessAuthorized', 'col': 6}
-    AutomaticAuthorized = {'sh_name': 'Zaum', 'attr_name': 'AutomaticAuthorized', 'col': 7}
-    EvacuationProtectionZoneName = {'sh_name': 'Zaum', 'attr_name': 'EvacuationProtectionZoneName', 'col': 8}
-    IntegrityProtectionZoneName = {'sh_name': 'Zaum', 'attr_name': 'IntegrityProtectionZoneName', 'col': 9}
-    DelocalizationProtectionZoneName = {'sh_name': 'Zaum', 'attr_name': 'DelocalizationProtectionZoneName', 'col': 10}
-    DerailmentObstacleProtectionZoneName = {'sh_name': 'Zaum', 'attr_name': 'DerailmentObstacleProtectionZoneName', 'col': 11}
+    DisplayableName = {'sh_name': 'Zaum', 'attr_name': 'DisplayableName', 'col': 6}
+    DriverlessAuthorized = {'sh_name': 'Zaum', 'attr_name': 'DriverlessAuthorized', 'col': 7}
+    AutomaticAuthorized = {'sh_name': 'Zaum', 'attr_name': 'AutomaticAuthorized', 'col': 8}
+    EvacuationProtectionZoneName = {'sh_name': 'Zaum', 'attr_name': 'EvacuationProtectionZoneName', 'col': 9}
+    IntegrityProtectionZoneName = {'sh_name': 'Zaum', 'attr_name': 'IntegrityProtectionZoneName', 'col': 10}
+    DelocalizationProtectionZoneName = {'sh_name': 'Zaum', 'attr_name': 'DelocalizationProtectionZoneName', 'col': 11}
+    DerailmentObstacleProtectionZoneName = {'sh_name': 'Zaum', 'attr_name': 'DerailmentObstacleProtectionZoneName', 'col': 12}
     Extremite = Zaum__Extremite()
 
 
@@ -860,19 +873,20 @@ class Flux_Variant_BF:
 class Wayside_Eqpt__Function:
     Zc = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Zc', 'cols': [3]}
     Oc = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Oc', 'cols': [4]}
-    Zcr = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Zcr', 'cols': [5]}
-    Psd = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Psd', 'cols': [6]}
-    Ups = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Ups', 'cols': [7]}
-    Ftm = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Ftm', 'cols': [8]}
-    Dcs = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Dcs', 'cols': [9]}
+    RdIxl = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'RdIxl', 'cols': [5]}
+    Zcr = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Zcr', 'cols': [6]}
+    Psd = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Psd', 'cols': [7]}
+    Ups = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Ups', 'cols': [8]}
+    Ftm = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Ftm', 'cols': [9]}
+    Dcs = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'Dcs', 'cols': [10]}
 
 
 class Wayside_Eqpt:
     Name = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Name', 'col': 1}
     EqptId = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'EqptId', 'col': 2}
     Function = Wayside_Eqpt__Function()
-    OcType = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'OcType', 'col': 10}
-    Location = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Location', 'col': 11}
+    OcType = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'OcType', 'col': 11}
+    Location = {'sh_name': 'Wayside_Eqpt', 'attr_name': 'Location', 'col': 12}
 
 
 class Flux_MES_PAS:
@@ -967,6 +981,7 @@ class OnBoard_Eqpt__Function:
     IsTar = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsTar', 'cols': [7]}
     IsTmsMvbBox = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsTmsMvbBox', 'cols': [8]}
     IsPwmBox = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsPwmBox', 'cols': [9]}
+    IsStreamBox = {'sh_name': 'OnBoard_Eqpt', 'attr_name': 'Function', 'sub_attr_name': 'IsStreamBox', 'cols': [10]}
 
 
 class OnBoard_Eqpt:
@@ -1032,13 +1047,18 @@ class IATPM_Version_Tags:
 
 
 class DynTag_Group__TagList:
-    Tag = {'sh_name': 'DynTag_Group', 'attr_name': 'TagList', 'sub_attr_name': 'Tag', 'cols': [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+    Tag = {'sh_name': 'DynTag_Group', 'attr_name': 'TagList', 'sub_attr_name': 'Tag', 'cols': [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]}
 
 
 class DynTag_Group:
     Name = {'sh_name': 'DynTag_Group', 'attr_name': 'Name', 'col': 1}
     Id = {'sh_name': 'DynTag_Group', 'attr_name': 'Id', 'col': 2}
     TagList = DynTag_Group__TagList()
+
+
+class Border_Area__Aiguille:
+    Nom = {'sh_name': 'Border_Area', 'attr_name': 'Aiguille', 'sub_attr_name': 'Nom', 'cols': [22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50]}
+    Position = {'sh_name': 'Border_Area', 'attr_name': 'Aiguille', 'sub_attr_name': 'Position', 'cols': [23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51]}
 
 
 class Border_Area:
@@ -1063,6 +1083,7 @@ class Border_Area:
     Block18 = {'sh_name': 'Border_Area', 'attr_name': 'Block18', 'col': 19}
     Block19 = {'sh_name': 'Border_Area', 'attr_name': 'Block19', 'col': 20}
     Block20 = {'sh_name': 'Border_Area', 'attr_name': 'Block20', 'col': 21}
+    Aiguille = Border_Area__Aiguille()
 
 
 class OVL_Border_Area:
@@ -1162,67 +1183,69 @@ class Restriction_Level:
 
 
 class Carborne_Controllers__Tacho:
-    OnTractionAxle = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Tacho', 'sub_attr_name': 'OnTractionAxle', 'cols': [8, 11]}
-    OnBrakingAxle = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Tacho', 'sub_attr_name': 'OnBrakingAxle', 'cols': [9, 12]}
-    Polarity = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Tacho', 'sub_attr_name': 'Polarity', 'cols': [10, 13]}
+    OnTractionAxle = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Tacho', 'sub_attr_name': 'OnTractionAxle', 'cols': [9, 12]}
+    OnBrakingAxle = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Tacho', 'sub_attr_name': 'OnBrakingAxle', 'cols': [10, 13]}
+    Polarity = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Tacho', 'sub_attr_name': 'Polarity', 'cols': [11, 14]}
 
 
 class Carborne_Controllers__Acceleros:
-    AccelerosCar = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Acceleros', 'sub_attr_name': 'AccelerosCar', 'cols': [14]}
-    Polarity = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Acceleros', 'sub_attr_name': 'Polarity', 'cols': [15]}
+    AccelerosCar = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Acceleros', 'sub_attr_name': 'AccelerosCar', 'cols': [15]}
+    Polarity = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Acceleros', 'sub_attr_name': 'Polarity', 'cols': [16]}
 
 
 class Carborne_Controllers:
     Name = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Name', 'col': 1}
     Cab = {'sh_name': 'Carborne_Controllers', 'attr_name': 'Cab', 'col': 2}
-    TiaConfiguration = {'sh_name': 'Carborne_Controllers', 'attr_name': 'TiaConfiguration', 'col': 3}
-    FirstTiaToCab1 = {'sh_name': 'Carborne_Controllers', 'attr_name': 'FirstTiaToCab1', 'col': 4}
-    SecondTiaToCab1 = {'sh_name': 'Carborne_Controllers', 'attr_name': 'SecondTiaToCab1', 'col': 5}
-    TagReaderConfiguration = {'sh_name': 'Carborne_Controllers', 'attr_name': 'TagReaderConfiguration', 'col': 6}
-    PulseNumber = {'sh_name': 'Carborne_Controllers', 'attr_name': 'PulseNumber', 'col': 7}
+    IsInFixedTrainUnit = {'sh_name': 'Carborne_Controllers', 'attr_name': 'IsInFixedTrainUnit', 'col': 3}
+    TiaConfiguration = {'sh_name': 'Carborne_Controllers', 'attr_name': 'TiaConfiguration', 'col': 4}
+    FirstTiaToCab1 = {'sh_name': 'Carborne_Controllers', 'attr_name': 'FirstTiaToCab1', 'col': 5}
+    SecondTiaToCab1 = {'sh_name': 'Carborne_Controllers', 'attr_name': 'SecondTiaToCab1', 'col': 6}
+    TagReaderConfiguration = {'sh_name': 'Carborne_Controllers', 'attr_name': 'TagReaderConfiguration', 'col': 7}
+    PulseNumber = {'sh_name': 'Carborne_Controllers', 'attr_name': 'PulseNumber', 'col': 8}
     Tacho = Carborne_Controllers__Tacho()
     Acceleros = Carborne_Controllers__Acceleros()
-    MtorNumber = {'sh_name': 'Carborne_Controllers', 'attr_name': 'MtorNumber', 'col': 16}
+    MtorNumber = {'sh_name': 'Carborne_Controllers', 'attr_name': 'MtorNumber', 'col': 17}
 
 
-class Car__Bogey:
-    AxleLocation = {'sh_name': 'Car', 'attr_name': 'Bogey', 'sub_attr_name': 'AxleLocation', 'cols': [15, 16, 17, 18]}
+class Car_Types__Bogey:
+    AxleLocation = {'sh_name': 'Car_Types', 'attr_name': 'Bogey', 'sub_attr_name': 'AxleLocation', 'cols': [16, 17, 18, 19]}
 
 
-class Car:
-    Name = {'sh_name': 'Car', 'attr_name': 'Name', 'col': 1}
-    IsCab = {'sh_name': 'Car', 'attr_name': 'IsCab', 'col': 2}
-    Length = {'sh_name': 'Car', 'attr_name': 'Length', 'col': 3}
-    Height = {'sh_name': 'Car', 'attr_name': 'Height', 'col': 4}
-    FloorHeight = {'sh_name': 'Car', 'attr_name': 'FloorHeight', 'col': 5}
-    EmptyMass = {'sh_name': 'Car', 'attr_name': 'EmptyMass', 'col': 6}
-    FullLoadMass = {'sh_name': 'Car', 'attr_name': 'FullLoadMass', 'col': 7}
-    DoorWidth = {'sh_name': 'Car', 'attr_name': 'DoorWidth', 'col': 8}
-    DoorsNumber = {'sh_name': 'Car', 'attr_name': 'DoorsNumber', 'col': 9}
-    Door1Location = {'sh_name': 'Car', 'attr_name': 'Door1Location', 'col': 10}
-    Door2Location = {'sh_name': 'Car', 'attr_name': 'Door2Location', 'col': 11}
-    Door3Location = {'sh_name': 'Car', 'attr_name': 'Door3Location', 'col': 12}
-    Door4Location = {'sh_name': 'Car', 'attr_name': 'Door4Location', 'col': 13}
-    Door5Location = {'sh_name': 'Car', 'attr_name': 'Door5Location', 'col': 14}
-    Bogey = Car__Bogey()
+class Car_Types:
+    Name = {'sh_name': 'Car_Types', 'attr_name': 'Name', 'col': 1}
+    CarTypeId = {'sh_name': 'Car_Types', 'attr_name': 'CarTypeId', 'col': 2}
+    IsCab = {'sh_name': 'Car_Types', 'attr_name': 'IsCab', 'col': 3}
+    Length = {'sh_name': 'Car_Types', 'attr_name': 'Length', 'col': 4}
+    Height = {'sh_name': 'Car_Types', 'attr_name': 'Height', 'col': 5}
+    FloorHeight = {'sh_name': 'Car_Types', 'attr_name': 'FloorHeight', 'col': 6}
+    EmptyMass = {'sh_name': 'Car_Types', 'attr_name': 'EmptyMass', 'col': 7}
+    FullLoadMass = {'sh_name': 'Car_Types', 'attr_name': 'FullLoadMass', 'col': 8}
+    DoorWidth = {'sh_name': 'Car_Types', 'attr_name': 'DoorWidth', 'col': 9}
+    DoorsNumber = {'sh_name': 'Car_Types', 'attr_name': 'DoorsNumber', 'col': 10}
+    Door1Location = {'sh_name': 'Car_Types', 'attr_name': 'Door1Location', 'col': 11}
+    Door2Location = {'sh_name': 'Car_Types', 'attr_name': 'Door2Location', 'col': 12}
+    Door3Location = {'sh_name': 'Car_Types', 'attr_name': 'Door3Location', 'col': 13}
+    Door4Location = {'sh_name': 'Car_Types', 'attr_name': 'Door4Location', 'col': 14}
+    Door5Location = {'sh_name': 'Car_Types', 'attr_name': 'Door5Location', 'col': 15}
+    Bogey = Car_Types__Bogey()
 
 
 class Train_Types__ManageGenericCommands:
-    ManageCmdA = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'ManageCmdA', 'cols': [32]}
-    CmdALocation = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'CmdALocation', 'cols': [33]}
-    ManageCmdB = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'ManageCmdB', 'cols': [34]}
-    CmdBLocation = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'CmdBLocation', 'cols': [35]}
-    ManageCmdC = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'ManageCmdC', 'cols': [36]}
-    CmdCLocation = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'CmdCLocation', 'cols': [37]}
+    ManageCmdA = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'ManageCmdA', 'cols': [34]}
+    CmdALocation = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'CmdALocation', 'cols': [35]}
+    ManageCmdB = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'ManageCmdB', 'cols': [36]}
+    CmdBLocation = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'CmdBLocation', 'cols': [37]}
+    ManageCmdC = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'ManageCmdC', 'cols': [38]}
+    CmdCLocation = {'sh_name': 'Train_Types', 'attr_name': 'ManageGenericCommands', 'sub_attr_name': 'CmdCLocation', 'cols': [39]}
 
 
 class Train_Types__PowerCollectorDevices:
-    Location = {'sh_name': 'Train_Types', 'attr_name': 'PowerCollectorDevices', 'sub_attr_name': 'Location', 'cols': [38, 39, 40, 41, 42]}
+    Location = {'sh_name': 'Train_Types', 'attr_name': 'PowerCollectorDevices', 'sub_attr_name': 'Location', 'cols': [40, 41, 42, 43, 44]}
 
 
 class Train_Types__SpeedLevel:
-    Id = {'sh_name': 'Train_Types', 'attr_name': 'SpeedLevel', 'sub_attr_name': 'Id', 'cols': [44, 46, 48, 50, 52, 54, 56, 58]}
-    Speed = {'sh_name': 'Train_Types', 'attr_name': 'SpeedLevel', 'sub_attr_name': 'Speed', 'cols': [45, 47, 49, 51, 53, 55, 57, 59]}
+    Id = {'sh_name': 'Train_Types', 'attr_name': 'SpeedLevel', 'sub_attr_name': 'Id', 'cols': [46, 48, 50, 52, 54, 56, 58, 60]}
+    Speed = {'sh_name': 'Train_Types', 'attr_name': 'SpeedLevel', 'sub_attr_name': 'Speed', 'cols': [47, 49, 51, 53, 55, 57, 59, 61]}
 
 
 class Train_Types:
@@ -1237,29 +1260,31 @@ class Train_Types:
     WheelMinDiam = {'sh_name': 'Train_Types', 'attr_name': 'WheelMinDiam', 'col': 9}
     WheelMaxDiam = {'sh_name': 'Train_Types', 'attr_name': 'WheelMaxDiam', 'col': 10}
     WheelMeanDiam = {'sh_name': 'Train_Types', 'attr_name': 'WheelMeanDiam', 'col': 11}
-    CarNumber = {'sh_name': 'Train_Types', 'attr_name': 'CarNumber', 'col': 12}
-    Car1 = {'sh_name': 'Train_Types', 'attr_name': 'Car1', 'col': 13}
-    Car2 = {'sh_name': 'Train_Types', 'attr_name': 'Car2', 'col': 14}
-    Car3 = {'sh_name': 'Train_Types', 'attr_name': 'Car3', 'col': 15}
-    Car4 = {'sh_name': 'Train_Types', 'attr_name': 'Car4', 'col': 16}
-    Car5 = {'sh_name': 'Train_Types', 'attr_name': 'Car5', 'col': 17}
-    Car6 = {'sh_name': 'Train_Types', 'attr_name': 'Car6', 'col': 18}
-    Car7 = {'sh_name': 'Train_Types', 'attr_name': 'Car7', 'col': 19}
-    Car8 = {'sh_name': 'Train_Types', 'attr_name': 'Car8', 'col': 20}
-    Car9 = {'sh_name': 'Train_Types', 'attr_name': 'Car9', 'col': 21}
-    Car10 = {'sh_name': 'Train_Types', 'attr_name': 'Car10', 'col': 22}
-    DegradedMode = {'sh_name': 'Train_Types', 'attr_name': 'DegradedMode', 'col': 23}
-    IsolationInputType = {'sh_name': 'Train_Types', 'attr_name': 'IsolationInputType', 'col': 24}
-    CcCutsTractionWhenEb = {'sh_name': 'Train_Types', 'attr_name': 'CcCutsTractionWhenEb', 'col': 25}
-    CcCcComType = {'sh_name': 'Train_Types', 'attr_name': 'CcCcComType', 'col': 26}
-    DisconnectRsFromTpForPassengerProtection = {'sh_name': 'Train_Types', 'attr_name': 'DisconnectRsFromTpForPassengerProtection', 'col': 27}
-    DisconnectThroughEb = {'sh_name': 'Train_Types', 'attr_name': 'DisconnectThroughEb', 'col': 28}
-    SendNvOutputInBypass = {'sh_name': 'Train_Types', 'attr_name': 'SendNvOutputInBypass', 'col': 29}
-    TdBypassDedicatedInputAvailable = {'sh_name': 'Train_Types', 'attr_name': 'TdBypassDedicatedInputAvailable', 'col': 30}
-    DriverlessModeAvailable = {'sh_name': 'Train_Types', 'attr_name': 'DriverlessModeAvailable', 'col': 31}
+    RubberWheels = {'sh_name': 'Train_Types', 'attr_name': 'RubberWheels', 'col': 12}
+    RubberWheelMinDiam = {'sh_name': 'Train_Types', 'attr_name': 'RubberWheelMinDiam', 'col': 13}
+    CarNumber = {'sh_name': 'Train_Types', 'attr_name': 'CarNumber', 'col': 14}
+    Car1 = {'sh_name': 'Train_Types', 'attr_name': 'Car1', 'col': 15}
+    Car2 = {'sh_name': 'Train_Types', 'attr_name': 'Car2', 'col': 16}
+    Car3 = {'sh_name': 'Train_Types', 'attr_name': 'Car3', 'col': 17}
+    Car4 = {'sh_name': 'Train_Types', 'attr_name': 'Car4', 'col': 18}
+    Car5 = {'sh_name': 'Train_Types', 'attr_name': 'Car5', 'col': 19}
+    Car6 = {'sh_name': 'Train_Types', 'attr_name': 'Car6', 'col': 20}
+    Car7 = {'sh_name': 'Train_Types', 'attr_name': 'Car7', 'col': 21}
+    Car8 = {'sh_name': 'Train_Types', 'attr_name': 'Car8', 'col': 22}
+    Car9 = {'sh_name': 'Train_Types', 'attr_name': 'Car9', 'col': 23}
+    Car10 = {'sh_name': 'Train_Types', 'attr_name': 'Car10', 'col': 24}
+    DegradedMode = {'sh_name': 'Train_Types', 'attr_name': 'DegradedMode', 'col': 25}
+    IsolationInputType = {'sh_name': 'Train_Types', 'attr_name': 'IsolationInputType', 'col': 26}
+    CcCutsTractionWhenEb = {'sh_name': 'Train_Types', 'attr_name': 'CcCutsTractionWhenEb', 'col': 27}
+    CcCcComType = {'sh_name': 'Train_Types', 'attr_name': 'CcCcComType', 'col': 28}
+    DisconnectRsFromTpForPassengerProtection = {'sh_name': 'Train_Types', 'attr_name': 'DisconnectRsFromTpForPassengerProtection', 'col': 29}
+    DisconnectThroughEb = {'sh_name': 'Train_Types', 'attr_name': 'DisconnectThroughEb', 'col': 30}
+    SendNvOutputInBypass = {'sh_name': 'Train_Types', 'attr_name': 'SendNvOutputInBypass', 'col': 31}
+    TdBypassDedicatedInputAvailable = {'sh_name': 'Train_Types', 'attr_name': 'TdBypassDedicatedInputAvailable', 'col': 32}
+    DriverlessModeAvailable = {'sh_name': 'Train_Types', 'attr_name': 'DriverlessModeAvailable', 'col': 33}
     ManageGenericCommands = Train_Types__ManageGenericCommands()
     PowerCollectorDevices = Train_Types__PowerCollectorDevices()
-    MasterControllerType = {'sh_name': 'Train_Types', 'attr_name': 'MasterControllerType', 'col': 43}
+    MasterControllerType = {'sh_name': 'Train_Types', 'attr_name': 'MasterControllerType', 'col': 45}
     SpeedLevel = Train_Types__SpeedLevel()
 
 
@@ -1352,16 +1377,17 @@ class Train:
     Type = {'sh_name': 'Train', 'attr_name': 'Type', 'col': 2}
     CbtcTrainUnitId = {'sh_name': 'Train', 'attr_name': 'CbtcTrainUnitId', 'col': 3}
     TrainCustomerName = {'sh_name': 'Train', 'attr_name': 'TrainCustomerName', 'col': 4}
-    CcConfiguration = {'sh_name': 'Train', 'attr_name': 'CcConfiguration', 'col': 5}
-    VirtualCcName = {'sh_name': 'Train', 'attr_name': 'VirtualCcName', 'col': 6}
-    Cab1CcName = {'sh_name': 'Train', 'attr_name': 'Cab1CcName', 'col': 7}
-    Cab2CcName = {'sh_name': 'Train', 'attr_name': 'Cab2CcName', 'col': 8}
-    Cab1TodName = {'sh_name': 'Train', 'attr_name': 'Cab1TodName', 'col': 9}
-    Cab2TodName = {'sh_name': 'Train', 'attr_name': 'Cab2TodName', 'col': 10}
-    PisName = {'sh_name': 'Train', 'attr_name': 'PisName', 'col': 11}
-    TarName = {'sh_name': 'Train', 'attr_name': 'TarName', 'col': 12}
-    TmsMvbBoxName = {'sh_name': 'Train', 'attr_name': 'TmsMvbBoxName', 'col': 13}
-    PwmBoxName = {'sh_name': 'Train', 'attr_name': 'PwmBoxName', 'col': 14}
+    DisplayableName = {'sh_name': 'Train', 'attr_name': 'DisplayableName', 'col': 5}
+    CcConfiguration = {'sh_name': 'Train', 'attr_name': 'CcConfiguration', 'col': 6}
+    VirtualCcName = {'sh_name': 'Train', 'attr_name': 'VirtualCcName', 'col': 7}
+    Cab1CcName = {'sh_name': 'Train', 'attr_name': 'Cab1CcName', 'col': 8}
+    Cab2CcName = {'sh_name': 'Train', 'attr_name': 'Cab2CcName', 'col': 9}
+    Cab1TodName = {'sh_name': 'Train', 'attr_name': 'Cab1TodName', 'col': 10}
+    Cab2TodName = {'sh_name': 'Train', 'attr_name': 'Cab2TodName', 'col': 11}
+    PisName = {'sh_name': 'Train', 'attr_name': 'PisName', 'col': 12}
+    TarName = {'sh_name': 'Train', 'attr_name': 'TarName', 'col': 13}
+    TmsMvbBoxName = {'sh_name': 'Train', 'attr_name': 'TmsMvbBoxName', 'col': 14}
+    PwmBoxName = {'sh_name': 'Train', 'attr_name': 'PwmBoxName', 'col': 15}
 
 
 class Auxiliary_Vehicle:
@@ -1369,9 +1395,10 @@ class Auxiliary_Vehicle:
     Type = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'Type', 'col': 2}
     CbtcTrainUnitId = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'CbtcTrainUnitId', 'col': 3}
     CustomerName = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'CustomerName', 'col': 4}
-    CcName = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'CcName', 'col': 5}
-    TodName = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'TodName', 'col': 6}
-    TarName = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'TarName', 'col': 7}
+    DisplayableName = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'DisplayableName', 'col': 5}
+    CcName = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'CcName', 'col': 6}
+    TodName = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'TodName', 'col': 7}
+    TarName = {'sh_name': 'Auxiliary_Vehicle', 'attr_name': 'TarName', 'col': 8}
 
 
 class Traction_Profiles__NonVital:
@@ -1813,6 +1840,62 @@ class Odometric_Zone:
     OdometricZone = Odometric_Zone__OdometricZone()
 
 
+class Presence_Detector:
+    Name = {'sh_name': 'Presence_Detector', 'attr_name': 'Name', 'col': 1}
+    Seg = {'sh_name': 'Presence_Detector', 'attr_name': 'Seg', 'col': 2}
+    X = {'sh_name': 'Presence_Detector', 'attr_name': 'X', 'col': 3}
+    Direction = {'sh_name': 'Presence_Detector', 'attr_name': 'Direction', 'col': 4}
+
+
+class Dispatchable_Point:
+    Name = {'sh_name': 'Dispatchable_Point', 'attr_name': 'Name', 'col': 1}
+    TrackName = {'sh_name': 'Dispatchable_Point', 'attr_name': 'TrackName', 'col': 2}
+    SurveyedKp = {'sh_name': 'Dispatchable_Point', 'attr_name': 'SurveyedKp', 'col': 3}
+    NumeroPcc = {'sh_name': 'Dispatchable_Point', 'attr_name': 'NumeroPcc', 'col': 4}
+    NamePcc = {'sh_name': 'Dispatchable_Point', 'attr_name': 'NamePcc', 'col': 5}
+
+
+class Equipped_Cars:
+    Name = {'sh_name': 'Equipped_Cars', 'attr_name': 'Name', 'col': 1}
+    Type = {'sh_name': 'Equipped_Cars', 'attr_name': 'Type', 'col': 2}
+    CbtcCarId = {'sh_name': 'Equipped_Cars', 'attr_name': 'CbtcCarId', 'col': 3}
+    CarCustomerName = {'sh_name': 'Equipped_Cars', 'attr_name': 'CarCustomerName', 'col': 4}
+    DisplayableName = {'sh_name': 'Equipped_Cars', 'attr_name': 'DisplayableName', 'col': 5}
+    CcName = {'sh_name': 'Equipped_Cars', 'attr_name': 'CcName', 'col': 6}
+    TodName = {'sh_name': 'Equipped_Cars', 'attr_name': 'TodName', 'col': 7}
+    PisName = {'sh_name': 'Equipped_Cars', 'attr_name': 'PisName', 'col': 8}
+    TarName = {'sh_name': 'Equipped_Cars', 'attr_name': 'TarName', 'col': 9}
+    TmsMvbBoxName = {'sh_name': 'Equipped_Cars', 'attr_name': 'TmsMvbBoxName', 'col': 10}
+    StreamBoxName = {'sh_name': 'Equipped_Cars', 'attr_name': 'StreamBoxName', 'col': 11}
+
+
+class FBCO__FrictionBrakeCutout:
+    EbRateRatio0 = {'sh_name': 'FBCO', 'attr_name': 'FrictionBrakeCutout', 'sub_attr_name': 'EbRateRatio0', 'cols': [3]}
+    PbRateRatio0 = {'sh_name': 'FBCO', 'attr_name': 'FrictionBrakeCutout', 'sub_attr_name': 'PbRateRatio0', 'cols': [4]}
+    MaxSpeed0 = {'sh_name': 'FBCO', 'attr_name': 'FrictionBrakeCutout', 'sub_attr_name': 'MaxSpeed0', 'cols': [5]}
+    EbRateRatio = {'sh_name': 'FBCO', 'attr_name': 'FrictionBrakeCutout', 'sub_attr_name': 'EbRateRatio', 'cols': [6, 9, 12, 15]}
+    PbRateRatio = {'sh_name': 'FBCO', 'attr_name': 'FrictionBrakeCutout', 'sub_attr_name': 'PbRateRatio', 'cols': [7, 10, 13, 16]}
+    MaxSpeed = {'sh_name': 'FBCO', 'attr_name': 'FrictionBrakeCutout', 'sub_attr_name': 'MaxSpeed', 'cols': [8, 11, 14, 17]}
+
+
+class FBCO:
+    PassengerTrainConsistName = {'sh_name': 'FBCO', 'attr_name': 'PassengerTrainConsistName', 'col': 1}
+    FbcoMaxNumber = {'sh_name': 'FBCO', 'attr_name': 'FbcoMaxNumber', 'col': 2}
+    FrictionBrakeCutout = FBCO__FrictionBrakeCutout()
+
+
+class CSR__Limit:
+    Seg = {'sh_name': 'CSR', 'attr_name': 'Limit', 'sub_attr_name': 'Seg', 'cols': [3, 6, 9, 12, 15]}
+    X = {'sh_name': 'CSR', 'attr_name': 'Limit', 'sub_attr_name': 'X', 'cols': [4, 7, 10, 13, 16]}
+    Direction = {'sh_name': 'CSR', 'attr_name': 'Limit', 'sub_attr_name': 'Direction', 'cols': [5, 8, 11, 14, 17]}
+
+
+class CSR:
+    Name = {'sh_name': 'CSR', 'attr_name': 'Name', 'col': 1}
+    Speed = {'sh_name': 'CSR', 'attr_name': 'Speed', 'col': 2}
+    Limit = CSR__Limit()
+
+
 class DCSYS:
     Ligne = Ligne()
     Voie = Voie()
@@ -1877,7 +1960,7 @@ class DCSYS:
     Performance_Level = Performance_Level()
     Restriction_Level = Restriction_Level()
     Carborne_Controllers = Carborne_Controllers()
-    Car = Car()
+    Car_Types = Car_Types()
     Train_Types = Train_Types()
     AV_Types = AV_Types()
     Flatbed_Types = Flatbed_Types()
@@ -1919,3 +2002,8 @@ class DCSYS:
     Parking_Place = Parking_Place()
     StaticTag_Group = StaticTag_Group()
     Odometric_Zone = Odometric_Zone()
+    Presence_Detector = Presence_Detector()
+    Dispatchable_Point = Dispatchable_Point()
+    Equipped_Cars = Equipped_Cars()
+    FBCO = FBCO()
+    CSR = CSR()

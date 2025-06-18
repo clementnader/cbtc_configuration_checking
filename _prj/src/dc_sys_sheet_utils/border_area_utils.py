@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
@@ -76,4 +75,4 @@ def _get_tc_along_the_route(limit1: tuple[str, float, str], limit2: tuple[str, f
         return None
 
     print(zc1, zc2, lim_seg1, lim_downstream1, lim_seg2, lim_upstream2, list_of_paths_within_zcs)
-    sys.exit(0)
+    exit(0)

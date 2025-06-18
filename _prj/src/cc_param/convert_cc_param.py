@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 import os
 import shutil
 import argparse
@@ -60,7 +59,7 @@ def _create_result_dir(full_res_dir: str) -> None:
                       f"\n at {full_res_dir}.")
         if not ask_question_yes_or_no("Do you want to overwrite it?"):
             print_error(f"Process aborted.")
-            sys.exit(1)
+            exit(1)
         shutil.rmtree(full_res_dir)
     os.makedirs(full_res_dir)
 

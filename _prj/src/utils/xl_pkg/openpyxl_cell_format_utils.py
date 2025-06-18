@@ -10,8 +10,8 @@ from ..common_utils import *
 
 __all__ = ["xl_borders", "XlAlign",
            "create_cell", "create_merged_cell",
-           "set_fixed_number_of_digits",
-           "set_font_size", "set_bold_font", "set_bg_color",
+           "set_fixed_number_of_digits", "set_percentage_format", "set_text_format",
+           "set_font_size", "set_bold_font", "set_font_color", "set_bg_color",
            "set_vertical_alignment", "set_horizontal_alignment", "enable_line_wrap",
            "adjust_fixed_row_height",
            "draw_exterior_borders", "draw_all_borders_of_a_range",
@@ -33,15 +33,16 @@ class XlAlign:
 
 def create_cell(ws: xl_ws.Worksheet, value: Union[str, float, None],
                 cell: str = None, row: int = None, column: Union[str, int] = None,
-                font_size: int = None, bold: bool = False, italic: bool = False, bg_color: str = None,
+                font_size: int = None, bold: bool = False, italic: bool = False,
+                font_color: str = None, bg_color: str = None,
                 align_vertical: str = XlAlign.center, align_horizontal: str = XlAlign.general, line_wrap: bool = False,
-                nb_of_digits: int = None, borders: bool = False) -> None:
+                nb_of_digits: int = None, percentage_nb_of_digits: int = None, borders: bool = False) -> None:
     row, column = get_row_and_column_from_cell(cell, row, column)
 
     ws.cell(row=row, column=column, value=value)
     # Cell Formatting
-    _update_cell_formatting(ws, row, column, font_size, bold, italic, bg_color,
-                            align_vertical, align_horizontal, line_wrap, nb_of_digits)
+    _update_cell_formatting(ws, row, column, font_size, bold, italic, font_color, bg_color,
+                            align_vertical, align_horizontal, line_wrap, nb_of_digits, percentage_nb_of_digits)
     # Cell Borders
     if borders:
         draw_exterior_borders(ws, row=row, column=column)
@@ -51,9 +52,10 @@ def create_merged_cell(ws: xl_ws.Worksheet, value: Union[str, float, None],
                        start_cell: str = None, start_row: int = None, start_column: Union[str, int] = None,
                        end_cell: str = None, end_row: int = None, end_column: Union[str, int] = None,
                        cell_range: str = None,
-                       font_size: int = None, bold: bool = False, italic: bool = False, bg_color: str = None,
+                       font_size: int = None, bold: bool = False, italic: bool = False,
+                       font_color: str = None, bg_color: str = None,
                        align_vertical: str = XlAlign.center, align_horizontal: str = XlAlign.general,
-                       line_wrap: bool = True, nb_of_digits: int = None,
+                       line_wrap: bool = True, nb_of_digits: int = None, percentage_nb_of_digits: int = None,
                        borders: bool = False, border_style: str = xl_borders.BORDER_THIN) -> None:
     if cell_range is not None:
         start_cell, end_cell = cell_range.split(":")
@@ -64,8 +66,8 @@ def create_merged_cell(ws: xl_ws.Worksheet, value: Union[str, float, None],
                    start_column=start_column, end_column=end_column)
     ws.cell(row=start_row, column=start_column, value=value)
     # Cell Formatting
-    _update_cell_formatting(ws, start_row, start_column, font_size, bold, italic, bg_color,
-                            align_vertical, align_horizontal, line_wrap, nb_of_digits)
+    _update_cell_formatting(ws, start_row, start_column, font_size, bold, italic, font_color, bg_color,
+                            align_vertical, align_horizontal, line_wrap, nb_of_digits, percentage_nb_of_digits)
     # Cell Borders
     if borders:
         draw_all_borders_of_a_range(ws, start_row=start_row, end_row=end_row, start_column=start_column,
@@ -73,25 +75,31 @@ def create_merged_cell(ws: xl_ws.Worksheet, value: Union[str, float, None],
 
 
 def _update_cell_formatting(ws: xl_ws.Worksheet, row: int, column: int,
-                            font_size: int, bold: bool, italic: bool, bg_color: str,
-                            align_vertical: str, align_horizontal: str,
-                            line_wrap: bool, nb_of_digits: int) -> None:
+                            font_size: Optional[int], bold: bool, italic: bool,
+                            font_color: Optional[str], bg_color: Optional[str],
+                            align_vertical: Optional[str], align_horizontal: Optional[str],
+                            line_wrap: bool,
+                            nb_of_digits: Optional[int], percentage_nb_of_digits: Optional[int]) -> None:
     if font_size is not None:
         set_font_size(ws, font_size=font_size, row=row, column=column)
+    if font_color is not None:
+        set_font_color(ws, font_color=font_color, row=row, column=column)
     if bold:
         set_bold_font(ws, row=row, column=column)
     if italic:
         set_italic_font(ws, row=row, column=column)
     if bg_color is not None:
-        set_bg_color(ws, hex_color=bg_color, row=row, column=column)
+        set_bg_color(ws, bg_color=bg_color, row=row, column=column)
     if align_vertical:
         set_vertical_alignment(ws, align_vertical=align_vertical, row=row, column=column)
     if align_horizontal:
         set_horizontal_alignment(ws, align_horizontal=align_horizontal, row=row, column=column)
     if line_wrap:
         enable_line_wrap(ws, row=row, column=column)
-    if nb_of_digits:
+    if nb_of_digits is not None:
         set_fixed_number_of_digits(ws, number_of_digits=nb_of_digits, row=row, column=column)
+    if percentage_nb_of_digits is not None:
+        set_percentage_format(ws, number_of_digits=percentage_nb_of_digits, row=row, column=column)
 
 
 # ------ Cell Formatting ------ #
@@ -110,6 +118,13 @@ def set_bold_font(ws: xl_ws.Worksheet,
     ws[cell].font += font_style
 
 
+def set_font_color(ws: xl_ws.Worksheet, font_color: str,
+                   cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+    cell = get_cell_from_row_and_column(cell, row, column)
+    font_style = xl_styles.Font(color=font_color)
+    ws[cell].font = font_style
+
+
 def set_italic_font(ws: xl_ws.Worksheet,
                     cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
@@ -117,10 +132,10 @@ def set_italic_font(ws: xl_ws.Worksheet,
     ws[cell].font += font_style
 
 
-def set_bg_color(ws: xl_ws.Worksheet, hex_color: str,
+def set_bg_color(ws: xl_ws.Worksheet, bg_color: str,
                  cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
-    pattern_style = xl_styles.PatternFill(start_color=hex_color, end_color=hex_color, fill_type="solid")
+    pattern_style = xl_styles.PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
     ws[cell].fill = pattern_style
 
 
@@ -168,6 +183,13 @@ def set_fixed_number_of_digits(ws: xl_ws.Worksheet, number_of_digits: int,
                                cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
     number_format = "0." + "0"*number_of_digits
+    ws[cell].number_format = number_format
+
+
+def set_percentage_format(ws: xl_ws.Worksheet, number_of_digits: int,
+                          cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+    cell = get_cell_from_row_and_column(cell, row, column)
+    number_format = "0." + "0"*number_of_digits + "%"
     ws[cell].number_format = number_format
 
 

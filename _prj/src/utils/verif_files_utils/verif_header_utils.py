@@ -12,7 +12,7 @@ __all__ = ["update_header_sheet_for_verif_file"]
 
 HEADER_SHEET_NAME = "Header"
 
-TITLE_CELL_RANGE = "B11:F18"
+TITLE_CELL_RANGE = "B10:F17"
 
 AUTHOR_COLUMN = "C"
 VERIFIER_COLUMN = "D"

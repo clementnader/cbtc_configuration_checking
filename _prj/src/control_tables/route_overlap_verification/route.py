@@ -14,7 +14,7 @@ from .format_utils import *
 __all__ = ["check_route_control_tables"]
 
 
-def check_route_control_tables(use_csv_file: bool = False):
+def check_route_control_tables(use_csv_file: bool = True):
     route_dict = get_routes()
     route_control_tables = load_control_tables(CONTROL_TABLE_TYPE.route, use_csv_file)
 
@@ -157,6 +157,7 @@ def _check_route_path(route: str, route_val: dict[str, Any], ct_route_path: str,
                     f"Control Table Route Path: {Color.beige}{ct_route_path}{Color.reset}\n"
                     f"{Color.default}DC_SYS Route Switch: {', '.join(dc_sys_route_sw)}{Color.reset}")
         result = False
+        return result
 
     for dc_sys_ivb, control_table_ivb in zip(dc_sys_route_ivb, ct_route_path_list):
         if not dc_sys_ivb.endswith(control_table_ivb):

@@ -4,87 +4,93 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
-from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist_downstream, get_virtual_seg_ordered_extremities
-from ..dc_sys_draw_path.dc_sys_get_zones import get_objects_in_zone_limits
+from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream
+from ..dc_sys_draw_path.dc_sys_get_zones import (get_objects_in_zone_limits, depolarization_in_zone_limits,
+                                                 is_seg_in_zone_limits, get_oriented_limits_of_obj)
 
 
-__all__ = ["get_slope_at_point", "get_min_and_max_slopes_at_point", "get_min_and_max_slopes_on_virtual_seg",
-           "get_next_slope", "get_min_and_max_slopes_in_zone_limits"]
+__all__ = ["get_slope_at_point", "get_min_and_max_slopes_at_point", "get_next_slopes",
+           "get_min_and_max_slopes_in_zone_limits", "get_min_and_max_slopes_in_zone"]
 
 
 def get_slope_at_point(seg: str, x: float) -> float:
-    downstream_slope = get_next_slope(seg, x, downstream=True)
-    upstream_slope = get_next_slope(seg, x, downstream=False)
+    downstream_slopes = get_next_slopes(seg, x, downstream=True)
+    upstream_slopes = get_next_slopes(seg, x, downstream=False)
 
-    downstream_seg, downstream_x = get_dc_sys_values(downstream_slope, DCSYS.Profil.Seg, DCSYS.Profil.X)
-    downstream_slope_value = get_dc_sys_value(downstream_slope, DCSYS.Profil.Pente)
+    list_slopes = list()
 
-    upstream_seg, upstream_x = get_dc_sys_values(upstream_slope, DCSYS.Profil.Seg, DCSYS.Profil.X)
-    upstream_slope_value = get_dc_sys_value(upstream_slope, DCSYS.Profil.Pente)
-
-    if downstream_slope_value == upstream_slope_value:
-        # Constant slope
-        return downstream_slope_value
-
-    if (seg, x) == (downstream_seg, downstream_x):
-        return downstream_slope_value
-    if (seg, x) == (upstream_seg, upstream_x):
-        return upstream_slope_value
-
-    total_distance = get_dist_downstream(upstream_seg, upstream_x, downstream_seg, downstream_x, downstream=True)
-    if total_distance is None:
-        # TODO solve problem with depol, cf Milan ML4
-        print_error(f"Unable to compute distance for slope:")
-        print(upstream_seg, upstream_x, upstream_slope_value, downstream_seg, downstream_x, downstream_slope_value)
+    if not downstream_slopes and not upstream_slopes:
+        print_error(f"No slopes found downstream nor upstream of point {(seg, x)}")
         return 0.
-    sub_distance = get_dist_downstream(upstream_seg, upstream_x, seg, x, downstream=True)
-    # linear approximation of the slope between two points
-    slope_value = (downstream_slope_value - upstream_slope_value) / total_distance * sub_distance + upstream_slope_value
-    return round(slope_value, 7)
 
+    if not downstream_slopes:
+        for upstream_slope, upstream_polarity, _ in upstream_slopes:
+            upstream_slope_value = (get_dc_sys_value(upstream_slope, DCSYS.Profil.Pente)
+                                    * (-1 if not upstream_polarity else 1))
+            list_slopes.append(upstream_slope_value)
+        if not all(slope_value == list_slopes[0] for slope_value in list_slopes):
+            print_error(f"Computed slope values are not constant at point {(seg, x)}: {list_slopes}")
+        return list_slopes[0]
 
-def get_next_slope(start_seg: str, start_x: float, downstream: bool) -> Optional[dict[str, Any]]:
-    slopes = list()
+    if not upstream_slopes:
+        for downstream_slope, downstream_polarity, _ in downstream_slopes:
+            downstream_slope_value = (get_dc_sys_value(downstream_slope, DCSYS.Profil.Pente)
+                                      * (-1 if not downstream_polarity else 1))
+            list_slopes.append(downstream_slope_value)
+        if not all(slope_value == list_slopes[0] for slope_value in list_slopes):
+            print_error(f"Computed slope values are not constant at point {(seg, x)}: {list_slopes}")
+        return list_slopes[0]
 
-    def inner_recurs_next_seg(seg: str, x: float = None):
-        nonlocal slopes
-        slope = _is_slope_defined(seg, downstream=downstream, x=x)
-        if slope is not False:
-            slopes.append(slope)
-            return
-        for next_seg in get_linked_segments(seg, downstream=downstream):
-            inner_recurs_next_seg(next_seg)
+    for downstream_slope, downstream_polarity, downstream_distance in downstream_slopes:
+        downstream_seg, downstream_x = get_dc_sys_values(downstream_slope, DCSYS.Profil.Seg, DCSYS.Profil.X)
+        downstream_slope_value = (get_dc_sys_value(downstream_slope, DCSYS.Profil.Pente)
+                                  * (-1 if not downstream_polarity else 1))
 
-    inner_recurs_next_seg(start_seg, start_x)
+        if (seg, x) == (downstream_seg, downstream_x):
+            list_slopes.append(downstream_slope_value)
+            continue
 
-    if not slopes:
-        print_log(f"No slope found {'downstream' if downstream else 'upstream'} {(start_seg, start_x)}. "
-                  "The first slope in the other direction is taken, assuming slope is constant till end of track.\n")
-        return get_next_slope(start_seg, start_x, not downstream)
-    if len(slopes) > 1:
-        slopes.sort(
-            key=lambda slope: get_dist_downstream(start_seg, start_x, *get_dc_sys_values(
-                slope, DCSYS.Profil.Seg, DCSYS.Profil.X), downstream=downstream))
-    return slopes[0]
+        for upstream_slope, upstream_polarity, upstream_distance in upstream_slopes:
+            upstream_seg, upstream_x = get_dc_sys_values(upstream_slope, DCSYS.Profil.Seg, DCSYS.Profil.X)
+            upstream_slope_value = (get_dc_sys_value(upstream_slope, DCSYS.Profil.Pente)
+                                    * (-1 if not upstream_polarity else 1))
+
+            if (seg, x) == (upstream_seg, upstream_x):
+                list_slopes.append(upstream_slope_value)
+                continue
+
+            total_distance = downstream_distance + upstream_distance
+            # linear approximation of the slope between two points
+            slope_value = ((upstream_slope_value - downstream_slope_value) / total_distance
+                           * downstream_distance + downstream_slope_value)
+            list_slopes.append(round(slope_value, 9))
+
+    if not all(slope_value == list_slopes[0] for slope_value in list_slopes):
+        print_error(f"Computed slope values are not constant at point {(seg, x)}: {list_slopes}")
+    return list_slopes[0]
 
 
 def get_min_and_max_slopes_at_point(seg: str, x: float) -> tuple[float, float]:
     slopes = get_next_slopes(seg, x, downstream=True)
     slopes.extend(get_next_slopes(seg, x, downstream=False))
-    slopes_value = [float(get_dc_sys_value(slope, DCSYS.Profil.Pente)) for slope in slopes]
+    slopes_value = [float(get_dc_sys_value(slope, DCSYS.Profil.Pente))
+                    * (-1 if not polarity else 1) for slope, polarity, _ in slopes]
     return min(slopes_value), max(slopes_value)
 
 
-def get_next_slopes(start_seg: str, start_x: float, downstream: bool) -> list[dict[str, Any]]:
+def get_next_slopes(start_seg: str, start_x: float, downstream: bool) -> list[tuple[dict[str, Any], bool, float]]:
     """ Return a list of the first slopes reached in the given downstream direction starting from the given point.
     If a switch is met before reaching a slope, the list will be composed of multiple slopes for each path. """
     slopes = list()
 
-    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str], x: float = None) -> None:
+    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str], path_len: float,
+                              x: float = None) -> None:
         nonlocal slopes
-        slope = _is_slope_defined(seg, downstream=inner_downstream, x=x)
+        slope = _is_slope_defined_on_seg(seg, downstream=inner_downstream, x=x)
         if slope is not False:
-            slopes.append(slope)
+            slope_x = get_dc_sys_value(slope, DCSYS.Profil.X)
+            final_path_len = path_len - ((get_segment_length(start_seg) - slope_x) if inner_downstream else slope_x)
+            slopes.append((slope, inner_downstream == downstream, final_path_len))
             return
 
         linked_segs = get_linked_segments(seg, inner_downstream)
@@ -100,13 +106,15 @@ def get_next_slopes(start_seg: str, start_x: float, downstream: bool) -> list[di
                 # We check if we have made a full turn and reach a segment that we have already run through
                 # in the current path.
                 continue
-            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg])
+            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg],
+                                  round(path_len + get_segment_length(next_seg), 3))
 
-    inner_recurs_next_seg(start_seg, downstream, [start_seg], start_x)
+    start_path_len = (get_segment_length(start_seg) - start_x) if downstream else start_x
+    inner_recurs_next_seg(start_seg, downstream, [start_seg], start_path_len, start_x)
     return slopes
 
 
-def _is_slope_defined(seg: str, downstream: bool = True, x: float = None) -> Union[bool, dict[str, Any]]:
+def _is_slope_defined_on_seg(seg: str, downstream: bool = True, x: float = None) -> Union[bool, dict[str, Any]]:
     """ Return the first slope on the segment in the given downstream direction (or first slope after the offset x
     if it is specified),
     return False if there is no slope on the segment (or no slope after the offset x if it is specified). """
@@ -134,32 +142,96 @@ def _is_slope_defined(seg: str, downstream: bool = True, x: float = None) -> Uni
         return slopes[-1]  # return the slope closest from the segment end
 
 
-def get_min_and_max_slopes_on_virtual_seg(seg1: str, x1: float, seg2: str, x2: float):
-    # TODO: manage depolarization -> to delete and use next function with oriented limits
-    seg1, x1, seg2, x2 = get_virtual_seg_ordered_extremities(seg1, x1, seg2, x2)  # assert seg1 is upstream of seg2
+def get_min_and_max_slopes_in_zone_limits(zone_limits: list[tuple[str, float, str]],
+                                          polarity_ref_seg: str = None) -> tuple[float, float]:
+    depol_in_zone = bool(depolarization_in_zone_limits(zone_limits))
+    if depol_in_zone:  # if there is a depolarization inside the zone
+        if polarity_ref_seg is None:
+            print_log(f"There is a depolarization inside zone limits:\n"
+                      f"\t{zone_limits}\n"
+                      f"\tWe take as reference segment for slope polarity the first limit segment "
+                      f"\"{zone_limits[0][0]}\".")
+            polarity_ref_seg = zone_limits[0][0]  # take the first limit segment as our reference segment for the slope polarity
+        elif not is_seg_in_zone_limits(zone_limits, polarity_ref_seg):
+            print_error(f"Polarity reference segment {polarity_ref_seg} is not inside zone limits:\n"
+                        f"\t{zone_limits}\n"
+                        f"\tWe take as reference segment for slope polarity the first limit segment "
+                        f"\"{zone_limits[0][0]}\".")
+            polarity_ref_seg = zone_limits[0][0]  # take the first limit segment as our reference segment for the slope polarity
 
-    slopes = get_objects_in_zone_limits(DCSYS.Profil, [(seg1, x1, Direction.CROISSANT),
-                                                       (seg2, x2, Direction.DECROISSANT)])
-    slopes_values = [float(get_dc_sys_value(slope, DCSYS.Profil.Pente)) for slope in slopes]
-    slopes_values.append(get_slope_at_point(seg1, x1))
-    slopes_values.append(get_slope_at_point(seg2, x2))
-    return min(slopes_values), max(slopes_values)
+        polarity_dict = {polarity_ref_seg: True}
+        checked_limits = set()
+        for _ in range(len(zone_limits)):  # we need at max the same number of iterations as of limits
+            if checked_limits == set(zone_limits):
+                break
+            for limit in zone_limits:
+                if limit in checked_limits:
+                    continue
+                seg, _, _ = limit
+                if seg in polarity_dict:
+                    checked_limits.add(limit)
+                    continue
+                for ref_seg, ref_polarity in polarity_dict.items():
+                    if is_seg_downstream(ref_seg, seg, downstream=True):
+                        polarity = is_seg_downstream(seg, ref_seg, downstream=False)
+                        if seg not in polarity_dict:
+                            polarity_dict[seg] = polarity if ref_polarity else not polarity
+                        checked_limits.add(limit)
+                        break
+                    elif is_seg_downstream(ref_seg, seg, downstream=False):
+                        polarity = is_seg_downstream(seg, ref_seg, downstream=True)
+                        if seg not in polarity_dict:
+                            polarity_dict[seg] = polarity if ref_polarity else not polarity
+                        checked_limits.add(limit)
+                        break
+        if not checked_limits == set(zone_limits):
+            print_error(f"Computation of the polarity of the limit segments has failed.")
+    else:
+        polarity_dict = dict()
 
-
-def get_min_and_max_slopes_in_zone_limits(zone_limits: list[tuple[str, float, str]]
-                                          ) -> tuple[float, float]:
     # If there is slope changes inside the zone
     in_slopes = get_objects_in_zone_limits(DCSYS.Profil, zone_limits)
     if in_slopes is None:
         slopes_values = []
     else:
-        slopes_values = [float(get_dc_sys_value(slope, DCSYS.Profil.Pente)) for slope in in_slopes]
+        if not depol_in_zone:
+            slopes_values = [float(get_dc_sys_value(slope, DCSYS.Profil.Pente)) for slope in in_slopes]
+        else:
+            slopes_values = list()
+            for slope in in_slopes:
+                slope_seg = get_dc_sys_value(slope, DCSYS.Profil.Seg)
+                if slope_seg in polarity_dict:
+                    continue
+                for ref_seg, ref_polarity in polarity_dict.items():
+                    if is_seg_downstream(ref_seg, slope_seg, downstream=True):
+                        polarity = is_seg_downstream(slope_seg, ref_seg, downstream=False)
+                        if slope_seg not in polarity_dict:
+                            polarity_dict[slope_seg] = polarity if ref_polarity else not polarity
+                        break
+                    elif is_seg_downstream(ref_seg, slope_seg, downstream=False):
+                        polarity = is_seg_downstream(slope_seg, ref_seg, downstream=True)
+                        if slope_seg not in polarity_dict:
+                            polarity_dict[slope_seg] = polarity if ref_polarity else not polarity
+                        break
+                slopes_values.append(float(get_dc_sys_value(slope, DCSYS.Profil.Pente))
+                                     * (1 if polarity_dict[slope_seg] else -1))
 
-    # Add the first slope gotten after each limit in the opposite direction (outside the zone)
+    # Add the slope computed at each limit
     for limit in zone_limits:
         seg, x, direction = limit
-        slopes_after_limit = get_next_slopes(seg, x, downstream=(direction == Direction.DECROISSANT))
-        slopes_values.extend(float(get_dc_sys_value(slope_after_limit, DCSYS.Profil.Pente))
-                             for slope_after_limit in slopes_after_limit)
+        slope = get_slope_at_point(seg, x)
+        if not depol_in_zone:
+            slopes_values.append(slope)
+        else:
+            slopes_values.append(slope * (1 if polarity_dict[seg] else -1))
 
     return min(slopes_values), max(slopes_values)
+
+
+def get_min_and_max_slopes_in_zone(obj_type, obj_name: str,
+                                   polarity_ref_seg: str = None) -> Optional[tuple[float, float]]:
+    zone_limits = get_oriented_limits_of_obj(obj_type, obj_name)
+    if zone_limits is None:
+        print(f"{get_sh_name(obj_type)} {obj_name} is not a zone object.")
+        return None
+    return get_min_and_max_slopes_in_zone_limits(zone_limits, polarity_ref_seg)

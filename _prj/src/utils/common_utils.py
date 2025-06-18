@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import winreg
 from typing import Optional, Union, Generator, Callable, Any
 from string import ascii_uppercase
 
@@ -15,14 +16,25 @@ __all__ = ["DESKTOP_DIRECTORY",
            "remove_common_min_max_kp"]
 
 
-DESKTOP_DIRECTORY = os.path.join(os.getenv("UserProfile"), "Desktop")
-
 SRC_DIRECTORY = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 PRJ_DIRECTORY = os.path.realpath(os.path.join(SRC_DIRECTORY, ".."))
 ROOT_DIRECTORY = os.path.realpath(os.path.join(PRJ_DIRECTORY, ".."))
 
 TEMPLATE_DIRECTORY = os.path.join(SRC_DIRECTORY, "templates")
 LAUNCH_FUNCTION_DIRECTORY = os.path.join(ROOT_DIRECTORY, "launch_function")
+
+
+def get_desktop_directory() -> str:
+    with winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                        r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders") as key:
+        # Extracted string may contain unexpanded environment variables, such as "%USERPROFILE%\Desktop"
+        desktop_dir, _ = winreg.QueryValueEx(key, "Desktop")
+        # To expand the environment variable in the above string, use this form
+        desktop_dir = os.path.expandvars(desktop_dir)
+    return desktop_dir
+
+
+DESKTOP_DIRECTORY = get_desktop_directory()
 
 
 def get_full_path(file: str, relative_path: str) -> str:

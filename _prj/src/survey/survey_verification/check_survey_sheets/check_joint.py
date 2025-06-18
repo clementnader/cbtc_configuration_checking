@@ -8,6 +8,9 @@ from .joint_utils import *
 from .common_utils import *
 
 
+__all__ = ["check_joint"]
+
+
 # Block
 def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]],
                 block_def_dict: Optional[dict[str, dict[tuple[str, float], str]]],

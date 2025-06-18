@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 from ...utils import *
 from ...database_location import *
 from .get_compatible_cctool_oo_version import *
@@ -14,7 +13,7 @@ __all__ = ["get_corresponding_cctool_oo_schema", "load_cctool_oo_schema_info", "
            "get_cctool_oo_version_info", "create_header_for_the_generated_files"]
 
 
-CCTOOL_OO_SCHEMA_DIR = r"C:\Users\naderc\Documents\Documents GA\CCTool-OO Schema"
+CCTOOL_OO_SCHEMA_DIR = r"C:\Users\naderc\OneDrive - Hitachi Group\Documents\Documents GA\CCTool-OO Schema"
 
 REVISION_SHEET = "Revision"
 
@@ -45,7 +44,7 @@ def get_corresponding_cctool_oo_schema():
             if file.endswith(version):
                 return full_path
     print_error(f"Unable to find the CCTool-OO Schema file for version {version} in directory {CCTOOL_OO_SCHEMA_DIR}")
-    sys.exit(1)
+    exit(1)
 
 
 def get_cctool_oo_version_info(cctool_oo_file: str) -> tuple[str, str]:

@@ -14,6 +14,11 @@ ZONE_SEGMENTS = dict()
 ZONE_LIMITS = dict()
 
 
+SHEETS_TO_DISABLE_WARNINGS = ["IXL_Overlap", "Calib"]
+# It is normal to have a switch inside these zones, and that the zone is technically not enclosed,
+# because the zones are linear.
+
+
 def get_segments_within_zone(obj_type, obj_name: str) -> Optional[set[str]]:
     global ZONE_SEGMENTS, ZONE_LIMITS
     obj_type = get_sh_name(obj_type)
@@ -23,7 +28,7 @@ def get_segments_within_zone(obj_type, obj_name: str) -> Optional[set[str]]:
         _update_segs_within_zones(obj_type)
     if obj_name not in ZONE_SEGMENTS[obj_type]:
         return None
-    return set([seg for seg, _ in ZONE_SEGMENTS[obj_type][obj_name]])
+    return ZONE_SEGMENTS[obj_type][obj_name]
 
 
 def get_zone_limits(obj_type, obj_name: str) -> list[tuple[str, float, bool]]:
@@ -51,10 +56,11 @@ def _update_segs_within_zones(obj_type: str) -> None:
         zone_limits = get_oriented_limits_of_obj(obj_type, obj_name)
         if not zone_limits:
             return
+        zone_limits = convert_oriented_limits(zone_limits)
 
-        ZONE_SEGMENTS[obj_type][obj_name] = list()
-        for start_seg, start_x, start_direction in zone_limits:
-            warning_has_been_printed = _get_next_segments(obj_type, obj_name, start_seg, start_x, start_direction,
+        ZONE_SEGMENTS[obj_type][obj_name] = set()
+        for start_seg, start_x, start_downstream in zone_limits:
+            warning_has_been_printed = _get_next_segments(obj_type, obj_name, start_seg, start_x, start_downstream,
                                                           zone_limits)
             if warning_has_been_printed:
                 warning_has_been_printed_on_the_sheet = True
@@ -78,18 +84,24 @@ def _get_next_segments(obj_type: str, obj_name: str, start_seg: str, start_x: fl
         # no need to run the line to get the segments before reaching other limits, we return.
         return warning_has_been_printed
 
-    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[tuple[str, bool]]):
+    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str]):
         global ZONE_SEGMENTS
         nonlocal warning_has_already_been_printed
 
         if not warning_has_already_been_printed and not get_linked_segments(seg, inner_downstream):
             # if an end of track is reached the zone is open
-            warning_has_already_been_printed = True
-            print_warning(f"{Color.beige}{obj_type}{Color.reset} {Color.yellow}{obj_name}{Color.reset} is open, "
-                          f"an end of track has been reached while inside the zone. "
-                          f"The zone was traveled by starting by the point {start_point_and_direction}.")
+            if obj_type not in SHEETS_TO_DISABLE_WARNINGS:
+                warning_has_already_been_printed = True
+                print_warning(f"{Color.beige}{obj_type}{Color.reset} {Color.yellow}{obj_name}{Color.reset} is open, "
+                              f"an end of track has been reached while inside the zone. "
+                              f"The zone was traveled by starting by the point {start_point_and_direction}.")
 
         for next_seg in get_linked_segments(seg, inner_downstream):
+            if next_seg in path:  # a whole loop has been made, terminate the branch
+                continue
+            if next_seg == start_seg:  # a whole loop has been made, terminate the branch
+                continue
+
             if is_segment_depolarized(next_seg) and seg in get_associated_depolarization(next_seg):
                 next_inner_downstream = not inner_downstream
             else:
@@ -99,20 +111,12 @@ def _get_next_segments(obj_type: str, obj_name: str, start_seg: str, start_x: fl
                                                         start_point_and_direction)
             if test:
                 if correct_direction:
-                    ZONE_SEGMENTS[obj_type][obj_name].extend(path)  # only append path if another limit is reached
+                    ZONE_SEGMENTS[obj_type][obj_name].update(path)  # only append path if another limit is reached
                 # if a limit of the object is reached but not in the correct direction, we stop the progression,
                 # but we don't add the path
                 continue
 
-            if (next_seg, next_inner_downstream) in ZONE_SEGMENTS[obj_type][obj_name]:  # already managed
-                ZONE_SEGMENTS[obj_type][obj_name].extend(path)  # append the current path and terminate the branch
-                continue
-
-            if (next_seg, next_inner_downstream) in path:  # a whole loop has been made
-                ZONE_SEGMENTS[obj_type][obj_name].extend(path)  # append the current path and terminate the branch
-                continue
-
-            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [(next_seg, next_inner_downstream)])
+            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg])
 
     warning_has_already_been_printed = False
     inner_recurs_next_seg(start_seg, downstream, [])
@@ -124,7 +128,7 @@ G_ALREADY_PRINTED = list()
 
 
 def _is_first_seg_on_another_limit(obj_type: str, obj_name: str, start_seg: str, start_x: float, downstream: bool,
-                                  zone_limits: list[tuple[str, float, bool]], start_point_and_direction: str
+                                   zone_limits: list[tuple[str, float, bool]], start_point_and_direction: str
                                    ) -> tuple[bool, bool]:
     global G_ALREADY_PRINTED
     warning_has_been_printed = False
@@ -166,7 +170,7 @@ def _is_first_seg_on_another_limit(obj_type: str, obj_name: str, start_seg: str,
 
 
 def _is_seg_end_limit(obj_type: str, obj_name: str, seg: str, downstream: bool,
-                     zone_limits: list[tuple[str, float, bool]], start_point_and_direction: str
+                      zone_limits: list[tuple[str, float, bool]], start_point_and_direction: str
                       ) -> tuple[bool, Optional[bool]]:
     if (seg, not downstream) in [(limit_seg, limit_downstream)
                                  for limit_seg, _, limit_downstream in zone_limits]:

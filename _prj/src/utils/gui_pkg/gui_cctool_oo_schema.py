@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 from ...database_location import DATABASE_LOC
 from ..colors_pkg import *
 from ..xl_pkg import XlBgColor
@@ -29,7 +28,7 @@ def cctool_oo_schema_window():
 
     if cctool_oo_directory.get() == "" or cctool_oo_file_name.get() == "":
         print_error("Execution aborted.")
-        sys.exit(1)
+        exit(1)
 
     DATABASE_LOC.cctool_oo_schema = os.path.join(cctool_oo_directory.get(), cctool_oo_file_name.get()
                                                  ).replace("/", os.path.sep)

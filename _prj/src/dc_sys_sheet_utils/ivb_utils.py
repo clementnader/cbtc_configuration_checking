@@ -4,10 +4,11 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
+from ..dc_sys_draw_path.dc_sys_get_zones import get_zones_on_object
 
 
 __all__ = ["get_related_block_of_ivb", "get_ivb_on_block", "get_ivb_on_same_block",
-           "get_next_ivb_limits_from_point", "get_all_ivb_limits"]
+           "get_next_ivb_limits_from_point", "get_all_ivb_limits", "get_ivb_associated_to_sw"]
 
 
 def get_related_block_of_ivb(ivb_name: str) -> str:
@@ -86,3 +87,16 @@ def _get_next_ivb_limit_on_a_seg(seg: str, downstream: bool, ivb_limits: list[tu
         return matching_ivb_limits[0]
     matching_ivb_limits.sort(key=lambda x: x[1])
     return matching_ivb_limits[0] if downstream else matching_ivb_limits[-1]
+
+
+def get_ivb_associated_to_sw(sw_name: str) -> Optional[str]:
+    """ Get the IVB associated to a switch. """
+    list_ivbs = get_zones_on_object(DCSYS.IVB, DCSYS.Aig, sw_name)
+    if not list_ivbs:
+        print_error(f"Unable to find IVB associated to switch {sw_name}.")
+        return None
+    if len(list_ivbs) > 1:
+        print_error(f"Multiple IVBs on switch {sw_name}: {list_ivbs}.")
+        return None
+    block_name = list_ivbs[0]
+    return block_name

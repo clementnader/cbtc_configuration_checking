@@ -18,8 +18,8 @@ def get_block_min_length(in_cbtc: bool = False):
         block_dict = load_sheet(DCSYS.CDV)
 
     dict_len_block = dict()
-    for block, block_value in block_dict.items():
-        dict_len_block[block] = min(get_list_len_block(block_value))
+    for block_name in block_dict.keys():
+        dict_len_block[block_name] = min(get_list_len_block(block_name))
 
     min_block = min(dict_len_block.values())
     list_min_block = [block for block, block_value in dict_len_block.items()
@@ -38,8 +38,8 @@ def get_block_max_length(in_cbtc: bool = False):
         block_dict = load_sheet(DCSYS.CDV)
 
     dict_len_block = dict()
-    for block, block_value in block_dict.items():
-        dict_len_block[block] = max(get_list_len_block(block_value))
+    for block_name in block_dict.keys():
+        dict_len_block[block_name] = max(get_list_len_block(block_name))
 
     max_block = max(dict_len_block.values())
     list_max_block = [block for block, block_value in dict_len_block.items()

@@ -3,12 +3,12 @@
 
 import os
 from ....utils import *
-from ....dc_sys import *
-from ....dc_par import *
 from ....cctool_oo_schema import *
+from ....dc_sys import *
 from ....dc_sys_draw_path.dc_sys_path_and_distances import *
 from ....dc_sys_draw_path.dc_sys_get_zones import get_zones_intersecting_zone
 from ....dc_sys_sheet_utils import *
+from ....dc_par import *
 from .file_format_utils import *
 
 
@@ -72,6 +72,7 @@ def create_computed_result_file_ze_impacte_fu() -> None:
 
 
 def _create_verif_file(results: dict[str, dict[str, list[tuple[str, ...]]]]) -> str:
+    # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
     update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())
