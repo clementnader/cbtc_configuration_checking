@@ -15,8 +15,7 @@ def get_max_psr_speed_at_point(seg: str, x: float, direction: str = None) -> Opt
     list_psr = get_zones_on_point(DCSYS.ZLPV, seg, x, direction)
     if not list_psr:
         return None
-    psr_dict = load_sheet(DCSYS.ZLPV)
-    max_speed = max([get_dc_sys_value(psr_dict[psr_name], DCSYS.ZLPV.VitesseZlpv) for psr_name in list_psr])
+    max_speed = max([get_dc_sys_value(psr_name, DCSYS.ZLPV.VitesseZlpv) for psr_name in list_psr])
     return max_speed / 3.6  # convert to m/s
 
 
@@ -26,8 +25,7 @@ def get_max_psr_speed_on_zone(obj_type, obj_name: str) -> Optional[float]:
     list_psr = get_zones_intersecting_zone(DCSYS.ZLPV, obj_type, obj_name)
     if not list_psr:
         return None
-    psr_dict = load_sheet(DCSYS.ZLPV)
-    max_speed = max([get_dc_sys_value(psr_dict[psr_name], DCSYS.ZLPV.VitesseZlpv) for psr_name in list_psr])
+    max_speed = max([get_dc_sys_value(psr_name, DCSYS.ZLPV.VitesseZlpv) for psr_name in list_psr])
     return max_speed / 3.6  # convert to m/s
 
 
@@ -37,6 +35,5 @@ def get_max_psr_speed_on_zone_limits(zone_limits) -> Optional[float]:
     list_psr = get_zones_intersecting_zone_limits(DCSYS.ZLPV, zone_limits)
     if not list_psr:
         return None
-    psr_dict = load_sheet(DCSYS.ZLPV)
-    max_speed = max([get_dc_sys_value(psr_dict[psr_name], DCSYS.ZLPV.VitesseZlpv) for psr_name in list_psr])
+    max_speed = max([get_dc_sys_value(psr_name, DCSYS.ZLPV.VitesseZlpv) for psr_name in list_psr])
     return max_speed / 3.6  # convert to m/s

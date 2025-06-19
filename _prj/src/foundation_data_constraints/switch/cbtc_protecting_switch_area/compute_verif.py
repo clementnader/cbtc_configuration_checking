@@ -62,19 +62,20 @@ def compute_verif() -> dict[str, dict[str, Any]]:
                 list_ivb_to_protect.update(_get_ivb_to_protect(sw_locked_ivb, sw_block_locking_area, ivb_dict,
                                                                dist_to_protect, sw_name))
 
-        new_local_speed = _get_local_speed(list(list_ivb_to_protect), max_speed)
-        while new_local_speed > local_speed:  # redo the computation
-            local_speed = new_local_speed
-            dist_to_protect = _get_dist_to_protect(local_speed)
-            if fouling_point_distance:
-                list_ivb_to_protect.update(
-                    _get_ivb_to_protect_with_fp(fouling_point_distance, sw_block_locking_area, ivb_dict,
-                                                dist_to_protect, sw_name))
-            else:  # if no FP info we use the Switch block locking area list
-                for sw_locked_ivb in sw_block_locking_area:
-                    list_ivb_to_protect.update(
-                        _get_ivb_to_protect(sw_locked_ivb, sw_block_locking_area, ivb_dict, dist_to_protect, sw_name))
+        if list_ivb_to_protect:  # it can be empty if the Switch Block Locking Area is sufficient
             new_local_speed = _get_local_speed(list(list_ivb_to_protect), max_speed)
+            while new_local_speed > local_speed:  # redo the computation
+                local_speed = new_local_speed
+                dist_to_protect = _get_dist_to_protect(local_speed)
+                if fouling_point_distance:
+                    list_ivb_to_protect.update(
+                        _get_ivb_to_protect_with_fp(fouling_point_distance, sw_block_locking_area, ivb_dict,
+                                                    dist_to_protect, sw_name))
+                else:  # if no FP info we use the Switch block locking area list
+                    for sw_locked_ivb in sw_block_locking_area:
+                        list_ivb_to_protect.update(
+                            _get_ivb_to_protect(sw_locked_ivb, sw_block_locking_area, ivb_dict, dist_to_protect, sw_name))
+                new_local_speed = _get_local_speed(list(list_ivb_to_protect), max_speed)
 
         local_speed_km_per_h = local_speed * 3.6
         ivb_that_shall_be_added = [ivb for ivb in list_ivb_to_protect if ivb not in cbtc_protecting_switch_area]

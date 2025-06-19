@@ -92,8 +92,8 @@ def route_and_overlap():
     # Analyze DC_SYS with the created CSV files
     # TODO: full rework of the association IXL name / DC_SYS name, take inspiration from the survey.
     # TODO: generate a result file and list at the end the missing info so that the alignment can be done manually.
-    # check_route_control_tables(use_csv_file=True)
-    # check_overlap_control_tables(use_csv_file=True)
+    # check_route_control_tables()
+    # check_overlap_control_tables()
 
     # verify_switches_along_the_routes()  # TODO
     # TODO: verif overlap: du signal jusqu'au VSP tous les IVB et aiguilles (+position) qu'on passe
@@ -152,6 +152,9 @@ def foundation_data_constraints():
     # print(get_objects_in_zone(DCSYS.Zaum, DCSYS.PAS, "ZC_02"))
     # print(get_zones_on_object(DCSYS.PAS, DCSYS.Zaum, "MAZ_STB_110"))
 
+    # --- Verify CBTC Protecting Switch Area definition --- #
+    # check_cbtc_protecting_switch_area()
+
     # --- Verify Sieving Limits definition --- #
     # check_sieving_limit_definition()
 
@@ -164,7 +167,6 @@ def foundation_data_constraints():
     # get_all_possible_border_areas()  # TODO in progress
 
     # check_upstream_and_downstream_ivb_of_all_signals()
-    # check_cbtc_protecting_switch_area()
 
     # verif_calib_distance()
     # ixl_overlap_platform_related()

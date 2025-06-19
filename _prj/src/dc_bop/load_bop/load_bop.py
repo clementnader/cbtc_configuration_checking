@@ -26,6 +26,7 @@ def load_dc_bop() -> dict:
     if not LOADED_SWITCH_DIRS:
         if not DATABASE_LOC.dc_bop_addr:
             print_error(f"DC_BOP address is not filled.")
+        print_log(f"Open DC_BOP file {Color.default}\"{DATABASE_LOC.dc_bop_addr}\"{Color.reset}.")
         wb = load_xlrd_wb(DATABASE_LOC.dc_bop_addr)
         sw_sh = wb.sheet_by_name(SWITCH_SHEET)
         LOADED_SWITCH_DIRS = get_switch_bop(sw_sh)
