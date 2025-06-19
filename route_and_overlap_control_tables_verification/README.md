@@ -31,6 +31,9 @@ The tool automates the verification for the following elements:
 - <ins>**Control Tables**</ins>: They are PDF files provided by IXL containing the Routes definition and the Overlaps definition (in two different files). Multiple Route and multiple Overlap Control Tables can exist on a project when there are multiple IXLs.  
 
 
+- <ins>**Control Tables configuration .ini file**</ins>: It is a file that can be found in the folder "control_tables_configuration". It has to be adapted to match the information from the Control Tables PDF files. We specify the exact name of the information titles in the Control Table and the relative position of the information (either down or right) for the 4 information pieces that are needed for the tool: for Route, they are the Route Name, the Start Signal, the Route IVB Path and the Route Switch Path; for Overlap, they are the Overlap Name, the Associated Signal, the Overlap IVB Path and the Overlap Switch Path.
+
+
 ---
 ### 3.2. Steps to use the tool to compare the DC_SYS information with the survey file(s):
 
@@ -58,12 +61,12 @@ The tool automates the verification for the following elements:
 
 
 4. Then, another window will appear and ask for the type of Control Table (either Route or Overlap), then the Control Tables configuration .ini file that can be found in the folder "control_tables_configuration", and then the Control Tables PDF. <br />
-Once the Control Table PDF file has been selected, you need to select the pages of the PDF that contain the information: either all the pages, or only a range of pages (not that if there are only extra introduction pages, you can select "all pages").
+Once the Control Table PDF file has been selected, you need to select the pages of the PDF that contain the information: either all the pages, or only a range of pages (note that if there are only extra introduction pages, you can select "all pages").
 
-Note that you can add multiple Control Tables Files by clicking the button "ass another control table file".
+Note that you can add multiple Control Tables Files by clicking the button "add another control table file".
 
 
-5. Once these pieces of information have been specified, you can press the button **"Launch Control Table Translation"**. It will extract the info from the PDF and create CSV files. <br />
+5. Once these pieces of information have been specified, you can press the button **"Launch Control Table Translation"**. It will extract the info from the PDF and create CSV files that will be used for the verification. <br />
 Information logs are provided in the command window during the execution.
 
 

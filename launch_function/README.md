@@ -1,11 +1,13 @@
-# CBTC SA Verification Tool
+# CBTC SA Verification various functions
 
-This tool helps with some verifications.
+This tool helps with various verifications. It works with no graphic interface, results and logs are printed in the cmd window and are stored in a log file. In addition, some functions produce a verification file that will be opened at the end of the execution.
+
+User has to modify **"main.py"** file to uncomment the line(s) (by removing the '#' symbol in front of the line) that they want to launch, explanations of the different functions are given in the file, and in particular at the last line starting by "@inputs", it is specified what inputs are required to launch the verifications.
+
+These inputs have to be filled inside **"config.ini"** file.
 
 ---
-## 1. How to use the tool
-
-### 1.1. Inputs to launch the tool
+## 1. Inputs to launch the tool
 
 - <ins>**DC_SYS**</ins>: It is an Excel file (.xls) provided in the project database C_D470 containing the configuration of the line (System Configuration Data / Données de Configuration Système).
 
@@ -17,6 +19,9 @@ This tool helps with some verifications.
 
 
 - <ins>**DC_BOP**</ins>: It is used for the verification of routes and overlaps. It is an Excel file (.xls) provided in the project database C_D470 (directly in the folder or inside subfolder C64_D413) containing the correspondence between the switches position at CBTC level (left/right) and at IXL level (normal/reverse).
+
+
+- <ins>**Fouling Point**</ins>: It is an Excel file (.xlsx) that has to be filled by verification team. The template is available inside fd_checking tool. It contains information from the Scheme Plan of the switch (design) position (KP) and of the fouling point position (KP). It is used to get the distance between the switch point and the fouling point so the reference point is not relevant. The file shall be filled with the fouling point at the largest distance from the switch point. 
 
 
 - <ins>**Block_Definition**</ins>: It is an optional file useful for the survey verification. It is used to establish the mapping between the block names from DC_SYS and the joint names given in the Survey. It is an Excel file containing the denomination of the block limits (joints and buffers). It has to be formatted as follows:
@@ -72,14 +77,8 @@ If this file is not provided, the tool will automatically try to find the block 
 Projects can have various survey files. In that case, user have to specify all information for each file separating the various information with a comma ",".
 
 
-- <ins>**Route Control Tables**</ins>:
-
-
-- <ins>**Overlap Control Tables**</ins>:
-
-
 ---
-### 1.2. Steps to use the tool:
+## 2. Steps to use the tool
 
 0. A preliminary step to take once in order to install the required Python libraries:
    - Modify the file "**install_python_modules.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
