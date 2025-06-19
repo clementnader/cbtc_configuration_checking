@@ -235,10 +235,11 @@ def constraints_and_rules():
     # cf_calib_4()
     # r_dyntag_3()
 
-    # r_cdv_5(r_ivb_1=False, print_ok=True)  # TODO for R_CDV_5:
-    #                                           - regarder pour prendre un param plutôt avec le
-    #                                           hardware/hardware reference plutôt que faire une diff avec le kit C11
-    #                                           - retourner un fichier de vérif pour pouvoir montrer les données
+    # r_cdv_5(print_ok=True)  # TODO for R_CDV_5:
+    #                            - regarder pour prendre un param plutôt avec le
+    #                            hardware/hardware reference plutôt que faire une diff avec le kit C11
+    #                            - retourner un fichier de vérif pour pouvoir montrer les données
+    # r_ivb_1(print_ok=True)
     return
 
 

@@ -20,7 +20,11 @@ from ...fouling_points_utils import *
 __all__ = ["r_cdv_5"]
 
 
-def r_cdv_5(r_ivb_1: bool = False, print_ok: bool = False):
+def r_ivb_1(print_ok: bool = False):
+    return r_cdv_5(ivb=True, print_ok=print_ok)
+
+
+def r_cdv_5(ivb: bool = False, print_ok: bool = False):
     sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
     fp_dict = load_fouling_point_info()
     if not fp_dict:
@@ -29,30 +33,30 @@ def r_cdv_5(r_ivb_1: bool = False, print_ok: bool = False):
     error_counts = [0, 0]
     for sw_name in sw_dict.keys():
         is_sw_upstream = is_sw_point_seg_upstream(sw_name)
-        sw_block_list = _get_block_locking_area(sw_name, r_ivb_1)
-        oriented_limits = _get_block_zone_limits(sw_block_list, r_ivb_1)
+        sw_block_list = _get_block_locking_area(sw_name, ivb)
+        oriented_limits = _get_block_zone_limits(sw_block_list, ivb)
 
         error_counts[0] += test_sw_danger_point(sw_name, sw_block_list, is_sw_upstream,
-                                                oriented_limits, r_ivb_1, print_ok)
+                                                oriented_limits, ivb, print_ok)
         if fp_dict:
             error_counts[1] += test_fouling_point_danger_point(sw_name, sw_block_list, is_sw_upstream,
-                                                               oriented_limits, r_ivb_1, fp_dict, print_ok)
+                                                               oriented_limits, ivb, fp_dict, print_ok)
 
     print()
     if error_counts[0] > 0:
         print(f"{Color.blue}There {'are' if error_counts[0] >= 2 else 'is'} "
               f"{Color.light_blue}{error_counts[0]}{Color.blue} "
-              f"error{'s' if error_counts[0] >= 2 else ''} on {'R_CDV_5' if not r_ivb_1 else 'R_IVB_1'} "
+              f"error{'s' if error_counts[0] >= 2 else ''} on {'R_CDV_5' if not ivb else 'R_IVB_1'} "
               f"with the switch danger point.\n"
               f"{Color.reset}")
     if error_counts[1] > 0:
         print(f"{Color.blue}There {'are' if error_counts[1] >= 2 else 'is'} "
               f"{Color.light_blue}{error_counts[1]}{Color.blue} "
-              f"error{'s' if error_counts[1] >= 2 else ''} on {'R_CDV_5' if not r_ivb_1 else 'R_IVB_1'} "
+              f"error{'s' if error_counts[1] >= 2 else ''} on {'R_CDV_5' if not ivb else 'R_IVB_1'} "
               f"with the fouling points danger points."
               f"{Color.reset}\n")
     if sum(error_counts) == 0:
-        print_success(f"There is no error on {'R_CDV_5' if not r_ivb_1 else 'R_IVB_1'}.")
+        print_success(f"There is no error on {'R_CDV_5' if not ivb else 'R_IVB_1'}.")
     return sum(error_counts) == 0
 
 

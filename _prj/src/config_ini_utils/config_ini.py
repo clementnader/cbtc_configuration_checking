@@ -52,6 +52,21 @@ def update_config_info():
         print_log(f"DC_PAR file is {Color.default}\"{ini_dc_par}\"{Color.reset}.")
         DATABASE_LOC.dc_par_addr = ini_dc_par
 
+    ini_dc_bop = config["database"].get("dc_bop", "").strip()
+    if ini_dc_bop:
+        print_log(f"DC_BOP file is {Color.default}\"{ini_dc_bop}\"{Color.reset}.")
+        DATABASE_LOC.dc_bop_addr = ini_dc_bop
+
+    ini_fouling_point = config["database"].get("fouling_point", "").strip()
+    if ini_fouling_point:
+        print_log(f"Fouling Point file is {Color.default}\"{ini_fouling_point}\"{Color.reset}.")
+        DATABASE_LOC.fouling_point_addr = ini_fouling_point
+
+    ini_block_definition = config["database"].get("block_definition", "").strip()
+    if ini_block_definition:
+        print_log(f"Block Definition file is {Color.default}\"{ini_block_definition}\"{Color.reset}.")
+        DATABASE_LOC.block_def = ini_block_definition
+
     ini_kit_c11_dir = config["database"].get("c11_d470", "").strip()
     if ini_kit_c11_dir:
         print_log(f"C11_D470 folder is {Color.default}\"{ini_kit_c11_dir}\"{Color.reset}.")

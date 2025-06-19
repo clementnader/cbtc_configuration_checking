@@ -33,35 +33,6 @@ def main():
     #check_dc_sys_track_kp_definition()
 
     # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- Functions about DC_SYS zones that are configurable using DC_SYS sheet names ---------- #
-    """Uncomment one of next lines to get from what KP to what KP each track is covered by each object of the
-     specified type (examples below are for GES and Protection_Zone sheets).
-    You have to specify the sheet name from DC_SYS as the argument to select the object type.
-    The tool figures the zone path and will display multiple rows for a same track if there are multiple section of
-     a same track covered by a same zone.
-    @inputs: DC_SYS and CCTool-OO Schema"""
-    #get_zones_kp_limits("GES")
-    #get_zones_kp_limits("Protection_Zone")
-
-    """Uncomment next line to get list of objects of a specified type intersecting a specified zone (example below is
-     to print the list of MAZ (sheet Zaum) intersecting the ZC (sheet PAS) called "ZC_02").
-    You have to specify the sheet names from DC_SYS as the arguments to select the object types.
-    @inputs: DC_SYS and CCTool-OO Schema"""
-    #print(get_objects_in_zone("Zaum", "PAS", "ZC_02"))
-
-    """Uncomment next line to get list of zones covering the specified object (example below is to print the list of ZC
-     (sheet PAS) covering the MAZ (sheet Zaum) called "MAZ_STB_110").
-    You have to specify the sheet names from DC_SYS as the arguments to select the object types.
-    @inputs: DC_SYS and CCTool-OO Schema"""
-    #print(get_zones_on_object("PAS", "Zaum", "MAZ_STB_110"))
-
-    # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- Survey Checking ---------- #
-    """Uncomment next line to use the survey checking tool.
-    @inputs: DC_SYS, CCTool-OO Schema, optionally Block Definition, and Survey information"""
-    #check_survey()
-
-    # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- DC_PAR Checking Customer Data computations ---------- #
     """Uncomment next line to compute the minimal length of a multiple path configuration (trapezoid or rhombus)
      used for Customer Data CD_min_length_multiple_path in DC_PAR_Checking tool.
@@ -74,7 +45,7 @@ def main():
      used for Customer Data CD_smallest_size_of_a_switch_block_heel in DC_PAR_Checking tool.
     You can use argument in_cbtc=True to limit the function to inside CBTC Territory instead of the whole line.
     @inputs: DC_SYS and CCTool-OO Schema"""
-    #smallest_size_of_a_switch_block_heel(in_cbtc=False)
+    #pretty_print_dict(smallest_size_of_a_switch_block_heel(in_cbtc=False))
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: zones definition ---------- #
@@ -121,10 +92,33 @@ def main():
     #r_tm_ats_itf_1(in_cbtc=False)  # Non-Vital, Wayside Remote supervision, ZC <-> ATS Interface, sheet "TM_PAS_ATS"
 
     # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Foundation Data: CBTC Protecting Switch Area ---------- #
+    """Uncomment next line to verify the CBTC protecting switch area so that it contains all IVB that are at a distance
+     lower than the distance travelled during oc_zc_data_freshness_threshold + ixl_cycle_time, from the motor part of
+     the switch (between the switch and the fouling points).
+    This list can be empty if the [switch block locking area] is empty.
+    @inputs: DC_SYS, CCTool-OO Schema, Fouling Point and DC_PAR"""
+    #check_cbtc_protecting_switch_area()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: Allow Accel Calibration at OSP ---------- #
+    """Uncomment one of next lines to verify constraints and rules about flag [Allow Accel Calibration] of OSP (either
+     platform OSP or OSP not platform related).
+    @inputs: DC_SYS, CCTool-OO Schema and DC_PAR"""
+    #cc_quai_6(in_cbtc=False)  # Allow Accel Calibration at platform OSPs
+    #r_point_arret_ato_10(in_cbtc=False)  # Allow Accel Calibration at not platform related OSPs
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Foundation Data: Sieving Limits ---------- #
+    """Uncomment next line to check the definition of the Sieving Limits, and in particular the associated block.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #check_sieving_limit_definition()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: Signal Approach Zone at CBTC level ---------- #
     """Uncomment next line to verify the CBTC Signal Approach Zone so that it is greater than parameter
      train_to_home_signal_max_dist so to respect R_ZSM_3 at CBTC level.
-    @inputs: DC_SYS, CCTool-OO Schema, DC_PAR"""
+    @inputs: DC_SYS, CCTool-OO Schema and DC_PAR"""
     #check_cbtc_sig_apz()
 
     # ---------------------------------------------------------------------------------------------------------------- #
@@ -145,6 +139,52 @@ def main():
     #r_zsm_3(apz_with_tc=False)
 
     # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: R_CDV_5 and R_IVB_1 ---------- #
+    """Uncomment one of next lines to verify rules R_CDV_5 and R_IVB_1.
+    @inputs: DC_SYS, CCTool-OO Schema, Fouling Point and DC_PAR"""
+    #r_cdv_5()
+    #r_ivb_1()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Functions about DC_SYS zones that are configurable using DC_SYS sheet names ---------- #
+    """Uncomment one of next lines to get from what KP to what KP each track is covered by each object of the
+     specified type (examples below are for GES and Protection_Zone sheets).
+    You have to specify the sheet name from DC_SYS as the argument to select the object type.
+    The tool figures the zone path and will display multiple rows for a same track if there are multiple section of
+     a same track covered by a same zone.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #get_zones_kp_limits("GES")
+    #get_zones_kp_limits("Protection_Zone")
+
+    """Uncomment next line to get list of objects of a specified type intersecting a specified zone (example below is
+     to print the list of MAZ (sheet Zaum) intersecting the ZC (sheet PAS) called "ZC_02").
+    You have to specify the sheet names from DC_SYS as the arguments to select the object types.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #print(get_objects_in_zone("Zaum", "PAS", "ZC_02"))
+
+    """Uncomment next line to get list of zones covering the specified object (example below is to print the list of ZC
+     (sheet PAS) covering the MAZ (sheet Zaum) called "MAZ_STB_110").
+    You have to specify the sheet names from DC_SYS as the arguments to select the object types.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #print(get_zones_on_object("PAS", "Zaum", "MAZ_STB_110"))
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Additional Verification about slope at platforms ---------- #
+    """Uncomment next line to get the slope at all platforms, and in particular the smallest and the greatest slope.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #pretty_print_dict(get_min_and_max_slope_at_all_platforms(in_cbtc=False))
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Wayside Additional Verification for v6.3.5 ---------- #
+    """Uncomment next line to help for the verifications of ADD_VERIF_001 and ADD_VERIF_002 of Wayside DPSA Additional
+     Verifications in v6.3.5.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    # --- Min (sum of the length of all physical block of the route) --- #
+    #get_sum_len_route_physical_blocks()
+    # --- Min (length of the first physical block of routes that are in a ZC overlay) --- #
+    #get_first_zc_overlay_route_physical_blocks()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- ZC APPLI IF ---------- #
     """Uncomment next line to compute the ZC APPLI IF "ZE_IMPACTE_FU". Take into account that the directions are
     computed by the tool according to the segments direction, so if there is a depolarization point inside the ZC,
@@ -153,14 +193,20 @@ def main():
     #create_computed_result_file_ze_impacte_fu()
 
     # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- CC Additional Verification about DC_TU files ---------- #
+    # ---------- Survey Checking ---------- #
+    """Uncomment next line to use the survey checking tool.
+    @inputs: DC_SYS, CCTool-OO Schema, optionally Block Definition and Survey information"""
+    #check_survey()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Onboard Additional Verification about DC_TU files ---------- #
     """Uncomment next line to verify the unicity of the IP addresses and of the SSH keys of the DC_TU files
      from every Train Unit (TU) folder of the C11.
     @inputs: C11_D470"""
     #dc_tu_verification()
 
     # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- CC Additional Verification about md5sum regeneration ---------- #
+    # ---------- Onboard Additional Verification about md5sum regeneration ---------- #
     """Uncomment next line to regenerate the C11 MD5 Checksum and compare it to the one already present in the C11.
     @inputs: C11_D470"""
     #verification_of_the_md5_checksum()
@@ -169,7 +215,7 @@ def main():
 
 
 # ------------------------------------------------------------------------------------------------------ #
-""" This part does not have to be updated. """
+""" This part shall not be updated. """
 
 if __name__ == "__main__":
     # Create a log file to store the info printed in the cmd window.
@@ -184,5 +230,5 @@ if __name__ == "__main__":
         # and re-launch a Python instance if needed to take these newly generated files into account.
         init(args, main_file=__file__, log_file_instance=log_file, log_file_name=log_file_name)
 
-        # Main function defined above to launch the selected functions
+        # Main function defined above in this file to launch the selected functions
         main()
