@@ -95,7 +95,7 @@ def print_log(*args, end: str = "\n"):
 G_LAST_COLOR_INDEX = 0
 G_START_TIME = 0
 G_NEXT_EXEC_TIME = None
-C_PROBA = .1
+C_PROBA = .05
 G_COIN_FLIP = numpy.random.random() < C_PROBA
 
 

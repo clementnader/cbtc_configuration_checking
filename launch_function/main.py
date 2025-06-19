@@ -115,7 +115,13 @@ def main():
     #check_sieving_limit_definition()
 
     # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- Constraints and Rules: Signal Approach Zone at CBTC level ---------- #
+    # ---------- Foundation Data: Platform Related Overlaps (Non Vital) ---------- #
+    """Uncomment next line to verify the attribute [Platform Related] of the Overlaps.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #ixl_overlap_platform_related()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: Signal Approach Zone at CBTC level (Non Vital) ---------- #
     """Uncomment next line to verify the CBTC Signal Approach Zone so that it is greater than parameter
      train_to_home_signal_max_dist so to respect R_ZSM_3 at CBTC level.
     @inputs: DC_SYS, CCTool-OO Schema and DC_PAR"""

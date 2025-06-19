@@ -7,7 +7,7 @@ from ....cctool_oo_schema import *
 from ....dc_sys import *
 from ....dc_sys_sheet_utils.signal_utils import get_ivb_limit_of_a_signal
 from ....ixl_utils import get_distance_between_block_and_approach_zone
-from ...ixl_overlap.overlap_platform_related import is_sig_downstream_a_plt
+from ...ixl_overlap.overlap_platform_related import is_sig_plt_exit
 from .file_format_utils import *
 
 
@@ -43,8 +43,8 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
             res_dict[sig_name]["comments"] = "Not a Home Signal."
             continue
 
-        is_plt_rel, plt, plt_limit = is_sig_downstream_a_plt(sig_name)
-        res_dict[sig_name]["platform_related"] = None if not is_plt_rel else "\n".join([plt, plt_limit])
+        is_plt_rel, plt_name = is_sig_plt_exit(sig_name)
+        res_dict[sig_name]["platform_related"] = None if not is_plt_rel else plt_name
 
         dlt_distance = get_dc_sys_value(sig, DCSYS.Sig.DelayedLtDistance)
         res_dict[sig_name]["dlt_distance"] = dlt_distance

@@ -158,6 +158,9 @@ def foundation_data_constraints():
     # --- Verify Sieving Limits definition --- #
     # check_sieving_limit_definition()
 
+    # --- Verify Platform Related Overlaps --- #
+    # ixl_overlap_platform_related()
+
     # get_whole_object_type_kp_limits(DCSYS.CDV)
     # get_whole_object_type_kp_limits(DCSYS.PAS)  # TODO raise a message when there is overlapping
     # TODO create a function to do unions between zones to manage for ZC when it's normal to have overlapping.
@@ -169,7 +172,6 @@ def foundation_data_constraints():
     # check_upstream_and_downstream_ivb_of_all_signals()
 
     # verif_calib_distance()
-    # ixl_overlap_platform_related()
     # get_closest_vsp_in_rear()
 
     # check_signal_with_overlap()
