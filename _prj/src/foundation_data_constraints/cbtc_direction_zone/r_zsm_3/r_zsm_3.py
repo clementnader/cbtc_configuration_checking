@@ -8,7 +8,7 @@ from ....dc_sys import *
 from ....dc_sys_sheet_utils.cbtc_direction_zone_utils import get_cbtc_direction_zone_related_signals
 from ....dc_sys_sheet_utils.signal_utils import get_ivb_limit_of_a_signal
 from ....dc_par import *
-from ....ixl_utils import get_distance_between_block_and_approach_zone
+from ....ixl_utils import get_distance_between_block_and_approach_zone, ixl_apz_definition_file, load_ixl_apz_file
 from .file_format_utils import *
 
 
@@ -25,6 +25,7 @@ def r_zsm_3(apz_with_tc: bool = False):
     # or the first IVB. By default, the first IVB is taken as it is more conservative.
     print_title(f"Verification of R_ZSM_3", color=Color.mint_green)
 
+    load_ixl_apz_file()
     verif_dict = _compute_r_zsm_3_verif(apz_with_tc)
     _create_verif_file(verif_dict)
 
@@ -74,7 +75,12 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
     # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
-    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())
+    if ixl_apz_definition_file() is not None:
+        ixl_apz_file = f"{os.path.split(ixl_apz_definition_file())[-1]}"
+    else:
+        ixl_apz_file = None
+    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version(),
+                                       ixl_apz_file=ixl_apz_file)
     # Create Constraint sheet
     create_constraint_sheet(wb)
     # Create Verification sheet

@@ -146,12 +146,6 @@ def foundation_data_constraints():
     # check_dc_sys_zones_definition()
     # check_dc_sys_track_kp_definition()
 
-    # --- Functions related to zone objects customizable specifying the sheet name --- #
-    # get_zones_kp_limits(DCSYS.Walkways_Area)
-    # get_zones_kp_limits(DCSYS.Protection_Zone)
-    # print(get_objects_in_zone(DCSYS.Zaum, DCSYS.PAS, "ZC_02"))
-    # print(get_zones_on_object(DCSYS.PAS, DCSYS.Zaum, "MAZ_STB_110"))
-
     # --- Verify CBTC Protecting Switch Area definition --- #
     # check_cbtc_protecting_switch_area()
 
@@ -160,6 +154,12 @@ def foundation_data_constraints():
 
     # --- Verify Platform Related Overlaps --- #
     # ixl_overlap_platform_related()
+
+    # --- Functions related to zone objects customizable specifying the sheet name --- #
+    # get_zones_kp_limits(DCSYS.Walkways_Area)
+    # get_zones_kp_limits(DCSYS.Protection_Zone)
+    # print(get_objects_in_zone(DCSYS.Zaum, DCSYS.PAS, "ZC_02"))
+    # print(get_zones_on_object(DCSYS.PAS, DCSYS.Zaum, "MAZ_STB_110"))
 
     # get_whole_object_type_kp_limits(DCSYS.CDV)
     # get_whole_object_type_kp_limits(DCSYS.PAS)  # TODO raise a message when there is overlapping
@@ -196,7 +196,7 @@ def constraints_and_rules():
     # cf_zsm_cbtc_10()
 
     # Floor Level constraints
-    # cf_flr_lvl_1()
+    # cf_flr_lvl_1()  # TODO simply print something if there is no Floor Level
 
     # MAZ constraints
     # cf_zaum_1()
@@ -230,11 +230,11 @@ def constraints_and_rules():
 
     # Constraints related to signal Approach Zone
     # check_cbtc_sig_apz()
-    # cf_signal_12(apz_with_tc=False)  # TODO: write IXL APZ info in Header sheet
+    # cf_signal_12(apz_with_tc=False)
     # r_zsm_3(apz_with_tc=False)
 
     # Extra constraints
-    # cf_calib_4()
+    # cf_calib_4()  # TODO corriger quand les 2 balises sont sur le même segment
     # r_dyntag_3()
 
     # r_cdv_5(print_ok=True)  # TODO for R_CDV_5:

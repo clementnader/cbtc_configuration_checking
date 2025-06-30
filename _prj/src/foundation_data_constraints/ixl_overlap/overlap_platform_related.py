@@ -7,7 +7,7 @@ from ...dc_sys import *
 from ...dc_sys_draw_path.dc_sys_get_zones import get_zones_on_object, get_zones_intersecting_zone, get_objects_in_zone
 
 
-__all__ = ["ixl_overlap_platform_related", "is_sig_plt_exit"]
+__all__ = ["ixl_overlap_platform_related", "is_sig_plt_exit", "is_ivb_plt_related"]
 
 
 def ixl_overlap_platform_related():
@@ -39,13 +39,16 @@ def is_sig_plt_exit(sig_name) -> tuple[bool, Optional[str]]:
     if len(ivb_on_sig) > 1:
         print_error(f"There are multiple IVBs on signal {sig_name}: {ivb_on_sig}.")
     ivb_name = ivb_on_sig[0]
+    return is_ivb_plt_related(ivb_name)
+
+
+def is_ivb_plt_related(ivb_name: str) -> tuple[bool, Optional[str]]:
     plt_on_ivb = get_zones_intersecting_zone(DCSYS.Quai, DCSYS.IVB, ivb_name)
     if not plt_on_ivb:
         return False, None
     if len(plt_on_ivb) > 1:
         print_error(f"There are multiple platforms on IVB {ivb_name}: {plt_on_ivb}.")
     plt_name = plt_on_ivb[0]
-
     return True, plt_name
 
 

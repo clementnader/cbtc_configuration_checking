@@ -657,16 +657,36 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Chennai CMRL -------------------------------#
         elif project_name == Projects.Chennai_CMRL:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_C_D470_08_03_01_V02_01\DC_SYS.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_C_D470_08_03_01_V02_01\DC_PAR.xls"
-            self.dc_bop_addr = (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_C_D470_08_03_01_V02_01"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V02_01\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V02_01\DC_PAR.xls"
+            self.dc_bop_addr = (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V02_01"
                                 r"\C64_D413\DC_BOP.xls")
             # -- Control Tables -- #
+            # self.control_tables_config_ini_file = r"control_tables_configuration_cmrl_s1.ini"
             self.control_tables_route.control_tables_addr = [
                 (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
-                 r"\CMRL-14057_01.03 Annexure B_Route_Control_Table.pdf")]
-            self.control_tables_route.all_pages = [True]
-            self.control_tables_route.specific_pages = [None]
+                 r"\CMRL-14057-02.01-STAGE 1 Annexure B_Route_Control_Table.pdf"),
+                (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
+                 r"\CMRL-14093-03.01-POONAMALLEE DEPOT Annexure B_Route_Control_Table.pdf"),
+            ]
+            self.control_tables_route.all_pages = [True, True]
+            self.control_tables_route.specific_pages = [None, None]
+            self.control_tables_overlap.control_tables_addr = [
+                (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
+                 r"\CMRL-14057-02.01-STAGE 1 Annexure F_Overlap_Control_Table.pdf"),
+                (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
+                 r"\CMRL-14093-03.01-POONAMALLEE DEPOT Annexure E_Overlap Control Table.pdf"),
+            ]
+            self.control_tables_overlap.all_pages = [True, True]
+            self.control_tables_overlap.specific_pages = [None, None]
+            # -- IXL Approach Zone -- #
+            self.ixl_apz.ixl_apz_file = (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL"
+                                         r"\IXL_APZ_CMRL-16061_INSTANTIATED CBTC - IXL ICDD_rev01.02.xlsx")
+            self.ixl_apz.ixl_apz_sheet_name = r"IXL_APZ"
+            self.ixl_apz.start_line = 2
+            self.ixl_apz.sig_column = "A"
+            self.ixl_apz.apz_start_column = 3
+            self.ixl_apz.apz_nb_columns = 3
 
         # ------------------------------- Kolkata KMRC -------------------------------#
         elif project_name == Projects.Kolkata_KMRC:

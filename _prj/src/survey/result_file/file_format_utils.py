@@ -83,6 +83,7 @@ def _set_conditional_formatting(ws: xl_ws.Worksheet, extra_column: bool):
                                         value="\"Not Surveyed\"", font_color=XlFontColor.dark_red, bold=True)
     add_is_equal_conditional_formatting(ws, cell_range=diff_and_status_range,
                                         value="\"Not in DC_SYS\"", font_color=XlFontColor.orange)
+
     # Multiple ranges are separated by a space in openpyxl cell ranges.
     add_is_equal_conditional_formatting(ws, cell_range=f"{status_range} {manual_range}",
                                         value="\"OK\"", font_color=XlFontColor.ok, bg_color=XlBgColor.ok)

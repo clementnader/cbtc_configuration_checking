@@ -6,10 +6,11 @@ from ....dc_par import *
 
 
 __all__ = ["create_empty_verif_sheet", "create_parameters_sheet", "create_constraint_sheet",
-           "SIGNAL_NAME_COL", "TYPE_COL", "DIRECTION_COL", "PLATFORM_RELATED_COL", "IXL_APZ_COL",
+           "SIGNAL_NAME_COL", "TYPE_COL", "DIRECTION_COL", "IXL_APZ_COL",
            "DOWNSTREAM_LIM_SEG_COL", "DOWNSTREAM_LIM_X_COL", "DOWNSTREAM_LIM_TRACK_COL", "DOWNSTREAM_LIM_KP_COL",
            "UPSTREAM_LIM_SEG_COL", "UPSTREAM_LIM_X_COL", "UPSTREAM_LIM_TRACK_COL", "UPSTREAM_LIM_KP_COL",
-           "IXL_APZ_LENGTH_COL", "VALUE_TO_REMOVE_COL", "MIN_DIST_COL", "DLT_DIST_COL", "STATUS_COL", "COMMENTS_COL"]
+           "IXL_APZ_LENGTH_COL", "UPSTREAM_IVB_PLATFORM_RELATED_COL", "VALUE_TO_REMOVE_COL", "MIN_DIST_COL",
+           "DLT_DIST_COL", "STATUS_COL", "COMMENTS_COL"]
 
 
 VERIF_SHEET = "CF_SIGNAL_12"
@@ -17,17 +18,17 @@ VERIF_SHEET = "CF_SIGNAL_12"
 SIGNAL_NAME_COL = "A"
 TYPE_COL = "B"
 DIRECTION_COL = "C"
-PLATFORM_RELATED_COL = "D"
-IXL_APZ_COL = "E"
-DOWNSTREAM_LIM_SEG_COL = "F"
-DOWNSTREAM_LIM_X_COL = "G"
-DOWNSTREAM_LIM_TRACK_COL = "H"
-DOWNSTREAM_LIM_KP_COL = "I"
-UPSTREAM_LIM_SEG_COL = "J"
-UPSTREAM_LIM_X_COL = "K"
-UPSTREAM_LIM_TRACK_COL = "L"
-UPSTREAM_LIM_KP_COL = "M"
-IXL_APZ_LENGTH_COL = "N"
+IXL_APZ_COL = "D"
+DOWNSTREAM_LIM_SEG_COL = "E"
+DOWNSTREAM_LIM_X_COL = "F"
+DOWNSTREAM_LIM_TRACK_COL = "G"
+DOWNSTREAM_LIM_KP_COL = "H"
+UPSTREAM_LIM_SEG_COL = "I"
+UPSTREAM_LIM_X_COL = "J"
+UPSTREAM_LIM_TRACK_COL = "K"
+UPSTREAM_LIM_KP_COL = "L"
+IXL_APZ_LENGTH_COL = "M"
+UPSTREAM_IVB_PLATFORM_RELATED_COL = "N"
 VALUE_TO_REMOVE_COL = "O"
 MIN_DIST_COL = "P"
 DLT_DIST_COL = "Q"
@@ -61,7 +62,6 @@ def _set_columns_width(ws: xl_ws.Worksheet):
     ws.column_dimensions[SIGNAL_NAME_COL].width = 23
     ws.column_dimensions[TYPE_COL].width = 19
     ws.column_dimensions[DIRECTION_COL].width = 13
-    ws.column_dimensions[PLATFORM_RELATED_COL].width = 23
     ws.column_dimensions[IXL_APZ_COL].width = 19.5
     ws.column_dimensions[DOWNSTREAM_LIM_SEG_COL].width = 10
     ws.column_dimensions[DOWNSTREAM_LIM_X_COL].width = 7.5
@@ -72,6 +72,7 @@ def _set_columns_width(ws: xl_ws.Worksheet):
     ws.column_dimensions[UPSTREAM_LIM_TRACK_COL].width = 14
     ws.column_dimensions[UPSTREAM_LIM_KP_COL].width = 8.5
     ws.column_dimensions[IXL_APZ_LENGTH_COL].width = 10.5
+    ws.column_dimensions[UPSTREAM_IVB_PLATFORM_RELATED_COL].width = 23
     ws.column_dimensions[VALUE_TO_REMOVE_COL].width = 10.5
     ws.column_dimensions[MIN_DIST_COL].width = 10.5
     ws.column_dimensions[DLT_DIST_COL].width = 10.5
@@ -80,6 +81,21 @@ def _set_columns_width(ws: xl_ws.Worksheet):
 
 
 def _set_conditional_formatting(ws: xl_ws.Worksheet):
+    # Overshoot Recovery Parameters Formatting
+    # Multiple ranges are separated by a space in openpyxl cell ranges
+    upstream_ivb_plt_rel_n_value_to_remove_range = (get_cell_range(start_column=UPSTREAM_IVB_PLATFORM_RELATED_COL,
+                                                                   start_row=3,
+                                                                   end_column=UPSTREAM_IVB_PLATFORM_RELATED_COL) +
+                                                    " " + get_cell_range(start_column=VALUE_TO_REMOVE_COL,
+                                                                         start_row=3,
+                                                                         end_column=VALUE_TO_REMOVE_COL))
+
+    add_formula_conditional_formatting(ws, cell_range=upstream_ivb_plt_rel_n_value_to_remove_range,
+                                       formula=f"AND(inhibit_simple_overshoot_recovery = FALSE, "
+                                               f"${UPSTREAM_IVB_PLATFORM_RELATED_COL}3<>\"\")",
+                                       bg_color=XlBgColor.light_pink2)
+
+    # Status Conditional Formatting
     status_range = get_cell_range(start_column=STATUS_COL, end_column=STATUS_COL)
 
     add_is_equal_conditional_formatting(ws, cell_range=status_range,
@@ -103,10 +119,6 @@ def _write_columns_title(ws: xl_ws.Worksheet, row: int):
     create_merged_cell(ws, f"Direction", start_row=row, end_row=row+1,
                        start_column=DIRECTION_COL, end_column=DIRECTION_COL,
                        align_horizontal=XlAlign.center, bold=True, borders=True, bg_color=XlBgColor.dc_sys_orange)
-    # Platform Related
-    create_merged_cell(ws, f"Platform Related", start_row=row, end_row=row+1,
-                       start_column=PLATFORM_RELATED_COL, end_column=PLATFORM_RELATED_COL,
-                       align_horizontal=XlAlign.center, bold=True, borders=True, bg_color=XlBgColor.dc_sys_pink)
     # IXL APZ
     create_merged_cell(ws, f"IXL Approach Zone", start_row=row, end_row=row+1,
                        start_column=IXL_APZ_COL, end_column=IXL_APZ_COL,
@@ -139,6 +151,10 @@ def _write_columns_title(ws: xl_ws.Worksheet, row: int):
     create_merged_cell(ws, f"IXL APZ Length", start_row=row, end_row=row+1,
                        start_column=IXL_APZ_LENGTH_COL, end_column=IXL_APZ_LENGTH_COL,
                        align_horizontal=XlAlign.center, bold=True, borders=True, bg_color=XlBgColor.dc_sys_cyan)
+    # Upstream IVB Platform Related
+    create_merged_cell(ws, f"Upstream IVB\nPlatform Related", start_row=row, end_row=row+1,
+                       start_column=UPSTREAM_IVB_PLATFORM_RELATED_COL, end_column=UPSTREAM_IVB_PLATFORM_RELATED_COL,
+                       align_horizontal=XlAlign.center, bold=True, borders=True, bg_color=XlBgColor.dc_sys_pink)
     # Value to remove
     create_merged_cell(ws, f"Value to remove", start_row=row, end_row=row+1,
                        start_column=VALUE_TO_REMOVE_COL, end_column=VALUE_TO_REMOVE_COL,

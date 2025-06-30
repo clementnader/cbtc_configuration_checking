@@ -59,12 +59,12 @@ def _read_control_tables_ini_info():
     # associated_signal
     name, right = _split_ini_info(overlap_control_table_config, "associated_signal")
     OVERLAP_INFORMATION["associated_signal"] = {"name": name, "right": right, "csv_name": OVERLAP_SIGNAL_NAME_KEY}
-    # ovl_ivb_path
-    name, right = _split_ini_info(overlap_control_table_config, "ovl_ivb_path")
-    OVERLAP_INFORMATION["ovl_ivb_path"] = {"name": name, "right": right, "csv_name": OVERLAP_IVB_LIST_KEY}
-    # ovl_switch_path
-    name, right = _split_ini_info(overlap_control_table_config, "ovl_switch_path")
-    OVERLAP_INFORMATION["ovl_switch_path"] = {"name": name, "right": right, "csv_name": OVERLAP_SWITCHES_LIST_KEY}
+    # overlap_ivb_path
+    name, right = _split_ini_info(overlap_control_table_config, "overlap_ivb_path")
+    OVERLAP_INFORMATION["overlap_ivb_path"] = {"name": name, "right": right, "csv_name": OVERLAP_IVB_LIST_KEY}
+    # overlap_switch_path
+    name, right = _split_ini_info(overlap_control_table_config, "overlap_switch_path")
+    OVERLAP_INFORMATION["overlap_switch_path"] = {"name": name, "right": right, "csv_name": OVERLAP_SWITCHES_LIST_KEY}
 
 
 def _split_ini_info(control_table_config: configparser.SectionProxy, option: str) -> tuple[str, bool]:

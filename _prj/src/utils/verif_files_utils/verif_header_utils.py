@@ -29,6 +29,7 @@ def update_header_sheet_for_verif_file(wb: openpyxl.workbook.Workbook, title: st
                                        tool_name: str = None, tool_version: str = None,
                                        survey_display_info_list: list[str] = None,
                                        block_definition_display_info: Optional[str] = None,
+                                       ixl_apz_file: Optional[str] = None
                                        ) -> None:
     ws = get_xl_sheet_by_name(wb, HEADER_SHEET_NAME)
     # Add title cell
@@ -38,7 +39,8 @@ def update_header_sheet_for_verif_file(wb: openpyxl.workbook.Workbook, title: st
     # Add info cells
     _add_info_cells(ws, row + 2, c_d470=c_d470, c11_d470=c11_d470, c121_d470=c121_d470,
                     tool_name=tool_name, tool_version=tool_version,
-                    survey=survey_display_info_list, block_def=block_definition_display_info)
+                    survey=survey_display_info_list, block_def=block_definition_display_info,
+                    ixl_apz_file=ixl_apz_file)
 
 
 def _add_title_cells(ws: xl_ws.Worksheet, title: str) -> int:
@@ -75,6 +77,7 @@ def _add_info_cells(ws: xl_ws.Worksheet, row: int,
                     tool_name: str = None, tool_version: str = None,
                     survey: list[str] = None,
                     block_def: Optional[str] = None,
+                    ixl_apz_file: Optional[str] = None
                     ) -> None:
 
     # Core CBTC Referential
@@ -114,6 +117,12 @@ def _add_info_cells(ws: xl_ws.Worksheet, row: int,
         row += 1
         create_cell(ws, "Block Definition file:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
         create_cell(ws, block_def, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
+
+    # IXL Approach Zone file
+    if ixl_apz_file is not None:
+        row += 1
+        create_cell(ws, "IXL Approach Zone file:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+        create_cell(ws, ixl_apz_file, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # Date
     row += 1

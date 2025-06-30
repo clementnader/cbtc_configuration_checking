@@ -6,8 +6,8 @@ from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
 from ....dc_sys_sheet_utils.signal_utils import get_ivb_limit_of_a_signal
-from ....ixl_utils import get_distance_between_block_and_approach_zone
-from ...ixl_overlap.overlap_platform_related import is_sig_plt_exit
+from ....ixl_utils import get_distance_between_block_and_approach_zone, ixl_apz_definition_file, load_ixl_apz_file
+from ...ixl_overlap.overlap_platform_related import is_ivb_plt_related
 from .file_format_utils import *
 
 
@@ -24,6 +24,7 @@ def cf_signal_12(apz_with_tc: bool = False):
     # or the first IVB. By default, the first IVB is taken as it is more conservative.
     print_title(f"Verification of CF_SIGNAL_12", color=Color.mint_green)
 
+    load_ixl_apz_file()
     verif_dict = _compute_cf_signal_12_verif(apz_with_tc)
     _create_verif_file(verif_dict)
 
@@ -42,9 +43,6 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
             res_dict[sig_name]["status"] = "NA"
             res_dict[sig_name]["comments"] = "Not a Home Signal."
             continue
-
-        is_plt_rel, plt_name = is_sig_plt_exit(sig_name)
-        res_dict[sig_name]["platform_related"] = None if not is_plt_rel else plt_name
 
         dlt_distance = get_dc_sys_value(sig, DCSYS.Sig.DelayedLtDistance)
         res_dict[sig_name]["dlt_distance"] = dlt_distance
@@ -68,6 +66,15 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
                                               "and to compute a path.")
             continue
 
+        upstream_ivb = _get_upstream_ivb(corresponding_entrance, ivb_names)
+        if upstream_ivb is None:
+            is_upstream_ivb_plt_rel = None
+            plt_name = None
+        else:
+            is_upstream_ivb_plt_rel, plt_name = is_ivb_plt_related(upstream_ivb)
+        res_dict[sig_name]["upstream_ivb_platform_related"] = (None if not is_upstream_ivb_plt_rel
+                                                               else f"{upstream_ivb}\n{plt_name}")
+
         res_dict[sig_name]["ixl_apz_dist"] = apz_dist
 
         corresponding_entrance_track, corresponding_entrance_kp = from_seg_offset_to_track_kp(*corresponding_entrance)
@@ -81,11 +88,28 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
     return res_dict
 
 
+def _get_upstream_ivb(corresponding_entrance: tuple[str, float], ivb_names: str) -> Optional[str]:
+    list_ivb = ivb_names.split(", ")
+    ivb_dict = load_sheet(DCSYS.IVB)
+    for ivb_name, ivb_value in ivb_dict.items():
+        if ivb_name in list_ivb:
+            continue
+        for ivb_seg, ivb_x in get_dc_sys_zip_values(ivb_value, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X):
+            if are_points_matching(*corresponding_entrance, ivb_seg, ivb_x):
+                return ivb_name
+    return None
+
+
 def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
     # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
-    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())
+    if ixl_apz_definition_file() is not None:
+        ixl_apz_file = f"{os.path.split(ixl_apz_definition_file())[-1]}"
+    else:
+        ixl_apz_file = None
+    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version(),
+                                       ixl_apz_file=ixl_apz_file)
     # Create Constraint sheet
     create_constraint_sheet(wb)
     # Create Verification sheet
@@ -112,7 +136,7 @@ def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[st
         sig_name = obj_val.get("sig_name")
         sig_type = obj_val.get("sig_type")
         sig_direction = obj_val.get("sig_direction")
-        platform_related = obj_val.get("platform_related")
+        upstream_ivb_platform_related = obj_val.get("upstream_ivb_platform_related")
         ixl_apz = obj_val.get("ixl_apz")
         downstream_seg = obj_val.get("downstream_seg")
         downstream_x = obj_val.get("downstream_x")
@@ -127,26 +151,26 @@ def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[st
         status = obj_val.get("status")
         comments = obj_val.get("comments")
 
-        _add_line_info(ws, row, sig_name, sig_type, sig_direction, platform_related, ixl_apz,
-                       downstream_seg, downstream_x, downstream_track, downstream_kp,
-                       upstream_seg, upstream_x, upstream_track, upstream_kp,
-                       ixl_apz_dist, dlt_distance)
-        _add_value_to_remove(ws, row, status, inhibit_simple_overshoot_recovery, platform_related)
+        _add_line_info(ws, row, sig_name, sig_type, sig_direction, ixl_apz,
+                       downstream_seg, downstream_x, downstream_track, downstream_kp, upstream_seg, upstream_x,
+                       upstream_track, upstream_kp, ixl_apz_dist, upstream_ivb_platform_related, dlt_distance)
+        _add_value_to_remove(ws, row, status)
         _add_status(ws, row, status)
-        _add_comments(ws, row, comments, inhibit_simple_overshoot_recovery, platform_related)
+        _add_comments(ws, row, comments, inhibit_simple_overshoot_recovery, upstream_ivb_platform_related)
 
     if inhibit_simple_overshoot_recovery is True:
         # no overshoot recovery, the column for the Related Platform can be hidden
-        ws.column_dimensions[PLATFORM_RELATED_COL].hidden = True
+        ws.column_dimensions[UPSTREAM_IVB_PLATFORM_RELATED_COL].hidden = True
 
 
 def _add_line_info(ws: xl_ws.Worksheet, row: int, sig_name: str,
-                   sig_type: str, sig_direction: str, platform_related: Optional[str], ixl_apz: Optional[str],
+                   sig_type: str, sig_direction: str, ixl_apz: Optional[str],
                    downstream_seg: Optional[str], downstream_x: Optional[float],
                    downstream_track: Optional[str], downstream_kp: Optional[float],
                    upstream_seg: Optional[str], upstream_x: Optional[float],
                    upstream_track: Optional[str], upstream_kp: Optional[float],
-                   ixl_apz_dist: Optional[float], dlt_distance: Optional[float]) -> None:
+                   ixl_apz_dist: Optional[float], upstream_ivb_platform_related: Optional[str],
+                   dlt_distance: Optional[float]) -> None:
     # Signal Name
     create_cell(ws, sig_name, row=row, column=SIGNAL_NAME_COL, borders=True)
     # Type
@@ -158,11 +182,6 @@ def _add_line_info(ws: xl_ws.Worksheet, row: int, sig_name: str,
     # IXL Approach Zone
     create_cell(ws, ixl_apz, row=row, column=IXL_APZ_COL, borders=True, line_wrap=True,
                 align_horizontal=XlAlign.center)
-    # Platform Related
-    create_cell(ws, platform_related, row=row, column=PLATFORM_RELATED_COL, borders=True, line_wrap=True,
-                align_horizontal=XlAlign.center)
-    if platform_related is not None:
-        set_bg_color(ws, bg_color=XlBgColor.light_pink2, row=row, column=PLATFORM_RELATED_COL)
     # Downstream Seg
     create_cell(ws, downstream_seg, row=row, column=DOWNSTREAM_LIM_SEG_COL, borders=True)
     # Downstream x
@@ -186,26 +205,26 @@ def _add_line_info(ws: xl_ws.Worksheet, row: int, sig_name: str,
     # IXL APZ Length
     create_cell(ws, ixl_apz_dist, row=row, column=IXL_APZ_LENGTH_COL, borders=True,
                 align_horizontal=XlAlign.center, nb_of_digits=2)
+    # Upstream IVB Platform Related
+    create_cell(ws, upstream_ivb_platform_related, row=row, column=UPSTREAM_IVB_PLATFORM_RELATED_COL, borders=True,
+                line_wrap=True, align_horizontal=XlAlign.center)
     # DLT Distance
     create_cell(ws, dlt_distance, row=row, column=DLT_DIST_COL, borders=True,
                 align_horizontal=XlAlign.center, nb_of_digits=2)
 
 
-def _add_value_to_remove(ws: xl_ws.Worksheet, row: int, status: Optional[str],
-                         inhibit_simple_overshoot_recovery: bool, platform_related: Optional[str]) -> None:
+def _add_value_to_remove(ws: xl_ws.Worksheet, row: int, status: Optional[str]) -> None:
     if status is not None:
         create_cell(ws, None, row=row, column=VALUE_TO_REMOVE_COL, borders=True,
                     align_horizontal=XlAlign.center)
         return
     # Value to remove
-    formula = (f'= IF(OR(inhibit_simple_overshoot_recovery = TRUE, {PLATFORM_RELATED_COL}{row} = ""),\n '
+    formula = (f'= IF(OR(inhibit_simple_overshoot_recovery = TRUE, {UPSTREAM_IVB_PLATFORM_RELATED_COL}{row} = ""),\n '
                f'(at_deshunt_max_dist + block_laying_uncertainty + MAX(mtc_rollback_dist, at_rollback_dist)),\n '
                f'(at_deshunt_max_dist + block_laying_uncertainty + MAX(mtc_rollback_dist, at_rollback_dist, '
                f'overshoot_recovery_dist + overshoot_recovery_stopping_max_dist)))')
     create_cell(ws, formula, row=row, column=VALUE_TO_REMOVE_COL, borders=True,
                 align_horizontal=XlAlign.center, nb_of_digits=3)
-    if not inhibit_simple_overshoot_recovery and platform_related is not None:
-        set_bg_color(ws, bg_color=XlBgColor.light_pink2, row=row, column=VALUE_TO_REMOVE_COL)
 
 
 def _add_status(ws: xl_ws.Worksheet, row: int, status: Optional[str]) -> None:
@@ -230,6 +249,6 @@ def _add_comments(ws: xl_ws.Worksheet, row: int, comments: Optional[str],
         create_cell(ws, comments, row=row, column=COMMENTS_COL, borders=True, line_wrap=True)
         return
     if not inhibit_simple_overshoot_recovery and platform_related is not None:
-        comments = ("Overshoot Recovery parameters are considered only for platform-related signals, "
-                    "where overshoot recovery can be used.")
+        comments = ("Overshoot Recovery parameters are considered only when IVB upstream the IXL APZ is platform "
+                    "related, where overshoot recovery can be used.")
     create_cell(ws, comments, row=row, column=COMMENTS_COL, borders=True, line_wrap=True)

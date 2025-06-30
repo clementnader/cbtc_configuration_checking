@@ -68,7 +68,7 @@ def _get_entrance_points_of_approach_zone(sig_name: str, list_ivb: list[str]) ->
 
 
 def _get_approach_area_ivb(sig_name: str, apz_with_tc: bool = False) -> list[str]:
-    if ixl_apz_definition_file():
+    if ixl_apz_definition_file() is not None:
         apz_ivb_list = get_approach_area_ivb_from_excel_file(sig_name)
         if apz_ivb_list is not None:
             return apz_ivb_list
