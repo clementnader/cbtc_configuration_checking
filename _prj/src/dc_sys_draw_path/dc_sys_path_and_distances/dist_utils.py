@@ -119,6 +119,9 @@ def get_dist(seg1: str, x1: float, seg2: str, x2: float, verbose: bool = False,
 
 def get_dist_downstream(seg1: str, x1: Optional[float], seg2: str, x2: Optional[float], downstream: bool
                         ) -> Optional[float]:
+    if x1 is not None and x2 is not None and are_points_matching(seg1, x1, seg2, x2, tolerance=1E-4):
+        return 0.
+
     if x1 is not None:
         x1 = float(x1)
     if x2 is not None:

@@ -81,6 +81,7 @@ def min_length_multiple_path(in_cbtc: bool = False):
         f.write(create_csv_file(multiple_path_len_dict))
         print(f"{Color.white}CSV file with the different multiple-path configurations is available at{Color.reset}"
               f"\n{Color.yellow}{os.path.realpath(result_file)}{Color.reset}")
+    open_excel_file(result_file)
     return multiple_path_len_dict
 
 
@@ -118,9 +119,10 @@ def get_switch_on_path(path: list[str]) -> list[tuple[str, str]]:
 
 
 def create_csv_file(multiple_path_len_dict: dict[str, dict[str, Any]]):
-    csv = "sep=;\n"
+    csv = ""
     for line in multiple_path_len_dict.values():
         if not csv:
             csv += ";".join([key for key in line]) + "\n"
         csv += ";".join([str(val) for val in line.values()]) + "\n"
+    csv = "sep=;\n" + csv
     return csv

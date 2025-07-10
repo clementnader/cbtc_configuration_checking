@@ -160,6 +160,7 @@ def foundation_data_constraints():
     # get_zones_kp_limits(DCSYS.Protection_Zone)
     # print(get_objects_in_zone(DCSYS.Zaum, DCSYS.PAS, "ZC_02"))
     # print(get_zones_on_object(DCSYS.PAS, DCSYS.Zaum, "MAZ_STB_110"))
+    # get_signals_distance_to_joint()
 
     # get_whole_object_type_kp_limits(DCSYS.CDV)
     # get_whole_object_type_kp_limits(DCSYS.PAS)  # TODO raise a message when there is overlapping

@@ -217,6 +217,7 @@ def main():
     @inputs: C11_D470"""
     #verification_of_the_md5_checksum()
 
+    #get_signals_distance_to_joint()
     return
 
 
