@@ -9,7 +9,7 @@ __all__ = ["create_empty_verif_sheet", "create_parameters_sheet", "create_constr
            "SIGNAL_NAME_COL", "TYPE_COL", "DIRECTION_COL", "IXL_APZ_COL",
            "DOWNSTREAM_LIM_SEG_COL", "DOWNSTREAM_LIM_X_COL", "DOWNSTREAM_LIM_TRACK_COL", "DOWNSTREAM_LIM_KP_COL",
            "UPSTREAM_LIM_SEG_COL", "UPSTREAM_LIM_X_COL", "UPSTREAM_LIM_TRACK_COL", "UPSTREAM_LIM_KP_COL",
-           "IXL_APZ_LENGTH_COL", "UPSTREAM_IVB_PLATFORM_RELATED_COL", "VALUE_TO_REMOVE_COL", "MIN_DIST_COL",
+           "IXL_APZ_LENGTH_COL", "LAST_IVB_PLATFORM_RELATED_COL", "VALUE_TO_REMOVE_COL", "MIN_DIST_COL",
            "DLT_DIST_COL", "STATUS_COL", "COMMENTS_COL"]
 
 
@@ -28,7 +28,7 @@ UPSTREAM_LIM_X_COL = "J"
 UPSTREAM_LIM_TRACK_COL = "K"
 UPSTREAM_LIM_KP_COL = "L"
 IXL_APZ_LENGTH_COL = "M"
-UPSTREAM_IVB_PLATFORM_RELATED_COL = "N"
+LAST_IVB_PLATFORM_RELATED_COL = "N"
 VALUE_TO_REMOVE_COL = "O"
 MIN_DIST_COL = "P"
 DLT_DIST_COL = "Q"
@@ -72,7 +72,7 @@ def _set_columns_width(ws: xl_ws.Worksheet):
     ws.column_dimensions[UPSTREAM_LIM_TRACK_COL].width = 14
     ws.column_dimensions[UPSTREAM_LIM_KP_COL].width = 8.5
     ws.column_dimensions[IXL_APZ_LENGTH_COL].width = 10.5
-    ws.column_dimensions[UPSTREAM_IVB_PLATFORM_RELATED_COL].width = 23
+    ws.column_dimensions[LAST_IVB_PLATFORM_RELATED_COL].width = 23
     ws.column_dimensions[VALUE_TO_REMOVE_COL].width = 10.5
     ws.column_dimensions[MIN_DIST_COL].width = 10.5
     ws.column_dimensions[DLT_DIST_COL].width = 10.5
@@ -83,16 +83,16 @@ def _set_columns_width(ws: xl_ws.Worksheet):
 def _set_conditional_formatting(ws: xl_ws.Worksheet):
     # Overshoot Recovery Parameters Formatting
     # Multiple ranges are separated by a space in openpyxl cell ranges
-    upstream_ivb_plt_rel_n_value_to_remove_range = (get_cell_range(start_column=UPSTREAM_IVB_PLATFORM_RELATED_COL,
+    upstream_ivb_plt_rel_n_value_to_remove_range = (get_cell_range(start_column=LAST_IVB_PLATFORM_RELATED_COL,
                                                                    start_row=3,
-                                                                   end_column=UPSTREAM_IVB_PLATFORM_RELATED_COL) +
+                                                                   end_column=LAST_IVB_PLATFORM_RELATED_COL) +
                                                     " " + get_cell_range(start_column=VALUE_TO_REMOVE_COL,
                                                                          start_row=3,
                                                                          end_column=VALUE_TO_REMOVE_COL))
 
     add_formula_conditional_formatting(ws, cell_range=upstream_ivb_plt_rel_n_value_to_remove_range,
                                        formula=f"AND(inhibit_simple_overshoot_recovery = FALSE, "
-                                               f"${UPSTREAM_IVB_PLATFORM_RELATED_COL}3<>\"\")",
+                                               f"${LAST_IVB_PLATFORM_RELATED_COL}3<>\"\")",
                                        bg_color=XlBgColor.light_pink2)
 
     # Status Conditional Formatting
@@ -151,9 +151,9 @@ def _write_columns_title(ws: xl_ws.Worksheet, row: int):
     create_merged_cell(ws, f"IXL APZ Length", start_row=row, end_row=row+1,
                        start_column=IXL_APZ_LENGTH_COL, end_column=IXL_APZ_LENGTH_COL,
                        align_horizontal=XlAlign.center, bold=True, borders=True, bg_color=XlBgColor.dc_sys_cyan)
-    # Upstream IVB Platform Related
-    create_merged_cell(ws, f"Upstream IVB\nPlatform Related", start_row=row, end_row=row+1,
-                       start_column=UPSTREAM_IVB_PLATFORM_RELATED_COL, end_column=UPSTREAM_IVB_PLATFORM_RELATED_COL,
+    # Last IVB Platform Related
+    create_merged_cell(ws, f"Last IVB\nPlatform Related", start_row=row, end_row=row+1,
+                       start_column=LAST_IVB_PLATFORM_RELATED_COL, end_column=LAST_IVB_PLATFORM_RELATED_COL,
                        align_horizontal=XlAlign.center, bold=True, borders=True, bg_color=XlBgColor.dc_sys_pink)
     # Value to remove
     create_merged_cell(ws, f"Value to remove", start_row=row, end_row=row+1,
@@ -258,7 +258,7 @@ Delayed legitimate turnback distance shall ensure the following properties:
 
 0 is a safe value.
 
-If Overshoot Recovery is active (inhibition parameter inhibit_simple_overshoot_recovery set to False), the overshoot recovery parameters in the formula are considered only for platform-related signals, where overshoot recovery can be used."""
+If Overshoot Recovery is active (inhibition parameter inhibit_simple_overshoot_recovery set to False), the overshoot recovery parameters in the formula are considered only when last IVB of the IXL APZ (upstream the signal) is platform related, where overshoot recovery can be used and let a train leave the APZ."""
 
 
 def create_constraint_sheet(wb: openpyxl.workbook.Workbook):

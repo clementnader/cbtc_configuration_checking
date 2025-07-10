@@ -117,10 +117,15 @@ def get_dist(seg1: str, x1: float, seg2: str, x2: float, verbose: bool = False,
     return dist
 
 
-def get_dist_downstream(seg1: str, x1: float, seg2: str, x2: float, downstream: bool) -> Optional[float]:
-    x1 = float(x1)
-    x2 = float(x2)
+def get_dist_downstream(seg1: str, x1: Optional[float], seg2: str, x2: Optional[float], downstream: bool
+                        ) -> Optional[float]:
+    if x1 is not None:
+        x1 = float(x1)
+    if x2 is not None:
+        x2 = float(x2)
     if seg1 == seg2:
+        if x1 is None or x2 is None:
+            return 0.
         if downstream == (x1 <= x2):
             return round(abs(x1-x2), 3)
         else:
@@ -131,14 +136,21 @@ def get_dist_downstream(seg1: str, x1: float, seg2: str, x2: float, downstream: 
     if dist is None:
         return None
 
-    if downstream:  # seg2 is downstream of seg1
-        dist -= x1
-    else:  # seg2 is upstream of seg1
-        dist -= (get_segment_length(seg1) - x1)
-    if upstream:  # seg1 is upstream of seg2
-        dist -= (get_segment_length(seg2) - x2)
-    else:  # seg1 is downstream of seg2
-        dist -= x2
+    if x1 is None:
+        dist -= get_segment_length(seg1)
+    else:
+        if downstream:  # seg2 is downstream of seg1
+            dist -= x1
+        else:  # seg2 is upstream of seg1
+            dist -= (get_segment_length(seg1) - x1)
+
+    if x2 is None:
+        dist -= get_segment_length(seg2)
+    else:
+        if upstream:  # seg1 is upstream of seg2
+            dist -= (get_segment_length(seg2) - x2)
+        else:  # seg1 is downstream of seg2
+            dist -= x2
     return round(dist, 3)
 
 
