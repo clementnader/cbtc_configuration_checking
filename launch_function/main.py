@@ -13,8 +13,8 @@ def main():
     """
     Select the function you want to launch by removing the '#' symbol in front of the line to uncomment it.
     It uses the information configured in file "config.ini".
-    It is specified in last line of the comments above the function what inputs are needed to be specified in the
-     config.ini file.
+    For each function, it is specified in the last line of the comments above the function what inputs are needed
+     to be specified in the config.ini file.
     """
 
     # ---------------------------------------------------------------------------------------------------------------- #
@@ -181,6 +181,14 @@ def main():
     #pretty_print_dict(get_min_and_max_slope_at_all_platforms(in_cbtc=False))
 
     # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- ZC APPLI IF ---------- #
+    """Uncomment next line to compute the ZC APPLI IF "ZE_IMPACTE_FU". Take into account that the directions are
+    computed by the tool according to the segments direction, so if there is a depolarization point inside the ZC,
+    the directions will not match.
+    @inputs: DC_SYS, CCTool-OO Schema and DC_PAR"""
+    #create_computed_result_file_ze_impacte_fu()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Wayside Additional Verification for v6.3.5 ---------- #
     """Uncomment next line to help for the verifications of ADD_VERIF_001 and ADD_VERIF_002 of Wayside DPSA Additional
      Verifications in v6.3.5.
@@ -189,14 +197,6 @@ def main():
     #get_sum_len_route_physical_blocks()
     # --- Min (length of the first physical block of routes that are in a ZC overlay) --- #
     #get_first_zc_overlay_route_physical_blocks()
-
-    # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- ZC APPLI IF ---------- #
-    """Uncomment next line to compute the ZC APPLI IF "ZE_IMPACTE_FU". Take into account that the directions are
-    computed by the tool according to the segments direction, so if there is a depolarization point inside the ZC,
-    the directions will not match.
-    @inputs: DCSYS, CCTool-OO Schema and DC_PAR"""
-    #create_computed_result_file_ze_impacte_fu()
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Survey Checking ---------- #
@@ -217,6 +217,11 @@ def main():
     @inputs: C11_D470"""
     #verification_of_the_md5_checksum()
 
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Foundation Data: Signal joint position ---------- #
+    """Uncomment next line to get for all signals the distance between the signals and the IVB joint
+     downstream the signal.
+    @inputs: DC_SYS and CCTool-OO Schema"""
     #get_signals_distance_to_joint()
     return
 

@@ -36,8 +36,6 @@ def cc():
 
 def zc():
     # create_computed_result_file_ze_impacte_fu()
-    # compare_results_ze_impacte_fu()
-    # check_pz_ze()
     return
 
 
@@ -155,12 +153,14 @@ def foundation_data_constraints():
     # --- Verify Platform Related Overlaps --- #
     # ixl_overlap_platform_related()
 
+    # --- Signal joint position --- #
+    # get_signals_distance_to_joint()
+
     # --- Functions related to zone objects customizable specifying the sheet name --- #
     # get_zones_kp_limits(DCSYS.Walkways_Area)
     # get_zones_kp_limits(DCSYS.Protection_Zone)
     # print(get_objects_in_zone(DCSYS.Zaum, DCSYS.PAS, "ZC_02"))
     # print(get_zones_on_object(DCSYS.PAS, DCSYS.Zaum, "MAZ_STB_110"))
-    # get_signals_distance_to_joint()
 
     # get_whole_object_type_kp_limits(DCSYS.CDV)
     # get_whole_object_type_kp_limits(DCSYS.PAS)  # TODO raise a message when there is overlapping

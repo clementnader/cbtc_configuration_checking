@@ -342,12 +342,12 @@ class ProjectDatabaseLoc:
                 self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_06_06_01_V05"
             elif cbtc:
-                self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03_RC1\DC_SYS.xls"
+                self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03\DC_SYS.xls"
                 # self.dc_sys_addr = (r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V02_R3"
                 #                     r"\DC_SYS_patch_switch_block_locking_area.xls")
-                self.dc_par_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03_RC1\DC_PAR.xls"
-                self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03_RC1\C64_D413\DC_BOP.xls"
-                self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_07_03_03_V03_RC1"
+                self.dc_par_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03\C64_D413\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_07_03_03_V03"
                 self.fouling_point_addr = (r"C:\CBTC\PROJECTS\Glasgow"
                                            r"\Fouling Points - GW_C_D470_07_03_03_V02_R3.xlsx")
             # -- Survey -- #
