@@ -68,4 +68,4 @@ def _write_columns_title(ws: xl_ws.Worksheet, row: int, depol_in_zc: bool) -> No
         # Automatic Comments
         create_cell(ws, f"Automatic Comments", row=row, column=AUTOMATIC_COMMENTS_COL, bold=True, borders=True)
         # List of the reverse directions
-        create_cell(ws, f"REVERSED SENS", row=row, column=REVERSE_DIRECTION_COL, bold=True, borders=True)
+        create_cell(ws, f"REVERSED COMPUTED SENS", row=row, column=REVERSE_DIRECTION_COL, bold=True, borders=True)
