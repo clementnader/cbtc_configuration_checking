@@ -181,7 +181,7 @@ def main():
     #pretty_print_dict(get_min_and_max_slope_at_all_platforms(in_cbtc=False))
 
     # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- ZC APPLI IF ---------- #
+    # ---------- ZC APPLI IF: ZE_IMPACTE_FU ---------- #
     """Uncomment next line to compute the ZC APPLI IF "ZE_IMPACTE_FU". Take into account that the directions are
     computed by the tool according to the segments direction, so if there is a depolarization point inside the ZC,
     the directions will not match.
