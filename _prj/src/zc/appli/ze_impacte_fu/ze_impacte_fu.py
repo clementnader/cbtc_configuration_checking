@@ -173,5 +173,5 @@ def _reverse_ze_impacte_fu_directions(tuple_ze_index: tuple[str, ...], tuple_dir
         reverse_direction = "DECROISSANT" if ze_direction == "CROISSANT" else "CROISSANT"
         list_reverse_directions.append(reverse_direction)
     sorted_list_reverse_directions = [ze_direction for (_, ze_direction)
-                                      in sorted(zip(tuple_ze_index, list_reverse_directions))]
+                                      in sorted((int(i), d) for i, d in zip(tuple_ze_index, list_reverse_directions))]
     return tuple(sorted_list_reverse_directions)
