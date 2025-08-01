@@ -16,7 +16,7 @@ FOULING_POINT_KP_COLUMN = "C"
 
 
 def load_fouling_point_info() -> Optional[dict[str, float]]:
-    if DATABASE_LOC.fouling_point_addr is None:
+    if not DATABASE_LOC.fouling_point_addr:
         return None
     res_dict = dict()
     wb = load_xlsx_wb(DATABASE_LOC.fouling_point_addr)
