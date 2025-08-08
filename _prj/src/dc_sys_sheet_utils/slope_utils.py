@@ -89,7 +89,7 @@ def get_next_slopes(start_seg: str, start_x: float, downstream: bool) -> list[tu
         slope = _is_slope_defined_on_seg(seg, downstream=inner_downstream, x=x)
         if slope is not False:
             slope_x = get_dc_sys_value(slope, DCSYS.Profil.X)
-            final_path_len = path_len - ((get_segment_length(start_seg) - slope_x) if inner_downstream else slope_x)
+            final_path_len = path_len - ((get_segment_length(seg) - slope_x) if inner_downstream else slope_x)
             slopes.append((slope, inner_downstream == downstream, final_path_len))
             return
 
