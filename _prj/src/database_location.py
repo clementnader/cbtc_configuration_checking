@@ -509,13 +509,11 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Riyadh RL3 -------------------------------#
         elif project_name == Projects.Riyadh_RL3:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Riyadh RL3\RL3_C_D470_09_01_SP3\DC_SYS.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\Riyadh RL3\RL3_C_D470_09_01_SP3\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Riyadh RL3\RL3_C_D470_09_01_RC1\DC_BOP_old.xls"
-            self.kit_c11_dir = r"C:\CBTC\PROJECTS\Riyadh RL3\RL3_C11_D470_06_06_01_SP2"
-            self.kit_c121_d470_dir = r"C:\CBTC\PROJECTS\Riyadh RL3\RL3_C121_D470_06_06_00_V04_20230327_165125"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Riyadh RL3\RL3_C_D470_09_02_RC3\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\Riyadh RL3\RL3_C_D470_09_02_RC3\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Riyadh RL3\RL3_C_D470_09_02_RC3\DC_BOP.xls"
             # -- Survey -- #
-            self.block_def = r"C:\CBTC\PROJECTS\Riyadh RL3\CIRCUIT_DE_VOIE RL3.xls"
+            # self.block_def = r"C:\CBTC\PROJECTS\Riyadh RL3\CIRCUIT_DE_VOIE RL3.xls"
             self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\Riyadh RL3\Appendix K - RL3_D932_ed14.xls"
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
@@ -528,28 +526,36 @@ class ProjectDatabaseLoc:
             self.control_tables_config_ini_file = r"control_tables_configuration_rl3.ini"
             self.control_tables_route.control_tables_addr = [
                 r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
-                r"\MAIN LINE - CONTROL TABLES\Appendix B_Routes.pdf",
+                r"\M-ANM-3A1DPW-SSXL-ESP-000002-REV_J-Appendix B_Routes.pdf",
                 r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
-                r"\WEST DEPOT - CONTROL TABLES (AUTOMATIC AREA)\Appendix B_Routes.pdf",
+                r"\M-ANM-3A1DPW-SSXL-ESP-000001-REV_M-AUTOMATIC AREA-Appendix H_Routes.pdf",
                 r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
-                r"\EAST DEPOT - CONTROL TABLES (AUTOMATIC AREA)\Appendix B_Routes.pdf"]
-            self.control_tables_route.all_pages = [True, True, True]
-            self.control_tables_route.specific_pages = [None, None, None]
+                r"\M-ANM-3A1DPW-SSXL-ESP-000001-REV_M-MANUAL AREA-Appendix B_Routes.pdf",
+                r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
+                r"\M-ANM-3K1DPE-SSXL-ESP-000003-REV_E-AUTOMATIC AREA-Appendix B_Routes.pdf",
+                r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
+                r"\M-ANM-3K1DPE-SSXL-ESP-000003-REV_E-MANUAL AREA-Appendix I_Routes.pdf"]
+            self.control_tables_route.all_pages = [True, True, True, True, True]
+            self.control_tables_route.specific_pages = [None, None, None, None, None]
             self.control_tables_overlap.control_tables_addr = [
                 r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
-                r"\MAIN LINE - CONTROL TABLES\Appendix E_Overlap.pdf",
+                r"\M-ANM-3A1DPW-SSXL-ESP-000002-REV_J-Appendix E_Overlap.pdf",
                 r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
-                r"\WEST DEPOT - CONTROL TABLES (AUTOMATIC AREA)\Appendix E_Overlap.pdf",
+                r"\M-ANM-3A1DPW-SSXL-ESP-000001-REV_M-AUTOMATIC AREA-Appendix N_Overlap.pdf",
                 r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
-                r"\EAST DEPOT - CONTROL TABLES (AUTOMATIC AREA)\Appendix E_Overlap.pdf"]
-            self.control_tables_overlap.all_pages = [True, True, True]
-            self.control_tables_overlap.specific_pages = [None, None, None]
+                r"\M-ANM-3A1DPW-SSXL-ESP-000001-REV_M-MANUAL AREA-Appendix E_Overlap.pdf",
+                r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
+                r"\M-ANM-3K1DPE-SSXL-ESP-000003-REV_E-AUTOMATIC AREA-Appendix E_Overlap.pdf",
+                r"C:\CBTC\PROJECTS\Riyadh RL3\Control Tables"
+                r"\M-ANM-3K1DPE-SSXL-ESP-000003-REV_E-MANUAL AREA-Appendix O_Overlap.pdf"]
+            self.control_tables_overlap.all_pages = [True, True, True, True, True]
+            self.control_tables_overlap.specific_pages = [None, None, None, None, None]
 
         # ------------------------------- Thessaloniki TSK -------------------------------#
         elif project_name == Projects.Thessaloniki_TSK:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM\DC_SYS.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM\C64_D413\DC_BOP.xls"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM_R2\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM_R2\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM_R2\DC_BOP.xls"
             self.kit_c11_dir = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C11_D470_07_03_03_V13"
             # self.kit_c11_sp_dir = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C11_D470_07_03_03_V12_SP1"
             self.fouling_point_addr = (r"C:\CBTC\PROJECTS\Thessaloniki TSK"

@@ -11,7 +11,7 @@ from ...fouling_points_utils.load_fouling_point_file import *
 __all__ = ["check_switch_flank_protection"]
 
 
-def check_switch_flank_protection(in_cbtc: bool = False):
+def check_switch_flank_protection(in_cbtc: bool = False):  # TODO
     if in_cbtc:
         sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
     else:

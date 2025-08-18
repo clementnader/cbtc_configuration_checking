@@ -58,6 +58,7 @@ def create_cctool_oo_schema_info_file():
     file_desc = ("Automatically generated Python file defining a DCSYS class containing the column information of "
                  "the sheets and attributes from the CCTool-OO Schema sheet of the CCTool-OO Schema file.")
     text = create_header_for_the_generated_files(cctool_oo_file, file_desc)
+    text += "\n__all__ = [\"DCSYS\"]\n"
     text += add_obj_attrs(cctool_oo_schema_dict)
     text += add_main_class(cctool_oo_schema_dict)
     text = text.replace("\t", "    ")

@@ -15,6 +15,7 @@ __all__ = ["get_dist", "get_dist_downstream", "get_list_of_paths", "get_min_dist
 
 def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x: float = None,
                       downstream: bool = True, without_ring_loopback: bool = True) -> bool:
+    """ Return True if end_seg is downstream start_seg. """
     if start_x is not None:
         start_x = float(start_x)
     if end_x is not None:
@@ -101,8 +102,6 @@ def get_dist(seg1: str, x1: float, seg2: str, x2: float, verbose: bool = False,
     """ Return the distance between (seg1, x1) and (seg2, x2). """
     if downstream is not None:
         return get_dist_downstream(seg1, x1, seg2, x2, downstream)
-    x1 = float(x1)
-    x2 = float(x2)
     if seg1 == seg2:
         return round(abs(x1-x2), 3)
 
@@ -122,10 +121,6 @@ def get_dist_downstream(seg1: str, x1: Optional[float], seg2: str, x2: Optional[
     if x1 is not None and x2 is not None and are_points_matching(seg1, x1, seg2, x2, tolerance=1E-4):
         return 0.
 
-    if x1 is not None:
-        x1 = float(x1)
-    if x2 is not None:
-        x2 = float(x2)
     if seg1 == seg2:
         if x1 is None or x2 is None:
             return 0.

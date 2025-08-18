@@ -4,7 +4,7 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
-from ..dc_sys_draw_path.dc_sys_get_zones import get_zones_on_point, get_zones_intersecting_zone, is_point_in_zone
+from ..dc_sys_draw_path.dc_sys_get_zones import get_zones_on_point, get_zones_intersecting_zone
 from .line_section_utils import *
 from .maz_utils import *
 

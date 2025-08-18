@@ -47,11 +47,11 @@ def _check_ovl(ovl: str, ovl_val: dict[str, str], ovl_control_tables: dict[str, 
     ct_ovl_sw = ovl_control_table[OVERLAP_SWITCHES_LIST_KEY].upper().strip()
 
     result = True
-    if _check_ovl_destination_point(ovl, ovl_val, ct_destination_point, table_name) is False:
+    if not _check_ovl_destination_point(ovl, ovl_val, ct_destination_point, table_name):
         result = False
-    if _check_ovl_path(ovl, ovl_val, ct_ovl_path, table_name) is False:
+    if not _check_ovl_path(ovl, ovl_val, ct_ovl_path, table_name):
         result = False
-    if _check_ovl_sw(ovl, ovl_val, ct_ovl_sw, ct_ovl_path, table_name) is False:
+    if not _check_ovl_sw(ovl, ovl_val, ct_ovl_sw, ct_ovl_path, table_name):
         result = False
     return result, None
 
@@ -97,7 +97,7 @@ def _correspondence_ovl_control_table_dc_sys(ct_ovl: str, dc_sys_ovl: str, remov
     if dc_sys_ovl.endswith(ct_ovl):
         return True
 
-    if remove_zero is True:
+    if remove_zero:
         # try removing leading 0 in sig names
         ct_ovl = ct_ovl.removeprefix("0")
         dc_sys_ovl = "_".join(sig.removeprefix("0") for sig in dc_sys_ovl.split("_"))
@@ -126,9 +126,9 @@ def _update_ovl_control_tables_normal_reverse(ovl_control_tables: dict[str, dict
     return ovl_control_tables
 
 
-def _check_ovl_destination_point(ovl: str, ovl_val: dict[str, Any], ct_destination_point: str, table_name: str):
+def _check_ovl_destination_point(ovl: str, ovl_val: dict[str, Any], ct_destination_point: str, table_name: str) -> bool:
     dc_sys_destination_signal: str = get_dc_sys_value(ovl_val, DCSYS.IXL_Overlap.DestinationSignal)
-    if dc_sys_destination_signal.endswith(ct_destination_point.removeprefix("0")):
+    if are_signals_matching(ct_destination_point, dc_sys_destination_signal):
         return True
     print_error(f"For Overlap {Color.green}{ovl}{Color.reset}, DC_SYS Destination Signal {Color.yellow}"
                 f"{dc_sys_destination_signal}{Color.reset} does not correspond to the Control Table {Color.green}"
@@ -136,7 +136,7 @@ def _check_ovl_destination_point(ovl: str, ovl_val: dict[str, Any], ct_destinati
     return False
 
 
-def _check_ovl_sw(ovl: str, ovl_val: dict[str, Any], ct_ovl_sw: str, ct_ovl_path: str, table_name: str):
+def _check_ovl_sw(ovl: str, ovl_val: dict[str, Any], ct_ovl_sw: str, ct_ovl_path: str, table_name: str) -> bool:
     dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]
     ct_ovl_sw_list = get_control_tables_switch_list(ct_ovl_sw)
 
@@ -181,7 +181,7 @@ def _check_ovl_sw(ovl: str, ovl_val: dict[str, Any], ct_ovl_sw: str, ct_ovl_path
     return result
 
 
-def _check_ovl_path(ovl_name: str, ovl_val: dict[str, Any], ct_ovl_path: str, table_name: str):
+def _check_ovl_path(ovl_name: str, ovl_val: dict[str, Any], ct_ovl_path: str, table_name: str) -> bool:
     result = True
     # dc_sys_ovl_sw: list[str] = ovl_val["Overlap Path Switch"]  # TODO use the switch to determine
     #                                                               which IVB limit is the correct one

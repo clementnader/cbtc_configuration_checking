@@ -45,11 +45,11 @@ def _check_route(route: str, route_val: dict[str, str], route_control_tables: di
     route_sw = route_control_table[ROUTE_SWITCHES_LIST_KEY].upper().strip()
 
     result = True
-    if _check_controlled_sig(route, route_val, control_sig, table_name) is False:
+    if not _check_controlled_sig(route, route_val, control_sig, table_name):
         result = False
-    if _check_route_path(route, route_val, route_path, table_name) is False:
+    if not _check_route_path(route, route_val, route_path, table_name):
         result = False
-    if _check_route_sw(route, route_val, route_sw, table_name) is False:
+    if not _check_route_sw(route, route_val, route_sw, table_name):
         result = False
     return result, None
 
@@ -65,7 +65,7 @@ def _find_route_control_table(route_dc_sys: str, route_control_tables: dict[str,
 
 
 def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, remove_zero: bool = False):
-    if remove_zero is True:
+    if remove_zero:
         # try removing leading 0 in sig names
         route_dc_sys = "_".join([sig.removeprefix("0") for sig in route_dc_sys.split("_")])
         route_control_table = "-".join([sig.removeprefix("0") for sig in route_control_table.split("-")])
@@ -86,7 +86,7 @@ def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys
     return False
 
 
-def _check_controlled_sig(route: str, route_val: dict[str, Any], ct_control_sig: str, table_name: str):
+def _check_controlled_sig(route: str, route_val: dict[str, Any], ct_control_sig: str, table_name: str) -> bool:
     dc_sys_origin_signal: str = get_dc_sys_value(route_val, DCSYS.Iti.SignalOrig)
     if are_signals_matching(ct_control_sig, dc_sys_origin_signal):
         return True
@@ -97,7 +97,7 @@ def _check_controlled_sig(route: str, route_val: dict[str, Any], ct_control_sig:
     return False
 
 
-def _check_route_sw(route: str, route_val: dict[str, Any], ct_route_sw: str, table_name: str):
+def _check_route_sw(route: str, route_val: dict[str, Any], ct_route_sw: str, table_name: str) -> bool:
     dc_sys_route_sw: list[str] = route_val["Route Switch"]
     dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_val["Route IVB"]]
     ct_route_sw_list = get_control_tables_switch_list(ct_route_sw)
@@ -142,7 +142,7 @@ def _check_route_sw(route: str, route_val: dict[str, Any], ct_route_sw: str, tab
     return result
 
 
-def _check_route_path(route: str, route_val: dict[str, Any], ct_route_path: str, table_name: str):
+def _check_route_path(route: str, route_val: dict[str, Any], ct_route_path: str, table_name: str) -> bool:
     dc_sys_route_sw: list[str] = route_val["Route Switch"]
     dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_val["Route IVB"]]
     ct_route_path_list = get_control_tables_ivb_list(ct_route_path)

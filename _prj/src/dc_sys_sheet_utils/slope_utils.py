@@ -119,8 +119,6 @@ def _is_slope_defined_on_seg(seg: str, downstream: bool = True, x: float = None)
     if it is specified),
     return False if there is no slope on the segment (or no slope after the offset x if it is specified). """
     slope_dict = load_sheet(DCSYS.Profil)
-    if x is not None:
-        x = float(x)
     slopes = list()
     for slope in slope_dict.values():
         slope_seg = get_dc_sys_value(slope, DCSYS.Profil.Seg)

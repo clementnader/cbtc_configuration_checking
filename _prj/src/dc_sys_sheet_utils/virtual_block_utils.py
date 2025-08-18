@@ -5,10 +5,11 @@ from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
 from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream, get_dist, get_list_of_paths
+from ..dc_sys_draw_path.dc_sys_get_zones import get_dist_downstream_in_zone
 
 
 __all__ = ["give_point_seg_vb", "get_len_vb", "get_segs_in_vb", "is_seg_in_vb", "get_vb_associated_to_sw",
-           "get_sw_associated_to_vb"]
+           "get_sw_associated_to_vb", "get_vb_downstream_limits"]
 
 
 def give_point_seg_vb(vb_limits):
@@ -21,7 +22,7 @@ def give_point_seg_vb(vb_limits):
                                    for seg2, x2 in vb_limits if (seg2, x2) != lim1]
         if all(other_segs_are_downstream) or all(other_segs_are_upstream):
             return lim1
-    print(f"Unable to find point segment for VB: {vb_limits}")
+    print_error(f"Unable to find point segment for VB: {vb_limits}")
 
 
 def get_len_vb(vb_limits):
@@ -83,3 +84,15 @@ def get_sw_associated_to_vb(vb_limits):
         if all(is_seg_in_vb(vb_limits, seg) for seg in sw_segs):
             return sw_name
     print_error(f"Unable to find switch associated to VB limits: {vb_limits}")
+
+
+def get_vb_downstream_limits(vb_name: str, direction: str) -> list[tuple[str, float]]:
+    downstream_limits = list()
+    vb_limits = get_object_position(DCSYS.CV, vb_name)
+    for lim_seg, lim_x in vb_limits:
+        if any(get_dist_downstream_in_zone(other_lim_seg, other_lim_x, lim_seg, lim_x, direction == Direction.CROISSANT,
+                                           DCSYS.CV, vb_name)
+               is not None
+               for other_lim_seg, other_lim_x in vb_limits if (other_lim_seg, other_lim_x) != (lim_seg, lim_x)):
+            downstream_limits.append((lim_seg, lim_x))
+    return downstream_limits

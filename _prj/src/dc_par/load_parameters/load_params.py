@@ -60,7 +60,7 @@ def get_sheet_param(wb: xlrd.Book, sh_name: str) -> dict:
     return param_dict
 
 
-def get_and_decode_xlrd_value(ws: xlrd.sheet, row: int, col: int) -> str:
+def get_and_decode_xlrd_value(ws: xlrd.sheet.Sheet, row: int, col: int) -> str:
     cell_value = get_xlrd_value(ws, row, col)
     if isinstance(cell_value, str):
         cell_value = unidecode.unidecode(cell_value).strip()

@@ -13,7 +13,7 @@ def get_all_sheet_names() -> list[str]:
     return list(get_class_attr_dict(DCSYS).keys())
 
 
-def get_sh_name(ws) -> str:
+def get_sh_name(ws: Union[str, dict, Any]) -> str:
     if isinstance(ws, str):
         return ws
     if isinstance(ws, dict):
@@ -24,14 +24,14 @@ def get_sh_name(ws) -> str:
     return ws.__class__.__name__
 
 
-def get_dc_sys_attr_name(attr) -> str:
+def get_dc_sys_attr_name(attr: Union[str, dict, Any]) -> str:
     attr = get_sh_name(attr)
     if "__" in attr:
         return attr.split("__")[-1]
     return attr
 
 
-def get_sheet_attributes_columns_dict(ws) -> dict[str, Union[int, dict[str, int]]]:
+def get_sheet_attributes_columns_dict(ws: Union[str, Any]) -> dict[str, Union[int, dict[str, int]]]:
     ws = get_sheet_class_from_name(ws)
     class_attr_dict = get_class_attr_dict(ws)
     res_dict = dict()
@@ -44,7 +44,7 @@ def get_sheet_attributes_columns_dict(ws) -> dict[str, Union[int, dict[str, int]
     return res_dict
 
 
-def get_sheet_class_from_name(sh_name: str):
+def get_sheet_class_from_name(sh_name: Union[str, Any]):
     if isinstance(sh_name, str):
         return get_class_attr_dict(DCSYS)[sh_name]
     return sh_name

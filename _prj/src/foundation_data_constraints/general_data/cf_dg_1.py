@@ -32,13 +32,11 @@ def _cf_1_check_switch(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.Aig)
     success = True
     for obj_name, obj in obj_dict.items():
-        if _check_obj_msgs(DCSYS.Aig, msg_dict, obj_name, True,
-                           "shall exist for all Switches",
-                           [TypeNomLogiqueVariantHF.SW_RIGHT_C,
-                            TypeNomLogiqueVariantHF.SW_LEFT_C],
-                           shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Aig, msg_dict, obj_name, True, "shall exist for all Switches",
+                              [TypeNomLogiqueVariantHF.SW_RIGHT_C,
+                               TypeNomLogiqueVariantHF.SW_LEFT_C], shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -50,26 +48,20 @@ def _cf_1_check_signal(msg_dict: dict):
         is_not_buffer_or_pr = get_dc_sys_value(obj, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
                                                                             SignalType.PERMANENT_ARRET]
 
-        if _check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, is_not_buffer_or_pr,
-                           "shall exist for all Signals",
-                           TypeNomLogiqueVariantHF.PR_ASPECT,
-                           shall_be_vital=False) is False:
+        if not check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, is_not_buffer_or_pr, "shall exist for all Signals",
+                              TypeNomLogiqueVariantHF.PR_ASPECT, shall_be_vital=False):
             success = False
 
         is_home_signal = get_dc_sys_value(obj, DCSYS.Sig.Type) == SignalType.MANOEUVRE
-        if _check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, is_home_signal,
-                           "shall exist for all Home Signals",
-                           TypeNomLogiqueVariantHF.IL_SET,
-                           shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, is_home_signal, "shall exist for all Home Signals",
+                              TypeNomLogiqueVariantHF.IL_SET, shall_be_vital=True):
             success = False
 
         func_stop = is_not_buffer_or_pr and (get_dc_sys_value(obj, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O)
-        if _check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, func_stop,
-                           "flag [With Func Stop] set to 'Y'",
-                           TypeNomLogiqueVariantHF.FUNC_STOP_RQ,
-                           shall_be_vital=False) is False:
+        if not check_obj_msgs(DCSYS.Sig, msg_dict, obj_name, func_stop, "flag [With Func Stop] set to 'Y'",
+                              TypeNomLogiqueVariantHF.FUNC_STOP_RQ, shall_be_vital=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -78,20 +70,16 @@ def _cf_1_check_maz(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.Zaum)
     success = True
     for obj_name, obj in obj_dict.items():
-        if _check_obj_msgs(DCSYS.Zaum, msg_dict, obj_name, True,
-                           "shall exist for all MAZ",
-                           [TypeNomLogiqueVariantHF.MVT_AUTH,
-                            TypeNomLogiqueVariantHF.TRACTION_PWR_REGEN_AUTH,
-                            TypeNomLogiqueVariantHF.UTO_MVT_AUTH],
-                           shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Zaum, msg_dict, obj_name, True, "shall exist for all MAZ",
+                              [TypeNomLogiqueVariantHF.MVT_AUTH,
+                               TypeNomLogiqueVariantHF.TRACTION_PWR_REGEN_AUTH,
+                               TypeNomLogiqueVariantHF.UTO_MVT_AUTH], shall_be_vital=True):
             success = False
         if ("AM_MVT_AUTH" in get_class_attr_dict(TypeNomLogiqueVariantHF)
-                and _check_obj_msgs(DCSYS.Zaum, msg_dict, obj_name, True,
-                                    "shall exist for all MAZ",
-                                    TypeNomLogiqueVariantHF.AM_MVT_AUTH,
-                                    shall_be_vital=True) is False):
+                and check_obj_msgs(DCSYS.Zaum, msg_dict, obj_name, True, "shall exist for all MAZ",
+                                   TypeNomLogiqueVariantHF.AM_MVT_AUTH, shall_be_vital=True) is False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -100,21 +88,18 @@ def _cf_1_check_platform(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.Quai)
     success = True
     for obj_name, obj in obj_dict.items():
-        if _check_obj_msgs(DCSYS.Quai, msg_dict, obj_name, True,
-                           "shall exist for all Platforms",
-                           TypeNomLogiqueVariantHF.PLATFORM_ACCESS,
-                           shall_be_vital=False) is False:
+        if not check_obj_msgs(DCSYS.Quai, msg_dict, obj_name, True, "shall exist for all Platforms",
+                              TypeNomLogiqueVariantHF.PLATFORM_ACCESS, shall_be_vital=False):
             success = False
 
         atb_zones = [atb[0] for atb in get_atb_zone_related_to_plt(obj_name)]
         origin_atb_mvt = True if atb_zones else False
-        if _check_obj_msgs(DCSYS.Quai, msg_dict, obj_name, origin_atb_mvt,
-                           f"platform is origin of an ATB movement {atb_zones}",
-                           [TypeNomLogiqueVariantHF.ATB_DEP,
-                            TypeNomLogiqueVariantHF.ATB_CAN_DEP],
-                           shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Quai, msg_dict, obj_name, origin_atb_mvt,
+                              f"platform is origin of an ATB movement {atb_zones}",
+                              [TypeNomLogiqueVariantHF.ATB_DEP, TypeNomLogiqueVariantHF.ATB_CAN_DEP],
+                              shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -123,12 +108,10 @@ def _cf_1_check_flood_gate(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.Flood_Gate)
     success = True
     for obj_name, obj in obj_dict.items():
-        if _check_obj_msgs(DCSYS.Flood_Gate, msg_dict, obj_name, True,
-                           "shall exist for all Flood Gates",
-                           TypeNomLogiqueVariantHF.OPEN_AND_LOCKED,
-                           shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Flood_Gate, msg_dict, obj_name, True, "shall exist for all Flood Gates",
+                              TypeNomLogiqueVariantHF.OPEN_AND_LOCKED, shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -138,12 +121,11 @@ def _cf_1_check_block(msg_dict: dict):
     success = True
     for obj_name, obj in obj_dict.items():
         broken_rail_detection = get_dc_sys_value(obj, DCSYS.CDV.BrokenRailDetection) == YesOrNo.O
-        if _check_obj_msgs(DCSYS.CDV, msg_dict, obj_name, broken_rail_detection,
-                           "flag [Broken Rail Detection] set to 'Y'",
-                           TypeNomLogiqueVariantHF.BLOCK_MVT_AUTH,
-                           shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.CDV, msg_dict, obj_name, broken_rail_detection,
+                              "flag [Broken Rail Detection] set to 'Y'", TypeNomLogiqueVariantHF.BLOCK_MVT_AUTH,
+                              shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -152,10 +134,8 @@ def _cf_1_check_asr(msg_dict: dict):
     obj_dict = load_sheet(DCSYS.ASR)
     success = True
     for obj_name, obj in obj_dict.items():
-        if _check_obj_msgs(DCSYS.ASR, msg_dict, obj_name, True,
-                           "shall exist for all ASR",
-                           TypeNomLogiqueVariantHF.ASR_NOT_APPLIED,
-                           shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.ASR, msg_dict, obj_name, True, "shall exist for all ASR",
+                              TypeNomLogiqueVariantHF.ASR_NOT_APPLIED, shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")

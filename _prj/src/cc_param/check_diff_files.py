@@ -108,6 +108,7 @@ def get_cc_param_from_cabdir(train_dir, cab_dir):
                     list_cc_param.append(os.path.join(cab_dir, cc_param_dir, cc_param_file))
     if not list_cc_param:
         print_warning(f"No {CC_PARAM_FILE} in {os.path.join(MAIN_DIRECTORY, train_dir)}")
+        return None
     else:
         if len(list_cc_param) != 1:
             print_warning(f"Multiple {CC_PARAM_FILE} in {os.path.join(MAIN_DIRECTORY, train_dir)}")

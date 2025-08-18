@@ -85,7 +85,7 @@ def get_xl_column_number(column_letter: str) -> int:
     return xl_ut.column_index_from_string(column_letter)
 
 
-def get_xlrd_float_value(ws: xlrd.sheet, row: int, column: int) -> Optional[Union[float, str]]:
+def get_xlrd_float_value(ws: xlrd.sheet.Sheet, row: int, column: int) -> Optional[Union[float, str]]:
     value = get_xlrd_value(ws, row, column)
     if isinstance(value, str):
         try:
@@ -95,7 +95,7 @@ def get_xlrd_float_value(ws: xlrd.sheet, row: int, column: int) -> Optional[Unio
     return value
 
 
-def get_xlrd_value(ws: xlrd.sheet, row: int, column: int) -> Optional[str]:
+def get_xlrd_value(ws: xlrd.sheet.Sheet, row: int, column: int) -> Optional[str]:
     xlrd_row = get_xlrd_row(row)
     xlrd_col = get_xlrd_column(column)
     try:

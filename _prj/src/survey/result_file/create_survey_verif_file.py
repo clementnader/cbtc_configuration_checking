@@ -95,7 +95,7 @@ def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
         _add_line_calculations(ws, row, tolerance, extra_column)
         sheet_comments = _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity, extra_column,
                                                    sheet_comments)
-    if sheet_comments is False:  # no automatic comments, the column can be hidden
+    if not sheet_comments:  # no automatic comments, the column can be hidden
         ws.column_dimensions[get_column(AUTOMATIC_COMMENTS_COL, extra_column)].hidden = True
 
 

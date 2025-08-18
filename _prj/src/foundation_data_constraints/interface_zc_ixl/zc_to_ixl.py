@@ -50,16 +50,16 @@ def _rule_3_check_plt(plt_msg_dict: dict, in_cbtc: bool):
     success = True
     for plt_name, plt in plt_dict.items():
         is_psd_msg_routed = get_dc_sys_value(plt, DCSYS.Quai.PsdMessagesRouted) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, is_psd_msg_routed,
-                          "flag [PSD Messages Routed] set to 'Y'",
-                          [TypeNomLogiqueInfoPASMES.TRAIN_AT_PLATFORM,
-                           TypeNomLogiqueInfoPASMES.OPEN_CMD_L,
-                           TypeNomLogiqueInfoPASMES.OPEN_CMD_R,
-                           TypeNomLogiqueInfoPASMES.CLOSE_CMD_L,
-                           TypeNomLogiqueInfoPASMES.CLOSE_CMD_R],
-                          shall_be_vital=True, only_one_zc=True) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, is_psd_msg_routed,
+                              "flag [PSD Messages Routed] set to 'Y'",
+                              [TypeNomLogiqueInfoPASMES.TRAIN_AT_PLATFORM,
+                               TypeNomLogiqueInfoPASMES.OPEN_CMD_L,
+                               TypeNomLogiqueInfoPASMES.OPEN_CMD_R,
+                               TypeNomLogiqueInfoPASMES.CLOSE_CMD_L,
+                               TypeNomLogiqueInfoPASMES.CLOSE_CMD_R],
+                              shall_be_vital=True, only_one_zc=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -77,37 +77,39 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
 
         with_overlap = (is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Enc_Dep) == YesOrNo.O
                         and get_dc_sys_value(sig, DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST)
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_overlap,
-                          "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
-                          TypeNomLogiqueInfoPASMES.CBTC_OLZ, shall_be_vital=True,
-                          only_one_zc=True, sig_upstream_ivb=True) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_overlap,
+                              "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
+                              TypeNomLogiqueInfoPASMES.CBTC_OLZ, shall_be_vital=True,
+                              only_one_zc=True, sig_upstream_ivb=True):
             success = False
 
         concealable = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Annulable) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, concealable, "flag [Concealable] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.X_RQ, shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, concealable, "flag [Concealable] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.X_RQ, shall_be_vital=True):
             success = False
 
         sa_or_overlap = ((is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == YesOrNo.O)
                          or with_overlap)
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, sa_or_overlap, "flag [With SA] set to 'Y' or "
-                          "flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST'",
-                          TypeNomLogiqueInfoPASMES.STOP_ASSURE, shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, sa_or_overlap,
+                              "flag [With SA] set to 'Y' or flag [With overlap] set to 'Y' and "
+                              "[Overlap Type] = 'NO_CBTC_REQUEST'",
+                              TypeNomLogiqueInfoPASMES.STOP_ASSURE, shall_be_vital=True):
             success = False
 
         with_imc = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.D_Libre) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_imc, "flag [With IMC] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.CBTC_APZ, shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_imc, "flag [With IMC] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.CBTC_APZ, shall_be_vital=True):
             success = False
 
         if "TypeDa" in get_class_attr_dict(DCSYS.Sig):
             with_arc = (is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.Da_Passage) == YesOrNo.O
                         and get_dc_sys_value(sig, DCSYS.Sig.TypeDa) in [TypeDA.SECTIONAL_RELEASE,
                                                                         TypeDA.TRAIN_PASSAGE_PROVING])
-            if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_arc, "flag [With ARC] set to 'Y' and "
-                              "[ARC Type] = 'SECTIONAL_RELEASE' or 'TRAIN_PASSAGE_PROVING'",
-                              TypeNomLogiqueInfoPASMES.TRAIN_PASS_HS, shall_be_vital=True,
-                              only_one_zc=True, sig_upstream_ivb=False) is False:
+            if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_arc,
+                                  "flag [With ARC] set to 'Y' and "
+                                  "[ARC Type] = 'SECTIONAL_RELEASE' or 'TRAIN_PASSAGE_PROVING'",
+                                  TypeNomLogiqueInfoPASMES.TRAIN_PASS_HS, shall_be_vital=True,
+                                  only_one_zc=True, sig_upstream_ivb=False):
                 success = False
 
         related_ovl_list = get_related_overlaps(sig_name)
@@ -119,29 +121,29 @@ def _rule_3_check_signal(sig_msg_dict: dict, in_cbtc: bool):
                         f"do not have the same flag [With TPP]:")
             print(ovl_names)
         with_tpp_overlap = is_not_buffer_or_pr and with_overlap and any(tpp)
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_tpp_overlap,
-                          f"flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST' "
-                          f"and the related IXL Overlap {Color.yellow}{ovl_names}{Color.reset} "
-                          f"flag [With TPP] set to 'Y'", TypeNomLogiqueInfoPASMES.TRAIN_IN_BERTH,
-                          shall_be_vital=True,
-                          only_one_zc=True, sig_upstream_ivb=True) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_tpp_overlap,
+                              f"flag [With overlap] set to 'Y' and [Overlap Type] = 'NO_CBTC_REQUEST' "
+                              f"and the related IXL Overlap {Color.yellow}{ovl_names}{Color.reset} "
+                              f"flag [With TPP] set to 'Y'", TypeNomLogiqueInfoPASMES.TRAIN_IN_BERTH,
+                              shall_be_vital=True,
+                              only_one_zc=True, sig_upstream_ivb=True):
             success = False
 
         func_stop = is_not_buffer_or_pr and get_dc_sys_value(sig, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, func_stop,
-                          "flag [With Func Stop] set to 'Y'",
-                          [TypeNomLogiqueInfoPASMES.FUNC_STOP_ACCEPT,
-                           TypeNomLogiqueInfoPASMES.FUNC_STOP_REJECT], shall_be_vital=False) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, func_stop,
+                              "flag [With Func Stop] set to 'Y'",
+                              [TypeNomLogiqueInfoPASMES.FUNC_STOP_ACCEPT,
+                               TypeNomLogiqueInfoPASMES.FUNC_STOP_REJECT], shall_be_vital=False):
             success = False
 
         is_home_signal = get_dc_sys_value(sig, DCSYS.Sig.Type) == SignalType.MANOEUVRE
         train_app_provided = is_home_signal and get_dc_sys_value(sig, DCSYS.Sig.CbtcTrainAppProvided) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, train_app_provided,
-                          "Home Signal with flag [CBTC Train App provided] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.CBTC_TRAIN_IN_APPROACH, shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, train_app_provided,
+                              "Home Signal with flag [CBTC Train App provided] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.CBTC_TRAIN_IN_APPROACH, shall_be_vital=True):
             success = False
 
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -154,10 +156,10 @@ def _rule_3_check_block(block_msg_dict: dict, in_cbtc: bool):
     success = True
     for block_name, block in block_dict.items():
         overriden = get_dc_sys_value(block, DCSYS.CDV.AFiabiliser) == YesOrNo.O
-        if check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, overriden, "flag [Overriden] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.ZC_BLOCK, shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, overriden, "flag [Overriden] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.ZC_BLOCK, shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -170,31 +172,31 @@ def _rule_3_check_ivb(ivb_msg_dict: dict, in_cbtc: bool):
     success = True
     for ivb_name, ivb in ivb_dict.items():
         sent_ixl = get_dc_sys_value(ivb, DCSYS.IVB.SentToIxl) == YesOrNo.O
-        if check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, sent_ixl, "flag [Sent To IXL] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.IXL_VIRTUAL_BLOCK, shall_be_vital=True, only_one_zc=True) is False:
+        if not check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, sent_ixl, "flag [Sent To IXL] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.IXL_VIRTUAL_BLOCK, shall_be_vital=True, only_one_zc=True):
             success = False
 
         block_freed = get_dc_sys_value(ivb, DCSYS.IVB.BlockFreed) == YesOrNo.O
-        if check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, block_freed, "flag [Block Freed] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.BLOCK_FREED, shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, block_freed, "flag [Block Freed] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.BLOCK_FREED, shall_be_vital=True):
             success = False
 
-        if check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, True, "shall exist for all IVB",
-                          [TypeNomLogiqueInfoPASMES.AUTHORIZED_NORMAL,
-                           TypeNomLogiqueInfoPASMES.AUTHORIZED_REVERSE], shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, True, "shall exist for all IVB",
+                              [TypeNomLogiqueInfoPASMES.AUTHORIZED_NORMAL,
+                               TypeNomLogiqueInfoPASMES.AUTHORIZED_REVERSE], shall_be_vital=True):
             success = False
 
         unlock_normal = get_dc_sys_value(ivb, DCSYS.IVB.UnlockNormal) == YesOrNo.O
-        if check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, unlock_normal, "flag [Unlock Normal] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.UNLOCK_DL_NORMAL, shall_be_vital=True, only_one_zc=True) is False:
+        if not check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, unlock_normal, "flag [Unlock Normal] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.UNLOCK_DL_NORMAL, shall_be_vital=True, only_one_zc=True):
             success = False
 
         unlock_reverse = get_dc_sys_value(ivb, DCSYS.IVB.UnlockReverse) == YesOrNo.O
-        if check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, unlock_reverse, "flag [Unlock Reverse] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.UNLOCK_DL_REVERSE, shall_be_vital=True, only_one_zc=True) is False:
+        if not check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, unlock_reverse, "flag [Unlock Reverse] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.UNLOCK_DL_REVERSE, shall_be_vital=True, only_one_zc=True):
             success = False
 
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -207,10 +209,10 @@ def _rule_3_check_switch(sw_msg_dict: dict, in_cbtc: bool):
     success = True
     for sw_name, sw in sw_dict.items():
         free_to_move = get_dc_sys_value(sw, DCSYS.Aig.FreeToMove) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Aig, sw_msg_dict, sw_name, free_to_move, "flag [Free To Move] set to 'Y'",
-                          TypeNomLogiqueInfoPASMES.CBTC_FREE_TO_MOVE, shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Aig, sw_msg_dict, sw_name, free_to_move, "flag [Free To Move] set to 'Y'",
+                              TypeNomLogiqueInfoPASMES.CBTC_FREE_TO_MOVE, shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -222,12 +224,12 @@ def _rule_3_check_cbtc_protection_zone(cbtc_pz_msg_dict: dict, in_cbtc: bool):
         cbtc_pz_dict = get_objects_in_cbtc_ter(DCSYS.CBTC_Protection_Zone)
     success = True
     for cbtc_pz_name, cbtc_pz in cbtc_pz_dict.items():
-        if check_obj_msgs(DCSYS.CBTC_Protection_Zone, cbtc_pz_msg_dict, cbtc_pz_name, True,
-                          "shall exist for all CBTC Protection Zones",
-                          TypeNomLogiqueInfoPASMES.PROTECTION_NOT_REQUIRED,
-                          shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.CBTC_Protection_Zone, cbtc_pz_msg_dict, cbtc_pz_name, True,
+                              "shall exist for all CBTC Protection Zones",
+                              TypeNomLogiqueInfoPASMES.PROTECTION_NOT_REQUIRED,
+                              shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -240,11 +242,11 @@ def _rule_3_check_protection_zone(pz_msg_dict: dict, in_cbtc: bool):
     success = True
     for pz_name, pz in pz_dict.items():
         cbtc_controlled = get_dc_sys_value(pz, DCSYS.Protection_Zone.CbtcControlledFlag) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Protection_Zone, pz_msg_dict, pz_name, cbtc_controlled,
-                          "flag [CBTC Controlled] set to 'Y'", TypeNomLogiqueInfoPASMES.MOVEMENT_AUTHORIZED,
-                          shall_be_vital=True) is False:
+        if not check_obj_msgs(DCSYS.Protection_Zone, pz_msg_dict, pz_name, cbtc_controlled,
+                              "flag [CBTC Controlled] set to 'Y'", TypeNomLogiqueInfoPASMES.MOVEMENT_AUTHORIZED,
+                              shall_be_vital=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -257,10 +259,10 @@ def _rule_3_check_tpz(tpz_msg_dict: dict, in_cbtc: bool):
     success = True
     for tpz_name, tpz in tpz_dict.items():
         if "POWER_AUTHORIZED" in get_class_attr_dict(TypeNomLogiqueInfoPASMES):
-            if check_obj_msgs(DCSYS.SS, tpz_msg_dict, tpz_name, True, "shall exist for all Traction Power Zone",
-                              TypeNomLogiqueInfoPASMES.POWER_AUTHORIZED, shall_be_vital=True) is False:
+            if not check_obj_msgs(DCSYS.SS, tpz_msg_dict, tpz_name, True, "shall exist for all Traction Power Zone",
+                                  TypeNomLogiqueInfoPASMES.POWER_AUTHORIZED, shall_be_vital=True):
                 success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -273,11 +275,11 @@ def _rule_3_check_cross_call(cross_call_msg_dict: dict, in_cbtc: bool):
     success = True
     for cross_call_name, cross_call in cross_call_dict.items():
         if "CROSSING_AUTH_REQUEST" in get_class_attr_dict(TypeNomLogiqueInfoPASMES):
-            if check_obj_msgs(DCSYS.SS, cross_call_msg_dict, cross_call_name, True,
-                              "shall exist for all Crossing Calling Area",
-                              TypeNomLogiqueInfoPASMES.CROSSING_AUTH_REQUEST, shall_be_vital=False) is False:
+            if not check_obj_msgs(DCSYS.SS, cross_call_msg_dict, cross_call_name, True,
+                                  "shall exist for all Crossing Calling Area",
+                                  TypeNomLogiqueInfoPASMES.CROSSING_AUTH_REQUEST, shall_be_vital=False):
                 success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -300,12 +302,12 @@ def _rule_3_check_tsr_area_speed(tsr_area_speed_msg_dict: dict, in_cbtc: bool):
                 is_zc_zcr = (get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr)[0]
                              == YesOrNo.O)
                 zcr_and_interfaced_with_hmi = is_zc_zcr and tsr_interfaced_with_vhmi
-                if check_obj_msgs(DCSYS.TSR_Area, tsr_area_speed_msg_dict, tsr_area_speed_name,
-                                  zcr_and_interfaced_with_hmi, f"message transmitter {zc_name} is a ZCR "
-                                                               f"and [tsr_interfaced_with_VHMI] = true",
-                                  TypeNomLogiqueInfoPASMES.TSR_AREA_SPEED_SUPERVISION, shall_be_vital=True,
-                                  obj_type_str="TSR_Area_Possible_Speeds", zc=zc_name, tsr_speed=tsr_speed,
-                                  tsr_area_missing_speeds=tsr_area_missing_speeds) is False:
+                if not check_obj_msgs(DCSYS.TSR_Area, tsr_area_speed_msg_dict, tsr_area_speed_name,
+                                      zcr_and_interfaced_with_hmi, f"message transmitter {zc_name} is a ZCR "
+                                                                   f"and [tsr_interfaced_with_VHMI] = true",
+                                      TypeNomLogiqueInfoPASMES.TSR_AREA_SPEED_SUPERVISION, shall_be_vital=True,
+                                      obj_type_str="TSR_Area_Possible_Speeds", zc=zc_name, tsr_speed=tsr_speed,
+                                      tsr_area_missing_speeds=tsr_area_missing_speeds):
                     success = False
         if tsr_area_missing_speeds:
             # print_warning(f"The following speeds have no message "
@@ -321,5 +323,5 @@ def _rule_3_check_tsr_area_speed(tsr_area_speed_msg_dict: dict, in_cbtc: bool):
             csv += f"{'Missing' if is_missing else ''};"
         csv += "\n"
     print(csv)
-    if success is True:
+    if success:
         print_log(f"No KO.")

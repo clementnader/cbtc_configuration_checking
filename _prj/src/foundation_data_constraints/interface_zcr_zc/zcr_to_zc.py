@@ -30,18 +30,18 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                             TypeNomLogiqueInfoPASPAS.SAFETY_RELATED_SKIP_NORMAL_DIR,
                             TypeNomLogiqueInfoPASPAS.SAFETY_RELATED_HOLD_REVERSE_DIR,
                             TypeNomLogiqueInfoPASPAS.SAFETY_RELATED_SKIP_REVERSE_DIR]
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
-                          "shall exist for all Platforms",
-                          target_msg_types) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
+                              "shall exist for all Platforms",
+                              target_msg_types):
             success = False
 
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
 # ------- Common Sub Functions to test flows ------- #
 def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, condition_str: str,
-                   target_msg_types: Union[str, list[str]]):
+                   target_msg_types: Union[str, list[str]]) -> bool:
     if not isinstance(target_msg_types, list):
         target_msg_types = [target_msg_types]
     obj_type_str = get_sh_name(obj_type)

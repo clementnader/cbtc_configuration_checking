@@ -19,9 +19,9 @@ def get_user_full_name() -> Optional[str]:
         print_log(f"Unable to find the user name.")
         return None
     print_log(f"User name is found to be {Color.default}\"{full_name}\"{Color.reset}.")
-    if "(" in full_name:
+    if "(" in full_name:  # remove anything between parentheses
         full_name = full_name.split("(", 1)[0].strip()
-    if "," in full_name:
+    if "," in full_name:  # reverse order when name is displayed as "SURNAME, Firstname"
         full_name = " ".join(reversed(full_name.split(",", 1))).strip()
     return full_name
 

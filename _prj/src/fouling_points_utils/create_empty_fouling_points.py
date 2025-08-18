@@ -7,7 +7,7 @@ from ..cctool_oo_schema import *
 from ..dc_sys import *
 
 
-__all__ = ["init_fouling_points_file"]
+__all__ = ["create_fouling_points_template_file"]
 
 
 FOULING_POINT_TEMPLATE = os.path.join(TEMPLATE_DIRECTORY, "template_fouling_points.xlsx")
@@ -32,7 +32,7 @@ SWITCH_COLORS = ["94DCF8", "83E28E", "E49EDD", "F7C7AC"]
 FILE_TITLE = "Fouling Points"
 
 
-def init_fouling_points_file():
+def create_fouling_points_template_file():
     # Load the Excel template for the verification file
     wb = load_xlsx_wb(FOULING_POINT_TEMPLATE, template=True)
     # Create Header sheet

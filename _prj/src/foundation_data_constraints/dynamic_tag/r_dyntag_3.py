@@ -16,7 +16,7 @@ def r_dyntag_3():
     dyn_tag_dict = load_sheet(DCSYS.IATPM_tags)
     if not dyn_tag_dict:
         print("No Dynamic Tag.")
-        return
+        return None
     nb_dyn_tags = len(dyn_tag_dict.keys())
     block_laying_uncertainty = get_param_value("block_laying_uncertainty")
 

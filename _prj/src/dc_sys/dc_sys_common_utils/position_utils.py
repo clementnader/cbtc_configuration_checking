@@ -37,6 +37,16 @@ def get_object_position(obj_type, obj_name: str) -> Union[tuple[str, float],
         # a dedicated function for signal VSP
         return _get_vsp_position(obj_name)
 
+    if ("IXL_Overlap" in get_class_attr_dict(DCSYS) and "VitalStoppingPoint" in get_class_attr_dict(DCSYS.IXL_Overlap)
+            and obj_type == get_sh_name(DCSYS.IXL_Overlap.VitalStoppingPoint)):
+        # a dedicated function for IXL Overlap VSP
+        return _get_ixl_ovl_vsp_position(obj_name)
+
+    if ("IXL_Overlap" in get_class_attr_dict(DCSYS) and "ReleasePoint" in get_class_attr_dict(DCSYS.IXL_Overlap)
+            and obj_type == get_sh_name(DCSYS.IXL_Overlap.ReleasePoint)):
+        # a dedicated function for IXL Overlap Release Point
+        return _get_ixl_ovl_release_point_position(obj_name)
+
     if ("Quai" in get_class_attr_dict(DCSYS) and "PointDArret" in get_class_attr_dict(DCSYS.Quai)
             and obj_type == get_sh_name(DCSYS.Quai.PointDArret)):
         # a dedicated function for platform OSP
@@ -245,6 +255,20 @@ def _get_vsp_position(sig_name: str) -> tuple[str, float, str]:
     vsp_dist = vsp_dist if sig_direction == Direction.CROISSANT else -vsp_dist
     vsp_seg, vsp_x = get_correct_seg_offset(sig_seg, sig_x + vsp_dist)
     return vsp_seg, vsp_x, sig_direction
+
+
+def _get_ixl_ovl_vsp_position(ixl_ovl_name: str) -> tuple[str, float, str]:
+    vsp_seg, vsp_x, vsp_direction = get_dc_sys_values(
+        ixl_ovl_name, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg, DCSYS.IXL_Overlap.VitalStoppingPoint.X,
+        DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
+    return vsp_seg, vsp_x, vsp_direction
+
+
+def _get_ixl_ovl_release_point_position(ixl_ovl_name: str) -> tuple[str, float, str]:
+    rp_seg, rp_x, rp_direction = get_dc_sys_values(
+        ixl_ovl_name, DCSYS.IXL_Overlap.ReleasePoint.Seg, DCSYS.IXL_Overlap.ReleasePoint.X,
+        DCSYS.IXL_Overlap.ReleasePoint.Sens)
+    return rp_seg, rp_x, rp_direction
 
 
 def _get_plt_osp_position(osp_name: str) -> tuple[str, float, str]:

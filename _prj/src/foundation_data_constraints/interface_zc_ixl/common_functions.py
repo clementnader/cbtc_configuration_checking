@@ -16,7 +16,7 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
                    is_flux_pas_mes: bool = True, vital_condition: bool = None, vital_condition_str: str = None,
                    obj_type_str: str = None, sig_upstream_ivb: bool = True,
                    zc: str = None, tsr_speed: str = None,
-                   tsr_area_missing_speeds: list = None):
+                   tsr_area_missing_speeds: list = None) -> bool:
     if not isinstance(target_msg_types, list):
         target_msg_types = [target_msg_types]
     if obj_type_str is None:
@@ -73,9 +73,9 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
             success = False
             continue
         if zc is None:
-            if _check_message_zc(obj_type, obj_name, associated_msg, obj_type_str, target_msg_type,
-                                 condition, condition_str, shall_be_vital, is_flux_pas_mes, only_one_zc,
-                                 sig_upstream_ivb) is False:
+            if not _check_message_zc(obj_type, obj_name, associated_msg, obj_type_str, target_msg_type,
+                                     condition, condition_str, shall_be_vital, is_flux_pas_mes, only_one_zc,
+                                     sig_upstream_ivb):
                 success = False
         for associated_msg_name, associated_msg_info in associated_msg.items():
             is_msg_vital = get_dc_sys_value(associated_msg_info, obj_class.TypeInfo) == VitalOrNotType.SECU
@@ -99,7 +99,7 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
 
 def _check_message_zc(obj_type, obj_name: str, associated_msg, obj_type_str, target_msg_type,
                       condition: bool, condition_str: str, shall_be_vital: bool, is_flux_pas_mes: bool,
-                      only_one_zc: bool, sig_upstream_ivb: bool):
+                      only_one_zc: bool, sig_upstream_ivb: bool) -> bool:
     if not obj_name:
         return False
     obj_class = DCSYS.Flux_PAS_MES if is_flux_pas_mes else DCSYS.Flux_MES_PAS

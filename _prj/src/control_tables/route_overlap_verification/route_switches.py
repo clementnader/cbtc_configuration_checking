@@ -6,7 +6,7 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
-def verify_switches_along_the_routes():
+def verify_switches_along_the_routes():  # TODO
     route_dict = _get_route_dict()
     ivb_dict = load_sheet(DCSYS.IVB)
     for route_name, route in route_dict.items():

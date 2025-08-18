@@ -6,13 +6,13 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
-__all__ = ["_check_obj_msgs"]
+__all__ = ["check_obj_msgs"]
 
 
 # ------- Common Sub Functions to test flows ------- #
-def _check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, condition_str: str,
-                    target_msg_types: Union[str, list[str]], shall_be_vital: bool,
-                    is_hf: bool = True):
+def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, condition_str: str,
+                   target_msg_types: Union[str, list[str]], shall_be_vital: bool,
+                   is_hf: bool = True) -> bool:
     if not isinstance(target_msg_types, list):
         target_msg_types = [target_msg_types]
     obj_type_str = get_sh_name(obj_type)

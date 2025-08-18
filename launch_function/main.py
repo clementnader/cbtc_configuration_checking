@@ -57,7 +57,6 @@ def main():
     #cf_ivb_2()
     #cc_cv_16()
     #cc_cv_18()
-    #cc_cv_20()
 
     # --- CBTC Direction Zone constraints --- #
     #cf_zsm_cbtc_4()
@@ -72,6 +71,13 @@ def main():
 
     # --- Walkway constraints --- #
     #cf_walkway_2()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: VSP on Virtual Blocks constraints ---------- #
+    """Uncomment one of next lines to verify some constraints about VSP on Virtual Blocks.
+    @inputs: DC_SYS, CCTool-OO Schema and DC_PAR"""
+    #cc_cv_19()
+    #cc_cv_20()
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: messages ---------- #
@@ -223,6 +229,13 @@ def main():
      downstream the signal.
     @inputs: DC_SYS and CCTool-OO Schema"""
     #get_signals_distance_to_joint()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Fouling Point template file ---------- #
+    """Uncomment next line to create an empty Fouling Points template file with the list of switches from DC_SYS.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #create_fouling_points_template_file()
+
     return
 
 

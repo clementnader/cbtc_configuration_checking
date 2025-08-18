@@ -96,6 +96,9 @@ def _get_control_tables_loc_info(control_table_type: str):
         specific_pages = DATABASE_LOC.control_tables_overlap.specific_pages
         return zip(control_table_addr, all_pages, specific_pages)
 
+    else:
+        raise UnknownControlTablesType(control_table_type)
+
 
 def _get_result_files_name(control_tables_loc_info: list[tuple[str, bool, Union[int, tuple[int, int]]]]) -> list[str]:
     result_files_name = list()

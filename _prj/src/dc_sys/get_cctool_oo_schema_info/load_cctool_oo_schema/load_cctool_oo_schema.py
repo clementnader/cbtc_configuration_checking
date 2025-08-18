@@ -33,7 +33,7 @@ def load_cctool_oo_schema(addr: str) -> dict:
     return LOADED_CCTOOL_OO_SCHEMA
 
 
-def get_cctool_oo_schema(ws: xlrd.sheet) -> dict:
+def get_cctool_oo_schema(ws: xlrd.sheet.Sheet) -> dict:
     info_dict = dict()
     for row in range(START_ROW, ws.nrows + 1):
         sheet_name = get_xlrd_value(ws, row, SHEET_COL)
@@ -69,7 +69,7 @@ def get_list_attr_names(title: str):
     return list_attr_name, sub_attr_name
 
 
-def get_clean_cell(ws: xlrd.sheet, row: int, col: int):
+def get_clean_cell(ws: xlrd.sheet.Sheet, row: int, col: int):
     cell_str = unidecode.unidecode(f"{get_xlrd_value(ws, row, col)}").strip()  # translate non-ASCII characters
     cell_str = (cell_str.replace("'", " ").replace(".", " ")
                 .replace("-", " ").replace("/", " "))  # remove special chars

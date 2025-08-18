@@ -9,6 +9,8 @@
 # Comments: Compliant with Ref Sys 08-03-00-00                                                     #
 # ------------------------------------------------------------------------------------------------ #
 
+__all__ = ["DCSYS"]
+
 
 class Ligne__SegmentsDepolarises:
     Cell = {'sh_name': 'Ligne', 'attr_name': 'SegmentsDepolarises', 'sub_attr_name': 'Cell', 'cols': [7, 8, 9, 10, 11, 12, 13, 14]}

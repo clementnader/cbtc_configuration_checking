@@ -28,7 +28,7 @@ def get_block_min_length(in_cbtc: bool = False):
           f"\n{min_block = }"
           f"\n > for {list_min_block}")
     print_bar()
-    return sort_dict(dict_len_block)
+    return _sort_dict(dict_len_block)
 
 
 def get_block_max_length(in_cbtc: bool = False):
@@ -47,10 +47,10 @@ def get_block_max_length(in_cbtc: bool = False):
     print(f"The maximum block length is, {print_in_cbtc(in_cbtc)}:"
           f"\n{max_block = }"
           f"\n > for {list_max_block}")
-    return sort_dict(dict_len_block, reverse=True)
+    return _sort_dict(dict_len_block, reverse=True)
 
 
-def sort_dict(dict_len_block, reverse: bool = False):
+def _sort_dict(dict_len_block, reverse: bool = False):
     keys = sorted(dict_len_block, key=lambda x: dict_len_block[x], reverse=reverse)
     sorted_dict = {x: dict_len_block[x] for x in keys}
     return sorted_dict

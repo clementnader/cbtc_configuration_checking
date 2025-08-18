@@ -27,7 +27,7 @@ def get_train_front_position_at_osp(train_type: str, osp_seg: str, osp_x: float,
         train_front_seg, train_front_x = get_correct_seg_offset(osp_seg, osp_x + polarity * train_length)
         return train_front_seg, train_front_x
 
-    print_error(f"OSP Type {osp_type} is unknown, it should be in {get_class_values(StoppingPointType)}")
+    raise UnknownOSPType(osp_type)
 
 
 def is_accelerometer_calibration_authorized_at_osp_not_platform_related(osp_name: str) -> Optional[bool]:
@@ -38,3 +38,5 @@ def is_accelerometer_calibration_authorized_at_osp_not_platform_related(osp_name
 
     if "AllowAccelerometersCalibration" in get_class_attr_dict(DCSYS.PtA):
         return get_dc_sys_value(osp_value, DCSYS.PtA.AllowAccelerometersCalibration) == YesOrNo.O
+
+    return None

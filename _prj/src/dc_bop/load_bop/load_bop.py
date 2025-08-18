@@ -33,7 +33,7 @@ def load_dc_bop() -> dict:
     return LOADED_SWITCH_DIRS
 
 
-def get_switch_bop(sw_sh: xlrd.sheet) -> dict:
+def get_switch_bop(sw_sh: xlrd.sheet.Sheet) -> dict:
     if sw_sh.nrows == 0:
         return {}
 

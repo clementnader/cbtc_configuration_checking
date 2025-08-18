@@ -18,7 +18,7 @@ def ixl_apz_definition_file() -> Optional[str]:
 def load_ixl_apz_file() -> None:
     global LOADED_DB
     if DATABASE_LOC.ixl_apz.ixl_apz_file is None:
-        return None
+        return
     if not LOADED_DB:
         print_log(f"Open IXL Approach Zone file {Color.default}\"{DATABASE_LOC.ixl_apz.ixl_apz_file}\"{Color.reset}.")
         wb = load_xl_file(DATABASE_LOC.ixl_apz.ixl_apz_file)

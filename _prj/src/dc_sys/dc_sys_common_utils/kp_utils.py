@@ -19,9 +19,9 @@ def from_seg_offset_to_track_kp(seg: str, x: float) -> tuple[str, float]:
     # We use a round for the KP because the floating computations are not precised,
     # and we know that only 2 digits are relevant, so rounding at 5 digits causes no impact.
     if seg_orig_kp <= seg_end_kp:
-        kp = round(seg_orig_kp + float(x), 5)
+        kp = round(seg_orig_kp + x, 5)
     else:  # sometimes the KP decrease in the segment downstream direction
-        kp = round(seg_orig_kp - float(x), 5)
+        kp = round(seg_orig_kp - x, 5)
     return seg_track, kp
 
 

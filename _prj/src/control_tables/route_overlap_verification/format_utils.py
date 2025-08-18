@@ -55,13 +55,21 @@ def _remove_intersection_diamond_switch(ct_sw_list: list[str]) -> list[str]:
 def are_sw_names_matching(ct_sw: str, dc_sys_sw: str) -> bool:
     ct_sw = ct_sw.strip()
     dc_sys_sw = dc_sys_sw.strip()
+    if dc_sys_sw.endswith(ct_sw):
+        return True
 
     # Remove leading zeros
     ct_sw = _remove_leading_zeros(ct_sw)
     dc_sys_sw = _remove_leading_zeros(dc_sys_sw)
-
     if dc_sys_sw.endswith(ct_sw):
         return True
+
+    # Remove hyphens - for Riyadh project
+    ct_sw = _remove_hyphens(ct_sw)
+    dc_sys_sw = _remove_leading_zeros(dc_sys_sw)
+    if dc_sys_sw.endswith(ct_sw):
+        return True
+
     return False
 
 
@@ -69,7 +77,12 @@ def _remove_leading_zeros(name: str) -> str:
     return re.sub(r"([^1-9]*)0+([1-9])", r"\1\2", name)
 
 
+def _remove_hyphens(name: str) -> str:
+    return re.sub(r"(S[AM])-([0-9])", r"\1\2", name)
+
+
 def are_signals_matching(ct_sig: str, dc_sys_sig: str) -> bool:
+    ct_sig = ct_sig.upper()
     dc_sys_sig = dc_sys_sig.upper()
     if dc_sys_sig.endswith(ct_sig):
         return True

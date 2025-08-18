@@ -156,7 +156,7 @@ def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[st
         _add_status(ws, row, status)
         _add_comments(ws, row, comments, inhibit_simple_overshoot_recovery, last_ivb_platform_related)
 
-    if inhibit_simple_overshoot_recovery is True:
+    if inhibit_simple_overshoot_recovery:
         # no overshoot recovery, the column for the Related Platform can be hidden
         ws.column_dimensions[LAST_IVB_PLATFORM_RELATED_COL].hidden = True
 

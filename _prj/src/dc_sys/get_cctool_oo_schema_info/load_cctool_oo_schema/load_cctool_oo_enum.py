@@ -25,7 +25,7 @@ def load_cctool_oo_enum_lists(addr: str) -> dict:
     return LOADED_CCTOOL_OO_ENUM_LISTS
 
 
-def get_cctool_oo_enums(ws: xlrd.sheet) -> dict:
+def get_cctool_oo_enums(ws: xlrd.sheet.Sheet) -> dict:
     info_dict = dict()
     for row in range(START_ROW, ws.nrows + 1):
         sheet_name = get_xlrd_value(ws, row, ENUM_NAME_COL)

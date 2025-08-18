@@ -34,3 +34,5 @@ def is_accelerometer_calibration_authorized_at_platform(plt_name: str) -> Option
 
     if "AllowAccelerometersCalibration" in get_class_attr_dict(DCSYS.Quai):
         return get_dc_sys_value(plt_value, DCSYS.Quai.AllowAccelerometersCalibration) == YesOrNo.O
+
+    return None

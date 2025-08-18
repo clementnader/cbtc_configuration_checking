@@ -4,7 +4,6 @@
 import os
 from ..common_utils import *
 from ..colors_pkg import *
-from ..exception_utils import *
 from .xl_utils import *
 
 
@@ -32,8 +31,6 @@ def get_xl_sheet_names(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook]) ->
         return wb.sheet_names()
     elif isinstance(wb, openpyxl.workbook.Workbook):
         return wb.sheetnames
-    else:
-        raise UnknownExcelWorkbookType(type(wb))
 
 
 def get_xl_sheet_names_preload(xl_file_address: str) -> list[str]:
@@ -52,8 +49,6 @@ def get_xl_sheet_by_name(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook], 
     elif isinstance(wb, openpyxl.workbook.Workbook):
         ws = wb[sheet_name]
         return ws
-    else:
-        raise UnknownExcelWorkbookType(type(wb))
 
 
 def get_xl_number_of_rows(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> int:
@@ -61,8 +56,6 @@ def get_xl_number_of_rows(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> int:
         return ws.nrows
     elif isinstance(ws, xl_ws.Worksheet):
         return ws.max_row
-    else:
-        raise UnknownExcelWorksheetType(type(ws))
 
 
 def get_xl_number_of_columns(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> int:
@@ -70,8 +63,6 @@ def get_xl_number_of_columns(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> in
         return ws.ncols
     elif isinstance(ws, xl_ws.Worksheet):
         return ws.max_column
-    else:
-        raise UnknownExcelWorksheetType(type(ws))
 
 
 def get_xl_cell_value(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],
@@ -82,8 +73,6 @@ def get_xl_cell_value(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],
         return get_xlrd_value(ws, row, column)
     elif isinstance(ws, xl_ws.Worksheet):
         return get_xlsx_value(ws, row, column)
-    else:
-        raise UnknownExcelWorksheetType(type(ws))
 
 
 def check_xl_cell_style_percent(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],
@@ -98,8 +87,6 @@ def check_xl_cell_style_percent(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],
         if cell_style == "Percent":
             return True
         return False
-    else:
-        raise UnknownExcelWorksheetType(type(ws))
 
 
 def get_xl_cell_style(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],
@@ -116,8 +103,6 @@ def get_xl_cell_style(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],
         return fmt.format_str
     elif isinstance(ws, xl_ws.Worksheet):
         return ws.cell(row=row, column=column).style
-    else:
-        raise UnknownExcelWorksheetType(type(ws))
 
 
 def get_xl_float_value(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet],

@@ -24,14 +24,14 @@ def check_dc_sys_track_kp_definition():
         ws = get_xl_sheet_by_name(wb, sh_name)
         # if check_integers(ws) is False:
         #     success = False
-        if verify_sheet(ws) is False:
+        if not verify_sheet(ws):
             success = False
     if success:
         print_log("No KO has been raised in the verification of the correspondence between "
                   "(Segment, Offset) and (Track, KP).")
 
 
-def check_integers(ws: xlrd.sheet):
+def check_integers(ws: xlrd.sheet.Sheet):
     success = True
     nb_cols = ws.ncols
     for j in range(1, nb_cols+1):
@@ -61,10 +61,10 @@ def check_integers(ws: xlrd.sheet):
     return success
 
 
-def verify_sheet(ws: xlrd.sheet):
+def verify_sheet(ws: xlrd.sheet.Sheet) -> bool:
     success = True
     seg_x_cols, track_kp_cols = find_seg_x_cols(ws)
-    if check_correspondence_seg_x_track_kp(ws, seg_x_cols, track_kp_cols) is False:
+    if not check_correspondence_seg_x_track_kp(ws, seg_x_cols, track_kp_cols):
         success = False
     for seg_col, x_col, _, _ in seg_x_cols:
         for i in range(START_LINE, get_xl_number_of_rows(ws) + 1):
@@ -151,7 +151,7 @@ def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col,
     return success
 
 
-def find_seg_x_cols(ws: xlrd.sheet) -> tuple[list[tuple[int, int, str, str]], list[tuple[int, int, str, str]]]:
+def find_seg_x_cols(ws: xlrd.sheet.Sheet) -> tuple[list[tuple[int, int, str, str]], list[tuple[int, int, str, str]]]:
     nb_cols = ws.ncols
     is_prev_seg = False
     is_prev_track = False
@@ -198,8 +198,8 @@ def check_correspondence_seg_x_track_kp(ws, seg_x_cols: list[tuple[int, int, str
             first_cell = get_xl_cell_value(ws, row=i, column=1)
             if first_cell is None:
                 continue
-            if test_match_x_kp(ws, i, seg_col, x_col, track_col, kp_col, ws.name, first_cell,
-                               seg_col_name, x_col_name, track_col_name, kp_col_name) is False:
+            if not test_match_x_kp(ws, i, seg_col, x_col, track_col, kp_col, ws.name, first_cell,
+                                   seg_col_name, x_col_name, track_col_name, kp_col_name):
                 success = False
     return success
 

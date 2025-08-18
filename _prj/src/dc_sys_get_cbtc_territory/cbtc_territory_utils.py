@@ -10,7 +10,7 @@ __all__ = ["get_segs_within_cbtc_ter", "get_cbtc_ter_limits", "get_all_segs_in_c
            "is_point_in_cbtc_ter", "print_in_cbtc"]
 
 
-CBTC_TER_SEGMENTS: list[(str, bool)] = list()
+CBTC_TER_SEGMENTS: list[tuple[str, bool]] = list()
 CBTC_TER_LIMITS: list[tuple[str, float, bool]] = list()
 
 
@@ -148,7 +148,6 @@ def update_list_seg_lim(cbtc_limits: list[tuple[str, float, bool]]) -> None:
 
 
 def is_point_in_cbtc_ter(seg: str, x: float, direction: str = None) -> Optional[bool]:
-    x = float(x)
     cbtc_ter_segments = get_segs_within_cbtc_ter()
     cbtc_ter_limits = get_cbtc_ter_limits()
     if seg in cbtc_ter_segments:

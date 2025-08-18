@@ -31,9 +31,9 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                             TypeNomLogiqueInfoATSCBTC.CPA_INTERDIT_DIR_IMPAIR,
                             TypeNomLogiqueInfoATSCBTC.CMCC_INTERDIT_DIR_PAIR,
                             TypeNomLogiqueInfoATSCBTC.CPA_INTERDIT_DIR_PAIR]
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
-                          "shall exist for all Platforms",
-                          target_msg_types) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
+                              "shall exist for all Platforms",
+                              target_msg_types):
             success = False
 
         target_msg_types = ([TypeNomLogiqueInfoATSCBTC.HOLD_NORMAL_DIR,
@@ -46,11 +46,11 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                                   TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_SKIP_NORMAL_DIR,
                                   TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_HOLD_REVERSE_DIR,
                                   TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_SKIP_REVERSE_DIR])
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
-                          "shall exist for all Platforms",
-                          target_msg_types) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
+                              "shall exist for all Platforms",
+                              target_msg_types):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -63,17 +63,17 @@ def _check_nv_psr(nv_psr_msg_dict: dict, in_cbtc: bool):
     success = True
     for nv_psr_name, nv_psr in nv_psr_dict.items():
         can_be_relaxed = get_dc_sys_value(nv_psr, DCSYS.NV_PSR.WithRelaxation) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Quai, nv_psr_msg_dict, nv_psr_name, can_be_relaxed,
-                          "flag [With Relaxation] set to 'Y'",
-                          TypeNomLogiqueInfoATSCBTC.NV_PSR_RELAXATION_CONDITION) is False:
+        if not check_obj_msgs(DCSYS.Quai, nv_psr_msg_dict, nv_psr_name, can_be_relaxed,
+                              "flag [With Relaxation] set to 'Y'",
+                              TypeNomLogiqueInfoATSCBTC.NV_PSR_RELAXATION_CONDITION):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
 # ------- Common Sub Functions to test flows ------- #
 def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, condition_str: str,
-                   target_msg_types: Union[str, list[str]]):
+                   target_msg_types: Union[str, list[str]]) -> bool:
     if not isinstance(target_msg_types, list):
         target_msg_types = [target_msg_types]
     obj_type_str = get_sh_name(obj_type)

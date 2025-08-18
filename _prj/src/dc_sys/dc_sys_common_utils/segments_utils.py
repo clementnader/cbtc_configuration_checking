@@ -84,6 +84,7 @@ def get_associated_depolarization(seg: str) -> Optional[list[str]]:
     for sub_list in DEPOLARIZED_SEGMENTS:
         if seg in sub_list:
             return sub_list
+    return None
 
 
 def get_depolarized_segments() -> list[list[str]]:

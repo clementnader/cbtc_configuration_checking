@@ -190,6 +190,9 @@ def constraints_and_rules():
     # cf_ivb_2()
     # cc_cv_16()
     # cc_cv_18()
+
+    # VSP on Virtual Blocks constraints
+    # cc_cv_19()
     # cc_cv_20()
 
     # CBTC Direction Zone constraints
@@ -303,7 +306,6 @@ def extremite_secteur():
 def main():
     # print_named_colors()
     # print_all_colors()
-    # test_moving_progress_bar()
 
     # pretty_print_dict(list(get_all_segs_in_cbtc_ter()), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Voie), max_lvl=0)
@@ -314,7 +316,7 @@ def main():
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Aig), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Quai), max_lvl=0)
 
-    # init_fouling_points_file()  # create empty fouling points file with the list of switches from DC_SYS
+    # create_fouling_points_template_file()  # create empty fouling points file with the list of switches from DC_SYS
 
     survey()
 

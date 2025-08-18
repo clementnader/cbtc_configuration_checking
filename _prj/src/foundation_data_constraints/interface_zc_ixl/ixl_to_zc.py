@@ -65,45 +65,47 @@ def _rule_1_check_plt(plt_msg_dict: dict, in_cbtc: bool):
                 and "GIDS_LVL2_INTRUSION" in get_class_attr_dict(TypeNomLogiqueInfoMESPAS)
                 and "GIDS_NOT_ISOLATED" in get_class_attr_dict(TypeNomLogiqueInfoMESPAS)):
             with_gids = (get_dc_sys_value(plt, DCSYS.Quai.AvecSqv) and related_ws_eqpt_is_a_zc)
-            if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_gids,
-                              f"flag [With GIDS] set to 'Y' and [Related Wayside Equip] {related_ws_eqpt} is a ZC",
-                              TypeNomLogiqueInfoMESPAS.B_ATB, shall_be_vital=True, is_flux_pas_mes=False) is False:
+            if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_gids,
+                                  f"flag [With GIDS] set to 'Y' and [Related Wayside Equip] {related_ws_eqpt} is a ZC",
+                                  TypeNomLogiqueInfoMESPAS.B_ATB, shall_be_vital=True, is_flux_pas_mes=False):
                 success = False
 
         atb_zones = [atb[0] for atb in get_atb_zone_related_to_plt(plt_name)]
         origin_atb_mvt = True if atb_zones else False
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, origin_atb_mvt,
-                          f"platform is origin of an ATB movement {atb_zones}", TypeNomLogiqueInfoMESPAS.B_ATB,
-                          shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, origin_atb_mvt,
+                              f"platform is origin of an ATB movement {atb_zones}", TypeNomLogiqueInfoMESPAS.B_ATB,
+                              shall_be_vital=True, is_flux_pas_mes=False):
             success = False
 
         with_ess = (get_dc_sys_value(plt, DCSYS.Quai.WithEss) == YesOrNo.O and related_ws_eqpt_is_a_zc)
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_ess,
-                          f"flag [With ESS] set to 'Y' and [Related Wayside Equip] {related_ws_eqpt} is a ZC",
-                          TypeNomLogiqueInfoMESPAS.B_ESS, shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_ess,
+                              f"flag [With ESS] set to 'Y' and [Related Wayside Equip] {related_ws_eqpt} is a ZC",
+                              TypeNomLogiqueInfoMESPAS.B_ESS, shall_be_vital=True, is_flux_pas_mes=False):
             success = False
 
         with_th = get_dc_sys_value(plt, DCSYS.Quai.WithTh) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_th, f"flag [With TH] set to 'Y'",
-                          TypeNomLogiqueInfoMESPAS.B_TH, shall_be_vital=False, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_th, f"flag [With TH] set to 'Y'",
+                              TypeNomLogiqueInfoMESPAS.B_TH, shall_be_vital=False, is_flux_pas_mes=False):
             success = False
 
         with_tad = get_dc_sys_value(plt, DCSYS.Quai.WithTad) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_tad, f"flag [With TAD] set to 'Y'",
-                          TypeNomLogiqueInfoMESPAS.B_TAD, shall_be_vital=False, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, with_tad, f"flag [With TAD] set to 'Y'",
+                              TypeNomLogiqueInfoMESPAS.B_TAD, shall_be_vital=False, is_flux_pas_mes=False):
             success = False
 
         if "PSD_ALARM" in get_class_attr_dict(TypeNomLogiqueInfoMESPAS):
-            if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, related_ws_eqpt_is_a_zc,
-                              f"[Related Wayside Equip] {related_ws_eqpt} is a ZC", TypeNomLogiqueInfoMESPAS.PSD_ALARM,
-                              shall_be_vital=True, is_flux_pas_mes=False) is False:
+            if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, related_ws_eqpt_is_a_zc,
+                                  f"[Related Wayside Equip] {related_ws_eqpt} is a ZC",
+                                  TypeNomLogiqueInfoMESPAS.PSD_ALARM,
+                                  shall_be_vital=True, is_flux_pas_mes=False):
                 success = False
 
         psd_msg_routed = get_dc_sys_value(plt, DCSYS.Quai.PsdMessagesRouted) == YesOrNo.O
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, psd_msg_routed, f"flag [PSD Messages Routed] set to 'Y'",
-                          TypeNomLogiqueInfoMESPAS.DEPARTURE_AUTH, shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, psd_msg_routed,
+                              f"flag [PSD Messages Routed] set to 'Y'",
+                              TypeNomLogiqueInfoMESPAS.DEPARTURE_AUTH, shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -120,29 +122,29 @@ def _rule_1_check_signal(sig_msg_dict: dict, in_cbtc: bool):
 
         cbtc_terr_exit_or_with_iatp = (get_dc_sys_value(sig, DCSYS.Sig.SortieTerritoireCbtc) == YesOrNo.O
                                        or get_dc_sys_value(sig, DCSYS.Sig.WithIatpDepCheck) == YesOrNo.O)
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, is_not_buffer_or_pr,
-                          "shall exist for all Signals (excluding buffers and permanently reds)",
-                          TypeNomLogiqueInfoMESPAS.PR_ASPECT, shall_be_vital=cbtc_terr_exit_or_with_iatp,
-                          is_flux_pas_mes=False, vital_condition=cbtc_terr_exit_or_with_iatp,
-                          vital_condition_str="flag [CBTC Territory exit] set to 'Y' "
-                                              "or flag [With IATP dep check] set to 'Y'") is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, is_not_buffer_or_pr,
+                              "shall exist for all Signals (excluding buffers and permanently reds)",
+                              TypeNomLogiqueInfoMESPAS.PR_ASPECT, shall_be_vital=cbtc_terr_exit_or_with_iatp,
+                              is_flux_pas_mes=False, vital_condition=cbtc_terr_exit_or_with_iatp,
+                              vital_condition_str="flag [CBTC Territory exit] set to 'Y' "
+                                                  "or flag [With IATP dep check] set to 'Y'"):
             success = False
 
         with_sa = is_not_buffer_or_pr and (get_dc_sys_value(sig, DCSYS.Sig.Du_Assistee) == YesOrNo.O)
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_sa, "flag [With SA] set to 'Y'",
-                          TypeNomLogiqueInfoMESPAS.AP_CAN_RQ, shall_be_vital=False, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, with_sa, "flag [With SA] set to 'Y'",
+                              TypeNomLogiqueInfoMESPAS.AP_CAN_RQ, shall_be_vital=False, is_flux_pas_mes=False):
             success = False
 
         is_home_signal = get_dc_sys_value(sig, DCSYS.Sig.Type) == SignalType.MANOEUVRE
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, is_home_signal, "shall exist for all Home Signals",
-                          TypeNomLogiqueInfoMESPAS.IL_SET, shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, is_home_signal, "shall exist for all Home Signals",
+                              TypeNomLogiqueInfoMESPAS.IL_SET, shall_be_vital=True, is_flux_pas_mes=False):
             success = False
 
         func_stop = is_not_buffer_or_pr and (get_dc_sys_value(sig, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O)
-        if check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, func_stop, "flag [With Func Stop] set to 'Y'",
-                          TypeNomLogiqueInfoMESPAS.FUNC_STOP_RQ, shall_be_vital=False, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Sig, sig_msg_dict, sig_name, func_stop, "flag [With Func Stop] set to 'Y'",
+                              TypeNomLogiqueInfoMESPAS.FUNC_STOP_RQ, shall_be_vital=False, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -154,11 +156,11 @@ def _rule_1_check_switch(sw_msg_dict: dict, in_cbtc: bool):
         sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
     success = True
     for sw_name, sw in sw_dict.items():
-        if check_obj_msgs(DCSYS.Aig, sw_msg_dict, sw_name, True, "shall exist for all switches",
-                          [TypeNomLogiqueInfoMESPAS.SW_RIGHT_C,
-                           TypeNomLogiqueInfoMESPAS.SW_LEFT_C], shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Aig, sw_msg_dict, sw_name, True, "shall exist for all switches",
+                              [TypeNomLogiqueInfoMESPAS.SW_RIGHT_C,
+                               TypeNomLogiqueInfoMESPAS.SW_LEFT_C], shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -170,26 +172,26 @@ def _rule_1_check_block(block_msg_dict: dict, in_cbtc: bool):
         block_dict = get_objects_in_cbtc_ter(DCSYS.CDV)
     success = True
     for block_name, block in block_dict.items():
-        if check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, True,
-                          "shall exist for all CDV",
-                          TypeNomLogiqueInfoMESPAS.BLOCK,
-                          shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, True,
+                              "shall exist for all CDV",
+                              TypeNomLogiqueInfoMESPAS.BLOCK,
+                              shall_be_vital=True, is_flux_pas_mes=False):
             success = False
 
         block_not_held = get_dc_sys_value(block, DCSYS.CDV.IxlGivesNotHeldStatus) == YesOrNo.O
-        if check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, block_not_held,
-                          "flag [Block Not Held] set to 'Y'",
-                          TypeNomLogiqueInfoMESPAS.BLOCK_NOT_HELD,
-                          shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, block_not_held,
+                              "flag [Block Not Held] set to 'Y'",
+                              TypeNomLogiqueInfoMESPAS.BLOCK_NOT_HELD,
+                              shall_be_vital=True, is_flux_pas_mes=False):
             success = False
 
         block_init_status = get_dc_sys_value(block, DCSYS.CDV.IxlGivesBlockInitStatus) == YesOrNo.O
-        if check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, block_init_status,
-                          "flag [With Block Init Status Exchanged] set to 'Y'",
-                          TypeNomLogiqueInfoMESPAS.BLOCK_INIT_STATUS,
-                          shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, block_init_status,
+                              "flag [With Block Init Status Exchanged] set to 'Y'",
+                              TypeNomLogiqueInfoMESPAS.BLOCK_INIT_STATUS,
+                              shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -202,13 +204,13 @@ def _rule_1_check_ivb(ivb_msg_dict: dict, in_cbtc: bool):
     success = True
     for ivb_name, ivb in ivb_dict.items():
         direction_locking_block = get_dc_sys_value(ivb, DCSYS.IVB.DirectionLockingBlock) == YesOrNo.O
-        if check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, direction_locking_block,
-                          "flag [Direction Locking Block] set to 'Y'",
-                          [TypeNomLogiqueInfoMESPAS.BLOCK_NORMAL_DIRECTION_L,
-                           TypeNomLogiqueInfoMESPAS.BLOCK_REVERSE_DIRECTION_L],
-                          shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, direction_locking_block,
+                              "flag [Direction Locking Block] set to 'Y'",
+                              [TypeNomLogiqueInfoMESPAS.BLOCK_NORMAL_DIRECTION_L,
+                               TypeNomLogiqueInfoMESPAS.BLOCK_REVERSE_DIRECTION_L],
+                              shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -220,10 +222,10 @@ def _rule_1_check_dd(dd_msg_dict: dict, in_cbtc: bool):
         dd_dict = get_objects_in_cbtc_ter(DCSYS.DP)
     success = True
     for dd_name, dd in dd_dict.items():
-        if check_obj_msgs(DCSYS.DP, dd_msg_dict, dd_name, True, "shall exist for all Discrete Detectors",
-                          TypeNomLogiqueInfoMESPAS.DD, shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.DP, dd_msg_dict, dd_name, True, "shall exist for all Discrete Detectors",
+                              TypeNomLogiqueInfoMESPAS.DD, shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -235,11 +237,11 @@ def _rule_1_check_passage_detector(pass_det_msg_dict: dict, in_cbtc: bool):
         pass_det_dict = get_objects_in_cbtc_ter(DCSYS.Passage_Detector)
     success = True
     for pass_det_name, pass_det in pass_det_dict.items():
-        if check_obj_msgs(DCSYS.Passage_Detector, pass_det_msg_dict, pass_det_name, True,
-                          "shall exist for all Passage Detectors", TypeNomLogiqueInfoMESPAS.NO_PASSAGE,
-                          shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Passage_Detector, pass_det_msg_dict, pass_det_name, True,
+                              "shall exist for all Passage Detectors", TypeNomLogiqueInfoMESPAS.NO_PASSAGE,
+                              shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -259,10 +261,10 @@ def _rule_1_check_tpz(tpz_msg_dict: dict, in_cbtc: bool):
                               TypeNomLogiqueInfoMESPAS.UTO_MVT_AUTH,
                               TypeNomLogiqueInfoMESPAS.PROTECTION_LEVEL])
     for tpz_name, tpz in tpz_dict.items():
-        if check_obj_msgs(DCSYS.SS, tpz_msg_dict, tpz_name, True, "shall exist for all Traction Power Zones",
-                          target_msg_types, shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.SS, tpz_msg_dict, tpz_name, True, "shall exist for all Traction Power Zones",
+                              target_msg_types, shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -278,12 +280,12 @@ def _rule_1_check_ovl(ovl_msg_dict: dict, in_cbtc: bool):
         related_sig = get_dc_sys_value(ovl, DCSYS.IXL_Overlap.DestinationSignal)
         with_overlap = (get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.Enc_Dep) == YesOrNo.O
                         and get_dc_sys_value(sig_dict[related_sig], DCSYS.Sig.OverlapType) == Edep_Type.NO_CBTC_REQUEST)
-        if check_obj_msgs(DCSYS.IXL_Overlap, ovl_msg_dict, ovl_name, with_overlap,
-                          f"signal upstream the overlap ({related_sig}) has flag [With overlap] set to 'Y' "
-                          f"and [Overlap Type] = 'NO_CBTC_REQUEST'", TypeNomLogiqueInfoMESPAS.OLZ_OVERLAP_LK,
-                          shall_be_vital=True, only_one_zc=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.IXL_Overlap, ovl_msg_dict, ovl_name, with_overlap,
+                              f"signal upstream the overlap ({related_sig}) has flag [With overlap] set to 'Y' "
+                              f"and [Overlap Type] = 'NO_CBTC_REQUEST'", TypeNomLogiqueInfoMESPAS.OLZ_OVERLAP_LK,
+                              shall_be_vital=True, only_one_zc=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -295,10 +297,10 @@ def _rule_1_check_ges(ges_msg_dict: dict, in_cbtc: bool):
         ges_dict = get_objects_in_cbtc_ter(DCSYS.GES)
     success = True
     for ges_name, ges in ges_dict.items():
-        if check_obj_msgs(DCSYS.GES, ges_msg_dict, ges_name, True, "shall exist for all GES",
-                          TypeNomLogiqueInfoMESPAS.GES, shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.GES, ges_msg_dict, ges_name, True, "shall exist for all GES",
+                              TypeNomLogiqueInfoMESPAS.GES, shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -310,12 +312,12 @@ def _rule_1_check_protection_zone(pz_msg_dict: dict, in_cbtc: bool):
         pz_dict = get_objects_in_cbtc_ter(DCSYS.Protection_Zone)
     success = True
     for pz_name, pz in pz_dict.items():
-        if check_obj_msgs(DCSYS.Protection_Zone, pz_msg_dict, pz_name, True,
-                          "shall exist for all Protection Zones",
-                          TypeNomLogiqueInfoMESPAS.MVT_AUTH,
-                          shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Protection_Zone, pz_msg_dict, pz_name, True,
+                              "shall exist for all Protection Zones",
+                              TypeNomLogiqueInfoMESPAS.MVT_AUTH,
+                              shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -327,12 +329,12 @@ def _rule_1_check_flood_gate(fg_msg_dict: dict, in_cbtc: bool):
         fg_dict = get_objects_in_cbtc_ter(DCSYS.Flood_Gate)
     success = True
     for fg_name, fg in fg_dict.items():
-        if check_obj_msgs(DCSYS.Flood_Gate, fg_msg_dict, fg_name, True,
-                          "shall exist for all Flood Gates",
-                          TypeNomLogiqueInfoMESPAS.OPEN_AND_LOCKED,
-                          shall_be_vital=True, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Flood_Gate, fg_msg_dict, fg_name, True,
+                              "shall exist for all Flood Gates",
+                              TypeNomLogiqueInfoMESPAS.OPEN_AND_LOCKED,
+                              shall_be_vital=True, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -344,12 +346,12 @@ def _rule_1_check_traffic_stop(stop_msg_dict: dict, in_cbtc: bool):
         stop_dict = get_objects_in_cbtc_ter(DCSYS.Traffic_Stop)
     success = True
     for stop_name, stop in stop_dict.items():
-        if check_obj_msgs(DCSYS.Traffic_Stop, stop_msg_dict, stop_name, True,
-                          "shall exist for all Traffic Stops",
-                          TypeNomLogiqueInfoMESPAS.STOP,
-                          shall_be_vital=False, is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.Traffic_Stop, stop_msg_dict, stop_name, True,
+                              "shall exist for all Traffic Stops",
+                              TypeNomLogiqueInfoMESPAS.STOP,
+                              shall_be_vital=False, is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -361,13 +363,13 @@ def _rule_1_check_asr(asr_msg_dict: dict, in_cbtc: bool):
         asr_dict = get_objects_in_cbtc_ter(DCSYS.ASR)
     success = True
     for asr_name, asr in asr_dict.items():
-        if check_obj_msgs(DCSYS.ASR, asr_msg_dict, asr_name, True,
-                          "shall exist for all ASR",
-                          TypeNomLogiqueInfoMESPAS.ASR_NOT_APPLIED,
-                          shall_be_vital=True,
-                          is_flux_pas_mes=False) is False:
+        if not check_obj_msgs(DCSYS.ASR, asr_msg_dict, asr_name, True,
+                              "shall exist for all ASR",
+                              TypeNomLogiqueInfoMESPAS.ASR_NOT_APPLIED,
+                              shall_be_vital=True,
+                              is_flux_pas_mes=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -391,28 +393,30 @@ def _rule_1_check_tsr_area(tsr_area_msg_dict: dict, in_cbtc: bool):
                 is_zc_zcr = get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr) == YesOrNo.O
                 zcr_and_interfaced_with_hmi = is_zc_zcr and tsr_interfaced_with_vhmi
 
-                if check_obj_msgs(DCSYS.TSR_Area, tsr_area_msg_dict, tsr_area_speed_name, zcr_and_interfaced_with_hmi,
-                                  f"message transmitter {zc_name} is a ZCR "
-                                  f"and [tsr_interfaced_with_VHMI] = true",
-                                  TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_SET_CMD,
-                                  shall_be_vital=False,
-                                  is_flux_pas_mes=False,
-                                  obj_type_str="TSR_Area_Possible_Speeds",
-                                  zc=zc_name,
-                                  tsr_speed=tsr_speed,
-                                  tsr_area_missing_speeds=tsr_area_missing_speeds_for_set_cmd) is False:
+                if not check_obj_msgs(DCSYS.TSR_Area, tsr_area_msg_dict, tsr_area_speed_name,
+                                      zcr_and_interfaced_with_hmi,
+                                      f"message transmitter {zc_name} is a ZCR "
+                                      f"and [tsr_interfaced_with_VHMI] = true",
+                                      TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_SET_CMD,
+                                      shall_be_vital=False,
+                                      is_flux_pas_mes=False,
+                                      obj_type_str="TSR_Area_Possible_Speeds",
+                                      zc=zc_name,
+                                      tsr_speed=tsr_speed,
+                                      tsr_area_missing_speeds=tsr_area_missing_speeds_for_set_cmd):
                     success = False
 
-                if check_obj_msgs(DCSYS.TSR_Area, tsr_area_msg_dict, tsr_area_speed_name, zcr_and_interfaced_with_hmi,
-                                  f"message transmitter {zc_name} is a ZCR "
-                                  f"and [tsr_interfaced_with_VHMI] = true",
-                                  TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_REMOVE_CMD,
-                                  shall_be_vital=True,
-                                  is_flux_pas_mes=False,
-                                  obj_type_str="TSR_Area_Possible_Speeds",
-                                  zc=zc_name,
-                                  tsr_speed=tsr_speed,
-                                  tsr_area_missing_speeds=tsr_area_missing_speeds_for_remove_cmd) is False:
+                if not check_obj_msgs(DCSYS.TSR_Area, tsr_area_msg_dict, tsr_area_speed_name,
+                                      zcr_and_interfaced_with_hmi,
+                                      f"message transmitter {zc_name} is a ZCR "
+                                      f"and [tsr_interfaced_with_VHMI] = true",
+                                      TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_REMOVE_CMD,
+                                      shall_be_vital=True,
+                                      is_flux_pas_mes=False,
+                                      obj_type_str="TSR_Area_Possible_Speeds",
+                                      zc=zc_name,
+                                      tsr_speed=tsr_speed,
+                                      tsr_area_missing_speeds=tsr_area_missing_speeds_for_remove_cmd):
                     success = False
         if tsr_area_missing_speeds_for_set_cmd == tsr_area_missing_speeds_for_remove_cmd:
             for speed in tsr_area_missing_speeds_for_set_cmd:
@@ -434,5 +438,5 @@ def _rule_1_check_tsr_area(tsr_area_msg_dict: dict, in_cbtc: bool):
                 csv += f"{'Missing' if is_missing else ''};"
             csv += "\n"
         print(csv)
-    if success is True:
+    if success:
         print_log(f"No KO.")

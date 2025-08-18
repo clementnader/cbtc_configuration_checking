@@ -32,19 +32,19 @@ def _check_block(block_msg_dict: dict, in_cbtc: bool):
         block_dict = get_objects_in_cbtc_ter(DCSYS.CDV)
     success = True
     for block_name, block in block_dict.items():
-        if check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, True,
-                          "shall exist for all CDV",
-                          TypeNomLogiqueInfoPASATS.ETAT_CDV,
-                          only_one_zc=False) is False:
+        if not check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, True,
+                              "shall exist for all CDV",
+                              TypeNomLogiqueInfoPASATS.ETAT_CDV,
+                              only_one_zc=False):
             success = False
 
         block_brs = get_dc_sys_value(block, DCSYS.CDV.BrokenRailDetection) == YesOrNo.O
-        if check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, block_brs,
-                          "flag [Broken Rail Detection] set to 'Y'",
-                          [TypeNomLogiqueInfoPASATS.BRS_STATE, TypeNomLogiqueInfoPASATS.BRSO_STATE],
-                          only_one_zc=False) is False:
+        if not check_obj_msgs(DCSYS.CDV, block_msg_dict, block_name, block_brs,
+                              "flag [Broken Rail Detection] set to 'Y'",
+                              [TypeNomLogiqueInfoPASATS.BRS_STATE, TypeNomLogiqueInfoPASATS.BRSO_STATE],
+                              only_one_zc=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -56,12 +56,12 @@ def _check_dd(dd_msg_dict: dict, in_cbtc: bool):
         dd_dict = get_objects_in_cbtc_ter(DCSYS.DP)
     success = True
     for dd_name, dd in dd_dict.items():
-        if check_obj_msgs(DCSYS.CDV, dd_msg_dict, dd_name, True,
-                          "shall exist for all Discrete Detectors",
-                          TypeNomLogiqueInfoPASATS.ETAT_DP,
-                          only_one_zc=False) is False:
+        if not check_obj_msgs(DCSYS.CDV, dd_msg_dict, dd_name, True,
+                              "shall exist for all Discrete Detectors",
+                              TypeNomLogiqueInfoPASATS.ETAT_DP,
+                              only_one_zc=False):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -83,10 +83,10 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                                   TypeNomLogiqueInfoPASATS.REGULATION_SKIP_NORMAL_DIR,
                                   TypeNomLogiqueInfoPASATS.SAFETY_RELATED_HOLD_NORMAL_DIR,
                                   TypeNomLogiqueInfoPASATS.SAFETY_RELATED_SKIP_NORMAL_DIR])
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
-                          "shall exist for all Platforms",
-                          target_msg_types,
-                          only_one_zc=True, plt_end="normal") is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
+                              "shall exist for all Platforms",
+                              target_msg_types,
+                              only_one_zc=True, plt_end="normal"):
             success = False
 
         target_msg_types = ([TypeNomLogiqueInfoPASATS.HOLD_REVERSE_DIR,
@@ -99,12 +99,12 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                                   TypeNomLogiqueInfoPASATS.REGULATION_SKIP_REVERSE_DIR,
                                   TypeNomLogiqueInfoPASATS.SAFETY_RELATED_HOLD_REVERSE_DIR,
                                   TypeNomLogiqueInfoPASATS.SAFETY_RELATED_SKIP_REVERSE_DIR])
-        if check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
-                          "shall exist for all Platforms",
-                          target_msg_types,
-                          only_one_zc=True, plt_end="reverse") is False:
+        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
+                              "shall exist for all Platforms",
+                              target_msg_types,
+                              only_one_zc=True, plt_end="reverse"):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -116,12 +116,12 @@ def _check_ivb(ivb_msg_dict: dict, in_cbtc: bool):
         ivb_dict = get_objects_in_cbtc_ter(DCSYS.IVB)
     success = True
     for ivb_name, ivb in ivb_dict.items():
-        if check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, True,
-                          "shall exist for all IVB",
-                          TypeNomLogiqueInfoPASATS.PREVENTS_EID,
-                          only_one_zc=True) is False:
+        if not check_obj_msgs(DCSYS.IVB, ivb_msg_dict, ivb_name, True,
+                              "shall exist for all IVB",
+                              TypeNomLogiqueInfoPASATS.PREVENTS_EID,
+                              only_one_zc=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -133,12 +133,12 @@ def _check_switch(sw_msg_dict: dict, in_cbtc: bool):
         sw_dict = get_objects_in_cbtc_ter(DCSYS.Aig)
     success = True
     for sw_name, sw in sw_dict.items():
-        if check_obj_msgs(DCSYS.Aig, sw_msg_dict, sw_name, True,
-                          "shall exist for switches",
-                          TypeNomLogiqueInfoPASATS.PREVENTS_EID,
-                          only_one_zc=True) is False:
+        if not check_obj_msgs(DCSYS.Aig, sw_msg_dict, sw_name, True,
+                              "shall exist for switches",
+                              TypeNomLogiqueInfoPASATS.PREVENTS_EID,
+                              only_one_zc=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
@@ -156,18 +156,18 @@ def _check_maz(maz_msg_dict: dict, in_cbtc: bool):
                             else [TypeNomLogiqueInfoPASATS.MVT_AUTH,
                                   TypeNomLogiqueInfoPASATS.UTO_MVT_AUTH,
                                   TypeNomLogiqueInfoPASATS.AM_MVT_AUTH])
-        if check_obj_msgs(DCSYS.Zaum, maz_msg_dict, maz_name, True,
-                          "shall exist for MAZ",
-                          target_msg_types,
-                          only_one_zc=True) is False:
+        if not check_obj_msgs(DCSYS.Zaum, maz_msg_dict, maz_name, True,
+                              "shall exist for MAZ",
+                              target_msg_types,
+                              only_one_zc=True):
             success = False
-    if success is True:
+    if success:
         print_log(f"No KO.")
 
 
 # ------- Common Sub Functions to test flows ------- #
 def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, condition_str: str,
-                   target_msg_types: Union[str, list[str]], only_one_zc: bool, plt_end: str = None):
+                   target_msg_types: Union[str, list[str]], only_one_zc: bool, plt_end: str = None) -> bool:
     if not isinstance(target_msg_types, list):
         target_msg_types = [target_msg_types]
     obj_type_str = get_sh_name(obj_type)
@@ -203,14 +203,14 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
                         f"{condition_str.replace(Color.reset, Color.reset + Color.white)}{Color.reset} is met.")
             success = False
             continue
-        if _check_message_zc(obj_type, obj_name, associated_msg, obj_type_str, target_msg_type,
-                             condition, condition_str, only_one_zc, plt_end) is False:
+        if not _check_message_zc(obj_type, obj_name, associated_msg, obj_type_str, target_msg_type,
+                                 condition, condition_str, only_one_zc, plt_end):
             success = False
     return success
 
 
 def _check_message_zc(obj_type, obj_name: str, associated_msg, obj_type_str, target_msg_type,
-                      condition: bool, condition_str: str, only_one_zc: bool, plt_end: str = None):
+                      condition: bool, condition_str: str, only_one_zc: bool, plt_end: str = None) -> bool:
     success = True
 
     if only_one_zc:

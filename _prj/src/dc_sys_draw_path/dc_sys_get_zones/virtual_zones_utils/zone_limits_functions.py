@@ -18,7 +18,6 @@ __all__ = ["is_point_in_zone_limits", "is_seg_in_zone_limits", "get_objects_in_z
 
 def is_point_in_zone_limits(zone_limits: list[tuple[str, float, str]],
                             seg: str, x: float, direction: str = None) -> Optional[bool]:
-    x = float(x)
     zone_segments = get_segments_within_zone_limits(zone_limits)
     zone_limits = convert_oriented_limits(zone_limits)
     if seg in zone_segments:
@@ -152,8 +151,10 @@ def get_dist_downstream_within_zone_limits(seg1: str, x1: float, seg2: str, x2: 
     if (is_point_in_zone_limits(zone_limits, seg1, x1) is False
             or is_point_in_zone_limits(zone_limits, seg2, x2) is False):
         return None
-    x1 = float(x1)
-    x2 = float(x2)
+
+    if are_points_matching(seg1, x1, seg2, x2, tolerance=1E-4):
+        return 0.
+
     if seg1 == seg2:
         if downstream == (x1 <= x2):
             return round(abs(x1-x2), 3)

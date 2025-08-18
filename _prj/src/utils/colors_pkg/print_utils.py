@@ -10,7 +10,7 @@ from ..common_utils import *
 
 __all__ = ["print_bar", "print_title", "print_section_title", "print_error", "print_warning", "print_success",
            "print_log", "progress_bar", "print_sub_variables", "print_variables", "print_final_value",
-           "test_moving_progress_bar", "ask_question_yes_or_no", "pretty_print_dict", "get_print_prefix",
+           "ask_question_yes_or_no", "pretty_print_dict", "get_print_prefix",
            "print_log_progress_bar"]
 
 
@@ -162,24 +162,6 @@ def print_log_progress_bar(i: int, max_nb: int, sentence: str, end: bool = False
         print_log(line, end="\n\n")
 
 
-def test_moving_progress_bar():
-    progress_bar(1, 1, end=True)  # reset progress bar
-    len_colors = len(Color.rainbow) if not G_COIN_FLIP else len(Color.progress_pride)
-    initial_time = 1000 * time.perf_counter()
-    delay = 80  # every 80 ms
-    next_exec_time = initial_time
-    nb_ite = 0
-    while True:
-        current_time = 1000 * time.perf_counter()
-        if current_time > next_exec_time:
-            nb_ite += 1
-            next_exec_time += delay
-            print_log(f"\r{progress_bar(1, 1, only_bar=True)}", end="")
-            if nb_ite > 30 and nb_ite % len_colors == 1:  # around 2.4 s and wait until a whole loop haas passed
-                break
-    print("\n")
-
-
 def print_sub_variables(all_sub_variables: dict[str, str]):
     for var_name, var_value in _modify_variables_to_print(all_sub_variables).items():
         print(f"\t\t\t{var_name} = {Color.white}{var_value}{Color.reset}")
@@ -213,7 +195,7 @@ def ask_question_yes_or_no(question: str) -> bool:
     return answer in ["Y", "YES"]
 
 
-def pretty_print_dict(in_dict: Union[dict, list], lvl: int = 0, max_lvl: int = None) -> None:
+def pretty_print_dict(in_dict: Union[dict, list, Any], lvl: int = 0, max_lvl: int = None) -> None:
     lvl += 1
     if isinstance(in_dict, list):
         for key in in_dict:
