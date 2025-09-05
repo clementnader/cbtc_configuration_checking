@@ -12,6 +12,9 @@ from .common_functions import *
 __all__ = ["cf_dg_2"]
 
 
+# Vital or Non-Vital messages are defined inside C1_D404 §6 Functional Interfaces
+
+
 def cf_dg_2():
     # LF General Data
     print_title(f"Verification of CF_DG_2\nLF General Data", color=Color.mint_green)
@@ -85,7 +88,7 @@ def _cf_2_check_platform(msg_dict: dict):
 
         train_ahead_departure = get_dc_sys_value(obj, DCSYS.Quai.WithTad) == YesOrNo.O
         if not check_obj_msgs(DCSYS.Quai, msg_dict, obj_name, train_ahead_departure, f"flag [With TAD] set to 'Y'",
-                              TypeNomLogiqueVariantBF.TRAIN_AHEAD_DEPARTURE, shall_be_vital=True, is_hf=False):
+                              TypeNomLogiqueVariantBF.TRAIN_AHEAD_DEPARTURE, shall_be_vital=False, is_hf=False):
             success = False
     if success:
         print_log(f"No KO.")

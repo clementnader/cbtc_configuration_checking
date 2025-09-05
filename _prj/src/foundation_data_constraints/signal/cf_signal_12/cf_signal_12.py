@@ -26,7 +26,7 @@ def cf_signal_12(apz_with_tc: bool = False):
 
     load_ixl_apz_file()
     verif_dict = _compute_cf_signal_12_verif(apz_with_tc)
-    _create_verif_file(verif_dict)
+    _create_verif_file(verif_dict, apz_with_tc)
 
 
 def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
@@ -66,12 +66,12 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
                                               "and to compute a path.")
             continue
 
-        last_ivb = _get_last_ivb(corresponding_entrance, ivb_names)
+        last_ivb = _get_last_ivb(corresponding_entrance, ivb_names, apz_with_tc)
         if last_ivb is None:
             is_last_ivb_plt_rel = None
             plt_name = None
         else:
-            is_last_ivb_plt_rel, plt_name = is_ivb_plt_related(last_ivb)
+            is_last_ivb_plt_rel, plt_name = is_ivb_plt_related(last_ivb, apz_with_tc)
         res_dict[sig_name]["last_ivb_platform_related"] = (None if not is_last_ivb_plt_rel
                                                            else f"{last_ivb}\n{plt_name}")
 
@@ -88,17 +88,23 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
     return res_dict
 
 
-def _get_last_ivb(corresponding_entrance: tuple[str, float], ivb_names: str) -> Optional[str]:
-    """ Get last IVB of the IXL APZ. """
+def _get_last_ivb(corresponding_entrance: tuple[str, float], ivb_names: str, apz_with_tc: bool) -> Optional[str]:
+    """ Get last IVB or block of the IXL APZ. """
+    if apz_with_tc:
+        seg_attr = DCSYS.CDV.Extremite.Seg
+        x_attr = DCSYS.CDV.Extremite.X
+    else:
+        seg_attr = DCSYS.IVB.Limit.Seg
+        x_attr = DCSYS.IVB.Limit.X
     list_ivb = ivb_names.split(", ")
     for ivb_name in list_ivb:
-        for ivb_seg, ivb_x in get_dc_sys_zip_values(ivb_name, DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X):
+        for ivb_seg, ivb_x in get_dc_sys_zip_values(ivb_name, seg_attr, x_attr):
             if are_points_matching(*corresponding_entrance, ivb_seg, ivb_x):
                 return ivb_name
     return None
 
 
-def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
+def _create_verif_file(verif_dict: dict[str, dict[str, Any]], apz_with_tc: bool) -> None:
     # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
@@ -111,7 +117,7 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
     # Create Constraint sheet
     create_constraint_sheet(wb)
     # Create Verification sheet
-    ws, row = create_empty_verif_sheet(wb)
+    ws, row = create_empty_verif_sheet(wb, apz_with_tc)
     # Create Parameters sheet
     inhibit_simple_overshoot_recovery = create_parameters_sheet(wb)
 

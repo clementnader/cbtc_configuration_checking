@@ -4,10 +4,11 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
+from ..dc_sys_basic_utils import *
+from ..dc_sys_special_objects import *
 from .common_utils import *
 from .switch_utils import *
 from .segments_utils import get_correct_seg_offset
-from .plt_osp_utils import *
 
 
 __all__ = ["get_object_position", "get_obj_zone_limits",

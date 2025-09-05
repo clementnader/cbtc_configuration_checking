@@ -40,7 +40,7 @@ def zc():
 
 
 def additional_verif():
-    # dc_tu_verification()  # v1.4
+    # dc_tu_verification()  # v1.4.2
     # dc_tu_window()
 
     # min_dist_between_tags(in_cbtc=False)
@@ -218,7 +218,8 @@ def constraints_and_rules():
     # cf_dg_2()
     # r_mes_pas_itf_1(in_cbtc=False)  # TODO: find info to check if ZC receiving the Signal information
     #                                    PR_ASPECT, AP_CAN_RQ and IL_SET is correct in ZC Overlay
-    #                                    il faut pas que le signal ait son VSP sur la limite du ZC, cf TSK
+    #                                    il faut pas que le signal ait son VSP sur la limite du ZC, cf TSK et RL3
+    #                                         regarder pour les Traffic Stops cf RL3
     # r_mes_pas_itf_3(in_cbtc=False)  # TODO: find a way to avoid raising KO if signal is at limit, cf KCR et TSK
     #                                    for Signal information X_RQ, STOP_ASSURE and CBTC_APZ,
     #                                       when checking ZC is correct in ZC Overlay

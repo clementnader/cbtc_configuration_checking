@@ -42,12 +42,16 @@ def is_sig_plt_exit(sig_name) -> tuple[bool, Optional[str]]:
     return is_ivb_plt_related(ivb_name)
 
 
-def is_ivb_plt_related(ivb_name: str) -> tuple[bool, Optional[str]]:
-    plt_on_ivb = get_zones_intersecting_zone(DCSYS.Quai, DCSYS.IVB, ivb_name)
+def is_ivb_plt_related(ivb_name: str, with_tc: bool = False) -> tuple[bool, Optional[str]]:
+    if with_tc:
+        obj_type = DCSYS.CDV
+    else:
+        obj_type = DCSYS.IVB
+    plt_on_ivb = get_zones_intersecting_zone(DCSYS.Quai, obj_type, ivb_name)
     if not plt_on_ivb:
         return False, None
     if len(plt_on_ivb) > 1:
-        print_error(f"There are multiple platforms on IVB {ivb_name}: {plt_on_ivb}.")
+        print_error(f"There are multiple platforms on {get_sh_name(obj_type)} {ivb_name}: {plt_on_ivb}.")
     plt_name = plt_on_ivb[0]
     return True, plt_name
 

@@ -345,7 +345,8 @@ def _rule_1_check_traffic_stop(stop_msg_dict: dict, in_cbtc: bool):
     else:
         stop_dict = get_objects_in_cbtc_ter(DCSYS.Traffic_Stop)
     success = True
-    for stop_name, stop in stop_dict.items():
+    for _, stop in stop_dict.items():
+        stop_name = get_dc_sys_value(stop, DCSYS.Traffic_Stop.Name)
         if not check_obj_msgs(DCSYS.Traffic_Stop, stop_msg_dict, stop_name, True,
                               "shall exist for all Traffic Stops",
                               TypeNomLogiqueInfoMESPAS.STOP,

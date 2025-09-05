@@ -36,7 +36,7 @@ STATUS_COL = "R"
 COMMENTS_COL = "S"
 
 
-def create_empty_verif_sheet(wb: openpyxl.workbook.Workbook) -> tuple[xl_ws.Worksheet, int]:
+def create_empty_verif_sheet(wb: openpyxl.workbook.Workbook, apz_with_tc: bool) -> tuple[xl_ws.Worksheet, int]:
     wb.create_sheet(VERIF_SHEET)
     ws = wb[VERIF_SHEET]
     # Set the new sheet as active
@@ -48,7 +48,7 @@ def create_empty_verif_sheet(wb: openpyxl.workbook.Workbook) -> tuple[xl_ws.Work
     _set_conditional_formatting(ws)
     # Write columns titles
     row = 1
-    _write_columns_title(ws, row)
+    _write_columns_title(ws, row, apz_with_tc)
     # Set filter
     row += 1
     ws.auto_filter.ref = f"A{row}:{COMMENTS_COL}{row}"
@@ -106,7 +106,7 @@ def _set_conditional_formatting(ws: xl_ws.Worksheet):
                                         value="\"NA\"", font_color=XlFontColor.na, bg_color=XlBgColor.na)
 
 
-def _write_columns_title(ws: xl_ws.Worksheet, row: int):
+def _write_columns_title(ws: xl_ws.Worksheet, row: int, apz_with_tc: bool):
     # Signal name
     create_merged_cell(ws, f"Signal Name", start_row=row, end_row=row+1,
                        start_column=SIGNAL_NAME_COL, end_column=SIGNAL_NAME_COL,
@@ -152,7 +152,8 @@ def _write_columns_title(ws: xl_ws.Worksheet, row: int):
                        start_column=IXL_APZ_LENGTH_COL, end_column=IXL_APZ_LENGTH_COL,
                        align_horizontal=XlAlign.center, bold=True, borders=True, bg_color=XlBgColor.dc_sys_cyan)
     # Last IVB Platform Related
-    create_merged_cell(ws, f"Last IVB\nPlatform Related", start_row=row, end_row=row+1,
+    ivb_or_block = "Block" if apz_with_tc else "IVB"
+    create_merged_cell(ws, f"Last {ivb_or_block}\nPlatform Related", start_row=row, end_row=row+1,
                        start_column=LAST_IVB_PLATFORM_RELATED_COL, end_column=LAST_IVB_PLATFORM_RELATED_COL,
                        align_horizontal=XlAlign.center, bold=True, borders=True, bg_color=XlBgColor.dc_sys_pink)
     # Value to remove

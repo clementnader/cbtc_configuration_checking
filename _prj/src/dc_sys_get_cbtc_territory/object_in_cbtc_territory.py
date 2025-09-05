@@ -112,14 +112,15 @@ def _get_tag_gr_in_cbtc_ter():
 
 
 def _get_traffic_stop_in_cbtc_ter():
-    stop_dict = load_sheet(DCSYS.Traffic_Stop)
-    platforms_in_cbtc = get_objects_in_cbtc_ter(DCSYS.Voie)
+    stop_list = get_objects_list(DCSYS.Traffic_Stop)
+    platforms_in_cbtc = get_objects_in_cbtc_ter(DCSYS.Quai)
 
     within_cbtc_stop_dict = dict()
-    for stop_name, stop_value in stop_dict.items():
+    for stop_name in stop_list:
+        platform_list = get_traffic_stop_platform_list(stop_name)
         rel_plts_in_cbtc_ter = list()
-        for rel_plt_name in get_dc_sys_value(stop_value, DCSYS.Traffic_Stop.PlatformList.Name):
+        for rel_plt_name in platform_list:
             rel_plts_in_cbtc_ter.append(rel_plt_name in platforms_in_cbtc)
         if any(rel_plt_in_cbtc_ter is True for rel_plt_in_cbtc_ter in rel_plts_in_cbtc_ter):
-            within_cbtc_stop_dict[stop_name] = stop_value
+            within_cbtc_stop_dict[stop_name] = get_traffic_stop_value(stop_name)
     return within_cbtc_stop_dict

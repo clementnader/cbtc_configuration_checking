@@ -565,15 +565,16 @@ class ProjectDatabaseLoc:
                 r"C:\CBTC\PROJECTS\Thessaloniki TSK\SURVEY\1G00LV615R808A_EN_Annex_A.xlsx",
                 r"C:\CBTC\PROJECTS\Thessaloniki TSK\SURVEY\1G00LV615R808A_EN_Annex_B.xls",
                 r"C:\CBTC\PROJECTS\Thessaloniki TSK\SURVEY\1G00LV615R808A_EN_Annex_C.xlsx",
-                r"C:\CBTC\PROJECTS\Thessaloniki TSK\SURVEY\1G00LV615R808A_EN_Annex_D.xlsx"]
+                r"C:\CBTC\PROJECTS\Thessaloniki TSK\SURVEY\1G00LV615R808A_EN_Annex_D.xlsx",
+                r"C:\CBTC\PROJECTS\Thessaloniki TSK\SURVEY\AFS TSK Kalamaria V01(Survey evaluation)_130325_JA.xlsx"]
             self.survey_loc.survey_sheet = [r"TSK_Object_list_310720_ro", r"TSK_Object_list_REV.3",
-                                            r"Φύλλο1", r"Φύλλο1"]
-            self.survey_loc.all_sheets = [False, False, False, False]
-            self.survey_loc.start_row = [2, 2, 3, 3]
-            self.survey_loc.ref_col = [1, 1, 13, 13]
-            self.survey_loc.type_col = [2, 2, 14, 14]
-            self.survey_loc.track_col = [3, 3, 15, 15]
-            self.survey_loc.survey_kp_col = [7, 7, 17, 17]
+                                            r"Φύλλο1", r"Φύλλο1", r"To be surveyed - Input for AFS"]
+            self.survey_loc.all_sheets = [False, False, False, False, False]
+            self.survey_loc.start_row = [2, 2, 3, 3, 2]
+            self.survey_loc.ref_col = [1, 1, 13, 13, 2]
+            self.survey_loc.type_col = [2, 2, 14, 14, 3]
+            self.survey_loc.track_col = [3, 3, 15, 15, 4]
+            self.survey_loc.survey_kp_col = [7, 7, 17, 17, 6]
             # -- Control Tables -- #
             self.control_tables_config_ini_file = r"control_tables_configuration_tsk.ini"
             self.control_tables_route.control_tables_addr = [

@@ -4,6 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
+from ..dc_sys_basic_utils import *
 
 
 __all__ = ["is_segment_upstream_of_a_switch", "is_segment_downstream_of_a_switch",

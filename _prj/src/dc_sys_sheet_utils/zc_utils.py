@@ -18,10 +18,9 @@ def get_zc_of_point(seg: str, x: float, direction: str = None) -> list[str]:
 
 
 def _get_zc_of_traffic_stop(obj_name: str) -> list[str]:
-    obj_dict = load_sheet(DCSYS.Traffic_Stop)
-    obj_val = obj_dict[obj_name]
+    platform_list = get_traffic_stop_platform_list(obj_name)
     list_zc = list()
-    for plt_name in get_dc_sys_value(obj_val, DCSYS.Traffic_Stop.PlatformList.Name):
+    for plt_name in platform_list:
         list_zc.extend([zc_name for zc_name in get_zc_of_obj(DCSYS.Quai, plt_name) if zc_name not in list_zc])
     return list_zc
 
