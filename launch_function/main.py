@@ -80,6 +80,10 @@ def main():
     #cc_cv_20()
 
     # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: CF_SIGNAL_7 Signal VSP protects Switch Point or Fouling Point ---------- #
+    #cf_signal_7()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: messages ---------- #
     """Uncomment one of next lines to verify some constraints and rules about the flows:
         CF_DG_1 about HF General Data, sheet "Flux_Variant_HF"
