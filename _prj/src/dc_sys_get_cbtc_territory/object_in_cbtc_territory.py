@@ -29,7 +29,7 @@ def get_objects_in_cbtc_ter(obj_type) -> dict[str, dict]:
         position = get_object_position(obj_type, obj_name)
         if position is None:
             continue
-        if isinstance(position, tuple):  # single point object
+        if isinstance(position, tuple):  # single-point object
             if _test_for_single_point(position, obj_type, obj_name):
                 within_cbtc_object_dict[obj_name] = obj_value
         else:  # zone object

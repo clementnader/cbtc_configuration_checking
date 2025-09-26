@@ -84,7 +84,7 @@ def _get_unique_prefix_plt_names_dict() -> dict[str, dict[str, str]]:
 def _get_survey_limits_on_track(plt_name: str, track: str, plt_survey_info: dict[str, Any]) -> list[str]:
     list_all_survey_limits = list()
     list_survey_limits = list()
-    for survey_name in plt_survey_info.keys():
+    for survey_name in plt_survey_info:
         survey_plt_lim_name, survey_track = survey_name.split("__", 1)
         survey_plt_name = _clean_platform_extremity_name(survey_plt_lim_name)
         if survey_track.upper() == track:

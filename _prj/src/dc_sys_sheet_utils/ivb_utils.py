@@ -19,7 +19,7 @@ def get_related_block_of_ivb(ivb_name: str) -> str:
 def get_ivb_on_block(block_name: str) -> list[str]:
     list_ivb = list()
     ivb_dict = load_sheet(DCSYS.IVB)
-    for ivb_name in ivb_dict.keys():
+    for ivb_name in ivb_dict:
         if get_related_block_of_ivb(ivb_name) == block_name:
             list_ivb.append(ivb_name)
     return list_ivb

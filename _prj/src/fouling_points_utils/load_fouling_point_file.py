@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from ..utils import *
 from ..database_location import DATABASE_LOC
 
 
-__all__ = ["load_fouling_point_info"]
+__all__ = ["get_fouling_point_file", "load_fouling_point_info"]
 
 
 FP_SHEET = r"Fouling_Point"
@@ -13,6 +14,14 @@ FIRST_ROW = 3
 SW_NAME_COLUMN = "A"
 SW_KP_COLUMN = "B"
 FOULING_POINT_KP_COLUMN = "C"
+
+
+def get_fouling_point_file() -> Optional[str]:
+    fp_addr = DATABASE_LOC.fouling_point_addr
+    if not fp_addr:
+        return None
+    display_info = f"{os.path.split(fp_addr)[-1]} (sheet \"{FP_SHEET}\")"
+    return display_info
 
 
 def load_fouling_point_info() -> Optional[dict[str, float]]:

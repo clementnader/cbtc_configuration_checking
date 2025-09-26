@@ -1,8 +1,8 @@
 # CBTC SA Verification various functions
 
-This tool helps with various verifications. It works with no graphic interface, results and logs are printed in the cmd window and are stored in a log file. In addition, some functions produce a verification file that will be opened at the end of the execution.
+This tool helps with various verifications (the list is available in the file "main.py"). It works with no graphic interface, results and logs are printed in the cmd window and are stored in a log file. In addition, some functions produce a verification file that will be opened at the end of the execution.
 
-User has to modify **"main.py"** file to uncomment the line(s) (by removing the '#' symbol in front of the line) that they want to launch, explanations of the different functions are given in the file, and in particular at the last line starting by "@inputs", it is specified what inputs are required to launch the verifications.
+User has to modify **"main.py"** file to uncomment the function(s) (by removing the '#' symbol in front of the line) that they want to launch, explanations of the different functions are given in the file, and in particular at the last line starting by "@inputs:", it is specified what inputs are required to launch the verifications.
 
 These inputs have to be filled inside **"config.ini"** file.
 
@@ -32,7 +32,7 @@ These inputs have to be filled inside **"config.ini"** file.
 
   The position of the columns is not relevant for the tool but the name of the columns is.
 
-If this file is not provided, the tool will automatically try to find the block limit names (joint names) by mixing the two blocks of the limit (e.g. JOI_AAA_MMM_BBB_NNN for joint between TC_AAA_MMM and TC_BBB_NNN). It will create various name patterns to try to adapt to the different projects.
+  <br /> If this file is not provided, the tool will automatically try to find the block limit names (joint names) by mixing the two blocks of the limit (e.g. JOI_AAA_MMM_BBB_NNN for joint between TC_AAA_MMM and TC_BBB_NNN). It will create various name patterns to try to adapt to the different projects.
 
 
 - <ins>**C11_D470**</ins>: It is the path to the project CC kit C11_D470.
@@ -74,7 +74,7 @@ If this file is not provided, the tool will automatically try to find the block 
      - track_column: column containing the track of the element,
      - surveyed_kp_column: column containing the kilometer point surveyed by a geometer.
 
-Projects can have various survey files. In that case, user have to specify all information for each file separating the various information with a comma ",".
+  <br /> Projects can have various survey files. In that case, user have to specify all information for each file separating the various information with a comma ",".
 
 
 ---

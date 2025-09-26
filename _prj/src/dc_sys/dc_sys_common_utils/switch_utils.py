@@ -8,20 +8,16 @@ from ..dc_sys_basic_utils import *
 from .segments_utils import *
 
 
-__all__ = ["is_sw_point_seg_upstream", "get_switch_position", "is_switch_on_diamond_crossing"]
+__all__ = ["is_switch_point_upstream_heels", "get_switch_position", "is_switch_on_diamond_crossing"]
 
 
-def is_sw_point_seg_upstream(switch_value: Union[str, dict[str, Any]]):
+def is_switch_point_upstream_heels(sw_name: str):
     """Returns True if the point segment of the switch is upstream of the two heels segments (divergent switch),
     returns False if it is downstream (convergent switch),
     raises an error if it is neither the first nor the second."""
-    if isinstance(switch_value, str):
-        switch_dict = load_sheet(DCSYS.Aig)
-        switch_value = switch_dict[switch_value]
-
-    point_seg = get_dc_sys_value(switch_value, DCSYS.Aig.SegmentPointe)
-    right_heel = get_dc_sys_value(switch_value, DCSYS.Aig.SegmentTd)
-    left_heel = get_dc_sys_value(switch_value, DCSYS.Aig.SegmentTg)
+    point_seg = get_dc_sys_value(sw_name, DCSYS.Aig.SegmentPointe)
+    right_heel = get_dc_sys_value(sw_name, DCSYS.Aig.SegmentTd)
+    left_heel = get_dc_sys_value(sw_name, DCSYS.Aig.SegmentTg)
 
     downstream_segs = get_linked_segments(point_seg, downstream=True)
     upstream_segs = get_linked_segments(point_seg, downstream=False)
@@ -35,10 +31,10 @@ def is_sw_point_seg_upstream(switch_value: Union[str, dict[str, Any]]):
     raise Exception("The point segment is not found upstream or downstream of the heels.")
 
 
-def get_switch_position(switch_value: Union[str, dict[str, Any]]) -> tuple[str, float]:
+def get_switch_position(sw_name: str) -> tuple[str, float]:
     """Returns the position of the switch with the segment and offset. """
-    point_seg = get_dc_sys_value(switch_value, DCSYS.Aig.SegmentPointe)
-    upstream = is_sw_point_seg_upstream(switch_value)
+    point_seg = get_dc_sys_value(sw_name, DCSYS.Aig.SegmentPointe)
+    upstream = is_switch_point_upstream_heels(sw_name)
     len_seg = get_segment_length(point_seg)
     x = len_seg if upstream else 0.
     return point_seg, x

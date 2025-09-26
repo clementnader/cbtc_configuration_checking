@@ -4,6 +4,7 @@
 import os
 from ....utils import *
 from ....dc_sys import *
+from ....fouling_points_utils import *
 from .compute_verif import *
 from .file_format_utils import *
 
@@ -27,7 +28,8 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
     # Initialize Verification Workbook
     wb = create_empty_verification_file()
     # Update Header sheet
-    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version())
+    update_header_sheet_for_verif_file(wb, title=FILE_TITLE, c_d470=get_current_version(),
+                                       fouling_point_file=get_fouling_point_file())
     # Create Verification sheet
     ws, row = create_empty_verif_sheet(wb)
     # Create Parameters sheet

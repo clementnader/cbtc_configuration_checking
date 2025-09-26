@@ -116,7 +116,7 @@ def get_zones_on_object(zones_obj_type, obj_type, obj_name: str) -> Optional[lis
     if obj_position is None:
         return None
 
-    if isinstance(obj_position, tuple):  # single point object
+    if isinstance(obj_position, tuple):  # single-point object
         return get_zones_on_point(zones_obj_type, *obj_position)
 
     else:  # zone object

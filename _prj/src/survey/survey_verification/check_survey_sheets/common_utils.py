@@ -264,7 +264,7 @@ def get_smallest_unique_prefix_dict(input_dict: dict[str, str]) -> dict[str, str
     res_dict = dict()
     list_of_splits = [value.split("_") for value in input_dict.values()]
 
-    for key, split in zip(input_dict.keys(), list_of_splits):
+    for key, split in zip(input_dict, list_of_splits):
         other_splits = [other_split for other_split in list_of_splits if other_split != split]
         level = 1
         prefix = "_".join(split[:level])

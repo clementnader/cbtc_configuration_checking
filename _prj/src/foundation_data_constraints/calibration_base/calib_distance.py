@@ -28,11 +28,23 @@ def verif_calib_distance():
 
 
 def cf_calib_4():
+    print_title(f"Verification of CF_CALIB_4", color=Color.mint_green)
     calib_dict = load_sheet(DCSYS.Calib)
     for calib_name, calib_value in calib_dict.items():
         bal1, bal2 = get_dc_sys_values(calib_value, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
-        seg1, _ = get_object_position(DCSYS.Bal, bal1)
-        seg2, _ = get_object_position(DCSYS.Bal, bal2)
+        seg1, x1 = get_object_position(DCSYS.Bal, bal1)
+        seg2, x2 = get_object_position(DCSYS.Bal, bal2)
+
+        if seg1 == seg2:
+            calib_direction = get_dc_sys_value(calib_value, DCSYS.Calib.SensCalib)
+            if (calib_direction == Direction.CROISSANT) != (x1 < x2):
+                print_error(f"For {calib_name} (between {bal1} and {bal2}), they are on same {seg1}, but "
+                            f"calibration direction {calib_direction} is not coherent with the offsets:")
+                print(f"{x1 = } and {x2 = }")
+            else:
+                print(calib_direction, f"{x1 = } and {x2 = }", x1 < x2)
+            continue
+
         list_of_paths = get_list_of_paths(seg1, seg2, verbose=True)
         if not list_of_paths:
             print_error(f"For {calib_name} (between {bal1} and {bal2}), "
@@ -47,8 +59,8 @@ def cf_calib_4():
             upstream, path = list_of_paths[0]
             calib_direction = get_dc_sys_value(calib_value, DCSYS.Calib.SensCalib)
             if (calib_direction == Direction.CROISSANT) != upstream:
-                print_error(f"For {calib_name} (between {bal1} and {bal2}), path found between {seg1} and {seg2} is "
-                            f"found in the opposite direction:")
-                print(calib_direction, upstream)
+                print_error(f"For {calib_name} (between {bal1} and {bal2}), calibration direction {calib_direction} "
+                            f"is not coherent with the path found between {seg1} and {seg2}, which is in direction "
+                            f"{Direction.CROISSANT if upstream else Direction.DECROISSANT}.")
                 print(list_of_paths)
             continue

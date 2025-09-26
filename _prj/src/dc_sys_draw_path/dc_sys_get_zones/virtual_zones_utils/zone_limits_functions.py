@@ -64,7 +64,7 @@ def get_objects_in_zone_limits(obj_type, zone_limits: list[tuple[str, float, str
         if obj_position is None:
             continue
 
-        if isinstance(obj_position, tuple):  # single point object
+        if isinstance(obj_position, tuple):  # single-point object
             if is_point_in_zone_limits(zone_limits, *obj_position):
                 list_obj.append(obj_name)
         else:  # zone object

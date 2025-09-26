@@ -7,7 +7,9 @@ from ...utils import *
 __all__ = ["analyze_csv_file_control_table", "create_csv_file_control_table"]
 
 
-def analyze_csv_file_control_table(result_file: str) -> dict:
+def analyze_csv_file_control_table(control_table_type: str, result_file: str) -> dict:
+    print_log(f"Read {Color.yellow}{control_table_type.title()}{Color.reset} Control Tables information "
+              f"from {Color.white}\"{result_file}\"{Color.reset}.")
     with open(result_file, "r") as f:
         csv = f.readlines()
     sep = ";"  # default separator

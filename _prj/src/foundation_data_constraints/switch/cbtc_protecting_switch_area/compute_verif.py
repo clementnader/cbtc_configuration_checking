@@ -138,7 +138,7 @@ def _get_dist_to_protect(local_speed: Optional[float]) -> float:
 def _get_ivb_to_protect(sw_locked_ivb: str, sw_block_locking_area: list[str],
                        ivb_dict: dict[str, Any], dist_to_protect: float, sw_name: str) -> list[str]:
     list_ivb_to_protect = list()
-    for ivb_name in ivb_dict.keys():
+    for ivb_name in ivb_dict:
         if ivb_name in sw_block_locking_area:  # block already protected
             continue
         dist = get_dist_between_objects(DCSYS.IVB, ivb_name, DCSYS.IVB, sw_locked_ivb)
@@ -155,11 +155,11 @@ def _get_ivb_to_protect_with_fp(fouling_point_distance: float, sw_block_locking_
                                ivb_dict: dict[str, Any], dist_to_protect: float, sw_name: str) -> list[str]:
 
     list_ivb_to_protect = list()
-    for ivb_name in ivb_dict.keys():
+    for ivb_name in ivb_dict:
         if ivb_name in sw_block_locking_area:  # block already protected
             continue
 
-        divergent_switch = is_sw_point_seg_upstream(sw_name)
+        divergent_switch = is_switch_point_upstream_heels(sw_name)
 
         dist_downstream_switch = get_dist_between_objects(DCSYS.Aig, sw_name, DCSYS.IVB, ivb_name,
                                                           downstream=divergent_switch)

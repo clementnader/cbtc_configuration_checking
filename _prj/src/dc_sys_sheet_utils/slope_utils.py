@@ -4,18 +4,18 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys import *
-from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream
+from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream, get_next_objects_from_a_point
 from ..dc_sys_draw_path.dc_sys_get_zones import (get_objects_in_zone_limits, depolarization_in_zone_limits,
                                                  is_seg_in_zone_limits, get_oriented_limits_of_obj)
 
 
-__all__ = ["get_slope_at_point", "get_min_and_max_slopes_at_point", "get_next_slopes",
+__all__ = ["get_slope_at_point", "get_min_and_max_slopes_at_point",
            "get_min_and_max_slopes_in_zone_limits", "get_min_and_max_slopes_in_zone"]
 
 
 def get_slope_at_point(seg: str, x: float) -> float:
-    downstream_slopes = get_next_slopes(seg, x, downstream=True)
-    upstream_slopes = get_next_slopes(seg, x, downstream=False)
+    downstream_slopes = get_next_objects_from_a_point(seg, x, Direction.CROISSANT, DCSYS.Profil)
+    upstream_slopes = get_next_objects_from_a_point(seg, x, Direction.DECROISSANT, DCSYS.Profil)
 
     list_slopes = list()
 
@@ -71,73 +71,11 @@ def get_slope_at_point(seg: str, x: float) -> float:
 
 
 def get_min_and_max_slopes_at_point(seg: str, x: float) -> tuple[float, float]:
-    slopes = get_next_slopes(seg, x, downstream=True)
-    slopes.extend(get_next_slopes(seg, x, downstream=False))
-    slopes_value = [float(get_dc_sys_value(slope, DCSYS.Profil.Pente))
+    slopes = get_next_objects_from_a_point(seg, x, Direction.CROISSANT, DCSYS.Profil)
+    slopes.extend(get_next_objects_from_a_point(seg, x, Direction.DECROISSANT, DCSYS.Profil))
+    slopes_value = [get_dc_sys_value(slope, DCSYS.Profil.Pente)
                     * (-1 if not polarity else 1) for slope, polarity, _ in slopes]
     return min(slopes_value), max(slopes_value)
-
-
-def get_next_slopes(start_seg: str, start_x: float, downstream: bool) -> list[tuple[dict[str, Any], bool, float]]:
-    """ Return a list of the first slopes reached in the given downstream direction starting from the given point.
-    If a switch is met before reaching a slope, the list will be composed of multiple slopes for each path. """
-    slopes = list()
-
-    def inner_recurs_next_seg(seg: str, inner_downstream: bool, path: list[str], path_len: float,
-                              x: float = None) -> None:
-        nonlocal slopes
-        slope = _is_slope_defined_on_seg(seg, downstream=inner_downstream, x=x)
-        if slope is not False:
-            slope_x = get_dc_sys_value(slope, DCSYS.Profil.X)
-            final_path_len = path_len - ((get_segment_length(seg) - slope_x) if inner_downstream else slope_x)
-            slopes.append((slope, inner_downstream == downstream, final_path_len))
-            return
-
-        linked_segs = get_linked_segments(seg, inner_downstream)
-        if not linked_segs:
-            return
-        for next_seg in linked_segs:
-            if is_segment_depolarized(next_seg) and seg in get_associated_depolarization(next_seg):
-                next_inner_downstream = not inner_downstream
-            else:
-                next_inner_downstream = inner_downstream
-
-            if next_seg in path:
-                # We check if we have made a full turn and reach a segment that we have already run through
-                # in the current path.
-                continue
-            inner_recurs_next_seg(next_seg, next_inner_downstream, path + [next_seg],
-                                  round(path_len + get_segment_length(next_seg), 3))
-
-    start_path_len = (get_segment_length(start_seg) - start_x) if downstream else start_x
-    inner_recurs_next_seg(start_seg, downstream, [start_seg], start_path_len, start_x)
-    return slopes
-
-
-def _is_slope_defined_on_seg(seg: str, downstream: bool = True, x: float = None) -> Union[bool, dict[str, Any]]:
-    """ Return the first slope on the segment in the given downstream direction (or first slope after the offset x
-    if it is specified),
-    return False if there is no slope on the segment (or no slope after the offset x if it is specified). """
-    slope_dict = load_sheet(DCSYS.Profil)
-    slopes = list()
-    for slope in slope_dict.values():
-        slope_seg = get_dc_sys_value(slope, DCSYS.Profil.Seg)
-        slope_x = float(get_dc_sys_value(slope, DCSYS.Profil.X))
-        if seg == slope_seg:
-            if downstream:
-                if x is None or x <= slope_x:
-                    slopes.append(slope)
-            else:
-                if x is None or x >= slope_x:
-                    slopes.append(slope)
-    if not slopes:
-        return False
-    # Return closest slope
-    slopes.sort(key=lambda a: float(get_dc_sys_value(a, DCSYS.Profil.X)))  # sort according to offset value
-    if downstream:
-        return slopes[0]  # return the slope closest from the segment start
-    else:
-        return slopes[-1]  # return the slope closest from the segment end
 
 
 def get_min_and_max_slopes_in_zone_limits(zone_limits: list[tuple[str, float, str]],

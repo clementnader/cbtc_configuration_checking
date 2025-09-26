@@ -17,5 +17,5 @@ def check_dc_sys_zones_definition():
     # Trace every zone of every sheet
     for sheet_name in get_all_sheet_names():
         sheet_dict = load_sheet(sheet_name)
-        for obj_name in sheet_dict.keys():
+        for obj_name in sheet_dict:
             get_segments_within_zone(sheet_name, obj_name)

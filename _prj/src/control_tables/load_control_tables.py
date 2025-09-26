@@ -46,7 +46,7 @@ def load_control_tables(control_table_type: str, use_csv_file: bool = False,
             control_table_info = create_csv_file_control_table(control_table_info, result_file_name)
 
         else:
-            control_table_info = analyze_csv_file_control_table(result_file_name)
+            control_table_info = analyze_csv_file_control_table(control_table_type, result_file_name)
 
         control_tables_info.update(control_table_info)
 

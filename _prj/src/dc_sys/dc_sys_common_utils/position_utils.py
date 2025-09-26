@@ -57,17 +57,15 @@ def get_object_position(obj_type, obj_name: str) -> Union[tuple[str, float],
     if limits is not None:
         return limits
 
-    obj_dict = load_sheet(obj_type)
-    obj_val = obj_dict[obj_name]
     obj_sh = get_sheet_class_from_name(obj_type)
     sh_attrs = get_class_attr_dict(obj_sh).keys()
 
     if "Aig" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Aig):
         # a dedicated function for switches
-        return get_switch_position(obj_val)
+        return get_switch_position(obj_name)
 
     if "Seg" in sh_attrs and "X" in sh_attrs:  # one point object
-        seg, x = get_dc_sys_values(obj_val, obj_sh.Seg, obj_sh.X)
+        seg, x = get_dc_sys_values(obj_name, obj_sh.Seg, obj_sh.X)
         direction = _get_direction_of_point(obj_type, obj_name)
         if direction is not None:
             return seg, x, direction

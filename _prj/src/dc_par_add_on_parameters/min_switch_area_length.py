@@ -22,12 +22,12 @@ def min_switch_area_length(in_cbtc: bool = False):
     nb_sw = len(sw_dict)
     dict_switch_area_length = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
-    for i, (sw_name, sw_value) in enumerate(sw_dict.items()):
+    for i, sw_name in enumerate(sw_dict):
         print_log_progress_bar(i, nb_sw, f"processing length of switch area for {sw_name}")
         dict_switch_area_length[sw_name] = dict()
         sw_block_name = get_block_associated_to_sw(sw_name)
-        dict_switch_area_length[sw_name]["len_point_side_dict"] = get_len_point_side(sw_block_name, sw_value)
-        dict_switch_area_length[sw_name]["min_flank_area_length_dict"] = get_min_flank_area_length(sw_value)
+        dict_switch_area_length[sw_name]["len_point_side_dict"] = get_len_point_side(sw_block_name, sw_name)
+        dict_switch_area_length[sw_name]["min_flank_area_length_dict"] = get_min_flank_area_length(sw_name)
         dict_switch_area_length[sw_name]["switch_area_length"] = (
                 dict_switch_area_length[sw_name]["min_flank_area_length_dict"]["min_flank_area_length"]
                 + dict_switch_area_length[sw_name]["len_point_side_dict"]["len_point_side"])
@@ -53,10 +53,10 @@ def min_switch_area_length(in_cbtc: bool = False):
     return dict_switch_area_length
 
 
-def get_len_point_side(sw_block_name: str, sw_value):
+def get_len_point_side(sw_block_name: str, sw_name: str):
     """ Return the part of the switch block on the point side only """
-    point_seg, point_x = get_switch_position(sw_value)
-    sw_point_downstream = not(is_sw_point_seg_upstream(sw_value))
+    point_seg, point_x = get_switch_position(sw_name)
+    sw_point_downstream = not(is_switch_point_upstream_heels(sw_name))
 
     oriented_limits = get_oriented_limits_of_obj(DCSYS.CDV, sw_block_name)
     list_upstream_limits = list()
@@ -75,11 +75,11 @@ def get_len_point_side(sw_block_name: str, sw_value):
     return {"len_point_side": dist, "path_len_point_side": associated_key, "dict_len_point_side": dict_len_point_side}
 
 
-def get_min_flank_area_length(sw: dict) -> dict[str, Any]:
+def get_min_flank_area_length(sw_name: str) -> dict[str, Any]:
     """ Return the minimal flank area length for a switch in left or right position """
     dict_min_flank_area_len = dict()
-    dict_min_flank_area_len.update(get_right_or_left_flank_area_length(sw, right=True))
-    dict_min_flank_area_len.update(get_right_or_left_flank_area_length(sw, right=False))
+    dict_min_flank_area_len.update(get_right_or_left_flank_area_length(sw_name, right=True))
+    dict_min_flank_area_len.update(get_right_or_left_flank_area_length(sw_name, right=False))
 
     min_len = min(val["flank_area_len"] for val in dict_min_flank_area_len.values())
     min_side = [key for key, val in dict_min_flank_area_len.items() if val["flank_area_len"] == min_len][0]
@@ -89,12 +89,12 @@ def get_min_flank_area_length(sw: dict) -> dict[str, Any]:
             "dict_min_flank_area_len": dict_min_flank_area_len}
 
 
-def get_right_or_left_flank_area_length(sw: dict, right: bool) -> dict[str, dict[str, Union[float, str]]]:
+def get_right_or_left_flank_area_length(sw_name: str, right: bool) -> dict[str, dict[str, Union[float, str]]]:
     directed_flank = DCSYS.Aig.AreaRightPositionFlank if right else DCSYS.Aig.AreaLeftPositionFlank
     min_flank_area_len = None
     min_pos = None
     min_path = None
-    for i, flank_pos in enumerate(get_dc_sys_zip_values(sw, directed_flank.BeginSeg, directed_flank.BeginX,
+    for i, flank_pos in enumerate(get_dc_sys_zip_values(sw_name, directed_flank.BeginSeg, directed_flank.BeginX,
                                                         directed_flank.EndSeg, directed_flank.EndX), start=1):
         flank_pos_len, path = get_dist_flank_position(flank_pos)
         if flank_pos_len is None:

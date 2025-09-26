@@ -23,6 +23,8 @@ def cf_signal_12(apz_with_tc: bool = False):
     # See in the corresponding ZC-IXL ICDD, if the default IXL Approach Zone is the first physical track circuit
     # or the first IVB. By default, the first IVB is taken as it is more conservative.
     print_title(f"Verification of CF_SIGNAL_12", color=Color.mint_green)
+    print_warning(f"This function only checks that the DLT distance respects the constraint linked to "
+                  f"the IXL APZ length, but not that there is no civil infrastructure in the DLT.")
 
     load_ixl_apz_file()
     verif_dict = _compute_cf_signal_12_verif(apz_with_tc)

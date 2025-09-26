@@ -24,7 +24,7 @@ def get_min_and_max_slope_at_all_overshoot_recovery_areas(in_cbtc: bool = False)
         plt_dict = load_sheet(DCSYS.Quai)
 
     dict_plt_slopes = dict()
-    for plt_name in plt_dict.keys():
+    for plt_name in plt_dict:
         min_slope, max_slope = get_slope_at_plt_ovsht_area(plt_name, overshoot_recovery_area_distance)
         dict_plt_slopes[plt_name] = {"min_slope": min_slope, "max_slope": max_slope}
 

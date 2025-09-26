@@ -17,7 +17,7 @@ from ...dc_par_add_on_parameters import get_at_rollback_dist
 from ...fouling_points_utils import *
 
 
-__all__ = ["r_cdv_5"]
+__all__ = ["r_cdv_5", "r_ivb_1"]
 
 
 def r_ivb_1(print_ok: bool = False):
@@ -31,8 +31,8 @@ def r_cdv_5(ivb: bool = False, print_ok: bool = False):
         print_warning("No Fouling Point information, the results will be only given for the switch as danger point.")
 
     error_counts = [0, 0]
-    for sw_name in sw_dict.keys():
-        is_sw_upstream = is_sw_point_seg_upstream(sw_name)
+    for sw_name in sw_dict:
+        is_sw_upstream = is_switch_point_upstream_heels(sw_name)
         sw_block_list = _get_block_locking_area(sw_name, ivb)
         oriented_limits = _get_block_zone_limits(sw_block_list, ivb)
 

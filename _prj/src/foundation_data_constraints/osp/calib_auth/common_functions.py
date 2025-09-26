@@ -18,7 +18,7 @@ def check_if_constant_slope_under_car_with_accel(osp_seg: str, osp_x: float, osp
     res_dict = dict()
     res_dict["osp_position_and_type"] = osp_position_and_type
     train_types_dict = load_sheet(DCSYS.Train_Types)
-    for train_type_name in train_types_dict.keys():  # for each train type
+    for train_type_name in train_types_dict:  # for each train type
 
         # We get train front position according to the OSP position, direction and type (front, rear, middle)
         train_front_position_at_osp = get_train_front_position_at_osp(train_type_name, osp_seg, osp_x, osp_direction,

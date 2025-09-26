@@ -191,17 +191,17 @@ def _check_route_path(route: str, route_val: dict[str, Any], ct_route_path: str,
 
 def _check_routes_exist_in_dc_sys(route_dict: dict[str, Any], route_control_tables: dict[str, Any]):
     missing_routes_in_dc_sys = list()
-    for route_control_table in route_control_tables.keys():
+    for route_control_table in route_control_tables:
         if not _is_route_in_dc_sys(route_control_table, route_dict):
             missing_routes_in_dc_sys.append(route_control_table)
     return missing_routes_in_dc_sys
 
 
 def _is_route_in_dc_sys(route_control_table: str, route_dict: dict[str, Any]):
-    for route_dc_sys in route_dict.keys():
+    for route_dc_sys in route_dict:
         if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys):
             return True
-    for route_dc_sys in route_dict.keys():
+    for route_dc_sys in route_dict:
         if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, remove_zero=True):
             return True
     return False

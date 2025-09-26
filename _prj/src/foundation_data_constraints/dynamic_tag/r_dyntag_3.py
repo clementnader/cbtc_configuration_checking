@@ -12,6 +12,7 @@ __all__ = ["r_dyntag_3"]
 
 
 def r_dyntag_3():
+    print_title(f"Verification of R_DYNTAG_3", color=Color.mint_green)
     res_dict = dict()
     dyn_tag_dict = load_sheet(DCSYS.IATPM_tags)
     if not dyn_tag_dict:

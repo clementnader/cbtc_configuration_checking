@@ -296,7 +296,7 @@ def _rule_3_check_tsr_area_speed(tsr_area_speed_msg_dict: dict, in_cbtc: bool):
     success = True
     for tsr_area_name, tsr_area in tsr_area_dict.items():
         tsr_area_missing_speeds = list()
-        for tsr_speed in tsr_speed_dict.keys():
+        for tsr_speed in tsr_speed_dict:
             tsr_area_speed_name = tsr_area_name + "_" + tsr_speed
             for zc_name in get_all_zc():
                 is_zc_zcr = (get_dc_sys_value(wayside_eqpt_dict[zc_name], DCSYS.Wayside_Eqpt.Function.Zcr)[0]

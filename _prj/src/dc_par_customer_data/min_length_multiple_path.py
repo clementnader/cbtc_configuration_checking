@@ -104,20 +104,6 @@ def get_all_sw_point_segs(seg_list: Union[set[str], list[str]], limits_cbtc_ter:
     return sw_point_segs
 
 
-def get_switch_on_path(path: list[str]) -> list[tuple[str, str]]:
-    list_sw = list()
-    for seg, next_seg in zip(path[:-1], path[1:]):
-        if is_segment_upstream_of_a_switch(seg) or is_segment_downstream_of_a_switch(seg):
-            sw_name, sw_pos = get_heel_position(seg, next_seg)
-            if sw_name is not None:
-                list_sw.append((sw_name, sw_pos))
-        if is_segment_upstream_of_a_switch(next_seg) or is_segment_downstream_of_a_switch(next_seg):
-            sw_name, sw_pos = get_heel_position(next_seg, seg)
-            if sw_name is not None:
-                list_sw.append((sw_name, sw_pos))
-    return list_sw
-
-
 def create_csv_file(multiple_path_len_dict: dict[str, dict[str, Any]]):
     csv = ""
     for line in multiple_path_len_dict.values():

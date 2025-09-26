@@ -13,8 +13,8 @@ def main():
     """
     Select the function you want to launch by removing the '#' symbol in front of the line to uncomment it.
     It uses the information configured in file "config.ini".
-    For each function, it is specified in the last line of the comments above the function what inputs are needed
-     to be specified in the config.ini file.
+    For each function, comments are written above the function to explain its use and in the last line starting
+     by "@inputs:", it is written what inputs are needed to be specified in the "config.ini" file to run the function.
     """
 
     # ---------------------------------------------------------------------------------------------------------------- #
@@ -101,7 +101,7 @@ def main():
     # ---------- Foundation Data: CBTC Protecting Switch Area ---------- #
     """Uncomment next line to verify the CBTC protecting switch area so that it contains all IVB that are at a distance
      lower than the distance travelled during oc_zc_data_freshness_threshold + ixl_cycle_time, from the motor part of
-     the switch (between the switch and the fouling points).
+     the switch (between the switch and the fouling points). The tool uses the local max speed for the computation.
     This list can be empty if the [switch block locking area] is empty.
     @inputs: DC_SYS, CCTool-OO Schema, Fouling Point and DC_PAR"""
     #check_cbtc_protecting_switch_area()
@@ -109,7 +109,8 @@ def main():
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: Allow Accel Calibration at OSP ---------- #
     """Uncomment one of next lines to verify constraints and rules about flag [Allow Accel Calibration] of OSP (either
-     platform OSP or OSP not platform related).
+     platform OSP or OSP not platform related). It checks that the slope is constant under the car with accelerometer
+     whatever the train polarity and considering the train stopped at +/- the tolerance at OSP.
     @inputs: DC_SYS, CCTool-OO Schema and DC_PAR"""
     #cc_quai_6(in_cbtc=False)  # Allow Accel Calibration at platform OSPs
     #r_point_arret_ato_10(in_cbtc=False)  # Allow Accel Calibration at not platform related OSPs
@@ -153,7 +154,7 @@ def main():
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: R_CDV_5 and R_IVB_1 ---------- #
     """Uncomment one of next lines to verify rules R_CDV_5 and R_IVB_1.
-    @inputs: DC_SYS, CCTool-OO Schema, Fouling Point and DC_PAR"""
+    @inputs: DC_SYS, CCTool-OO Schema, Fouling Point, DC_PAR and C11_D470"""
     #r_cdv_5()
     #r_ivb_1()
 
@@ -167,6 +168,16 @@ def main():
     @inputs: DC_SYS and CCTool-OO Schema"""
     #get_zones_kp_limits("GES")
     #get_zones_kp_limits("Protection_Zone")
+
+    """Uncomment one of next lines to get from what KP to what KP each track is covered by the union of specified type 
+     (examples below are for CDV and CV sheets).
+    You have to specify the sheet name from DC_SYS as the argument to select the object type.
+    The tool figures the zone path and will display multiple rows for a same track if there are multiple section of
+     a same track covered by a same zone.
+    For objects that overlap, the tool will return multiple rows where the end KP may be inside another from/to KP row.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    # get_whole_object_type_kp_limits("CDV")
+    # get_whole_object_type_kp_limits("CV")
 
     """Uncomment next line to get list of objects of a specified type intersecting a specified zone (example below is
      to print the list of MAZ (sheet Zaum) intersecting the ZC (sheet PAS) called "ZC_02").

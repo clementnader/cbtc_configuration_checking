@@ -61,7 +61,7 @@ def _get_ww_limits(ww_val: dict) -> list[tuple[str, float]]:
 
 def _get_survey_limits_on_track(ww_name: str, test_track: str, survey_info: dict[str, Any]) -> list[str]:
     list_survey_limits = list()
-    for survey_name in survey_info.keys():
+    for survey_name in survey_info:
         survey_ww_lim_name, survey_track = survey_name.split("__", 1)
         survey_ww_name = _clean_walkway_extremity_name(survey_ww_lim_name)
         if survey_track.upper() == test_track:

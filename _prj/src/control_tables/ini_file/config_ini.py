@@ -32,7 +32,7 @@ def _read_control_tables_ini_info():
     config_ini_file = os.path.join(ROOT_DIRECTORY, "control_tables_configuration", config_ini_file_name)
 
     print_section_title(f"Read \"{config_ini_file_name}\" file to get the Control Tables PDF format:")
-    print(config_ini_file)
+    print("", config_ini_file)
     config = configparser.ConfigParser()
     config.read(config_ini_file, encoding="utf-8")
 
@@ -65,6 +65,8 @@ def _read_control_tables_ini_info():
     # overlap_switch_path
     name, right = _split_ini_info(overlap_control_table_config, "overlap_switch_path")
     OVERLAP_INFORMATION["overlap_switch_path"] = {"name": name, "right": right, "csv_name": OVERLAP_SWITCHES_LIST_KEY}
+
+    print()
 
 
 def _split_ini_info(control_table_config: configparser.SectionProxy, option: str) -> tuple[str, bool]:

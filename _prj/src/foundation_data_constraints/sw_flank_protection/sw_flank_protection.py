@@ -19,34 +19,34 @@ def check_switch_flank_protection(in_cbtc: bool = False):  # TODO
 
     status = True
     fp_info = load_fouling_point_info()
-    for sw_name, sw_value in sw_dict.items():
+    for sw_name in sw_dict:
         fp_dist = fp_info.get(sw_name)
         if fp_dist is None:
             print_error(f"No Fouling Point information for {Color.yellow}{sw_name}{Color.reset}.")
             status = False
             continue
-        if not _verify_flank(sw_name, sw_value, fp_dist):
+        if not _verify_flank(sw_name, fp_dist):
             status = False
     if status:
         print_log("No KO has been raised in the verification of the switch flank areas.")
 
 
-def _verify_flank(sw_name: str, sw_value: dict[str, Any], fp_dist: float) -> bool:
+def _verify_flank(sw_name: str, fp_dist: float) -> bool:
     status = True
-    left_flank_area_list = list(get_dc_sys_zip_values(sw_value, DCSYS.Aig.AreaLeftPositionFlank.BeginSeg,
+    left_flank_area_list = list(get_dc_sys_zip_values(sw_name, DCSYS.Aig.AreaLeftPositionFlank.BeginSeg,
                                                       DCSYS.Aig.AreaLeftPositionFlank.BeginX,
                                                       DCSYS.Aig.AreaLeftPositionFlank.EndSeg,
                                                       DCSYS.Aig.AreaLeftPositionFlank.EndX,
                                                       DCSYS.Aig.AreaLeftPositionFlank.Direction))
-    right_flank_area_list = list(get_dc_sys_zip_values(sw_value, DCSYS.Aig.AreaRightPositionFlank.BeginSeg,
+    right_flank_area_list = list(get_dc_sys_zip_values(sw_name, DCSYS.Aig.AreaRightPositionFlank.BeginSeg,
                                                        DCSYS.Aig.AreaRightPositionFlank.BeginX,
                                                        DCSYS.Aig.AreaRightPositionFlank.EndSeg,
                                                        DCSYS.Aig.AreaRightPositionFlank.EndX,
                                                        DCSYS.Aig.AreaRightPositionFlank.Direction))
-    sw_seg, sw_x = get_switch_position(sw_value)
-    is_sw_upstream = is_sw_point_seg_upstream(sw_value)
-    left_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTg)
-    right_seg = get_dc_sys_value(sw_value, DCSYS.Aig.SegmentTd)
+    sw_seg, sw_x = get_switch_position(sw_name)
+    is_sw_upstream = is_switch_point_upstream_heels(sw_name)
+    left_seg = get_dc_sys_value(sw_name, DCSYS.Aig.SegmentTg)
+    right_seg = get_dc_sys_value(sw_name, DCSYS.Aig.SegmentTd)
     diamond_crossing, dc_switches = is_switch_on_diamond_crossing(sw_name)
 
     if not _verify_direct_flank(sw_name, fp_dist, right_seg, left_flank_area_list, is_sw_upstream, sw_seg, sw_x,

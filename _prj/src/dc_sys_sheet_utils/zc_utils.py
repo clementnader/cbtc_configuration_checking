@@ -50,7 +50,7 @@ def get_zc_of_obj(obj_type, obj_name: str) -> list[str]:
         return _get_zc_of_overlap(obj_name)
 
     position = get_object_position(obj_type, obj_name)
-    if isinstance(position, tuple):  # single point object
+    if isinstance(position, tuple):  # single-point object
         list_zc = get_zones_on_point(DCSYS.PAS, *position)
         return list_zc if list_zc is not None else []
     if isinstance(position, list):  # zone object

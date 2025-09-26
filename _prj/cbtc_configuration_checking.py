@@ -27,7 +27,6 @@ def compare_dc_sys():
 
 
 def cc():
-    # verification_of_the_md5_checksum()
     # generate_cc_parameters_diff_reports()
     # check_diff_cc_param()
     # convert_cc_param()
@@ -36,21 +35,31 @@ def cc():
 
 def zc():
     # create_computed_result_file_ze_impacte_fu()
+    # check_pz_ze()
+    # extremite_secteur()
+    return
+
+
+def wayside_additional_verif():
+    # get_sum_len_route_physical_blocks()  # for wayside additional verifications in 6.3.5
+    # get_first_zc_overlay_route_physical_blocks()  # for wayside additional verifications in 6.3.5
+    return
+
+
+def onboard_additional_verif():
+    # dc_tu_verification()  # v1.4.2
+    # dc_tu_window()
+    # verification_of_the_md5_checksum()
+    # verification_of_the_md5_checksum(sha256=True)
     return
 
 
 def additional_verif():
-    # dc_tu_verification()  # v1.4.2
-    # dc_tu_window()
-
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
     # pretty_print_dict(get_min_and_max_slope_at_all_platforms(in_cbtc=False))
     # pretty_print_dict(get_min_and_max_slope_at_all_overshoot_recovery_areas(in_cbtc=False))
-
-    # get_sum_len_route_physical_blocks()  # for wayside additional verifications in 6.3.5
-    # get_first_zc_overlay_route_physical_blocks()  # for wayside additional verifications in 6.3.5
     return
 
 
@@ -64,6 +73,15 @@ def dc_par_add_on_param():
     # pretty_print_dict(get_block_min_length(in_cbtc=True))
     # pretty_print_dict(get_block_max_length(in_cbtc=False))
     # pretty_print_dict(min_switch_area_length(in_cbtc=False))
+    return
+
+
+def dc_par_customer_data():
+    # min_length_multiple_path(in_cbtc=False)  # trapezoid_length
+    # pretty_print_dict(smallest_size_of_a_switch_block_heel(in_cbtc=False))
+    # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
+    #                                                                    with a buffer just down the line
+    # max_dist_local_tag_group(in_cbtc=False)
     return
 
 
@@ -97,15 +115,6 @@ def route_and_overlap():
     # TODO: verif overlap: du signal jusqu'au VSP tous les IVB et aiguilles (+position) qu'on passe
     #  doivent être côté IXL et toutes les aiguilles (+position) doivent être côté CBTC
     # TODO: refaire les tests de correspondance sans dépendre de la variable PROJECT_NAME
-    return
-
-
-def dc_par_customer_data():
-    # min_length_multiple_path(in_cbtc=False)  # trapezoid_length
-    # pretty_print_dict(smallest_size_of_a_switch_block_heel(in_cbtc=False))
-    # min_dist_between_two_last_signals_before_cbtc_territory_exit()  # TODO: to redo, we don't need to consider signals
-    #                                                                    with a buffer just down the line
-    # max_dist_local_tag_group(in_cbtc=False)
     return
 
 
@@ -153,8 +162,11 @@ def foundation_data_constraints():
     # --- Verify Platform Related Overlaps --- #
     # ixl_overlap_platform_related()
 
-    # --- Signal joint position --- #
+    # --- Signal to joint distance --- #
     # get_signals_distance_to_joint()
+
+    # --- OSP to joints and signals distance --- #
+    # get_osp_not_platform_related_distance_to_joints_and_signals()  # TODO
 
     # --- Functions related to zone objects customizable specifying the sheet name --- #
     # get_zones_kp_limits(DCSYS.Walkways_Area)
@@ -162,7 +174,9 @@ def foundation_data_constraints():
     # print(get_objects_in_zone(DCSYS.Zaum, DCSYS.PAS, "ZC_02"))
     # print(get_zones_on_object(DCSYS.PAS, DCSYS.Zaum, "MAZ_STB_110"))
 
+    # get_whole_object_type_kp_limits(DCSYS.CV)
     # get_whole_object_type_kp_limits(DCSYS.CDV)
+    # get_whole_object_type_kp_limits(DCSYS.ZSM_CBTC)
     # get_whole_object_type_kp_limits(DCSYS.PAS)  # TODO raise a message when there is overlapping
     # TODO create a function to do unions between zones to manage for ZC when it's normal to have overlapping.
 
@@ -179,12 +193,12 @@ def foundation_data_constraints():
 
     # check_switch_flank_protection(in_cbtc=False)  # TODO
 
-    # get_par_worst_suspect_coupling_overrun_additionnal_dist()  # TODO ça marche comme l'outil de Damien mais à voir pour speeder ça (13mn sur KCR)
+    # get_par_worst_suspect_coupling_overrun_additionnal_dist()
     return
 
 
 def constraints_and_rules():
-    # Block zone definition constraints
+    # Blocks zone definition constraints
     # r_cdv_10()
     # cf_ivb_1_2()
     # cf_ivb_2()
@@ -192,15 +206,18 @@ def constraints_and_rules():
     # cc_cv_18()
 
     # VSP on Virtual Blocks constraints
-    # cc_cv_19()
-    # cc_cv_20()
+    # cc_cv_19()  # VSP (signal and overlap) on VB not containing a switch
+    # cc_cv_20()  # VSP (signal and overlap) on VB containing a switch
+
+    # Signal constraints
+    # cf_signal_7()  # Signal VSP protects SWP or FP
 
     # CBTC Direction Zone constraints
     # cf_zsm_cbtc_4()
     # cf_zsm_cbtc_10()
 
     # Floor Level constraints
-    # cf_flr_lvl_1()  # TODO simply print something if there is no Floor Level
+    # cf_flr_lvl_1()
 
     # MAZ constraints
     # cf_zaum_1()
@@ -235,18 +252,19 @@ def constraints_and_rules():
 
     # Constraints related to signal Approach Zone
     # check_cbtc_sig_apz()
-    # cf_signal_12(apz_with_tc=False)
+    # cf_signal_12(apz_with_tc=False)  # DLT Distance
     # r_zsm_3(apz_with_tc=False)
 
-    # TODO CF_ZSM_CBTC_16 NV
-    # cf_zsm_cbtc_16()
-    # For each Home Signal related to the CBTC Direction Zone:
-    # The CBTC Direction Zone is inside the SIGNALLING approach of the signal if it’s related to a BLOCK_DIRECTION_LOCKING one.
+    # cf_zsm_cbtc_16()  # TODO CF_ZSM_CBTC_16 NV
+    #                      For each Home Signal related to the CBTC Direction Zone:
+    #                      The CBTC Direction Zone is inside the SIGNALLING approach of the signal
+    #                      if it’s related to a BLOCK_DIRECTION_LOCKING one.
 
     # Extra constraints
-    # cf_calib_4()  # TODO corriger quand les 2 balises sont sur le même segment
+    # cf_calib_4()
     # r_dyntag_3()
 
+    # R_CDV_5 and R_IVB_1
     # r_cdv_5(print_ok=True)  # TODO for R_CDV_5:
     #                            - regarder pour prendre un param plutôt avec le
     #                            hardware/hardware reference plutôt que faire une diff avec le kit C11
@@ -255,67 +273,12 @@ def constraints_and_rules():
     return
 
 
-def extremite_secteur():
-    # EXTREMITE_SECTEUR
-    variables = dict()
-    tracking_delocalization_threshold = get_param_value("tracking_delocalization_threshold", variables)
-    train_max_length = get_param_value("train_max_length", variables)
-    limit_value = tracking_delocalization_threshold + train_max_length
-    print_sub_variables(variables)
-    print(f"limit is {limit_value}\n")
-    i = 1
-    zone_limits = get_zone_limits(DCSYS.PAS, "ZC_01")
-    for seg1 in get_all_segments_in_zone(DCSYS.PAS, "ZC_01"):
-        too_far_away = True
-        for lim_seg, lim_x, lim_direction in zone_limits:
-            dist_to_lim = get_dist_downstream(lim_seg, lim_x, seg1, None,
-                                              downstream=lim_direction == Direction.CROISSANT)
-            if dist_to_lim is not None and dist_to_lim < limit_value:
-                too_far_away = False
-                break
-        if too_far_away:
-            continue
-        for seg2 in get_objects_list(DCSYS.Seg):
-            if seg2 in get_segments_within_zone(DCSYS.PAS, "ZC_01"):
-                continue
-            too_far_away = True
-            for lim_seg, lim_x, lim_direction in zone_limits:
-                dist_to_lim = get_dist_downstream(lim_seg, lim_x, seg2, None,
-                                                  downstream=lim_direction != Direction.CROISSANT)
-                if dist_to_lim is not None and dist_to_lim < limit_value:
-                    too_far_away = False
-                    break
-            if too_far_away:
-                continue
-            # TODO if the part of seg2 out of ZC is out of CBTC Territory, no need to consider this segment
-            list_of_paths = get_list_of_paths(seg1, seg2)
-            for _, path in list_of_paths:
-                path_len = get_path_len(path[1:-1])
-                if path_len > limit_value:
-                    continue
-                sw_on_path = get_switch_on_path(path)
-                sw_in_zc_on_path = [(sw, pos) for sw, pos in sw_on_path if
-                                    "ZC_01" in get_zones_on_object(DCSYS.PAS, DCSYS.Aig, sw)]
-                extra_sw = [sw for sw in sw_on_path if sw not in sw_in_zc_on_path]
-                print(i, Color.light_blue, seg1, seg2,
-                      f"{Color.red}Too far away!!{Color.reset}" if path_len > limit_value else f"{Color.reset}OK")
-                print("\t", ", ".join(path), " -> ", path_len)
-                print("\t", sw_in_zc_on_path, f"(switch on path out of ZC_01: {extra_sw})" if extra_sw else "")
-                i += 1
-
-
 def main():
     # print_named_colors()
     # print_all_colors()
 
     # pretty_print_dict(list(get_all_segs_in_cbtc_ter()), max_lvl=0)
     # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Voie), max_lvl=0)
-    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Profil), max_lvl=0)
-    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Sig), max_lvl=0)
-    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Zaum), max_lvl=0)
-    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Bal), max_lvl=0)
-    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Aig), max_lvl=0)
-    # pretty_print_dict(get_objects_in_cbtc_ter(DCSYS.Quai), max_lvl=0)
 
     # create_fouling_points_template_file()  # create empty fouling points file with the list of switches from DC_SYS
 

@@ -65,6 +65,10 @@ def _find_ovl_control_table(ovl_dc_sys: str, ovl_control_tables: dict[str, dict[
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, test_with_ovl_pos=True,
                                                     ovl_val=ovl_val):
             return ovl_val, ovl_control_table
+    # If failed, we try to associate the overlap names being case-insensitive
+    for ovl_control_table, ovl_val in ovl_control_tables.items():
+        if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, case_insensitive=True):
+            return ovl_val, ovl_control_table
     # If failed, we try to associate the overlap names removing the leading zeros in the signal name
     for ovl_control_table, ovl_val in ovl_control_tables.items():
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, remove_zero=True):
@@ -72,7 +76,8 @@ def _find_ovl_control_table(ovl_dc_sys: str, ovl_control_tables: dict[str, dict[
     return {}, ""
 
 
-def _correspondence_ovl_control_table_dc_sys(ct_ovl: str, dc_sys_ovl: str, remove_zero: bool = False,
+def _correspondence_ovl_control_table_dc_sys(ct_ovl: str, dc_sys_ovl: str,
+                                             case_insensitive: bool = False, remove_zero: bool = False,
                                              test_with_ovl_pos: bool = False, ovl_val: dict[str, Any] = None):
     # Control Tables Overlap
     split_text = ct_ovl.split("-", 1)
@@ -96,6 +101,13 @@ def _correspondence_ovl_control_table_dc_sys(ct_ovl: str, dc_sys_ovl: str, remov
 
     if dc_sys_ovl.endswith(ct_ovl):
         return True
+
+    if case_insensitive:
+        # try removing leading 0 in sig names
+        ct_ovl = ct_ovl.upper()
+        dc_sys_ovl = dc_sys_ovl.upper()
+        if dc_sys_ovl.endswith(ct_ovl):
+            return True
 
     if remove_zero:
         # try removing leading 0 in sig names
@@ -287,16 +299,20 @@ def _check_ovl_exist_in_dc_sys(ovl_dict: dict[str, Any], ovl_control_tables: dic
 
 
 def _is_ovl_in_dc_sys(ovl_control_table: str, ovl_val: dict[str, Any], ovl_dict: dict[str, Any]):
-    for ovl_dc_sys in ovl_dict.keys():
+    for ovl_dc_sys in ovl_dict:
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys):
             return None
     # If failed, we try to associate the overlap names using the corresponding normal and reverse positions
-    for ovl_dc_sys in ovl_dict.keys():
+    for ovl_dc_sys in ovl_dict:
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, test_with_ovl_pos=True,
                                                     ovl_val=ovl_val):
             return f"{ovl_dc_sys} -> {ovl_control_table}"
+    # If failed, we try to associate the overlap names being case-insensitive
+    for ovl_dc_sys in ovl_dict:
+        if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, case_insensitive=True):
+            return None
     # If failed, we try to associate the overlap names removing the leading zeros in the signal name
-    for ovl_dc_sys in ovl_dict.keys():
+    for ovl_dc_sys in ovl_dict:
         if _correspondence_ovl_control_table_dc_sys(ovl_control_table, ovl_dc_sys, remove_zero=True):
             return None
     return False
