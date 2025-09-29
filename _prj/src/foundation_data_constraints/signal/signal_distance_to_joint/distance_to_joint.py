@@ -75,7 +75,7 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
     verif_file_name = f" - {get_current_version()}".join(os.path.splitext(VERIF_FILE_NAME))
     res_file_path = os.path.realpath(os.path.join(OUTPUT_DIRECTORY, verif_file_name))
     save_xl_file(wb, res_file_path)
-    print_success(f"\"Signal to Joint Distance\" computation file is available at:\n"
+    print_success(f"\"Distance from Signal to Joint\" computation file is available at:\n"
                   f"{Color.blue}{res_file_path}{Color.reset}")
     open_excel_file(res_file_path)
 

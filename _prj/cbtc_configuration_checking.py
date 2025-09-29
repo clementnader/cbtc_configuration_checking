@@ -166,7 +166,7 @@ def foundation_data_constraints():
     # get_signals_distance_to_joint()
 
     # --- OSP to joints and signals distance --- #
-    # get_osp_not_platform_related_distance_to_joints_and_signals()  # TODO
+    # get_osp_not_platform_related_distance_to_joints_and_signals()
 
     # --- Functions related to zone objects customizable specifying the sheet name --- #
     # get_zones_kp_limits(DCSYS.Walkways_Area)

@@ -37,7 +37,7 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
     nb_sigs = len(sig_dict.keys())
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (sig_name, sig) in enumerate(sig_dict.items()):
-        print_log_progress_bar(i, nb_sigs, f"computing the IXL Approach Zone length of {sig_name}")
+        print_log_progress_bar(i, nb_sigs, f"IXL APZ length of {sig_name}")
         sig_type = get_dc_sys_value(sig, DCSYS.Sig.Type)
         sig_direction = get_dc_sys_value(sig, DCSYS.Sig.Sens)
         res_dict[sig_name] = {"sig_name": sig_name, "sig_type": sig_type, "sig_direction": sig_direction}

@@ -32,7 +32,7 @@ def compute_ze_impacte_fu() -> dict[str, dict[str, Union[bool, dict[str, Union[b
         progress_bar(1, 1, end=True)  # reset progress_bar
         nb_vb = len(vb_per_zc[zc_name])
         for i, vb_name in enumerate(vb_per_zc[zc_name]):
-            print_log_progress_bar(i, nb_vb, f"processing ZE_IMPACTE_FU for {vb_name} in {zc_name}")
+            print_log_progress_bar(i, nb_vb, f"ZE_IMPACTE_FU for {vb_name} in {zc_name}")
             cv_ze_impacte_fu = list()
             maz_in_vb = get_zones_intersecting_zone(DCSYS.Zaum, DCSYS.CV, vb_name)
 
@@ -66,7 +66,7 @@ def compute_ze_impacte_fu() -> dict[str, dict[str, Union[bool, dict[str, Union[b
                 results[zc_name][vb_name]["reversed_directions"] = _reverse_ze_impacte_fu_directions(tuple_ze_index,
                                                                                                      tuple_directions)
 
-        print_log_progress_bar(nb_vb, nb_vb, f"ZE_IMPACTE_FU computed on {zc_name}", end=True)
+        print_log_progress_bar(nb_vb, nb_vb, f"ZE_IMPACTE_FU computed on {zc_name} finished", end=True)
 
     return results
 

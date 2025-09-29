@@ -97,8 +97,8 @@ def get_all_positions_at_a_distance_from_a_point(seg: str, x: float, direction: 
     return list_positions
 
 
-def get_next_objects_from_a_point(seg: str, x: float, direction: str, obj_type: str, obj_direction: str = None
-                                  ) -> list[tuple[str, bool, float]]:
+def get_next_objects_from_a_point(seg: str, x: float, direction: str, obj_type: str, obj_direction: str = None,
+                                  skip_object_on_point: str = None) -> list[tuple[str, bool, float]]:
     """ Return a list of the first objects reached in the given downstream direction starting from the given point.
     If a switch is met before reaching an object, the list will be composed of multiple objects for each path.
     It returns in addition the polarity (in the object is reached in the same direction as the start direction)
@@ -110,10 +110,11 @@ def get_next_objects_from_a_point(seg: str, x: float, direction: str, obj_type: 
                               inner_x: float = None) -> None:
         nonlocal list_objects
         obj_on_seg = _is_object_defined_on_seg(inner_seg, inner_x, inner_downstream, inner_downstream == downstream,
-                                               obj_type, obj_direction)
+                                               obj_type, obj_direction, skip_object_on_point)
         if obj_on_seg is not False:
             obj_name, obj_x = obj_on_seg
-            final_path_len = path_len - ((get_segment_length(inner_seg) - obj_x) if inner_downstream else obj_x)
+            final_path_len = round(path_len - ((get_segment_length(inner_seg) - obj_x) if inner_downstream else obj_x),
+                                   3)
             list_objects.append((obj_name, inner_downstream == downstream, final_path_len))
             return
 
@@ -136,7 +137,8 @@ def get_next_objects_from_a_point(seg: str, x: float, direction: str, obj_type: 
 
 
 def _is_object_defined_on_seg(seg: str, x: Optional[float], downstream: bool, polarity: bool,
-                              obj_type: str, obj_direction: str = None) -> Union[bool, tuple[str, float]]:
+                              obj_type: str, obj_direction: str = None, skip_object_on_point: str = None
+                              ) -> Union[bool, tuple[str, float]]:
     """ Return the first object on the segment in the given downstream direction (or first object after the offset x
      if it is specified),
      return False if there is no object on the segment (or no object after the offset x if it is specified).
@@ -144,6 +146,8 @@ def _is_object_defined_on_seg(seg: str, x: Optional[float], downstream: bool, po
     obj_list = get_objects_list(obj_type)
     list_objects = list()
     for obj_name in obj_list:
+        if obj_name == skip_object_on_point:
+            continue
         obj_position = get_object_position(obj_type, obj_name)
         if isinstance(obj_position, tuple):  # single-point object
             obj_seg = obj_position[0]

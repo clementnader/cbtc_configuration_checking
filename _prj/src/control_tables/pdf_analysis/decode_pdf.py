@@ -39,7 +39,7 @@ def control_tables_pdf_parsing(table_type: str, pdf_file: str, specific_pages: l
             if specific_pages is not None and num_page not in specific_pages:
                 continue
             print_log_progress_bar(num_page, nbpages, f"{Color.yellow}{table_type.title()}{Color.reset} "
-                                   f"{Color.white}Control Tables{Color.reset} conversion ongoing")
+                                   f"{Color.white}Control Tables{Color.reset} conversion")
             # Navigate to current page with the SimplePDFViewer
             viewer.navigate(num_page)
             logging.disable(logging.WARNING)  # deactivate temporarily the warning logs

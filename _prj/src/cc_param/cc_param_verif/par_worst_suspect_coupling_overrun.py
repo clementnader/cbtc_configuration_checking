@@ -49,7 +49,7 @@ def _get_max_in_direction(par_max_couplable_train_units: int, par_gravity: float
     nb_slopes = len(slope_dict)
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (alpha1_name, alpha1_obj) in enumerate(slope_dict.items()):
-        print_log_progress_bar(i, nb_slopes, f"processing distances between {alpha1_name} and other slopes")
+        print_log_progress_bar(i, nb_slopes, f"distances between {alpha1_name} and other slopes")
         alpha1 = (1 if downstream else -1) * get_dc_sys_value(alpha1_obj, DCSYS.Profil.Pente)
         alpha1_seg, alpha1_x = get_dc_sys_values(alpha1_obj, DCSYS.Profil.Seg, DCSYS.Profil.X)
         for alpha2_obj in slope_dict.values():
@@ -90,6 +90,6 @@ def _get_max_in_direction(par_max_couplable_train_units: int, par_gravity: float
                     # print("    gammaFu", gamma_fu)
                     # print("    minAlpha", min(alpha1, alpha2))
                     # print("-------------------------------------------------------------------------------------------------\n\n")
-    print_log_progress_bar(nb_slopes, nb_slopes, "processing distances between slopes finished", end=True)
+    print_log_progress_bar(nb_slopes, nb_slopes, "computation of distances between slopes finished", end=True)
 
     return max_param

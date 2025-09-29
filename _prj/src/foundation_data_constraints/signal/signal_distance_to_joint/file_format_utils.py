@@ -54,11 +54,11 @@ def _set_columns_width(ws: xl_ws.Worksheet):
     ws.column_dimensions[TYPE_COL].width = 19
     ws.column_dimensions[SIG_SEG_COL].width = 10
     ws.column_dimensions[SIG_X_COL].width = 7.5
-    ws.column_dimensions[SIG_DIRECTION_COL].width = 13
+    ws.column_dimensions[SIG_DIRECTION_COL].width = 14
     ws.column_dimensions[SIG_TRACK_COL].width = 14
     ws.column_dimensions[SIG_KP_COL].width = 8.5
     ws.column_dimensions[VSP_DISTANCE_COL].width = 14
-    ws.column_dimensions[JOINT_NAME_COL].width = 45
+    ws.column_dimensions[JOINT_NAME_COL].width = 40
     ws.column_dimensions[JOINT_SEG_COL].width = 10
     ws.column_dimensions[JOINT_X_COL].width = 7.5
     ws.column_dimensions[JOINT_TRACK_COL].width = 14

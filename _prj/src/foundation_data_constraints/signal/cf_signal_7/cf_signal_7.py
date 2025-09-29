@@ -34,7 +34,7 @@ def _compute_cf_signal_7_verif() -> dict[str, dict[str, Any]]:
     nb_sigs = len(sig_list)
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, sig_name in enumerate(sig_list):
-        print_log_progress_bar(i, nb_sigs, f"finding the next switch point from {sig_name}")
+        print_log_progress_bar(i, nb_sigs, f"next switch point from {sig_name}")
 
         sig_seg, sig_x, sig_direction = get_dc_sys_values(sig_name, DCSYS.Sig.Seg, DCSYS.Sig.X, DCSYS.Sig.Sens)
         sig_track, sig_kp = from_seg_offset_to_track_kp(sig_seg, sig_x)

@@ -239,11 +239,19 @@ def main():
     #verification_of_the_md5_checksum()
 
     # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- Foundation Data: Signal joint position ---------- #
-    """Uncomment next line to get for all signals the distance between the signals and the IVB joint
-     downstream the signal.
+    # ---------- Foundation Data: Distance from signal to joint ---------- #
+    """Uncomment next line to get for all signals the distance from the signal to the IVB joint downstream the signal.
+    It can be useful to check the position of the signals.
     @inputs: DC_SYS and CCTool-OO Schema"""
     #get_signals_distance_to_joint()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Foundation Data: Distance from OSP to joints and signals ---------- #
+    """Uncomment next line to get for all OSPs not platform related the distance from the OSP to next IVB joint
+     in both directions, and to next signal in both directions.
+    It can be useful to check the position of the OSPs.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #get_osp_not_platform_related_distance_to_joints_and_signals()
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Fouling Point template file ---------- #

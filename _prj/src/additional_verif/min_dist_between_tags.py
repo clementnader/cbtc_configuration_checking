@@ -22,7 +22,7 @@ def min_dist_between_tags(in_cbtc: bool = False):
     tags_dist_dict = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, tag1 in enumerate(tag_list):
-        print_log_progress_bar(i, nb_tags, f"processing distance between {tag1} and other tags")
+        print_log_progress_bar(i, nb_tags, f"distance between {tag1} and other tags")
         seg1 = get_dc_sys_value(tag_dict[tag1], DCSYS.Bal.Seg)
         x1 = float(get_dc_sys_value(tag_dict[tag1], DCSYS.Bal.X))
         for tag2 in tag_list[i+1:]:
@@ -31,7 +31,7 @@ def min_dist_between_tags(in_cbtc: bool = False):
             d = get_dist(seg1, x1, seg2, x2)
             if d is not None:
                 tags_dist_dict[f"{tag1} and {tag2}"] = d
-    print_log_progress_bar(nb_tags, nb_tags, "processing distance between tags finished", end=True)
+    print_log_progress_bar(nb_tags, nb_tags, "computation of distance between tags finished", end=True)
 
     tags_dist_dict = {x: tags_dist_dict[x] for x in sorted(tags_dist_dict, key=lambda x: tags_dist_dict[x])}
     min_dist = min(tags_value for tags_value in tags_dist_dict.values())

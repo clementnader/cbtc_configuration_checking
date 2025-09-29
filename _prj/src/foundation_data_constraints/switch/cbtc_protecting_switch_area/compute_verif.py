@@ -34,7 +34,7 @@ def compute_verif() -> dict[str, dict[str, Any]]:
         else:
             comments = None
 
-        print_log_progress_bar(i, nb_sw, f"verification of CBTC protecting switch area of {sw_name}")
+        print_log_progress_bar(i, nb_sw, f"CBTC protecting switch area of {sw_name}")
         sw_block_locking_area = get_dc_sys_value(sw_val, DCSYS.Aig.SwitchBlockLockingArea.Ivb)
         cbtc_protecting_switch_area = get_dc_sys_value(sw_val, DCSYS.Aig.CbtcProtectingSwitchArea.Ivb)
 

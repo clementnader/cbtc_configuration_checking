@@ -22,7 +22,7 @@ def smallest_size_of_a_switch_block_heel(in_cbtc: bool = False):
     dict_min_heel = dict()
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (sw, sw_value) in enumerate(sw_dict.items()):
-        print_log_progress_bar(i, nb_sw, f"determining the heel virtual blocks of switch {sw}")
+        print_log_progress_bar(i, nb_sw, f"virtual block heels of {sw}")
         point_vb = get_vb_associated_to_sw(sw_value)
         point_vb_limits = list(get_dc_sys_zip_values(vb_dict[point_vb], DCSYS.CV.Extremite.Seg, DCSYS.CV.Extremite.X))
         point_seg, _ = give_point_seg_vb(point_vb_limits)
@@ -34,7 +34,7 @@ def smallest_size_of_a_switch_block_heel(in_cbtc: bool = False):
                     for point_seg, point_x in point_vb_other_limits:
                         if seg == point_seg and x == point_x:
                             dict_min_heel[sw]["heels"][vb] = dict()
-    print_log_progress_bar(nb_sw, nb_sw, "determining switches heels finished", end=True)
+    print_log_progress_bar(nb_sw, nb_sw, "computation of virtual block switch heels finished", end=True)
 
     for sw, sw_value in dict_min_heel.items():
         for heel_vb in sw_value["heels"]:

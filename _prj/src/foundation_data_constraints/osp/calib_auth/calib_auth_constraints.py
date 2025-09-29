@@ -29,7 +29,7 @@ def cc_quai_6(in_cbtc: bool = False):
     nb_plt = len(plt_dict)
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (plt_name, plt_value) in enumerate(plt_dict.items()):
-        print_log_progress_bar(i, nb_plt, f"processing slope under train at OSP of platform {plt_name}")
+        print_log_progress_bar(i, nb_plt, f"slope under train at OSP of {plt_name}")
 
         calib_auth = is_accelerometer_calibration_authorized_at_platform(plt_name)
 
@@ -66,7 +66,7 @@ def r_point_arret_ato_10(in_cbtc: bool = False):
     nb_osp = len(osp_dict)
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (osp_name, osp_value) in enumerate(osp_dict.items()):
-        print_log_progress_bar(i, nb_osp, f"processing slope under train at OSP out of platform {osp_name}")
+        print_log_progress_bar(i, nb_osp, f"slope under train at {osp_name}")
 
         calib_auth = is_accelerometer_calibration_authorized_at_osp_not_platform_related(osp_name)
 

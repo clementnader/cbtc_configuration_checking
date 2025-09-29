@@ -19,7 +19,7 @@ def compute_cbtc_sig_apz():
     nb_sigs = len(sig_dict)
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, (sig_name, sig) in enumerate(sig_dict.items()):
-        print_log_progress_bar(i, nb_sigs, f"verifying CBTC Approach Zone length of {sig_name}")
+        print_log_progress_bar(i, nb_sigs, f"CBTC APZ length of {sig_name}")
         sig_type = get_dc_sys_value(sig, DCSYS.Sig.Type)
         sig_direction = get_dc_sys_value(sig, DCSYS.Sig.Sens)
         sig_with_imc = get_dc_sys_value(sig, DCSYS.Sig.D_Libre)
