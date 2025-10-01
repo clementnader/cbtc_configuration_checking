@@ -38,8 +38,9 @@ class XlBgColor:
     light_red = "FF9999"
     light_blue2 = "CCFFFF"
     light_blue3 = "99CCFF"
-    special_blue = "9999FF"
     light_pink2 = "FFCCDD"
+    special_blue = "9999FF"
+    special_yellow = "FFFF00"
     # grey
     grey = "BFBFBF"
     light_grey = "D9D9D9"

@@ -18,12 +18,12 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
     assert dc_sys_sheets == [DCSYS.Bal, DCSYS.IATPM_tags, DCSYS.IATPM_Version_Tags]
     assert res_sheet_name == "Tag"
 
-    objs_dict = get_tags_dict(dc_sys_sheets)
+    dc_sys_dict = get_tags_dict(dc_sys_sheets)
     tag_survey_info.update(dyn_tag_survey_info)
     tag_survey_info.update(version_tag_survey_info)
     list_used_obj_names = list()
     res_dict = dict()
-    for obj_name, obj_val in objs_dict.items():
+    for obj_name, obj_val in dc_sys_dict.items():
         dc_sys_sheet = obj_val["dc_sys_sheet"]
         other_name = obj_val["other_name"]
         original_dc_sys_track = obj_val["track"]
@@ -31,8 +31,7 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
         dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
         test_names = [obj_name, other_name]
-        if obj_name.startswith("TAG_"):
-            test_names.append("PTSA_" + obj_name.removeprefix("TAG_"))
+        test_names.extend(_get_tags_test_names(obj_name))
         survey_name = test_names_in_survey(test_names, dc_sys_track, tag_survey_info,
                                            do_smallest_amount_of_patterns=True)
         survey_obj_info = tag_survey_info.get(survey_name)
@@ -45,6 +44,24 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, tag_survey_info))
 
     return res_dict
+
+
+def _get_tags_test_names(obj_name: str) -> list[str]:
+    test_names = list()
+    if obj_name.startswith("TAG_"):
+        test_names.append("PTSA_" + obj_name.removeprefix("TAG_"))
+
+    # For Chennai project
+    if obj_name.startswith("B_BTK"):
+        test_names.append("B_BT" + obj_name.removeprefix("B_BTK"))
+    if obj_name.startswith("B_BT") and not obj_name.startswith("B_BTK"):
+        test_names.append("B_BTK" + obj_name.removeprefix("B_BT"))
+    if obj_name.startswith("B_FTK"):
+        test_names.append("B_FT" + obj_name.removeprefix("B_FTK"))
+    if obj_name.startswith("B_FT") and not obj_name.startswith("B_FTK"):
+        test_names.append("B_FTK" + obj_name.removeprefix("B_FT"))
+
+    return test_names
 
 
 def get_tags_dict(dc_sys_sheets: list):

@@ -11,6 +11,8 @@ __all__ = ["check_polarity", "clean_track_name"]
 def check_polarity(dc_sys_kp: Optional[float], surveyed_kp: Optional[float]) -> bool:
     if dc_sys_kp is None or surveyed_kp is None:
         return False
+    if isinstance(surveyed_kp, str):
+        return False
     if abs(dc_sys_kp - surveyed_kp) <= .006 or abs(dc_sys_kp - surveyed_kp) <= abs(abs(dc_sys_kp) - abs(surveyed_kp)):
         return False
     return True

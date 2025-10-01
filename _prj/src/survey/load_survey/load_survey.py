@@ -35,18 +35,24 @@ def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str]]:
         wb = load_xl_file(survey_addr)
         if all_sheets:
             sheet_names = get_xl_sheet_names(wb)
+            # Only take visible sheets
+            sheet_names = [sheet_name for sheet_name in sheet_names
+                           if is_xl_sheet_visible(get_xl_sheet_by_name(wb, sheet_name))]
         else:
             sheet_names = [survey_sheet]
 
         for sheet_name in sheet_names:
             survey_ws = get_xl_sheet_by_name(wb, sheet_name)
+            if all_sheets:
+                print_log(f"\t\tLoading info from sheet \"{sheet_name}\".")
             survey_info.update(
-                get_survey(survey_info, survey_ws, start_row, ref_col, type_col, track_col, survey_kp_col,
+                get_survey(survey_info, survey_ws, sheet_name, start_row, ref_col, type_col, track_col, survey_kp_col,
                            os.path.split(survey_addr)[-1], missing_types))
         if missing_types:
             print(f"\t> The following type{'s' if len(missing_types) > 1 else ''} in the survey "
                   f"{'are' if len(missing_types) > 1 else 'is'} not loaded: "
                   f"{Color.yellow}{', '.join(missing_types)}{Color.reset}.")
+    middle_platforms_exist_bool = bool(survey_info["MIDDLE_PLATFORM"])
     return survey_info, display_info_list
 
 
@@ -81,7 +87,7 @@ def get_survey_loc_info():
     return zip(survey_addr, survey_sheet, all_sheets, start_row, ref_col, type_col, track_col, survey_kp_col)
 
 
-def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
+def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, sheet_name: str, start_row,
                ref_col, type_col, track_col, survey_kp_col,
                survey_name: str, missing_types: list[str]) -> dict[str, dict[str, Any]]:
     intermediate_survey_dict = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
@@ -112,7 +118,7 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, start_row,
                       f"Object is considered not surveyed.")
             continue
 
-        surveyed_kp_comment = f"From {survey_name}"
+        surveyed_kp_comment = f"From \"{survey_name}\" (sheet \"{sheet_name}\")"
         if f"{key_name}__{track}" in intermediate_survey_dict[survey_type]:  # two values in the same survey file
             old_surveyed_values = intermediate_survey_dict[survey_type][f"{key_name}__{track}"]["list_surveyed_values"]
             surveyed_values = sorted(old_surveyed_values + [surveyed_kp])

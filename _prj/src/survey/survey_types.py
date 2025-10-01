@@ -14,6 +14,13 @@ def _add_other_spaces_names(names_list: list[str]) -> list[str]:
         if "_" in name:
             res_list.append(name.replace("_", " "))
             res_list.append(name.replace("_", ""))
+    for name in res_list:
+        if "Xth" in name:
+            res_list.remove(name)
+            res_list.append(name.replace("Xth", "1ST"))
+            res_list.append(name.replace("Xth", "2ND"))
+            for n in range(3, 13):
+                res_list.append(name.replace("Xth", f"{n}TH"))
     return res_list
 
 
@@ -37,23 +44,31 @@ SURVEY_TYPES_DICT = {
                                 get_sh_name(DCSYS.PtA)), "OSP"):
                                   ("OSPs", "osp_tolerance", 0.006)},
                           "survey_type_names": _add_other_spaces_names([
-                              "PLATFORM", "PLATFORM_END", "PLATFORM_EXTREMITY", "MPLATFORM",
+                              "PLATFORM", "PLATFORM_END", "PLATFORM_EXTREMITY", "BOARDING_PLATFORM",
                           ]),
                           "multiple_dc_sys_objets": [get_sh_name(DCSYS.Quai),
                                                      get_sh_name(DCSYS.Quai.PointDArret),
                                                      get_sh_name(DCSYS.PtA)],
                           "multiple_survey_objets": ["PLATFORM",
-                                                     "OSP"],
+                                                     "OSP",
+                                                     "MIDDLE_PLATFORM",],
                           "display_name": "Platform ends and OSPs",
                           "dc_sys_display_names": [((get_sh_name(DCSYS.Quai),), "Platform ends"),
                                                    ((get_sh_name(DCSYS.Quai.PointDArret),
                                                      get_sh_name(DCSYS.PtA)), "OSPs")],
                           "survey_display_names": [(("PLATFORM",), "Platform ends"),
                                                    (("OSP",), "OSPs")],
+                          "extra_defined_name":  ("Length of the platforms:", "platform_length", None,
+                                                  "Used to compute platform extremity position from middle platform."),
+                          },
+    "MIDDLE_PLATFORM":   {"res_sheet": None,
+                          "survey_type_names": _add_other_spaces_names([
+                              "MPLATFORM", "PLATFORM_CENTER",
+                          ]),
                           },
     "OSP":               {"res_sheet": None,
                           "survey_type_names": _add_other_spaces_names([
-                              "OSP", "PAE", "PLATFORM_OSP",
+                              "OSP", "PAE", "PLATFORM_OSP", "PSD_Xth_DOOR_CENTER",
                           ]),
                           },
     "BLOCK":             {"res_sheet": "Block",
@@ -62,7 +77,7 @@ SURVEY_TYPES_DICT = {
                           "tol": ("joints", "joint_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
                               "BLOCK", "TC", "TRACK_CIRCUIT", "TRACK_CIRCUITS_JOINT", "TRACK_CIRCUIT_JOINT",
-                              "AXC", "AXLE_COUNTER", "IJ", "INSULATED_JOINT",
+                              "AXC", "AXLE_COUNTER", "IJ", "INSULATED_JOINT", "AXLE_COUNTER_DP",
                           ]),
                           "multiple_survey_objets": ["BLOCK",
                                                      "BUFFER"],
@@ -86,18 +101,24 @@ SURVEY_TYPES_DICT = {
                                                      get_sh_name(DCSYS.Sig) + f"__{SignalType.ESPACEMENT}",
                                                      get_sh_name(DCSYS.Sig) + f"__{SignalType.HEURTOIR}"],
                           "multiple_survey_objets": ["SIGNAL",
-                                                     "BUFFER"],
+                                                     "BUFFER",
+                                                     "PERMANENT_RED"],
                           "display_name": "Signals and Buffers",
                           "dc_sys_display_names": [((get_sh_name(DCSYS.Sig) + f"__{SignalType.MANOEUVRE}",
                                                     get_sh_name(DCSYS.Sig) + f"__{SignalType.PERMANENT_ARRET}",
                                                     get_sh_name(DCSYS.Sig) + f"__{SignalType.ESPACEMENT}"), "Signals"),
                                                    ((get_sh_name(DCSYS.Sig) + f"__{SignalType.HEURTOIR}",), "Buffers")],
-                          "survey_display_names": [(("SIGNAL",), "Signals"),
+                          "survey_display_names": [(("SIGNAL", "PERMANENT_RED"), "Signals"),
                                                    (("BUFFER",), "Buffers")],
+                          },
+    "PERMANENT_RED":     {"res_sheet": None,
+                          "survey_type_names": _add_other_spaces_names([
+                              "PERMANENT_RED", "BUFFER_RED_SIGNAL",
+                          ]),
                           },
     "BUFFER":            {"res_sheet": None,
                           "survey_type_names": _add_other_spaces_names([
-                              "BUFFER", "SIGNAL_BUFFER", "BS",
+                              "BUFFER", "SIGNAL_BUFFER", "BS", "BUFFER_STOP", "BUFFER_STOP_SIGNAL",
                           ]),
                           },
     "TAG":               {"res_sheet": "Tag",

@@ -119,7 +119,7 @@ def route_and_overlap():
 
 
 def survey():
-    # check_survey()  # v2.8.1
+    # check_survey()  # v2.9
     # survey_window()
     # cctool_oo_schema_window()
     return

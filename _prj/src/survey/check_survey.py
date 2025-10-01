@@ -14,7 +14,7 @@ from .result_file import *
 __all__ = ["check_survey", "SURVEY_CHECKING_VERSION"]
 
 
-SURVEY_CHECKING_VERSION = "v2.8.1"
+SURVEY_CHECKING_VERSION = "v2.9"
 
 
 def check_survey():
@@ -35,13 +35,20 @@ def check_survey():
     print_bar(start="\n")
 
     print_section_title(f"Analyzing the Survey information and comparing them to the DC_SYS...")
-    survey_verif_dict = create_verif_survey_dict(survey_info, block_def_dict)
+    survey_verif_dict, middle_platforms_exist_bool = create_verif_survey_dict(survey_info, block_def_dict)
     print_bar(start="\n")
 
     print_section_title(f"Creating the Result File...")
-    res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None, SURVEY_CHECKING_VERSION,
-                                             survey_display_info_list, block_definition_display_info)
+    res_file_path = create_survey_verif_file(survey_verif_dict, block_def_dict is not None, middle_platforms_exist_bool,
+                                             SURVEY_CHECKING_VERSION, survey_display_info_list,
+                                             block_definition_display_info)
     open_excel_file(res_file_path)
+
+    if middle_platforms_exist_bool:
+        print_bar(start="\n")
+        print(f"Platform extremities are computed from Middle Platforms from survey.\n"
+              f"{Color.yellow}You need to fill the \"Length of the platforms\" cell in the \"Platform\" sheet."
+              f"{Color.reset}")
 
     if get_ga_version() < (6, 5, 5, 0):
         print_bar(start="\n")

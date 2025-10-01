@@ -342,13 +342,10 @@ class ProjectDatabaseLoc:
                 self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_06_06_01_V05"
             elif cbtc:
-                self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03\DC_SYS.xls"
-                # self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_draft_V04\DC_SYS.xls"
-                # self.dc_sys_addr = (r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03"
-                #                     r"\DC_SYS_patch_switch_block_locking_area_rev5.xls")
-                self.dc_par_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03\DC_PAR.xls"
-                self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V03\C64_D413\DC_BOP.xls"
-                self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_07_03_03_V03"
+                self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V04\DC_SYS.xls"
+                self.dc_par_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V04\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V04\C64_D413\DC_BOP.xls"
+                self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_07_03_03_V04"
                 self.fouling_point_addr = (r"C:\CBTC\PROJECTS\Glasgow"
                                            r"\Fouling Points - GW_C_D470_07_03_03_V02_R3.xlsx")
             # -- Survey -- #
@@ -383,15 +380,15 @@ class ProjectDatabaseLoc:
                 self.control_tables_route.control_tables_addr = [
                     r"C:\CBTC\PROJECTS\Glasgow\Control Tables\CBTC\rev 04.00"
                     r"\GWISIGIXL0400-04.00-ATT002 - Appendix B_Routes_Rev00.pdf",
-                    r"C:\CBTC\PROJECTS\Glasgow\Control Tables\CBTC\rev 04.00"
-                    r"\GWISIGIXL0401-04.00-ATT002 - Appendix L_Routes_Rev00.pdf"]
+                    r"C:\CBTC\PROJECTS\Glasgow\Control Tables\CBTC\rev 05.00"
+                    r"\GWISIGIXL0401-05.00-ATT002 - Appendix L_Routes_Rev00.pdf"]
                 self.control_tables_route.all_pages = [True, True]
                 self.control_tables_route.specific_pages = [None, None]
                 self.control_tables_overlap.control_tables_addr = [
                     r"C:\CBTC\PROJECTS\Glasgow\Control Tables\CBTC\rev 04.00"
                     r"\GWISIGIXL0400-04.00-ATT006 - Appendix F_Overlap_Rev00.pdf",
-                    r"C:\CBTC\PROJECTS\Glasgow\Control Tables\CBTC\rev 04.00"
-                    r"\GWISIGIXL0401-04.00-ATT007 - Appendix Q_Overlap_Rev00.pdf"]
+                    r"C:\CBTC\PROJECTS\Glasgow\Control Tables\CBTC\rev 05.00"
+                    r"\GWISIGIXL0401-05.00-ATT007 - Appendix Q_Overlap_Rev00.pdf"]
                 self.control_tables_overlap.all_pages = [True, True]
                 self.control_tables_overlap.specific_pages = [None, None]
             # -- IXL Approach Zone -- #
@@ -672,6 +669,15 @@ class ProjectDatabaseLoc:
             self.dc_par_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V04_01\DC_PAR.xls"
             self.dc_bop_addr = (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V04_01"
                                 r"\C64_D413\DC_BOP.xls")
+            # -- Survey -- #
+            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\Survey\AppendixA_Input File.xlsx"
+            self.survey_loc.survey_sheet = None
+            self.survey_loc.all_sheets = True
+            self.survey_loc.start_row = 4
+            self.survey_loc.ref_col = 3
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 5
+            self.survey_loc.survey_kp_col = 8
             # -- Control Tables -- #
             # self.control_tables_config_ini_file = r"control_tables_configuration_cmrl_s1.ini"
             self.control_tables_route.control_tables_addr = [

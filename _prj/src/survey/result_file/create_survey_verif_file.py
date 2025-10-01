@@ -22,6 +22,7 @@ FILE_TITLE = "Correspondence with Site Survey"
 
 
 def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], block_def_exists_bool: bool,
+                             middle_platforms_exist_bool: bool,
                              tool_version: str, survey_display_info_list: list[str],
                              block_definition_display_info: str):
     # Load the Excel template for the verification file
@@ -38,9 +39,11 @@ def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], bloc
 
     # Create Verification sheets
     for sheet_name, verif_dict in survey_verif_dict.items():
+        print_log(f" > Creating verification sheet \"{sheet_name}\"...")
         extra_column = (sheet_name == SURVEY_TYPES_DICT["BLOCK"]["res_sheet"]) and block_def_exists_bool
-        ws, start_row = create_verif_sheet(wb, sheet_name, extra_column)
-        _update_verif_sheet(sheet_name, ws, verif_dict, extra_column, start_row)
+        middle_platform = (sheet_name == SURVEY_TYPES_DICT["PLATFORM"]["res_sheet"]) and middle_platforms_exist_bool
+        ws, start_row = create_verif_sheet(wb, sheet_name, extra_column, middle_platform)
+        _update_verif_sheet(wb, sheet_name, ws, verif_dict, extra_column, start_row)
 
     # Save workbook
     verif_file_name = f" - {get_current_version()}".join(os.path.splitext(VERIF_FILE_NAME))
@@ -59,7 +62,7 @@ def _update_menu_sheet(wb: openpyxl.workbook.Workbook):
     ws.row_dimensions[17].height = 15  # restore default height
 
 
-def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
+def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_ws.Worksheet,
                         verif_dict: dict[str, dict], extra_column: bool, start_row: int) -> None:
     tolerance_dict = get_tolerance_dict(sheet_name)
     multiple_dc_sys_objets = _get_multiple_dc_sys_objets(sheet_name)
@@ -77,6 +80,7 @@ def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
         surveyed_kp = obj_val["surveyed_kp"]
         surveyed_kp_comment = obj_val["surveyed_kp_comment"]
         comments = obj_val["comments"]
+        defined_name = obj_val.get("defined_name")
 
         obj_name = None if dc_sys_sheet is None else obj_name
 
@@ -95,6 +99,8 @@ def _update_verif_sheet(sheet_name: str, ws: xl_ws.Worksheet,
         _add_line_calculations(ws, row, tolerance, extra_column)
         sheet_comments = _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity, extra_column,
                                                    sheet_comments)
+        _set_defined_name(wb, sheet_name, row, defined_name, extra_column)
+
     if not sheet_comments:  # no automatic comments, the column can be hidden
         ws.column_dimensions[get_column(AUTOMATIC_COMMENTS_COL, extra_column)].hidden = True
 
@@ -104,7 +110,7 @@ def _add_line_info(ws: xl_ws.Worksheet, row: int,
                    survey_name: str, survey_type: str, survey_track: float, surveyed_kp: float,
                    dc_sys_color: str, survey_color: str, extra_column: bool) -> None:
     bg_color_dc_sys = dc_sys_color if obj_name is not None else None
-    bg_color_survey = survey_color if survey_name is not None else None
+    bg_color_survey = survey_color if (survey_name is not None and survey_name != "Computed") else None
     # Name
     create_cell(ws, obj_name, row=row, column=NAME_COL, borders=True,
                 bg_color=bg_color_dc_sys)
@@ -204,6 +210,12 @@ def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
     create_cell(ws, None, row=row, column=get_column(COMMENTS_COL, extra_column),
                 borders=True, line_wrap=True, align_vertical=XlAlign.top)
     return sheet_comments
+
+
+def _set_defined_name(wb: openpyxl.workbook.Workbook, sheet_name: str, row: int, defined_name: Optional[str],
+                      extra_column: bool) -> None:
+    if defined_name is not None:
+        create_defined_name(wb, sheet_name, name=defined_name, row=row, column=get_column(SURVEYED_KP_COL, extra_column))
 
 
 def _get_tolerance(tolerance_dict: Optional[Union[tuple[str, str, float], dict[str, tuple[str, str, float]]]],

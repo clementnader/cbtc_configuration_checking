@@ -13,17 +13,17 @@ __all__ = ["check_signal"]
 
 # Signal and Buffer
 def check_signal(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, Union[str, float]]],
-                 set_of_survey_tracks: set[str], buffer_survey_info: dict[str, dict[str, Union[str, float]]] = None):
+                 set_of_survey_tracks: set[str], pr_survey_info: dict[str, dict[str, Union[str, float]]],
+                 buffer_survey_info: dict[str, dict[str, Union[str, float]]]):
     assert dc_sys_sheet == DCSYS.Sig
-    assert res_sheet_name in ["Signal", "Buffer"]
+    assert res_sheet_name == "Signal"
 
     dc_sys_dict = load_sheet(dc_sys_sheet)
+    survey_info.update(pr_survey_info)
+    survey_info.update(buffer_survey_info)
     list_used_obj_names = list()
     res_dict = dict()
     for obj_name, obj_val in dc_sys_dict.items():
-        if not obj_condition(res_sheet_name, obj_val):
-            continue
-
         original_dc_sys_track, dc_sys_kp = _get_dc_sys_position(dc_sys_sheet, obj_val)
         dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
@@ -51,11 +51,6 @@ def check_signal(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
                                                                 dc_sys_track, original_dc_sys_track, dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
-
-    if res_sheet_name == "Signal":
-        # Add Buffers on same sheet
-        res_dict.update(
-            check_signal(DCSYS.Sig, "Buffer", buffer_survey_info, set_of_survey_tracks))
 
     return res_dict
 
@@ -93,18 +88,6 @@ def _get_test_names(obj_name: str, dc_sys_track: str, dc_sys_dict: dict[str, dic
             if other_name not in dc_sys_dict:  # if there is not already a signal called that
                 test_names.append(other_name)
     return test_names
-
-
-def obj_condition(res_sheet, obj_val):
-    if res_sheet == "Signal":
-        buffer = False
-    elif res_sheet == "Buffer":
-        buffer = True
-    else:
-        return True
-    sig_type = get_dc_sys_value(obj_val, DCSYS.Sig.Type)
-    is_sig_buffer = sig_type == SignalType.HEURTOIR
-    return is_sig_buffer == buffer
 
 
 def _get_dc_sys_position(dc_sys_sheet, obj_val) -> tuple[str, float]:

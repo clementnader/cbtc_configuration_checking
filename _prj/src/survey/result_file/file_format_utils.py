@@ -29,8 +29,8 @@ MANUAL_VERIFICATION_COL = "L"
 COMMENTS_COL = "M"
 
 
-def create_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, extra_column: bool
-                       ) -> tuple[xl_ws.Worksheet, int]:
+def create_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, extra_column: bool,
+                       middle_platform: bool) -> tuple[xl_ws.Worksheet, int]:
     wb.create_sheet(sheet_name)
     ws = wb[sheet_name]
     # Set properties and display options for the sheet
@@ -41,6 +41,8 @@ def create_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, extra_co
     _set_conditional_formatting(ws, extra_column)
     # Write location tolerance and set the defined name
     row = _write_tolerance_variable(wb, ws, sheet_name)
+    # Write platform length and set the defined name
+    row = _write_platform_length(wb, ws, sheet_name, row, middle_platform)
     # Write columns titles
     row += 1
     _write_columns_title(ws, row, extra_column)
@@ -106,6 +108,23 @@ def _write_tolerance_variable(wb: openpyxl.workbook.Workbook, ws: xl_ws.Workshee
         create_defined_name(wb, sheet_name, name=tolerance, row=row, column=2)
         create_cell(ws, "m", row=row, column=3, borders=True)
         row += 1
+    return row
+
+
+def _write_platform_length(wb: openpyxl.workbook.Workbook, ws: xl_ws.Worksheet, sheet_name: str, row: int,
+                           middle_platform: bool):
+    plt_length = get_mid_plt_dict(sheet_name, middle_platform)
+    if not plt_length:
+        return row
+    info_str, defined_name, value, description = plt_length
+    row += 1
+    create_cell(ws, info_str, row=row, column=1, borders=True, line_wrap=True, bold=True)
+    create_cell(ws, value, row=row, column=2, borders=True, bold=True, bg_color=XlBgColor.special_yellow)
+    create_defined_name(wb, sheet_name, name=defined_name, row=row, column=2)
+    create_cell(ws, "m", row=row, column=3, borders=True)
+    create_merged_cell(ws, description, start_row=row, end_row=row, start_column=4, end_column=6, borders=True,
+                       italic=True)
+    row += 1
     return row
 
 
@@ -180,6 +199,19 @@ def get_tolerance_dict(sheet_name: str) -> Optional[Union[tuple[str, str, float]
     for val in SURVEY_TYPES_DICT.values():
         if val["res_sheet"] == sheet_name:
             return val["tol"]
+    print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
+                f"{SURVEY_TYPES_DICT = }")
+    return None
+
+
+def get_mid_plt_dict(sheet_name: str, middle_platform: bool) -> Optional[tuple[str, str, float, str]]:
+    if not middle_platform:
+        return None
+
+    for val in SURVEY_TYPES_DICT.values():
+        if val["res_sheet"] == sheet_name:
+            return val.get("extra_defined_name")
+
     print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
                 f"{SURVEY_TYPES_DICT = }")
     return None

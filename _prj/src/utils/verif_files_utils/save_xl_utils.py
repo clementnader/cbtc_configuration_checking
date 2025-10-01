@@ -17,12 +17,14 @@ def save_xl_file(wb: openpyxl.workbook.Workbook, result_file_path: str):
         if not ask_question_yes_or_no("Do you want to overwrite it?"):
             print_error("Execution aborted.")
             raise UnableToSaveFileException
-    try:
-        wb.save(result_file_path)
-    except PermissionError:
-        print_error(f"Permission denied to write at \"{result_file_path}\"."
-                    f"\nYou have to close it if you want it to be overwritten.")
-        if not ask_question_yes_or_no("Do you want to retry?"):
-            print_error("Execution aborted.")
-            raise UnableToSaveFileException
-        wb.save(result_file_path)
+    trying_to_save = True
+    while trying_to_save:
+        try:
+            wb.save(result_file_path)
+            trying_to_save = False
+        except PermissionError:
+            print_error(f"Permission denied to write at \"{result_file_path}\"."
+                        f"\nYou have to close it if you want it to be overwritten.")
+            if not ask_question_yes_or_no("Do you want to retry?"):
+                print_error("Execution aborted.")
+                raise UnableToSaveFileException

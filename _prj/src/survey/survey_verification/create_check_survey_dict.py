@@ -9,7 +9,9 @@ from ..survey_types import *
 __all__ = ["create_verif_survey_dict"]
 
 
-def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dict[tuple[str, float], str]]]):
+def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dict[tuple[str, float], str]]]
+                             ) -> tuple[dict[str, dict[str, Any]], bool]:
+    middle_platforms_exist_bool = False
     survey_verif_dict = dict()
     set_of_survey_tracks = {info["survey_track"] for sub_dict in survey_info.values() for info in sub_dict.values()}
 
@@ -23,9 +25,10 @@ def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
         print(f"\n{Color.white}{Color.underline}Analyzing {display_name} positioning...{Color.reset}{NBSP}")
 
         if survey_type == "PLATFORM":
-            survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("PLATFORM"),
-                     set_of_survey_tracks, survey_info.get("OSP")))
+            sub_verif_dict, middle_platforms_exist_bool = func(
+                dcsys_sh, res_sheet, survey_info.get("PLATFORM"),
+                set_of_survey_tracks, survey_info.get("OSP"), survey_info.get("MIDDLE_PLATFORM"))
+            survey_verif_dict[res_sheet] = _order_survey_verif_dict(sub_verif_dict)
 
         elif survey_type == "TAG":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
@@ -40,7 +43,7 @@ def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
         elif survey_type == "SIGNAL":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
                 func(dcsys_sh, res_sheet, survey_info.get("SIGNAL"),
-                     set_of_survey_tracks, survey_info.get("BUFFER")))
+                     set_of_survey_tracks, survey_info.get("PERMANENT_RED"), survey_info.get("BUFFER")))
 
         elif survey_type == "WALKWAY":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
@@ -54,7 +57,7 @@ def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
 
         _print_logs_survey_verif(display_name, survey_type_value, survey_verif_dict[res_sheet])
 
-    return survey_verif_dict
+    return survey_verif_dict, middle_platforms_exist_bool
 
 
 def _print_logs_survey_verif(display_name: str, survey_type_value: dict[str, Any], verif_dict: dict) -> None:

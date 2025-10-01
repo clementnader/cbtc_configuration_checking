@@ -46,6 +46,10 @@ def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info:
              "survey_track": obj_val["survey_track"], "survey_original_track": obj_val["survey_original_track"],
              "surveyed_kp": obj_val["surveyed_kp"],
              "surveyed_kp_comment": obj_val["surveyed_kp_comment"], "comments": obj_val["comments"]}
+
+        defined_name = obj_val.get("defined_name")
+        if defined_name is not None:
+            extra_dict[(obj_name, obj_val["survey_track"])]["defined_name"] = defined_name
     return extra_dict
 
 
@@ -69,10 +73,22 @@ def test_names_in_survey(test_names: list[str], track: str, survey_info: dict[st
                                                    remove_leading_zeros=True)
         if test_name_in_survey is not None:
             return test_name_in_survey
-    # Try removing underscores
+    # Try adding underscores
     for test_name in test_names:
         test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print,
                                                    add_underscores=True)
+        if test_name_in_survey is not None:
+            return test_name_in_survey
+    # Try removing underscores
+    for test_name in test_names:
+        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print,
+                                                   remove_underscores=True)
+        if test_name_in_survey is not None:
+            return test_name_in_survey
+    # Try removing slashes
+    for test_name in test_names:
+        test_name_in_survey = _test_name_in_survey(test_name, track, survey_info, survey_test_list, do_print,
+                                                   remove_slashes=True)
         if test_name_in_survey is not None:
             return test_name_in_survey
     # Try removing duplicate patterns
@@ -105,6 +121,8 @@ def _test_name_in_survey(original_test_name: str, track: str, survey_info: dict[
                          do_print: bool,
                          remove_leading_zeros: bool = False,
                          add_underscores: bool = False,
+                         remove_underscores: bool = False,
+                         remove_slashes: bool = False,
                          test_unique_patterns: bool = False,
                          test_smallest_patterns: bool = False):
     if remove_leading_zeros:
@@ -116,6 +134,16 @@ def _test_name_in_survey(original_test_name: str, track: str, survey_info: dict[
     elif add_underscores:  # apply first the removal of leading zeros, then remove underscores
         test_name = _add_underscores(original_test_name)
         survey_test_list = [(_add_underscores(survey_test_name), survey_name)
+                            for survey_test_name, survey_name in survey_test_list]
+
+    elif remove_underscores:  # apply first the removal of leading zeros, then remove underscores
+        test_name = _remove_underscores(original_test_name)
+        survey_test_list = [(_remove_underscores(survey_test_name), survey_name)
+                            for survey_test_name, survey_name in survey_test_list]
+
+    elif remove_slashes:  # apply first the removal of leading zeros, then remove underscores
+        test_name = _remove_slashes(original_test_name)
+        survey_test_list = [(_remove_slashes(survey_test_name), survey_name)
                             for survey_test_name, survey_name in survey_test_list]
 
     elif test_unique_patterns or test_smallest_patterns:
@@ -148,6 +176,17 @@ def _remove_leading_zeros(name: str) -> str:
 
 def _add_underscores(name: str) -> str:
     name = re.sub(r"([A-Z])([0-9])", r"\1_\2", name)
+    return _remove_leading_zeros(name)
+
+
+def _remove_underscores(name: str) -> str:
+    name = re.sub(r"([A-Z])_([A-Z])", r"\1\2", name)
+    return _remove_leading_zeros(name)
+
+
+def _remove_slashes(name: str) -> str:
+    if "/" in name:
+        name = name.split("/", 1)[0].rstrip()
     return _remove_leading_zeros(name)
 
 

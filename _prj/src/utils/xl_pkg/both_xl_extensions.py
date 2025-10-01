@@ -8,6 +8,7 @@ from .xl_utils import *
 
 
 __all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_number_of_rows", "get_xl_number_of_columns",
+           "is_xl_sheet_visible",
            "get_xl_sheet_names", "get_xl_cell_value", "get_xl_float_value", "get_xl_cell_style",
            "check_xl_cell_style_percent", "get_xl_sheet_names_preload"]
 
@@ -49,6 +50,19 @@ def get_xl_sheet_by_name(wb: Union[xlrd.book.Book, openpyxl.workbook.Workbook], 
     elif isinstance(wb, openpyxl.workbook.Workbook):
         ws = wb[sheet_name]
         return ws
+
+
+def is_xl_sheet_visible(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> bool:
+    if isinstance(ws, xlrd.sheet.Sheet):
+        # 0 = visible
+        # 1 = hidden (can be unhidden by user -- Format -> Sheet -> Unhide)
+        # 2 = "very hidden" (can be unhidden only by VBA macro).
+        return ws.visibility == 0
+    elif isinstance(ws, xl_ws.Worksheet):
+        # SHEETSTATE_VISIBLE = 'visible'
+        # SHEETSTATE_HIDDEN = 'hidden'
+        # SHEETSTATE_VERYHIDDEN = 'veryHidden'
+        return ws.sheet_state == xl_ws.Worksheet.SHEETSTATE_VISIBLE
 
 
 def get_xl_number_of_rows(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> int:

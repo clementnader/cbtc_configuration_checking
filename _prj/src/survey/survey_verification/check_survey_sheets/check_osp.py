@@ -16,11 +16,11 @@ def check_osp(dc_sys_sheets, res_sheet_name: str, survey_info: dict[str, dict[st
     assert dc_sys_sheets == [DCSYS.Quai.PointDArret, DCSYS.PtA]
     assert res_sheet_name == "Platform"
 
-    objs_dict = get_plt_osp_dict()
-    objs_dict.update(get_not_plt_osp_dict())
+    dc_sys_dict = get_plt_osp_dict()
+    dc_sys_dict.update(get_not_plt_osp_dict())
     list_used_obj_names = list()
     res_dict = dict()
-    for obj_name, obj_val in objs_dict.items():
+    for obj_name, obj_val in dc_sys_dict.items():
         original_dc_sys_track, dc_sys_kp, dc_sys_sheet = obj_val
         dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
