@@ -203,15 +203,15 @@ The different objects are ordered by track and then KP from the DC_SYS if they e
 - **<ins>Column M</ins>** is left free for **comments** from the user.
 
 ### 4.3 Tool functions
-#### 4.2.1 Switch points: center and heel positions
+#### 4.3.1 Switch points: center and heel positions
 It can happen that instead of giving the 3 positions for the switches: _C (center point), _L (left heel) and _R (right heel), the survey ignores the center point or one of the heel because they are on the same track (and so at the same position) as another position of the switch: the survey only gives the position of the switch on the Normal track and on the Reverse (deviated) track. <br />
 In that case, the tool tries to do the association with the other position of the switch that is on the same track and writes a comment.
 
-#### 4.2.2 Platform ends positioning when Middle Platforms are given in the survey
+#### 4.3.2 Platform ends positioning when Middle Platforms are given in the survey
 It can happen that instead of begin and end limits of the platforms, the middles of the platform are given in the survey. <br />
 In that case, the tool creates a Defined Name on the middle platform positions, and uses it in addition to the platforms length to compute the position of the platforms limits. <br />
 An extra row is created in the first rows for the user to specify the platforms length.
 
-#### 4.2.3 Opposite sign in survey
+#### 4.3.3 Opposite sign in survey
 It can happen that the sign of surveyed KP in survey does not match the one in DC_SYS. <br />
 In that case, the tool writes in the automatic comments a formula to do the computation of the difference with absolute values on the KPs and check if this difference is lower than the tolerance.
