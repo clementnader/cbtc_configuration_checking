@@ -206,19 +206,19 @@ class ProjectDatabaseLoc:
             phase_1b0 = project_name == Projects.Brussels_P1B0
             phase_1b2 = project_name == Projects.Brussels_P1B2
             if phase_1b0:
-                self.dc_sys_addr = (r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0\BXL_C_D470_72_01_05_V09_P1B0_R4"
-                                    r"\DC_SYS_patch_switch_block_locking_area.xls")
-                self.dc_par_addr = (r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0\BXL_C_D470_72_01_05_V09_P1B0_R4"
+                self.dc_sys_addr = (r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0\BXL_C_D470_72_01_05_V09_P1B0_R5"
+                                    r"\DC_SYS.xls")
+                self.dc_par_addr = (r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0\BXL_C_D470_72_01_05_V09_P1B0_R5"
                                     r"\DC_PAR.xls")
-                self.dc_bop_addr = (r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0\BXL_C_D470_72_01_05_V09_P1B0_R4"
+                self.dc_bop_addr = (r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0\BXL_C_D470_72_01_05_V09_P1B0_R5"
                                     r"\C64_D413\DC_BOP.xls")
-                self.kit_c11_dir = r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0\BXL_C11_D470_72_01_04_V09_P1B0_R2"
+                self.kit_c11_dir = r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0\BXL_C11_D470_72_01_05_V09_P1B0_R5"
                 self.fouling_point_addr = (r"C:\CBTC\PROJECTS\Brussels\BXL_P1B0"
                                            r"\fouling_point_fd_checking_1b0.xlsx")
                 # -- Survey -- #
                 self.survey_loc.survey_addr = [
                     r"C:\CBTC\PROJECTS\Brussels\Survey\BXL_Photobook_survey.xlsx",
-                    r"C:\CBTC\PROJECTS\Brussels\Survey\AFS_BXL_1B0.xlsx",
+                    r"C:\CBTC\PROJECTS\Brussels\Survey\20220505_V4_AFS_DEP_ML_DEF_12.04.24.xlsx",
                     r"C:\CBTC\PROJECTS\Brussels\Survey\BXL_AFS_Patch.xlsx"]
                 # -- Control Tables -- #
                 self.control_tables_config_ini_file = "control_tables_configuration_bxl.ini"
@@ -670,6 +670,7 @@ class ProjectDatabaseLoc:
             self.dc_bop_addr = (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V04_01"
                                 r"\C64_D413\DC_BOP.xls")
             # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\C_D470_08_03_01_V04_01_Blocks_Definition_v2.xlsx"
             self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\Survey\AppendixA_Input File.xlsx"
             self.survey_loc.survey_sheet = None
             self.survey_loc.all_sheets = True

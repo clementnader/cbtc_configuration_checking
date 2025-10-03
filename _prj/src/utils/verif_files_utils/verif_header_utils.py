@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..colors_pkg import *
 from ..xl_pkg import *
 from ..subprocess_utils import *
 from ..time_utils import *
@@ -44,6 +45,7 @@ def update_header_sheet_for_verif_file(wb: openpyxl.workbook.Workbook, title: st
 
 
 def _add_title_cells(ws: xl_ws.Worksheet, title: str) -> int:
+    print_log(f"Setting title to {Color.default}\"{title}\"{Color.reset}.")
     create_merged_cell(ws, title, cell_range=TITLE_CELL_RANGE,
                        borders=True, bold=True, font_size=20, align_horizontal=XlAlign.center)
     row, _ = get_row_and_column_from_cell(TITLE_CELL_RANGE.split(":")[1])
@@ -89,18 +91,21 @@ def _add_info_cells(ws: xl_ws.Worksheet, row: int,
     if c_d470 is not None:
         row += 1
         create_cell(ws, "C_D470:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+        print_log(f"Setting C_D470 to {Color.default}\"{c_d470}\"{Color.reset}.")
         create_cell(ws, c_d470, row=row, column=INFO_COLUMN, borders=True)
 
     # C11_D470
     if c11_d470 is not None:
         row += 1
         create_cell(ws, "C11_D470:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+        print_log(f"Setting C11_D470 to {Color.default}\"{c11_d470}\"{Color.reset}.")
         create_cell(ws, c11_d470, row=row, column=INFO_COLUMN, borders=True)
 
     # C121_D470
     if c121_d470 is not None:
         row += 1
         create_cell(ws, "C121_D470:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+        print_log(f"Setting C121_D470 to {Color.default}\"{c121_d470}\"{Color.reset}.")
         create_cell(ws, c121_d470, row=row, column=INFO_COLUMN, borders=True)
 
     # Survey file(s)
@@ -111,33 +116,40 @@ def _add_info_cells(ws: xl_ws.Worksheet, row: int,
         survey_info = "\n - ".join(survey)
         if len(survey) > 1:
             survey_info = " - " + survey_info
+        print_log(f"Setting Survey file{'s' if len(survey) > 1 else ''} to "
+                  f"{Color.default}\"{survey_info}\"{Color.reset}.")
         create_cell(ws, survey_info, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # Fouling Point file
     if fouling_point is not None:
         row += 1
         create_cell(ws, "Fouling Point file:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+        print_log(f"Setting Fouling Point file to {Color.default}\"{fouling_point}\"{Color.reset}.")
         create_cell(ws, fouling_point, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # Block Definition file
     if block_def is not None:
         row += 1
         create_cell(ws, "Block Definition file:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+        print_log(f"Setting Block Definition file to {Color.default}\"{block_def}\"{Color.reset}.")
         create_cell(ws, block_def, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # IXL Approach Zone file
     if ixl_apz is not None:
         row += 1
         create_cell(ws, "IXL Approach Zone file:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+        print_log(f"Setting IXL Approach Zone file to {Color.default}\"{ixl_apz}\"{Color.reset}.")
         create_cell(ws, ixl_apz, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # Date
     row += 1
     create_cell(ws, "Date:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+    print_log(f"Setting Date to {Color.default}\"{get_today_date()}\"{Color.reset}.")
     create_cell(ws, get_today_date(), row=row, column=INFO_COLUMN, borders=True)
 
     # Tool Version
     if tool_name is not None and tool_version is not None:
         row += 1
         create_cell(ws, f"{tool_name} Version:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
+        print_log(f"Setting {tool_name} Version to {Color.default}\"{tool_version}\"{Color.reset}.")
         create_cell(ws, tool_version, row=row, column=INFO_COLUMN, borders=True)

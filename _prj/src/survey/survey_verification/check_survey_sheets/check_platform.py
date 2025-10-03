@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
 from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
@@ -66,9 +67,11 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict,
 def _clean_platform_extremity_name(plt_lim_name: str) -> str:
     plt_lim_name = plt_lim_name.upper()
     plt_name = plt_lim_name.removeprefix("LEFT_END_").removeprefix("RIGHT_END_")
-    plt_name = plt_name.removeprefix("BEGIN_").removeprefix("END_")
+    plt_name = plt_name.removeprefix("PLATFORM_BEGIN_").removeprefix("PLATFORM_START_").removeprefix("PLATFORM_END_")
+    plt_name = plt_name.removeprefix("BEGIN_").removeprefix("START_").removeprefix("END_")
+    plt_name = plt_name.removeprefix("PLATFORM1_").removeprefix("PLATFORM2_")
     plt_name = plt_name.removeprefix("QUAI1_").removeprefix("QUAI2_")
-    plt_name = plt_name.removesuffix("_START").removesuffix("_END")
+    plt_name = plt_name.removesuffix("_BEGIN").removesuffix("_START").removesuffix("_END")
     return plt_name
 
 
@@ -112,39 +115,66 @@ def _get_unique_prefix_plt_names_dict() -> dict[str, dict[str, str]]:
     return UNIQUE_PREFIX_PLT_NAMES_DICT
 
 
-def _get_survey_limits_on_track(plt_name: str, track: str, plt_survey_info: dict[str, Any],
+def _get_survey_limits_on_track(plt_name: str, track: str, dc_sys_track: str, plt_survey_info: dict[str, Any],
                                 test_with_mid_plt: bool = False, is_mid_plt_survey_info: bool = False) -> list[str]:
-    list_all_survey_limits = list()
-    list_survey_limits = list()
+    clean_plt_name = plt_name.upper().removeprefix("PLATFORM_").removeprefix("PLT_")
+    # Get survey platform names from the platform extremity (or middle platform) and remove the PLATFORM prefix
+    list_survey_plt_names = list()
     for survey_name in plt_survey_info:
         survey_plt_lim_name, survey_track = survey_name.split("__", 1)
+        if survey_track.upper() != track:
+            continue
         if test_with_mid_plt:
             survey_plt_name = _clean_platform_middle_name(survey_plt_lim_name, is_mid_plt_survey_info)
             if survey_plt_name is None:
                 continue
         else:
             survey_plt_name = _clean_platform_extremity_name(survey_plt_lim_name)
-        if survey_track.upper() == track:
-            survey_plt_name = survey_plt_name.removeprefix("PLATFORM_").removeprefix("PLT_")
-            clean_plt_name = plt_name.upper().removeprefix("PLATFORM_").removeprefix("PLT_")
-            list_all_survey_limits.append((survey_name, survey_plt_name))
-            if (survey_plt_name == clean_plt_name
-                    or survey_plt_name.removesuffix("_1") + "_T1" == clean_plt_name
-                    or survey_plt_name.removesuffix("_2") + "_T2" == clean_plt_name
-                    or survey_plt_name.removesuffix("_T1") + "_1" == clean_plt_name
-                    or survey_plt_name.removesuffix("_T2") + "_2" == clean_plt_name):
-                list_survey_limits.append(survey_name)
+        survey_plt_name = survey_plt_name.removeprefix("PLATFORM_").removeprefix("PLT_")
+        list_survey_plt_names.append((survey_name, survey_plt_name))
+
+    # Find correspondence of DC_SYS platform name into survey
+    list_survey_limits = _correspondence_plt_names(clean_plt_name, list_survey_plt_names)
 
     if not list_survey_limits:
-        unique_prefix = _get_unique_prefix_plt_names_dict()[track][plt_name]
-        for survey_name, survey_plt_name in list_all_survey_limits:
-            survey_plt_name = survey_plt_name[:len(unique_prefix)]
-            if (survey_plt_name == unique_prefix
-                    or survey_plt_name.removesuffix("_1") + "_T1" == unique_prefix
-                    or survey_plt_name.removesuffix("_2") + "_T2" == unique_prefix
-                    or survey_plt_name.removesuffix("_T1") + "_1" == unique_prefix
-                    or survey_plt_name.removesuffix("_T2") + "_2" == unique_prefix):
-                list_survey_limits.append(survey_name)
+        # Try using only the unique prefix of the platform for the association
+        unique_prefix = _get_unique_prefix_plt_names_dict()[dc_sys_track.upper()][plt_name]
+        list_survey_plt_names = [(survey_name, survey_plt_name[:len(unique_prefix)])
+                                 for survey_name, survey_plt_name in list_survey_plt_names]
+        list_survey_limits = _correspondence_plt_names(unique_prefix, list_survey_plt_names)
+
+    return list_survey_limits
+
+
+def _correspondence_plt_names(dc_sys_plt_name: str, list_survey_plt_names: list[tuple[str, str]]) -> list[str]:
+    list_survey_limits = list()
+    for survey_name, survey_plt_name in list_survey_plt_names:
+        if survey_plt_name == dc_sys_plt_name:
+            list_survey_limits.append(survey_name)
+    if list_survey_limits:
+        return list_survey_limits
+
+    # Try changing track name
+    for survey_name, survey_plt_name in list_survey_plt_names:
+        if re.match(r"_([1-9])$", survey_plt_name) is not None:
+            survey_plt_name = re.sub(r"_([1-9])$", r"_T\1", survey_plt_name)
+        elif re.match(r"_T([1-9])$", survey_plt_name) is not None:
+            survey_plt_name = re.sub(r"_T([1-9])$", r"_\1", survey_plt_name)
+        if survey_plt_name == dc_sys_plt_name:
+            list_survey_limits.append(survey_name)
+    if list_survey_limits:
+        return list_survey_limits
+
+    # Try adding underscores
+    dc_sys_test_plt_name = re.sub(r"([A-Z])([0-9])", r"\1_\2", dc_sys_plt_name)
+    dc_sys_test_plt_name = re.sub(r"([0-9])([A-Z])", r"\1_\2", dc_sys_test_plt_name)
+    for survey_name, survey_plt_name in list_survey_plt_names:
+        survey_plt_name = re.sub(r"([A-Z])([0-9])", r"\1_\2", survey_plt_name)
+        survey_plt_name = re.sub(r"([0-9])([A-Z])", r"\1_\2", survey_plt_name)
+        if survey_plt_name == dc_sys_test_plt_name:
+            list_survey_limits.append(survey_name)
+    if list_survey_limits:
+        return list_survey_limits
 
     return list_survey_limits
 
@@ -154,11 +184,11 @@ def get_corresponding_plt_survey_extremities(plt_name: str, plt_limits: list[tup
                                              ) -> dict[tuple[str, float], Optional[str]]:
     associated_survey_dict = {(lim_track, lim_kp): None for (lim_track, lim_kp) in plt_limits}
 
-    dc_sys_limit_tracks = set([clean_track_name(track, set_of_survey_tracks) for (track, _) in plt_limits])
-    for test_track in dc_sys_limit_tracks:
+    dc_sys_limit_tracks = set([(track, clean_track_name(track, set_of_survey_tracks)) for (track, _) in plt_limits])
+    for dc_sys_track, test_track in dc_sys_limit_tracks:
         dc_sys_limits_on_track = [(track, dc_sys_kp) for (track, dc_sys_kp) in plt_limits
                                   if clean_track_name(track, set_of_survey_tracks) == test_track]
-        survey_limits_on_track = _get_survey_limits_on_track(plt_name, test_track, plt_survey_info)
+        survey_limits_on_track = _get_survey_limits_on_track(plt_name, test_track, dc_sys_track, plt_survey_info)
 
         if len(dc_sys_limits_on_track) == 1:
             associated_survey_dict = get_corresponding_survey_one_limit_on_track(
@@ -175,12 +205,12 @@ def _add_associated_plt_to_mid(plt_survey_info: dict, set_of_survey_tracks: set[
     plt_dict = load_sheet(DCSYS.Quai)
     for plt_name in plt_dict:
         corresponding_defined_name = f"mid_plt_{plt_name}"
-        plt_track = get_dc_sys_value(plt_name, DCSYS.Quai.ExtremiteDuQuai.Voie)[0]
-        test_track = clean_track_name(plt_track, set_of_survey_tracks)
+        dc_sys_track = get_dc_sys_value(plt_name, DCSYS.Quai.ExtremiteDuQuai.Voie)[0]
+        test_track = clean_track_name(dc_sys_track, set_of_survey_tracks)
 
         # Update plt_survey_info for PLATFORM objects corresponding to Middle Platforms only
         # to add as defined_name the DC_SYS platform name.
-        survey_mid_plt_name = _get_survey_limits_on_track(plt_name, test_track, plt_survey_info,
+        survey_mid_plt_name = _get_survey_limits_on_track(plt_name, test_track, dc_sys_track, plt_survey_info,
                                                           test_with_mid_plt=True,
                                                           is_mid_plt_survey_info=is_mid_plt_survey_info)
         if not survey_mid_plt_name:
@@ -190,7 +220,13 @@ def _add_associated_plt_to_mid(plt_survey_info: dict, set_of_survey_tracks: set[
             print("", survey_mid_plt_name)
             continue
         survey_mid_plt_name = survey_mid_plt_name[0]
+
         plt_survey_info[survey_mid_plt_name]["defined_name"] = corresponding_defined_name
+
+        new_comments = "Middle Platform. A defined name is defined on the Surveyed KP cell."
+        plt_survey_info[survey_mid_plt_name]["comments"] = (
+            new_comments if plt_survey_info[survey_mid_plt_name]["comments"] is None
+            else (plt_survey_info[survey_mid_plt_name]["comments"] + "\n\n" + new_comments))
 
     return plt_survey_info
 

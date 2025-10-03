@@ -14,7 +14,7 @@ from .result_file import *
 __all__ = ["check_survey", "SURVEY_CHECKING_VERSION"]
 
 
-SURVEY_CHECKING_VERSION = "v2.9"
+SURVEY_CHECKING_VERSION = "v2.9.1"
 
 
 def check_survey():
@@ -46,7 +46,7 @@ def check_survey():
 
     if middle_platforms_exist_bool:
         print_bar(start="\n")
-        print(f"Platform extremities are computed from Middle Platforms from survey.\n"
+        print(f"Platform extremities are computed from Middle Platforms from survey. "
               f"{Color.yellow}You need to fill the \"Length of the platforms\" cell in the \"Platform\" sheet."
               f"{Color.reset}")
 
