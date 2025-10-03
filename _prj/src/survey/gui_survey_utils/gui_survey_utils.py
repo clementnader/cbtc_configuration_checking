@@ -126,7 +126,7 @@ def _add_survey_info(survey_file_name: str, frame: tkinter.Frame, ref_row: int,
                                                  variable=all_sheets, bg=bg,
                                                  command=all_sheets_click)
     all_sheets_checkbutton.grid(column=1, row=current_row, columnspan=2, sticky="w")
-    all_sheets_comment = tkinter.Label(frame, text="(use all the sheets of the survey file)",
+    all_sheets_comment = tkinter.Label(frame, text="(use all the visible sheets of the survey file)",
                                        font=tkinter.font.Font(size=8), bg=bg)
     all_sheets_comment.grid(column=3, row=current_row, columnspan=2, sticky="w")
     all_sheets_comment.config(state=tkinter.DISABLED)

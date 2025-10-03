@@ -19,7 +19,7 @@ def survey_window() -> None:
           f"{Color.light_green} and the Survey information to verify.{Color.reset}\n")
 
     # Root window
-    window = create_window(f"Survey Verification (CCTool-OO Schema {ga_version})")
+    window = create_window(f"Survey Verification {SURVEY_CHECKING_VERSION} (CCTool-OO Schema {ga_version})")
 
     # Top Frame
     bg = f"#{XlBgColor.light_yellow}"

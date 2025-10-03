@@ -29,7 +29,7 @@ def regenerate_cctool_oo_schema_info():
 def regen_cctool_oo_schema_wrapper(file_to_launch_full_address: str,
                                    log_file_instance: Any = None, log_file_name: str = None):
     print_title(f"CCTool-OO Schema Information", color=Color.mint_green)
-    print(f"{Color.light_green}Select the CCTool-OO Schema compatible with your DC_SYS.{Color.reset}\n")
+    print(f"{Color.light_green}Select the \"CCTool-OO Schema\" file compatible with your DC_SYS.{Color.reset}\n")
     cctool_oo_schema_window()
     gui_default_directory = get_gui_initial_directory()
     regenerate_cctool_oo_schema_info()

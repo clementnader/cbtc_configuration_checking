@@ -78,62 +78,62 @@ If this file is not provided, the tool will automatically try to find the block 
 
    Projects can have various survey files. In that case, user have to specify path and information for all these files. They have to be **added in chronological order**, with the oldest first and the most recent last. (The tool will consider that the newer values supersede the older ones. A comment is nevertheless written to inform the user of different values for a same object.)
 
-Tool will display in the logs the list of all other survey types that are not parsed by the tool. In case of another name for an object, one can modify the file _prj/src/survey/survey_types.py and add the extra name to the list "survey_type_names" inside the corresponding sub dictionary inside dictionary SURVEY_TYPES_DICT.
+**<ins>Note</ins>**: Tool will display in the logs the list of all other survey types that are not parsed by the tool. In case of another name for an object, one can modify the file _prj/src/survey/survey_types.py and add the extra name to the list "survey_type_names" inside the corresponding sub dictionary inside dictionary SURVEY_TYPES_DICT.
 
 ---
 ### 3.2. Steps to use the tool to compare the DC_SYS information with the survey file(s):
 
-0. A preliminary step to take once in order to install the required Python libraries:
-   - Modify the file "**install_python_modules.bat**" to add to the PATH your Python 3.9 executable (remove the "REM " in front of a line to uncomment it) and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
+0. A preliminary step to perform only once in order to install the required Python libraries:
+   - Modify the file "**install_python_modules.bat**" to add to the PATH your Python 3.9 (or more recent version) executable if needed (remove the "REM " in front of a line to uncomment it) and modify the PYTHON_EXE variable to match your Python executable name. <br />
      (for python.exe -> "set PYTHON_EXE=python", for python39.exe -> "set PYTHON_EXE=python39", etc.) <br />
-     Or modify you environment variable PATH at user level to add the folder containing the python executable. And copy and rename the Python executable to be python39.exe.
+     You can modify your environment variable PATH at user level to add the folder containing the python executable to avoid having to set this PATH variable each time you want to use Python. <br />
+     It is good practice to copy your Python executable (python.exe) and rename the copy to match your Python version (python39.exe or python312.exe for example).
    - Launch "**install_python_modules.bat**". This executable will **install the required Python libraries**. <br />
  If a proxy error occurs, comment (add a REM in front) the line<br />
    "%PYTHON_EXE% -m pip install %%x --proxy http://z-proxy1.loc.global.sys"<br />
    and uncomment (remove the REM in front) the line without the proxy argument at the end and use a local network (disconnect from the VPN or from office network).<br />
-   (The proxy address is working in Hitachi network.) <br />
- If an error occurs saying that pip is not installed, try to launch the command "python39 -m ensurepip --default-pip" (to update with the name or your Python 3.9 executable). It will install the default version of pip.
+   The proxy address is working in Hitachi network. <br />
+ If an error occurs saying that pip is not installed, try to launch the command "python39 -m ensurepip --default-pip" (to update with the name or your Python executable). It will install the default version of pip.
 
 
-1. Modify the file "**survey_verification.bat**" to add to the PATH your Python 3.9 executable and modify the PYTHON_EXE variable to match your Python 3.9 executable name. <br />
-(Set it up in the same way as "install_python_modules.bat".)
+1. Modify the file "**survey_verification.bat**" in the same fashion as "install_python_modules.bat" to add to the PATH your Python 3.9 (or more recent version) executable if needed and modify the PYTHON_EXE variable to match your Python executable name.
 
 
 2. Launch "**survey_verification.bat**". It will launch the Python script to check the correspondence with the site survey.
 
 
 3. A window will appear and ask for the **CCTool-OO Schema file** applicable to your version. <br />
-(It is used for the tool to read the DC_SYS in order to know the columns corresponding to each attribute.)
+It is used for the tool to read the DC_SYS in order to know in each sheet the columns corresponding to each attribute.
 
 
-4. Then, another window will appear and ask for the **DC_SYS**, optionally the **Block Def.**, and the **survey file(s)**. <br />
-To select a Block Def. file, you need to uncheck **automatic joint names** and select the correspond file.<br />
+4. Then, another window will appear and ask for the **DC_SYS**, **Block Definition file**, and the **survey file(s)**. <br />
+Instead of using the Block Definition file, you can check **automatic joint names** and let the tool generate the joint names. Note that it will only work if the joint names in the survey correspond to the two block names forming the joint. <br />
 Once the survey file has been selected, you need to specify:
-   - the **Survey Sheet** name, or you can select the checkbox so that the tool uses **All Sheets** of the survey file to get the survey data,
-   - the **First Data Row** containing the surveyed information (after the header),
+   - the **Survey Sheet** name, or you can tick the checkbox **use all sheets** so that the tool uses all visible sheets of the survey file to get the survey data. You can hide sheets that are not relevant so that the tool ignores them,
+   - the **First Data Row** containing the surveyed information (after the header rows),
    - and the different columns for the data the tool will use (note that you can use either the letter of the column or the corresponding number):
-     - **Reference Column** (the column containing the objects name),
-     - **Type Column** (the column containing the objects type (e.g. SWP, TC, TAG...)),
-     - **Track Column** (the column containing the objects track),
-     - **Surveyed KP Column** (the column containing the objects surveyed KP).
+     - **Reference Column**: the column containing the objects name,
+     - **Type Column**: the column containing the objects type (e.g. SWP, TC, TAG...),
+     - **Track Column**: the column containing the objects track,
+     - **Surveyed KP Column**: the column containing the objects surveyed KP.
 
-You will also have the possibility to add other survey files (some projects have various files for the survey). If it is the case, you have to **add the survey files in chronological order**, with the oldest first and the most recent last. (The tool will consider that the newer values supersede the older ones. A comment is nevertheless written to inform the user of different values for a same object.)
+You also have the possibility to add other survey files (some projects have various files for the survey). If it is the case, you have to **add the survey files in chronological order**, with the oldest first and the most recent last. (The tool will consider that the newer values supersede the older ones. A comment is nevertheless written to inform the user of different values for a same object.)
 
 
 5. Once all the information has been specified, you can press the button **"Launch Survey Verification"**. <br />
-Information logs are provided in the command window during the execution.
+Information logs are provided in the command window during the execution and are also stored into a log file created in the tool directory.
 
 
-6. The result Excel file is placed in the tool directory and is opened automatically in a new session of Excel.
+6. At the end of the execution, an Excel file of the verification is created in the tool directory and is opened automatically in a new session of Excel.
 
 ---
 ## 4 Results
 The tool generates an Excel verification file called "Correspondence with Site Survey - *DC_SYS_FOLDER_NAME*.xlsx".
 
 ### 4.1 Result file structure
-Sheet **"Header"** is pre-filled with the Author name corresponding to the Windows session user, the C_D470 corresponding to the name of the folder containing the specified DC_SYS, the date and the tool version.
+Sheet **"Header"** is pre-filled with the Author name corresponding to the Windows session user, the C_D470 corresponding to the name of the folder containing the specified DC_SYS, the block definition file if any, the survey file(s), the date and the tool version.
 
-Sheet **"Survey"** contains the exhaustive list of objects to verify given in the attached file in §3.2 of the System DPSA. The aim is to use this file directly as the verification result file to add to the DPSR.
+Sheet **"FD - Site Survey"** contains the list of objects to verify given in the attached file in §3.2 of the System DPSA. The aim is to use this file directly as the verification result file to add to the DPSR. However, the user shall verify that this list given by the tool correctly correspond to what is effectively given by the System DPSA.
 
 For each type of objects that is automated, there is **a dedicated sheet** containing the results of the verification:
 - a sheet **"Switch"** containing the center (*SWP*_C), the left (*SWP*_L) and right (*SWP*_R) points of the switches.
@@ -176,11 +176,11 @@ Each sheet follows the same structure:
 - **<ins>Column F</ins>** contains the information set in the **type** column in the **survey** (useful for platform to differentiate platform ends and OSPs, for signals to differentiate signals and buffers, for tags to differentiate static and dynamic tags, and for blocks to differentiate joints and buffers if buffers are specified inside the Block Def. file).
 
 
-- **<ins>Columns G and H</ins>** contain the **positioning (track, KP)** collected from the **survey file(s)**.
+- **<ins>Columns G and H</ins>** contain the **positioning (track, surveyed KP)** collected from the **survey file(s)**.
 
-    A comment is put on cells in column H to specify from which survey the information was collected (can be useful in multiple survey files are used).
+    A comment is put on surveyed KP cells in column H to specify from which survey file and sheet the information was collected (can be useful in multiple survey files are used or if all_sheets option is selected).
 
-The results are ordered by track and then KP from the DC_SYS if they exist, else from the survey.
+The different objects are ordered by track and then KP from the DC_SYS if they exist, else from the survey.
 
 - **<ins>Column I</ins>** contains the computation of the **difference** between the two KP values.
 
@@ -201,3 +201,17 @@ The results are ordered by track and then KP from the DC_SYS if they exist, else
 
 
 - **<ins>Column M</ins>** is left free for **comments** from the user.
+
+### 4.3 Tool functions
+#### 4.2.1 Switch points: center and heel positions
+It can happen that instead of giving the 3 positions for the switches: _C (center point), _L (left heel) and _R (right heel), the survey ignores the center point or one of the heel because they are on the same track (and so at the same position) as another position of the switch: the survey only gives the position of the switch on the Normal track and on the Reverse (deviated) track. <br />
+In that case, the tool tries to do the association with the other position of the switch that is on the same track and writes a comment.
+
+#### 4.2.2 Platform ends positioning when Middle Platforms are given in the survey
+It can happen that instead of begin and end limits of the platforms, the middles of the platform are given in the survey. <br />
+In that case, the tool creates a Defined Name on the middle platform positions, and uses it in addition to the platforms length to compute the position of the platforms limits. <br />
+An extra row is created in the first rows for the user to specify the platforms length.
+
+#### 4.2.3 Opposite sign in survey
+It can happen that the sign of surveyed KP in survey does not match the one in DC_SYS. <br />
+In that case, the tool writes in the automatic comments a formula to do the computation of the difference with absolute values on the KPs and check if this difference is lower than the tolerance.
