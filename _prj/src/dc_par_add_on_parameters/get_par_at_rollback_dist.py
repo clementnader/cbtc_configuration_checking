@@ -13,11 +13,11 @@ __all__ = ["get_at_rollback_dist"]
 
 
 def get_at_rollback_dist(local_slope, mtc: bool = False, variables: dict = None):
-    gamma_eb = get_param_value("gamma_eb", variables)
+    gamma_eb = get_parameter_value("gamma_eb", variables)
     if not mtc:
-        at_max_rollback_dist_authorized = get_param_value("at_max_rollback_dist_authorized", variables)
+        at_max_rollback_dist_authorized = get_parameter_value("at_max_rollback_dist_authorized", variables)
     else:
-        at_max_rollback_dist_authorized = get_param_value("mt_max_rollback_dist_authorized", variables)
+        at_max_rollback_dist_authorized = get_parameter_value("mt_max_rollback_dist_authorized", variables)
     par_gamma_slope = get_par_gamma_slope(local_slope, variables)
     par_v1_at_rollback_dist_v = get_par_v1_at_rollback_dist_v(local_slope, mtc, variables)
     par_v2_at_rollback_dist_v = get_par_v2_at_rollback_dist_v(local_slope, mtc, variables)
@@ -44,8 +44,8 @@ def get_at_rollback_dist(local_slope, mtc: bool = False, variables: dict = None)
 
 
 def par_eb_trigger_speed_in_rollback(variables: dict = None):
-    max_speed_authorized_in_rollback = get_param_value("max_speed_authorized_in_rollback", variables)
-    margin_c = get_param_value("margin_c", variables)
+    max_speed_authorized_in_rollback = get_parameter_value("max_speed_authorized_in_rollback", variables)
+    margin_c = get_parameter_value("margin_c", variables)
     value = max_speed_authorized_in_rollback + margin_c
     if variables is not None:
         variables.update({"par_eb_trigger_speed_in_rollback": f"{value} m/s"})
@@ -55,12 +55,12 @@ def par_eb_trigger_speed_in_rollback(variables: dict = None):
 def get_par_v1_at_rollback_dist_v(local_slope, mtc: bool = False, variables: dict = None):
     par_gamma_slope = get_par_gamma_slope(local_slope, variables)
     if not mtc:
-        at_max_rollback_dist_authorized = get_param_value("at_max_rollback_dist_authorized", variables)
+        at_max_rollback_dist_authorized = get_parameter_value("at_max_rollback_dist_authorized", variables)
     else:
-        at_max_rollback_dist_authorized = get_param_value("mt_max_rollback_dist_authorized", variables)
-    par_eb_trigger_speed_in_rollback_val = par_eb_trigger_speed_in_rollback(variables)
+        at_max_rollback_dist_authorized = get_parameter_value("mt_max_rollback_dist_authorized", variables)
+    par_eb_trigger_speed_in_rollback_value = par_eb_trigger_speed_in_rollback(variables)
     value = min(numpy.sqrt(2 * (par_gamma_traction_max(variables) + par_gamma_slope) * at_max_rollback_dist_authorized),
-                par_eb_trigger_speed_in_rollback_val)
+                par_eb_trigger_speed_in_rollback_value)
     if variables is not None:
         variables.update({"par_gamma_slope": f"{par_gamma_slope} m/s^2"})
     return value

@@ -68,21 +68,21 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_
     multiple_dc_sys_objets = _get_multiple_dc_sys_objets(sheet_name)
     multiple_survey_objets = _get_multiple_survey_objets(sheet_name)
     sheet_comments = False
-    for row, (obj_full_name, obj_val) in enumerate(verif_dict.items(), start=start_row):
-        obj_name = obj_full_name[0]
-        dc_sys_sheet = obj_val["dc_sys_sheet"]
-        dc_sys_track = obj_val["dc_sys_original_track"]  # display the original track name
-        block_def_limit_name = obj_val.get("block_def_limit_name")
-        dc_sys_kp = obj_val["dc_sys_kp"]
-        survey_name = obj_val["survey_name"]
-        survey_type = obj_val["survey_type"]
-        survey_track = obj_val["survey_original_track"]  # display the original track name
-        surveyed_kp = obj_val["surveyed_kp"]
-        surveyed_kp_comment = obj_val["surveyed_kp_comment"]
-        comments = obj_val["comments"]
-        defined_name = obj_val.get("defined_name")
+    for row, (object_full_name, object_value) in enumerate(verif_dict.items(), start=start_row):
+        object_name = object_full_name[0]
+        dc_sys_sheet = object_value["dc_sys_sheet"]
+        dc_sys_track = object_value["dc_sys_original_track"]  # display the original track name
+        block_def_limit_name = object_value.get("block_def_limit_name")
+        dc_sys_kp = object_value["dc_sys_kp"]
+        survey_name = object_value["survey_name"]
+        survey_type = object_value["survey_type"]
+        survey_track = object_value["survey_original_track"]  # display the original track name
+        surveyed_kp = object_value["surveyed_kp"]
+        surveyed_kp_comment = object_value["surveyed_kp_comment"]
+        comments = object_value["comments"]
+        defined_name = object_value.get("defined_name")
 
-        obj_name = None if dc_sys_sheet is None else obj_name
+        object_name = None if dc_sys_sheet is None else object_name
 
         tolerance = _get_tolerance(tolerance_dict, dc_sys_sheet, survey_type)
         dc_sys_color = _get_dc_sys_color(multiple_dc_sys_objets, dc_sys_sheet)
@@ -90,7 +90,7 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_
 
         reverse_polarity = check_polarity(dc_sys_kp, surveyed_kp)
 
-        _add_line_info(ws, row, obj_name, dc_sys_sheet, dc_sys_track, dc_sys_kp,
+        _add_line_info(ws, row, object_name, dc_sys_sheet, dc_sys_track, dc_sys_kp,
                        survey_name, survey_type, survey_track, surveyed_kp, dc_sys_color, survey_color,
                        extra_column)
         if extra_column:
@@ -106,13 +106,13 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_
 
 
 def _add_line_info(ws: xl_ws.Worksheet, row: int,
-                   obj_name: str, dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float,
+                   object_name: str, dc_sys_sheet: str, dc_sys_track: str, dc_sys_kp: float,
                    survey_name: str, survey_type: str, survey_track: float, surveyed_kp: float,
                    dc_sys_color: str, survey_color: str, extra_column: bool) -> None:
-    bg_color_dc_sys = dc_sys_color if obj_name is not None else None
+    bg_color_dc_sys = dc_sys_color if object_name is not None else None
     bg_color_survey = survey_color if (survey_name is not None and survey_name != "Computed") else None
     # Name
-    create_cell(ws, obj_name, row=row, column=NAME_COL, borders=True,
+    create_cell(ws, object_name, row=row, column=NAME_COL, borders=True,
                 bg_color=bg_color_dc_sys)
     # DC_SYS Sheet
     create_cell(ws, dc_sys_sheet, row=row, column=DC_SYS_SHEET_COL, borders=True,
@@ -225,9 +225,9 @@ def _get_tolerance(tolerance_dict: Optional[Union[tuple[str, str, float], dict[s
     if isinstance(tolerance_dict, tuple):
         return tolerance_dict[1]
 
-    for (list_test_sh_name, corresponding_key), tol in tolerance_dict.items():
+    for (list_test_sheet_name, corresponding_key), tol in tolerance_dict.items():
         if dc_sys_sheet is not None:
-            if dc_sys_sheet in list_test_sh_name:
+            if dc_sys_sheet in list_test_sheet_name:
                 return tol[1]
         else:
             test_survey_type_names = SURVEY_TYPES_DICT[corresponding_key]["survey_type_names"]
@@ -251,8 +251,8 @@ def _get_dc_sys_color(multiple_dc_sys_objets: Optional[list], dc_sys_sheet: str)
         return list_colors[0]
     if not multiple_dc_sys_objets:
         return list_colors[0]
-    for obj, color in zip(multiple_dc_sys_objets, list_colors):
-        if obj == dc_sys_sheet:
+    for object, color in zip(multiple_dc_sys_objets, list_colors):
+        if object == dc_sys_sheet:
             return color
     print_warning(f"{dc_sys_sheet = } not found inside multiple_dc_sys_objets or not enough colors defined:\n"
                   f"{multiple_dc_sys_objets = }\n"
@@ -275,8 +275,8 @@ def _get_survey_color(multiple_survey_objets: Optional[list[tuple]], survey_type
         return list_colors[0]
     if not multiple_survey_objets:
         return list_colors[0]
-    for obj_name, color in zip(multiple_survey_objets, list_colors):
-        list_survey_objects = SURVEY_TYPES_DICT[obj_name]["survey_type_names"]
+    for object_name, color in zip(multiple_survey_objets, list_colors):
+        list_survey_objects = SURVEY_TYPES_DICT[object_name]["survey_type_names"]
         if survey_type.strip().upper() in list_survey_objects:
             return color
     print_warning(f"{survey_type = } not found inside multiple_survey_objets or not enough colors defined:\n"

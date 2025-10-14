@@ -121,9 +121,9 @@ def _get_second_depolarized_segment(depolarized_seg: str):
 
 def get_linked_segments(seg: str, downstream: bool) -> list[str]:
     seg_dict = load_sheet(DCSYS.Seg)
-    attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
+    attribute = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     linked_segs = list()
-    for linked_seg in get_dc_sys_value(seg_dict[seg], attr):
+    for linked_seg in get_dc_sys_value(seg_dict[seg], attribute):
         if linked_seg is not None:
             linked_segs.append(linked_seg)
     return linked_segs
@@ -132,9 +132,9 @@ def get_linked_segments(seg: str, downstream: bool) -> list[str]:
 def get_straight_linked_segments(seg: str, downstream: bool, depth: int = 10, verbose: bool = False
                                  ) -> Generator[str, None, None]:
     seg_dict = load_sheet(DCSYS.Seg)
-    attr = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
+    attribute = DCSYS.Seg.SegmentsVoisins.Aval if downstream else DCSYS.Seg.SegmentsVoisins.Amont
     previous_seg = seg
-    linked_segs = get_dc_sys_value(seg_dict[previous_seg], attr)
+    linked_segs = get_dc_sys_value(seg_dict[previous_seg], attribute)
     linked_seg = linked_segs[0] if len(linked_segs) > 0 else None
     linked_seg2 = linked_segs[1] if len(linked_segs) > 1 else None
     cnt = 0
@@ -145,7 +145,7 @@ def get_straight_linked_segments(seg: str, downstream: bool, depth: int = 10, ve
         cnt += 1
         yield linked_seg
         previous_seg = linked_seg
-        linked_segs = get_dc_sys_value(seg_dict[previous_seg], attr)
+        linked_segs = get_dc_sys_value(seg_dict[previous_seg], attribute)
         linked_seg = linked_segs[0] if len(linked_segs) > 0 else None
         linked_seg2 = linked_segs[1] if len(linked_segs) > 1 else None
 

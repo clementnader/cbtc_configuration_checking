@@ -4,7 +4,7 @@
 from ..utils import *
 from ..cctool_oo_schema import *
 from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist_downstream, is_seg_downstream
-from ..dc_sys_draw_path.dc_sys_get_zones import get_zones_on_object, get_oriented_limits_of_obj
+from ..dc_sys_draw_path.dc_sys_get_zones import get_zones_on_object, get_oriented_limits_of_object
 
 
 __all__ = ["get_list_len_block", "get_block_associated_to_sw"]
@@ -12,7 +12,7 @@ __all__ = ["get_list_len_block", "get_block_associated_to_sw"]
 
 def get_list_len_block(block_name: str):
     list_dist = list()
-    oriented_limits = get_oriented_limits_of_obj(DCSYS.CDV, block_name)
+    oriented_limits = get_oriented_limits_of_object(DCSYS.CDV, block_name)
     for i, lim1 in enumerate(oriented_limits):
         seg1, x1, direction1 = lim1
         for lim2 in oriented_limits[i+1:]:

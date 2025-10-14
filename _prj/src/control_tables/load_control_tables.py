@@ -43,7 +43,8 @@ def load_control_tables(control_table_type: str, use_csv_file: bool = False,
             control_table_info = _load_control_table_info(control_table_type, control_table_addr, all_pages,
                                                           specific_pages, i, nb_of_control_tables, debug=debug,
                                                           print_pdf_code=print_pdf_code)
-            control_table_info = create_csv_file_control_table(control_table_info, result_file_name)
+            control_table_info = create_csv_file_control_table(control_table_type, control_table_info, result_file_name,
+                                                               control_table_addr, all_pages, specific_pages)
 
         else:
             control_table_info = analyze_csv_file_control_table(control_table_type, result_file_name)
@@ -85,15 +86,15 @@ def _load_control_table_info(control_table_type: str, control_table_addr: str, a
 
 def _get_control_tables_loc_info(control_table_type: str):
     if control_table_type == CONTROL_TABLE_TYPE.route:
-        control_table_addr = DATABASE_LOC.control_tables_route.control_tables_addr
-        all_pages = DATABASE_LOC.control_tables_route.all_pages
-        specific_pages = DATABASE_LOC.control_tables_route.specific_pages
+        control_table_addr = DATABASE_LOCATION.control_tables_route.control_tables_addr
+        all_pages = DATABASE_LOCATION.control_tables_route.all_pages
+        specific_pages = DATABASE_LOCATION.control_tables_route.specific_pages
         return zip(control_table_addr, all_pages, specific_pages)
 
     elif control_table_type == CONTROL_TABLE_TYPE.overlap:
-        control_table_addr = DATABASE_LOC.control_tables_overlap.control_tables_addr
-        all_pages = DATABASE_LOC.control_tables_overlap.all_pages
-        specific_pages = DATABASE_LOC.control_tables_overlap.specific_pages
+        control_table_addr = DATABASE_LOCATION.control_tables_overlap.control_tables_addr
+        all_pages = DATABASE_LOCATION.control_tables_overlap.all_pages
+        specific_pages = DATABASE_LOCATION.control_tables_overlap.specific_pages
         return zip(control_table_addr, all_pages, specific_pages)
 
     else:

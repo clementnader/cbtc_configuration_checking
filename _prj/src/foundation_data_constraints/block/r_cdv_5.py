@@ -10,7 +10,7 @@ from ...dc_sys_sheet_utils.block_utils import get_block_associated_to_sw
 from ...dc_sys_sheet_utils.slope_utils import *
 from ...dc_sys_draw_path.dc_sys_path_and_distances import (is_seg_downstream,
                                                            get_all_positions_at_a_distance_from_a_point)
-from ...dc_sys_draw_path.dc_sys_get_zones import (get_oriented_limits_of_obj, get_dist_downstream_within_zone_limits,
+from ...dc_sys_draw_path.dc_sys_get_zones import (get_oriented_limits_of_object, get_dist_downstream_within_zone_limits,
                                                   is_point_in_zone_limits)
 from ...dc_par import *
 from ...dc_par_add_on_parameters import get_at_rollback_dist
@@ -173,7 +173,7 @@ def test_fouling_point_danger_point(sw_name: str, sw_block_list: list[str], is_s
 
 
 def _get_min_dist(local_slope, ivb: bool):
-    at_deshunt_max_dist = get_param_value("at_deshunt_max_dist")
+    at_deshunt_max_dist = get_parameter_value("at_deshunt_max_dist")
     if ivb:
         at_deshunt_max_dist = 0
 
@@ -230,8 +230,8 @@ def _get_block_zone_limits(tc_list: list[str], ivb: bool) -> list[tuple[str, flo
     limits = list()
     for tc_name in tc_list:
         if ivb:
-            oriented_limits = get_oriented_limits_of_obj(DCSYS.IVB, tc_name)
+            oriented_limits = get_oriented_limits_of_object(DCSYS.IVB, tc_name)
         else:
-            oriented_limits = get_oriented_limits_of_obj(DCSYS.CDV, tc_name)
+            oriented_limits = get_oriented_limits_of_object(DCSYS.CDV, tc_name)
         limits.extend(oriented_limits)
     return remove_common_limits_of_oriented_limits(limits)

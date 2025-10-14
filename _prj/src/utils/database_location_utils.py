@@ -9,14 +9,14 @@ __all__ = ["get_dc_sys_folder", "get_c_d470_version", "get_c11_d470_version", "g
 
 
 def get_dc_sys_folder():
-    dc_sys_addr = DATABASE_LOC.dc_sys_addr
+    dc_sys_addr = DATABASE_LOCATION.dc_sys_addr
     if dc_sys_addr:
         return os.path.split(dc_sys_addr)[0]
     return ""
 
 
 def get_dc_par_folder():
-    dc_par_addr = DATABASE_LOC.dc_par_addr
+    dc_par_addr = DATABASE_LOCATION.dc_par_addr
     if dc_par_addr:
         return os.path.split(dc_par_addr)[0]
     return ""
@@ -37,12 +37,12 @@ def get_c_d470_version():
 
 
 def get_c11_d470_version():
-    kit_c11_dir = DATABASE_LOC.kit_c11_dir
+    kit_c11_dir = DATABASE_LOCATION.kit_c11_dir
     return _get_version_in_full_path(kit_c11_dir, "C11_D470")
 
 
 def get_c121_d470_version():
-    kit_c121_d470_dir = DATABASE_LOC.kit_c121_d470_dir
+    kit_c121_d470_dir = DATABASE_LOCATION.kit_c121_d470_dir
     return _get_version_in_full_path(kit_c121_d470_dir, "C121_D470")
 
 

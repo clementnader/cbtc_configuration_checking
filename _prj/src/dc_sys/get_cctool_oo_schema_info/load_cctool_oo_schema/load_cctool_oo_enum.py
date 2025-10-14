@@ -20,8 +20,8 @@ def load_cctool_oo_enum_lists(addr: str) -> dict:
     global LOADED_CCTOOL_OO_ENUM_LISTS
     if not LOADED_CCTOOL_OO_ENUM_LISTS:
         wb = load_cctool_oo_schema_wb(addr)
-        cctool_oo_schema_sh = wb.sheet_by_name(SHEET_NAME)
-        LOADED_CCTOOL_OO_ENUM_LISTS = get_cctool_oo_enums(cctool_oo_schema_sh)
+        cctool_oo_schema_sheet = wb.sheet_by_name(SHEET_NAME)
+        LOADED_CCTOOL_OO_ENUM_LISTS = get_cctool_oo_enums(cctool_oo_schema_sheet)
     return LOADED_CCTOOL_OO_ENUM_LISTS
 
 
@@ -32,8 +32,8 @@ def get_cctool_oo_enums(ws: xlrd.sheet.Sheet) -> dict:
         if not sheet_name:
             continue
         list_available_values = list()
-        for col in range(AVAILABLE_VALUES_START_COL, ws.ncols + 1):
-            value = get_xlrd_value(ws, row, col)
+        for column in range(AVAILABLE_VALUES_START_COL, ws.ncols + 1):
+            value = get_xlrd_value(ws, row, column)
             if not value:
                 break
             list_available_values.append(f"{value}")

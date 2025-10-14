@@ -58,26 +58,26 @@ def is_seg_downstream(start_seg: str, end_seg: str, start_x: float = None, end_x
         return False
 
 
-def print_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str,
+def print_dist_between_objects(object_type_1, object_name_1: str, object_type_2, object_name_2: str,
                                direction: str = None) -> None:
-    type_str_1 = get_sh_name(obj_type_1)
-    type_str_2 = get_sh_name(obj_type_2)
+    type_str_1 = get_sheet_name(object_type_1)
+    type_str_2 = get_sheet_name(object_type_2)
     downstream = None if direction is None else direction == Direction.CROISSANT
-    d = get_dist_between_objects(obj_type_1, obj_name_1, obj_type_2, obj_name_2, downstream=downstream)
+    d = get_dist_between_objects(object_type_1, object_name_1, object_type_2, object_name_2, downstream=downstream)
     if d is None:
-        print(f"No path found between {type_str_1} {Color.mint_green}{obj_name_1}{Color.reset} "
-              f"and {type_str_2} {Color.mint_green}{obj_name_2}{Color.reset}"
+        print(f"No path found between {type_str_1} {Color.mint_green}{object_name_1}{Color.reset} "
+              f"and {type_str_2} {Color.mint_green}{object_name_2}{Color.reset}"
               f"{(' in direction ' + Color.yellow + direction + Color.reset) if direction is not None else ''}.")
     else:
-        print(f"Distance between {type_str_1} {Color.mint_green}{obj_name_1}{Color.reset} "
-              f"and {type_str_2} {Color.mint_green}{obj_name_2}{Color.reset} is {Color.beige}{d}{Color.reset}"
+        print(f"Distance between {type_str_1} {Color.mint_green}{object_name_1}{Color.reset} "
+              f"and {type_str_2} {Color.mint_green}{object_name_2}{Color.reset} is {Color.beige}{d}{Color.reset}"
               f"{(' in direction ' + Color.yellow + direction + Color.reset) if direction is not None else ''}.")
 
 
-def get_dist_between_objects(obj_type_1, obj_name_1: str, obj_type_2, obj_name_2: str,
+def get_dist_between_objects(object_type_1, object_name_1: str, object_type_2, object_name_2: str,
                              downstream: bool = None, avoid_zero: bool = False) -> Optional[float]:
-    loc1 = get_object_position(obj_type_1, obj_name_1)
-    loc2 = get_object_position(obj_type_2, obj_name_2)
+    loc1 = get_object_position(object_type_1, object_name_1)
+    loc2 = get_object_position(object_type_2, object_name_2)
     if loc1 is None or loc2 is None:
         return None
     if isinstance(loc1, tuple):

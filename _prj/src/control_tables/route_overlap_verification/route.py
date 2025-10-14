@@ -21,8 +21,8 @@ def check_route_control_tables(use_csv_file: bool = True):
     print_title("Route verification...", color=Color.mint_green)
     missing_routes = list()
     result = True
-    for route, route_val in route_dict.items():
-        mid_result, missing_route = _check_route(route, route_val, route_control_tables)
+    for route, route_value in route_dict.items():
+        mid_result, missing_route = _check_route(route, route_value, route_control_tables)
         if mid_result is False:
             result = False
         if missing_route:
@@ -36,7 +36,7 @@ def check_route_control_tables(use_csv_file: bool = True):
     return result
 
 
-def _check_route(route: str, route_val: dict[str, str], route_control_tables: dict[str, dict]):
+def _check_route(route: str, route_value: dict[str, str], route_control_tables: dict[str, dict]):
     route_control_table, table_name = _find_route_control_table(route, route_control_tables)
     if not route_control_table:
         return None, route
@@ -45,22 +45,22 @@ def _check_route(route: str, route_val: dict[str, str], route_control_tables: di
     route_sw = route_control_table[ROUTE_SWITCHES_LIST_KEY].upper().strip()
 
     result = True
-    if not _check_controlled_sig(route, route_val, control_sig, table_name):
+    if not _check_controlled_sig(route, route_value, control_sig, table_name):
         result = False
-    if not _check_route_path(route, route_val, route_path, table_name):
+    if not _check_route_path(route, route_value, route_path, table_name):
         result = False
-    if not _check_route_sw(route, route_val, route_sw, table_name):
+    if not _check_route_sw(route, route_value, route_sw, table_name):
         result = False
     return result, None
 
 
 def _find_route_control_table(route_dc_sys: str, route_control_tables: dict[str, dict[str, str]]):
-    for route_control_table, route_val in route_control_tables.items():
+    for route_control_table, route_value in route_control_tables.items():
         if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys):
-            return route_val, route_control_table
-    for route_control_table, route_val in route_control_tables.items():
+            return route_value, route_control_table
+    for route_control_table, route_value in route_control_tables.items():
         if _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys, remove_zero=True):
-            return route_val, route_control_table
+            return route_value, route_control_table
     return {}, ""
 
 
@@ -86,8 +86,8 @@ def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys
     return False
 
 
-def _check_controlled_sig(route: str, route_val: dict[str, Any], ct_control_sig: str, table_name: str) -> bool:
-    dc_sys_origin_signal: str = get_dc_sys_value(route_val, DCSYS.Iti.SignalOrig)
+def _check_controlled_sig(route: str, route_value: dict[str, Any], ct_control_sig: str, table_name: str) -> bool:
+    dc_sys_origin_signal: str = get_dc_sys_value(route_value, DCSYS.Iti.SignalOrig)
     if are_signals_matching(ct_control_sig, dc_sys_origin_signal):
         return True
 
@@ -97,9 +97,9 @@ def _check_controlled_sig(route: str, route_val: dict[str, Any], ct_control_sig:
     return False
 
 
-def _check_route_sw(route: str, route_val: dict[str, Any], ct_route_sw: str, table_name: str) -> bool:
-    dc_sys_route_sw: list[str] = route_val["Route Switch"]
-    dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_val["Route IVB"]]
+def _check_route_sw(route: str, route_value: dict[str, Any], ct_route_sw: str, table_name: str) -> bool:
+    dc_sys_route_sw: list[str] = route_value["Route Switch"]
+    dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_value["Route IVB"]]
     ct_route_sw_list = get_control_tables_switch_list(ct_route_sw)
 
     result = True
@@ -142,9 +142,9 @@ def _check_route_sw(route: str, route_val: dict[str, Any], ct_route_sw: str, tab
     return result
 
 
-def _check_route_path(route: str, route_val: dict[str, Any], ct_route_path: str, table_name: str) -> bool:
-    dc_sys_route_sw: list[str] = route_val["Route Switch"]
-    dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_val["Route IVB"]]
+def _check_route_path(route: str, route_value: dict[str, Any], ct_route_path: str, table_name: str) -> bool:
+    dc_sys_route_sw: list[str] = route_value["Route Switch"]
+    dc_sys_route_ivb: list[str] = [ivb.upper() for ivb in route_value["Route IVB"]]
     ct_route_path_list = get_control_tables_ivb_list(ct_route_path)
 
     result = True

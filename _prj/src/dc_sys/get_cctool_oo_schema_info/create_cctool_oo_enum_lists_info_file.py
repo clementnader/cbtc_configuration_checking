@@ -27,13 +27,13 @@ def create_cctool_oo_enum_lists_info_file():
     file_desc = ("Automatically generated Python file defining classes for the enumerates from the EnumList sheet "
                  "of the CCTool-OO Schema file.")
     text = create_header_for_the_generated_files(cctool_oo_file, file_desc)
-    text += add_obj_attrs(cctool_oo_enum_lists_dict)
+    text += add_object_attributes(cctool_oo_enum_lists_dict)
     text = text.replace("\t", "    ")
     with open(RES_PY_FILE_FULL_PATH, "w") as f:
         f.write(text)
 
 
-def add_obj_attrs(info_dict: dict[str, list[str]]):
+def add_object_attributes(info_dict: dict[str, list[str]]):
     text = str()
     for enum_name, available_values in info_dict.items():
         sub_definition = str()

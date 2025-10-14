@@ -40,13 +40,13 @@ def zc():
     return
 
 
-def wayside_additional_verif():
+def wayside_additional_verifications():
     # get_sum_len_route_physical_blocks()  # for wayside additional verifications in 6.3.5
     # get_first_zc_overlay_route_physical_blocks()  # for wayside additional verifications in 6.3.5
     return
 
 
-def onboard_additional_verif():
+def onboard_additional_verifications():
     # dc_tu_verification()  # v1.4.2
     # dc_tu_window()
     # verification_of_the_md5_checksum()
@@ -54,7 +54,7 @@ def onboard_additional_verif():
     return
 
 
-def additional_verif():
+def additional_verifications():
     # min_dist_between_tags(in_cbtc=False)
     # pretty_print_dict({key: val for cnt, (key, val) in enumerate(min_dist_between_tags(in_cbtc=False).items())
     #                    if cnt < 30})  # can take a while to process for the whole territory
@@ -68,7 +68,7 @@ def parameters_constraints():
     return
 
 
-def dc_par_add_on_param():
+def dc_par_add_on_parameters():
     # get_max_slope(in_cbtc=False)
     # pretty_print_dict(get_block_min_length(in_cbtc=True))
     # pretty_print_dict(get_block_max_length(in_cbtc=False))
@@ -125,33 +125,14 @@ def survey():
     return
 
 
-def check_cdz_signals():
-    cdz_dict = load_sheet(DCSYS.ZSM_CBTC)
-    sig_dict = load_sheet(DCSYS.Sig)
-    for cdz_name, cdz in cdz_dict.items():
-        list_sigs = get_dc_sys_value(cdz, DCSYS.ZSM_CBTC.SignauxZsm.Sigman)
-        for i, zsm_sig in enumerate(list_sigs, start=1):
-            seg, x, direction = get_object_position(DCSYS.Sig, zsm_sig)
-            signal_ivb = get_dc_sys_value(sig_dict[zsm_sig], DCSYS.Sig.IvbJoint.UpstreamIvb)
-
-            if is_point_in_zone(DCSYS.ZSM_CBTC, cdz_name, seg, x, direction):  # if signal in CDZ
-                # TODO: we should check if there exist multiple signals on the CDZ in the same direction,
-                #  and in that case probably that it should be the most in exit
-                #  (greater offset for increasing direction).
-                continue
-
-            # TODO get first signal downstream ZSM in each direction
-
-            if zsm_sig not in get_zones_intersecting_zone(DCSYS.ZSM_CBTC, DCSYS.IVB, signal_ivb):
-                print_error(f"Related Signal {i} {Color.yellow}\"{zsm_sig}\"{Color.reset} is not inside CBTC Direction "
-                            f"Zone {Color.beige}\"{cdz_name}\"{Color.reset}.")
-
-
 def foundation_data_constraints():
     # --- Global DC_SYS verifications --- #
     # check_dc_sys_global_definition()
     # check_dc_sys_zones_definition()
     # check_dc_sys_track_kp_definition()
+
+    # --- Verify ZC Tracking Area Limits definition --- #
+    # check_zc_limits_definition()
 
     # --- Verify CBTC Protecting Switch Area definition --- #
     # check_cbtc_protecting_switch_area()
@@ -160,7 +141,7 @@ def foundation_data_constraints():
     # check_sieving_limit_definition()
 
     # --- Verify Platform Related Overlaps --- #
-    # ixl_overlap_platform_related()
+    # ixl_overlap_platform_related()  # NV
 
     # --- Signal to joint distance --- #
     # get_signals_distance_to_joint()
@@ -226,6 +207,16 @@ def constraints_and_rules():
     # Walkway constraints
     # cf_walkway_2()
 
+    # Constraints related to signal Approach Zone
+    # check_cbtc_sig_apz()  # NV
+    # cf_signal_12(apz_with_tc=False)  # DLT Distance
+    # r_zsm_3(apz_with_tc=False)
+
+    # Constraint related to CDZ Home Signals
+    # cf_zsm_cbtc_16()  # NV - Verification of the CDZ Home Signals
+    # TODO manage the depolarization
+    # TODO regarder le param d'ILT
+
     # OSP constraints
     # cc_quai_6(in_cbtc=False)  # Allow Accel Calibration at platform OSPs
     # r_point_arret_ato_10(in_cbtc=False)  # Allow Accel Calibration at not platform related OSPs
@@ -245,20 +236,10 @@ def constraints_and_rules():
     #                                       -> it seems multiple ZC can do the job sometimes,
     #                                       and tool shall gives multiple ZC these times,
     #                                       re-work the way ZC is assigned.
-    # r_tm_ats_itf_1(in_cbtc=False)
-    # ats_atc_sheet_verif(in_cbtc=False)  # TODO: Check if extra flows exist for object that does not exist per type,
-    #                                           and if extra object type exists.
+    # r_tm_ats_itf_1(in_cbtc=False)  # NV
+    # ats_atc_sheet_verif(in_cbtc=False)  # NV  # TODO: Check if extra flows exist for object that does not exist per type,
+    #                                              and if extra object type exists.
     # zcr_zc_sheet_verif(in_cbtc=False)
-
-    # Constraints related to signal Approach Zone
-    # check_cbtc_sig_apz()
-    # cf_signal_12(apz_with_tc=False)  # DLT Distance
-    # r_zsm_3(apz_with_tc=False)
-
-    # cf_zsm_cbtc_16()  # TODO CF_ZSM_CBTC_16 NV
-    #                      For each Home Signal related to the CBTC Direction Zone:
-    #                      The CBTC Direction Zone is inside the SIGNALLING approach of the signal
-    #                      if it’s related to a BLOCK_DIRECTION_LOCKING one.
 
     # Extra constraints
     # cf_calib_4()
@@ -289,9 +270,9 @@ def main():
     foundation_data_constraints()
     constraints_and_rules()
 
-    additional_verif()
+    additional_verifications()
 
-    dc_par_add_on_param()
+    dc_par_add_on_parameters()
     dc_par_customer_data()
     parameters_constraints()
 

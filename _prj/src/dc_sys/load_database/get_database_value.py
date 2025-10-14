@@ -7,12 +7,12 @@ from ...utils import *
 __all__ = ["get_database_value"]
 
 
-def get_database_value(obj: dict[str, Any], attr: dict[str, Any]) -> Any:
-    if "col" in attr:
-        return obj[attr["attr_name"]]
+def get_database_value(object: dict[str, Any], attribute: dict[str, Any]) -> Any:
+    if "column" in attribute:
+        return object[attribute["attribute_name"]]
     else:
-        list_attrs = obj[attr["attr_name"]][attr["sub_attr_name"]]
-        if len(list_attrs) == 1:
-            return list_attrs[0]
-        list_attrs = [attr for attr in list_attrs if attr is not None]
-        return list_attrs
+        list_attributes = object[attribute["attribute_name"]][attribute["sub_attribute_name"]]
+        if len(list_attributes) == 1:
+            return list_attributes[0]
+        list_attributes = [attribute for attribute in list_attributes if attribute is not None]
+        return list_attributes

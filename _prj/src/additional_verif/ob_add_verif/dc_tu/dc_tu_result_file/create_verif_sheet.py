@@ -48,8 +48,8 @@ def create_empty_values_sheet(wb: openpyxl.workbook.Workbook, ws_name: str,
 
 def _set_columns_width(ws: xl_ws.Worksheet, extra_column: Optional[str]):
     ws.column_dimensions[get_xl_column_letter(PARAMETER_NAME_COLUMN)].width = 30.5
-    for col in range(PMC_FIRST_COLUMN, PMC_FIRST_COLUMN + NB_PMC):
-        ws.column_dimensions[get_xl_column_letter(col)].width = 13.5
+    for column in range(PMC_FIRST_COLUMN, PMC_FIRST_COLUMN + NB_PMC):
+        ws.column_dimensions[get_xl_column_letter(column)].width = 13.5
     ws.column_dimensions[get_xl_column_letter(STATUS_COLUMN)].width = 12.5
     ws.column_dimensions[get_xl_column_letter(COMMENTS_COLUMN)].width = 49.5
     if extra_column:

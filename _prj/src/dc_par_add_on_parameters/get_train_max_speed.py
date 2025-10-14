@@ -10,7 +10,7 @@ __all__ = ["get_train_max_speed"]
 
 
 def get_train_max_speed(variables: dict = None):
-    if "MaxSpeed" in get_class_attr_dict(DCSYS.Train_Types):
+    if "MaxSpeed" in get_class_attributes_dict(DCSYS.Train_Types):
         pv_sheet_class = DCSYS.Train_Types
         av_sheet_class = DCSYS.AV_Types
     else:

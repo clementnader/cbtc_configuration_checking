@@ -82,21 +82,21 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
 
 def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[str, dict[str, Any]]) -> None:
 
-    for row, obj_val in enumerate(verif_dict.values(), start=start_row):
-        sig_name = obj_val.get("sig_name")
-        sig_type = obj_val.get("sig_type")
-        sig_seg = obj_val.get("sig_seg")
-        sig_x = obj_val.get("sig_x")
-        sig_direction = obj_val.get("sig_direction")
-        sig_track = obj_val.get("sig_track")
-        sig_kp = obj_val.get("sig_kp")
-        sig_vsp_distance = obj_val.get("sig_vsp_distance")
-        sig_joint = obj_val.get("sig_joint")
-        joint_seg = obj_val.get("joint_seg")
-        joint_x = obj_val.get("joint_x")
-        joint_track = obj_val.get("joint_track")
-        joint_kp = obj_val.get("joint_kp")
-        distance = obj_val.get("distance")
+    for row, object_value in enumerate(verif_dict.values(), start=start_row):
+        sig_name = object_value.get("sig_name")
+        sig_type = object_value.get("sig_type")
+        sig_seg = object_value.get("sig_seg")
+        sig_x = object_value.get("sig_x")
+        sig_direction = object_value.get("sig_direction")
+        sig_track = object_value.get("sig_track")
+        sig_kp = object_value.get("sig_kp")
+        sig_vsp_distance = object_value.get("sig_vsp_distance")
+        sig_joint = object_value.get("sig_joint")
+        joint_seg = object_value.get("joint_seg")
+        joint_x = object_value.get("joint_x")
+        joint_track = object_value.get("joint_track")
+        joint_kp = object_value.get("joint_kp")
+        distance = object_value.get("distance")
 
         _add_line_info(ws, row, sig_name, sig_type, sig_seg, sig_x, sig_direction, sig_track, sig_kp,
                        sig_vsp_distance, sig_joint, joint_seg, joint_x,

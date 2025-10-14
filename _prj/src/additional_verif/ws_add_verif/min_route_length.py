@@ -47,7 +47,7 @@ def get_first_zc_overlay_route_physical_blocks():
         in_zc_overlay = False
         list_zc = None
         for ivb_name in route_ivb_list:
-            list_zc = get_zc_of_obj(DCSYS.IVB, ivb_name)
+            list_zc = get_zc_of_object(DCSYS.IVB, ivb_name)
             if len(list_zc) == 2:
                 in_zc_overlay = True
                 break

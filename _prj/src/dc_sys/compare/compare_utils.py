@@ -9,11 +9,11 @@ from ..load_database import *
 __all__ = ["compare_sheet", "compare_all_sheets"]
 
 
-def compare_sheet(obj_name):
-    obj_name = get_sh_name(obj_name)
-    print_section_title(obj_name)
-    dict_old = load_sheet(obj_name, old=True)
-    dict_new = load_sheet(obj_name, old=False)
+def compare_sheet(object_name):
+    object_name = get_sheet_name(object_name)
+    print_section_title(object_name)
+    dict_old = load_sheet(object_name, old=True)
+    dict_new = load_sheet(object_name, old=False)
     return compare_dict(dict_old, dict_new, "old", "new")
 
 
@@ -66,17 +66,17 @@ def compare_dict(dict1: dict, dict2: dict, dict1_name: str, dict2_name: str, lvl
 def compare_sub_dict(key: str, dict1: dict, dict2: dict, dict1_name: str, dict2_name: str, lvl: int, s: list):
     s = s[:]
     lvl += 1
-    merge_cols = False if key == get_dc_sys_attr_name(DCSYS.Seg.SegmentsVoisins) else True
+    merge_cols = False if key == get_dc_sys_attribute_name(DCSYS.Seg.SegmentsVoisins) else True
     if merge_cols:
         sub_key = tuple(x for x in dict1.keys())
         if len(s) == lvl - 1:
             s.append(None)
         s[lvl - 1] = f"{get_print_prefix(lvl)}> {Color.pale_green}{sub_key}{Color.reset}"
-        list_of_obj_1 = list(zip(*dict1.values()))
-        list_of_obj_2 = list(zip(*dict2.values()))
-        list_of_obj_1 = sorted([x for x in list_of_obj_1 if x[0] is not None], key=lambda x: _sort_function(x, sub_key))
-        list_of_obj_2 = sorted([x for x in list_of_obj_2 if x[0] is not None], key=lambda x: _sort_function(x, sub_key))
-        for i, (elem1, elem2) in enumerate(zip(list_of_obj_1, list_of_obj_2)):
+        list_of_object_1 = list(zip(*dict1.values()))
+        list_of_object_2 = list(zip(*dict2.values()))
+        list_of_object_1 = sorted([x for x in list_of_object_1 if x[0] is not None], key=lambda x: _sort_function(x, sub_key))
+        list_of_object_2 = sorted([x for x in list_of_object_2 if x[0] is not None], key=lambda x: _sort_function(x, sub_key))
+        for i, (elem1, elem2) in enumerate(zip(list_of_object_1, list_of_object_2)):
             if elem1 != elem2:
                 print("\n".join(x for x in s if x is not None))
                 print(f"{get_print_prefix(lvl + 1)}> {Color.pink}{i}{Color.reset}")
@@ -88,11 +88,11 @@ def compare_sub_dict(key: str, dict1: dict, dict2: dict, dict1_name: str, dict2_
             if len(s) == lvl - 1:
                 s.append(None)
             s[lvl - 1] = f"{get_print_prefix(lvl)}> {Color.pale_green}{sub_key}{Color.reset}"
-            list_of_obj_1 = (sorted([x for x in dict1[sub_key] if x is not None])
+            list_of_object_1 = (sorted([x for x in dict1[sub_key] if x is not None])
                              + [x for x in dict1[sub_key] if x is None])
-            list_of_obj_2 = (sorted([x for x in dict2[sub_key] if x is not None])
+            list_of_object_2 = (sorted([x for x in dict2[sub_key] if x is not None])
                              + [x for x in dict2[sub_key] if x is None])
-            for i, (elem1, elem2) in enumerate(zip(list_of_obj_1, list_of_obj_2)):
+            for i, (elem1, elem2) in enumerate(zip(list_of_object_1, list_of_object_2)):
                 if elem1 != elem2:
                     print("\n".join(x for x in s if x is not None))
                     print(f"{get_print_prefix(lvl + 1)}> {Color.pink}{i}{Color.reset}")

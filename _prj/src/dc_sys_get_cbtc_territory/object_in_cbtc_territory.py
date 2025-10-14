@@ -10,42 +10,42 @@ from .cbtc_territory_utils import *
 __all__ = ["get_objects_in_cbtc_ter"]
 
 
-def get_objects_in_cbtc_ter(obj_type) -> dict[str, dict]:
-    obj_type = get_sh_name(obj_type)
+def get_objects_in_cbtc_ter(object_type) -> dict[str, dict]:
+    object_type = get_sheet_name(object_type)
 
-    if "Voie" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Voie):
+    if "Voie" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.Voie):
         return _get_track_in_cbtc_ter()
-    if "IXL_Overlap" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.IXL_Overlap):
+    if "IXL_Overlap" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.IXL_Overlap):
         return _get_overlap_in_cbtc_ter()
-    if "StaticTag_Group" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.StaticTag_Group):
+    if "StaticTag_Group" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.StaticTag_Group):
         return _get_tag_gr_in_cbtc_ter()
-    if "Traffic_Stop" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Traffic_Stop):
+    if "Traffic_Stop" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.Traffic_Stop):
         return _get_traffic_stop_in_cbtc_ter()
 
-    obj_dict = load_sheet(obj_type)
+    object_dict = load_sheet(object_type)
 
     within_cbtc_object_dict = dict()
-    for obj_name, obj_value in obj_dict.items():
-        position = get_object_position(obj_type, obj_name)
+    for object_name, object_value in object_dict.items():
+        position = get_object_position(object_type, object_name)
         if position is None:
             continue
         if isinstance(position, tuple):  # single-point object
-            if _test_for_single_point(position, obj_type, obj_name):
-                within_cbtc_object_dict[obj_name] = obj_value
+            if _test_for_single_point(position, object_type, object_name):
+                within_cbtc_object_dict[object_name] = object_value
         else:  # zone object
-            if _test_for_zone(position, obj_type, obj_name):
-                within_cbtc_object_dict[obj_name] = obj_value
+            if _test_for_zone(position, object_type, object_name):
+                within_cbtc_object_dict[object_name] = object_value
     return within_cbtc_object_dict
 
 
-def _test_for_single_point(position: tuple[str, float], obj_type: str, obj_name: str) -> bool:
+def _test_for_single_point(position: tuple[str, float], object_type: str, object_name: str) -> bool:
     seg = position[0]
     x = position[1]
 
     if is_point_in_cbtc_ter(seg, x) is True:
         test = True
     elif is_point_in_cbtc_ter(seg, x) is None:
-        print_log(f"{obj_type} {obj_name} is on a limit of CBTC Territory. "
+        print_log(f"{object_type} {object_name} is on a limit of CBTC Territory. "
                   f"It is still taken into account.")
         test = True
     else:
@@ -53,7 +53,7 @@ def _test_for_single_point(position: tuple[str, float], obj_type: str, obj_name:
     return test
 
 
-def _test_for_zone(position: list[tuple[str, float]], obj_type: str, obj_name: str) -> bool:
+def _test_for_zone(position: list[tuple[str, float]], object_type: str, object_name: str) -> bool:
     limits_in_cbtc_ter = list()
     for limit_pos in position:
         seg = limit_pos[0]
@@ -64,7 +64,7 @@ def _test_for_zone(position: list[tuple[str, float]], obj_type: str, obj_name: s
             and all(lim_in_cbtc_ter is not False for lim_in_cbtc_ter in limits_in_cbtc_ter)):
         test = True
     elif any(lim_in_cbtc_ter is True for lim_in_cbtc_ter in limits_in_cbtc_ter):
-        print_log(f"{obj_type} {obj_name} is both inside and outside CBTC Territory. "
+        print_log(f"{object_type} {object_name} is both inside and outside CBTC Territory. "
                   f"It is still taken into account.")
         test = True
     else:

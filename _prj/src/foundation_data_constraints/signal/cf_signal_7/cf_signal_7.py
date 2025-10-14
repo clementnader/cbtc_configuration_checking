@@ -31,10 +31,10 @@ def _compute_cf_signal_7_verif() -> dict[str, dict[str, Any]]:
     fp_dict = load_fouling_point_info()
     if not fp_dict:
         print_warning("No Fouling Point information, the results will be only given for the switch as danger point.")
-    nb_sigs = len(sig_list)
+    nb_signals = len(sig_list)
     progress_bar(1, 1, end=True)  # reset progress_bar
     for i, sig_name in enumerate(sig_list):
-        print_log_progress_bar(i, nb_sigs, f"next switch point from {sig_name}")
+        print_log_progress_bar(i, nb_signals, f"next switch point from {sig_name}")
 
         sig_seg, sig_x, sig_direction = get_dc_sys_values(sig_name, DCSYS.Sig.Seg, DCSYS.Sig.X, DCSYS.Sig.Sens)
         sig_track, sig_kp = from_seg_offset_to_track_kp(sig_seg, sig_x)
@@ -84,8 +84,8 @@ def _compute_cf_signal_7_verif() -> dict[str, dict[str, Any]]:
                 res_dict[sig_name]["comments"] = ("The distance to the VSP is larger than the distance to the "
                                                   "fouling point.")
 
-    print_log_progress_bar(nb_sigs, nb_sigs, "computation of distance from signals to switch and "
-                                             "fouling point finished", end=True)
+    print_log_progress_bar(nb_signals, nb_signals, "computation of distance from signals to switch and "
+                                                   "fouling point finished", end=True)
 
     return res_dict
 
@@ -114,21 +114,21 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
 
 def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[str, dict[str, Any]]) -> None:
 
-    for row, obj_val in enumerate(verif_dict.values(), start=start_row):
-        sig_name = obj_val.get("sig_name")
-        sig_seg = obj_val.get("sig_seg")
-        sig_x = obj_val.get("sig_x")
-        sig_direction = obj_val.get("sig_direction")
-        sig_track = obj_val.get("sig_track")
-        sig_kp = obj_val.get("sig_kp")
-        sig_type = obj_val.get("sig_type")
-        vsp_dist = obj_val.get("vsp_dist")
-        next_switch = obj_val.get("next_switch")
-        danger_point = obj_val.get("danger_point")
-        dist_to_switch = obj_val.get("dist_to_switch")
-        fp_dist = obj_val.get("fp_dist")
-        status = obj_val.get("status")
-        comments = obj_val.get("comments")
+    for row, object_value in enumerate(verif_dict.values(), start=start_row):
+        sig_name = object_value.get("sig_name")
+        sig_seg = object_value.get("sig_seg")
+        sig_x = object_value.get("sig_x")
+        sig_direction = object_value.get("sig_direction")
+        sig_track = object_value.get("sig_track")
+        sig_kp = object_value.get("sig_kp")
+        sig_type = object_value.get("sig_type")
+        vsp_dist = object_value.get("vsp_dist")
+        next_switch = object_value.get("next_switch")
+        danger_point = object_value.get("danger_point")
+        dist_to_switch = object_value.get("dist_to_switch")
+        fp_dist = object_value.get("fp_dist")
+        status = object_value.get("status")
+        comments = object_value.get("comments")
 
         _add_line_info(ws, row, sig_name, sig_seg, sig_x, sig_direction, sig_track, sig_kp, sig_type, vsp_dist,
                        next_switch, danger_point, dist_to_switch, fp_dist)

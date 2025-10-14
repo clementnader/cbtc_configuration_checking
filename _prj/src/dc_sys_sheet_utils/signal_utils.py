@@ -88,7 +88,7 @@ def check_upstream_and_downstream_ivb_of_a_signal(sig_name: str) -> None:
         return
     joint_limit = joint_limit[0]
 
-    list_ivb_after_sig = get_zones_on_point(DCSYS.IVB, *joint_limit, direction=get_reverse_direction(sig_direction))
+    list_ivb_after_sig = get_zones_on_point(DCSYS.IVB, *joint_limit, direction=get_opposite_direction(sig_direction))
     if not list_ivb_after_sig:
         if sig_type == SignalType.PERMANENT_ARRET:
             pass

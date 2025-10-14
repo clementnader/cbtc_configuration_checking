@@ -18,10 +18,10 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
     assert res_sheet_name == "FloodGate"
 
     fg_dict = load_sheet(DCSYS.Flood_Gate)
-    list_used_obj_names = list()
+    list_used_object_names = list()
     res_dict = dict()
-    for fg_name, fg_val in fg_dict.items():
-        fg_limits = _get_fg_limits(fg_val)
+    for fg_name, fg_value in fg_dict.items():
+        fg_limits = _get_fg_limits(fg_value)
         associated_survey_dict = _get_corresponding_survey_extremities(fg_name, fg_limits, survey_info,
                                                                        set_of_survey_tracks)
 
@@ -29,16 +29,16 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
                               for n, ((lim_track, lim_kp), survey_name)
                               in enumerate(associated_survey_dict.items(), start=1)]
 
-        for obj_name, dc_sys_original_track, dc_sys_kp, survey_name in limits_survey_info:
+        for object_name, dc_sys_original_track, dc_sys_kp, survey_name in limits_survey_info:
             dc_sys_track = clean_track_name(dc_sys_original_track, set_of_survey_tracks)
-            survey_obj_info = survey_info.get(survey_name)
-            if survey_obj_info is not None:
-                list_used_obj_names.append(survey_name)
+            survey_object_info = survey_info.get(survey_name)
+            if survey_object_info is not None:
+                list_used_object_names.append(survey_name)
 
-            res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                    dc_sys_track, dc_sys_original_track, dc_sys_kp)
+            res_dict[(object_name, dc_sys_track)] = add_info_to_survey(survey_object_info, get_sheet_name(dc_sys_sheet),
+                                                                       dc_sys_track, dc_sys_original_track, dc_sys_kp)
 
-    res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
+    res_dict.update(add_extra_info_from_survey(list_used_object_names, survey_info))
     return res_dict
 
 
@@ -48,8 +48,8 @@ def _clean_flood_gate_extremity_name(fg_lim_name: str) -> str:
     return fg_name
 
 
-def _get_fg_limits(fg_val: dict) -> list[tuple[str, float]]:
-    limits = list(get_dc_sys_zip_values(fg_val, DCSYS.Flood_Gate.Limit.Track, DCSYS.Flood_Gate.Limit.Kp))
+def _get_fg_limits(fg_value: dict) -> list[tuple[str, float]]:
+    limits = list(get_dc_sys_zip_values(fg_value, DCSYS.Flood_Gate.Limit.Track, DCSYS.Flood_Gate.Limit.Kp))
     return limits
 
 

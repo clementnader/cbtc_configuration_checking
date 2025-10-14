@@ -18,7 +18,7 @@ def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_in
                              ) -> tuple[str, Optional[str], bool]:
 
     list_test_names = _get_list_of_joint_test_names_multiple_prefixes(tc1, tc2, limit_position)
-    obj_name = list_test_names[0] + end_of_track_suffix
+    object_name = list_test_names[0] + end_of_track_suffix
 
     survey_name = None
     use_buffer = False
@@ -28,15 +28,15 @@ def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_in
 
     if survey_name is None:
         if end_of_track_suffix and other_limit_position is not None:
-            survey_names = _try_to_find_name_in_survey(obj_name, list_test_names, track, survey_info,
+            survey_names = _try_to_find_name_in_survey(object_name, list_test_names, track, survey_info,
                                                        two_corresponding=True)
             if survey_names is not None:
                 survey_name = _get_corresponding_two_limits_in_survey(limit_position, other_limit_position,
                                                                       survey_names, survey_info)
         else:
-            survey_name = _try_to_find_name_in_survey(obj_name, list_test_names, track, survey_info)
+            survey_name = _try_to_find_name_in_survey(object_name, list_test_names, track, survey_info)
 
-    return obj_name, survey_name, use_buffer
+    return object_name, survey_name, use_buffer
 
 
 def _get_corresponding_two_limits_in_survey(limit_position: tuple[str, float], other_limit_position: tuple[str, float],
@@ -63,7 +63,7 @@ def _find_survey_name_using_block_def(block_def_limit_name: str, track: str, sur
     return None, False
 
 
-def _try_to_find_name_in_survey(obj_name: str, list_test_names: list[str], track: str, survey_info: dict[str, Any],
+def _try_to_find_name_in_survey(object_name: str, list_test_names: list[str], track: str, survey_info: dict[str, Any],
                                 two_corresponding: bool = False,
                                 second_try: bool = False, third_try: bool = False, fourth_try: bool = False
                                 ) -> Union[None, str, list[str]]:
@@ -75,7 +75,7 @@ def _try_to_find_name_in_survey(obj_name: str, list_test_names: list[str], track
             test_name = _remove_specific_patterns(test_name)
         elif fourth_try:
             test_name = _remove_trigrams(test_name)
-        exist_flag, survey_name = _is_name_in_survey(obj_name, test_name, track, survey_info,
+        exist_flag, survey_name = _is_name_in_survey(object_name, test_name, track, survey_info,
                                                      remove_trigrams=fourth_try,
                                                      two_corresponding=two_corresponding)
         if exist_flag:
@@ -85,20 +85,20 @@ def _try_to_find_name_in_survey(obj_name: str, list_test_names: list[str], track
         return None
 
     if third_try:
-        survey_name = _try_to_find_name_in_survey(obj_name, list_test_names, track, survey_info,
+        survey_name = _try_to_find_name_in_survey(object_name, list_test_names, track, survey_info,
                                                   two_corresponding=two_corresponding, fourth_try=True)
         if survey_name is not None:
             return survey_name
         return None
 
     if second_try:
-        survey_name = _try_to_find_name_in_survey(obj_name, list_test_names, track, survey_info,
+        survey_name = _try_to_find_name_in_survey(object_name, list_test_names, track, survey_info,
                                                   two_corresponding=two_corresponding, third_try=True)
         if survey_name is not None:
             return survey_name
         return None
 
-    survey_name = _try_to_find_name_in_survey(obj_name, list_test_names, track, survey_info,
+    survey_name = _try_to_find_name_in_survey(object_name, list_test_names, track, survey_info,
                                                   two_corresponding=two_corresponding, second_try=True)
     if survey_name is not None:
         return survey_name
@@ -164,7 +164,7 @@ def _remove_trigrams(test_name: str) -> Optional[str]:
 LIST_OBJ_NAME_WITHOUT_ASSOCIATION = list()
 
 
-def _is_name_in_survey(obj_name: str, test_name: Optional[str], track, survey_info: dict[str, Any],
+def _is_name_in_survey(object_name: str, test_name: Optional[str], track, survey_info: dict[str, Any],
                        remove_trigrams: bool, two_corresponding: bool = False
                        ) -> tuple[bool, Union[Optional[str], Optional[list[str]]]]:
     global LIST_OBJ_NAME_WITHOUT_ASSOCIATION
@@ -176,7 +176,7 @@ def _is_name_in_survey(obj_name: str, test_name: Optional[str], track, survey_in
     if not two_corresponding and f"{test_name}__{track}" in survey_info:
         return True, f"{test_name}__{track}"
 
-    # We take the names in survey starting with the obj_name, and if it is only one in this case, we take it
+    # We take the names in survey starting with the object_name, and if it is only one in this case, we take it
 
     # Limit between two blocks
     if not test_name.endswith("__END_OF_TRACK"):
@@ -198,28 +198,28 @@ def _is_name_in_survey(obj_name: str, test_name: Optional[str], track, survey_in
     if len(list_matching_objs) == 1:
         return True, list_matching_objs[0]
     if len(list_matching_objs) > 1:
-        if (obj_name, track) not in LIST_OBJ_NAME_WITHOUT_ASSOCIATION:
-            LIST_OBJ_NAME_WITHOUT_ASSOCIATION.append((obj_name, track))
-            print_log(f"\nMultiple joints in survey can correspond to {Color.yellow}{obj_name}{Color.reset} on "
+        if (object_name, track) not in LIST_OBJ_NAME_WITHOUT_ASSOCIATION:
+            LIST_OBJ_NAME_WITHOUT_ASSOCIATION.append((object_name, track))
+            print_log(f"\nMultiple joints in survey can correspond to {Color.yellow}{object_name}{Color.reset} on "
                       f"{Color.light_yellow}{track}{Color.reset}, unable to associate it:\n{Color.default}"
                       f"{[matching_obj.removesuffix(f'__{track}') for matching_obj in list_matching_objs]}"
                       f"{Color.reset}")
     return False, None
 
 
-def _get_matching_objs_in_survey(obj_name: str, track: str, survey_info: dict[str, Any],
+def _get_matching_objs_in_survey(object_name: str, track: str, survey_info: dict[str, Any],
                                  single: bool, remove_trigrams: bool) -> list[str]:
     list_matching_objs = list()
-    for survey_name, survey_obj_info in survey_info.items():
+    for survey_name, survey_object_info in survey_info.items():
         # remove the track in the survey_name, tracks are directly tested in this function
         test_name = survey_name.split("__", 1)[0]
-        survey_track = survey_obj_info["survey_track"]
-        if track == survey_track and _survey_name_matching(test_name, obj_name, single, remove_trigrams):
+        survey_track = survey_object_info["survey_track"]
+        if track == survey_track and _survey_name_matching(test_name, object_name, single, remove_trigrams):
             list_matching_objs.append(survey_name)
     return list_matching_objs
 
 
-def _survey_name_matching(survey_name: str, obj_name: str, single: bool, remove_trigrams: bool) -> bool:
+def _survey_name_matching(survey_name: str, object_name: str, single: bool, remove_trigrams: bool) -> bool:
     if remove_trigrams:
         survey_name = _remove_trigrams(survey_name)
 
@@ -229,9 +229,9 @@ def _survey_name_matching(survey_name: str, obj_name: str, single: bool, remove_
     survey_name = re.sub(r"_L_", r"_", survey_name)
     survey_name = re.sub(r"_R_", r"_", survey_name)
 
-    if not survey_name.startswith(obj_name):
+    if not survey_name.startswith(object_name):
         return False
-    suffix = survey_name.removeprefix(obj_name)
+    suffix = survey_name.removeprefix(object_name)
 
     # Removing switches in name
     suffix = re.sub(r"_SW[DP]?[A-Z0-9]+_[0-9]+", r"", suffix)  # some switches are named SWP or SW or SWD

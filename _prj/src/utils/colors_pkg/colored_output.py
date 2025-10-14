@@ -187,7 +187,7 @@ def print_all_colors():
 
 
 def print_named_colors():
-    for name, val in get_class_attr_dict(Color).items():
+    for name, val in get_class_attributes_dict(Color).items():
         if isinstance(val, str):
             print(f" · {val}{name}{Color.reset}")
 

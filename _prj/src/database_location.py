@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-__all__ = ["DATABASE_LOC"]
+__all__ = ["DATABASE_LOCATION"]
 
 
 class Projects:
@@ -25,6 +25,7 @@ class Projects:
     Baltimore_MTA = "Baltimore_MTA"
     BART = "BART"
     Hurontario_HLR = "Hurontario_HLR"
+    Ontario_OL_RSSOM = "Ontario_OL_RSSOM"
     SEPTA_MSH = "SEPTA_MSH"
 
     Chennai_CMRL = "Chennai_CMRL"
@@ -32,12 +33,30 @@ class Projects:
     NaviMumbai_NMML1 = "NaviMumbai_NMML1"
     Noida_NS01 = "Noida_NS01"
 
+    Sanying_SYL = "Sanying_SYL"
     Taipei_TC1 = "Taipei_TC1"
     Wenzhou_WZS1 = "Wenzhou_WZS1"
 
+    Chengdu_CDL1 = "Chengdu_CDL1"
+    Chengdu_CDL2 = "Chengdu_CDL2"
+    Chengdu_CDL6 = "Chengdu_CDL6"
+    Chengdu_CDL10 = "Chengdu_CDL10"
+    Dalian_DLL1 = "Dalian_DLL1"
+    Dalian_DLL2 = "Dalian_DLL2"
+    Dalian_DLL3 = "Dalian_DLL3"
+    Dalian_JinPu_DLJP = "Dalian_JinPu_DLJP"
+    HangShao_HSL = "HangShao_HSL"
     Hangzhou_HZL1 = "Hangzhou_HZL1"
+    Hangzhou_HZL2 = "Hangzhou_HZL2"
+    Hangzhou_HZL4 = "Hangzhou_HZL4"
+    Hangzhou_HZL9 = "Hangzhou_HZL9"
+    Shaoxing_SXL1 = "Shaoxing_SXL1"
     Shenyang_SHYL1 = "Shenyang_SHYL1"
+    Shenyang_SHYL2 = "Shenyang_SHYL2"
+    Shenyang_SHYL10 = "Shenyang_SHYL10"
+    Tianjin_TJL5 = "Tianjin_TJL5"
     Xian_XAL2 = "Xian_XAL2"
+    Zhengzhou_ZZL1 = "Zhengzhou_ZZL1"
 
     DB_CORE_4_8_0_0 = "DB_CORE_4_8_0_0"
     DB_CORE_6_3_5_0 = "DB_CORE_6_3_5_0"
@@ -78,6 +97,7 @@ PROJECT_NAME = Projects.Panama
 # PROJECT_NAME = Projects.Baltimore_MTA
 # PROJECT_NAME = Projects.BART
 # PROJECT_NAME = Projects.Hurontario_HLR
+# PROJECT_NAME = Projects.Ontario_OL_RSSOM
 # PROJECT_NAME = Projects.SEPTA_MSH
 
 # --- India --- #
@@ -86,13 +106,31 @@ PROJECT_NAME = Projects.Panama
 # PROJECT_NAME = Projects.NaviMumbai_NMML1
 # PROJECT_NAME = Projects.Noida_NS01
 
-# --- China - Taiwan --- #
+# --- China --- #
+# PROJECT_NAME = Projects.Sanying_SYL
 # PROJECT_NAME = Projects.Taipei_TC1
 # PROJECT_NAME = Projects.Wenzhou_WZS1
 # --- China V4 --- #
+# PROJECT_NAME = Projects.Chengdu_CDL1
+# PROJECT_NAME = Projects.Chengdu_CDL2
+# PROJECT_NAME = Projects.Chengdu_CDL6
+# PROJECT_NAME = Projects.Chengdu_CDL10
+# PROJECT_NAME = Projects.Dalian_DLL1
+# PROJECT_NAME = Projects.Dalian_DLL2
+# PROJECT_NAME = Projects.Dalian_DLL3
+# PROJECT_NAME = Projects.Dalian_JinPu_DLJP
+# PROJECT_NAME = Projects.HangShao_HSL
 # PROJECT_NAME = Projects.Hangzhou_HZL1
+# PROJECT_NAME = Projects.Hangzhou_HZL2
+# PROJECT_NAME = Projects.Hangzhou_HZL4
+# PROJECT_NAME = Projects.Hangzhou_HZL9
+# PROJECT_NAME = Projects.Shaoxing_SXL1
 # PROJECT_NAME = Projects.Shenyang_SHYL1
+# PROJECT_NAME = Projects.Shenyang_SHYL2
+# PROJECT_NAME = Projects.Shenyang_SHYL10
+# PROJECT_NAME = Projects.Tianjin_TJL5
 # PROJECT_NAME = Projects.Xian_XAL2
+# PROJECT_NAME = Projects.Zhengzhou_ZZL1
 
 # --- DB CORE --- #
 # PROJECT_NAME = Projects.DB_CORE_4_8_0_0
@@ -113,13 +151,13 @@ PROJECT_NAME = Projects.Panama
 # PROJECT_NAME = Projects.Mock_up_6
 
 
-class ProjectDatabaseLoc:
-    class ControlTablesLoc:
+class ProjectDatabaseLocation:
+    class ControlTablesLocation:
         control_tables_addr = []
         all_pages = []
         specific_pages = []
 
-    class SurveyLoc:
+    class SurveyLocation:
         survey_addr = []
         survey_sheet = []
         all_sheets = []
@@ -143,12 +181,12 @@ class ProjectDatabaseLoc:
     dc_par_addr = r""
     dc_bop_addr = r""
     block_def = None
-    survey_loc = SurveyLoc()
+    survey_loc = SurveyLocation()
     kit_c11_dir = r""
     kit_c11_sp_dir = r""
     kit_c121_d470_dir = r""
-    control_tables_route = ControlTablesLoc()
-    control_tables_overlap = ControlTablesLoc()
+    control_tables_route = ControlTablesLocation()
+    control_tables_overlap = ControlTablesLocation()
     control_tables_config_ini_file = r"control_tables_configuration.ini"
     ixl_apz = IxlApz()
     fouling_point_addr = r""
@@ -402,9 +440,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Lima ML2 -------------------------------#
         elif project_name == Projects.Lima_ML2:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Lima ML2\ML2_C_D470_DB0404RC1\DC_SYS_0404RC1.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\Lima ML2\ML2_C_D470_DB0404RC1\DC_PAR_0404RC1.xls"
-            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Lima ML2\ML2_C_D470_DB0404RC1\DC_BOP.xls"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Lima ML2\ML2_C_D470_DB0403RC1\DC_SYS_0403RC1.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\Lima ML2\ML2_C_D470_DB0403RC1\DC_PAR_0402RC1.xls"
+            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Lima ML2\ML2_C_D470_DB0403RC1\DC_BOP.xls"
             self.kit_c11_dir = r"C:\CBTC\PROJECTS\Lima ML2\ML2_C11_D470_06_06_00_V04_DB0403RC1"
             # -- Survey -- #
             self.survey_loc.survey_addr = [
@@ -492,11 +530,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Panama -------------------------------#
         elif project_name == Projects.Panama:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Panama\PAN_C_D470_08_03_00_V03\DC_SYS.xls"
-            # self.dc_sys_addr = r"C:\CBTC\PROJECTS\Panama\PAN_C_D470_08_03_00_V03\DC_SYS_route.xls"
-            # self.dc_sys_addr = r"C:\CBTC\PROJECTS\Panama\PAN_C_D470_08_03_00_V03\DC_SYS_patch_track.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\Panama\PAN_C_D470_08_03_00_V03\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Panama\PAN_C_D470_08_03_00_V03\C64_D413\DC_BOP.xls"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Panama\PAN_C_D470_08_03_01_V04_R2\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\Panama\PAN_C_D470_08_03_01_V04_R2\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Panama\PAN_C_D470_08_03_01_V04_R2\C64_D413\DC_BOP.xls"
             # -- Control Tables -- #
             self.control_tables_route.control_tables_addr = [
                 r"C:\CBTC\PROJECTS\Panama\CONTROL TABLES\PAN.SIG.IXL.A07.56EN_02.00 – Annex2.pdf"]
@@ -554,9 +590,9 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Thessaloniki TSK -------------------------------#
         elif project_name == Projects.Thessaloniki_TSK:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM_R2\DC_SYS.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM_R2\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V07_KLM_R2\DC_BOP.xls"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V08_KLM\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V08_KLM\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V08_KLM\DC_BOP.xls"
             self.kit_c11_dir = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C11_D470_07_03_03_V13"
             # self.kit_c11_sp_dir = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C11_D470_07_03_03_V12_SP1"
             self.fouling_point_addr = (r"C:\CBTC\PROJECTS\Thessaloniki TSK"
@@ -637,14 +673,19 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- BART -------------------------------#
         elif project_name == Projects.BART:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\USA\BART\BART_C_D470_08_02_00_V00\DC_SYS_BART.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\BART\BART_C_D470_08_02_00_V00\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\CBTC\PROJECTS\USA\BART\BART_C_D470_08_02_00_V00\DC_BOP.xls"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\USA\BART\BART_C_D470_08_03_01_V00\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\BART\BART_C_D470_08_03_01_V00\DC_PAR.xls"
+            self.dc_bop_addr = r"C:\CBTC\PROJECTS\USA\BART\BART_C_D470_08_03_01_V00\DC_BOP.xls"
 
         # ------------------------------- Hurontario HLR -------------------------------#
         elif project_name == Projects.Hurontario_HLR:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\USA\Hurontario HLR\HLR_C_D470_V_7_3_3_0_RC1\DC_SYS.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\Hurontario HLR\HLR_C_D470_V_7_3_3_0_RC1\DC_PAR.xls"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\USA\Hurontario HLR\HLR_C_D470_V_03_01_RC1\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\Hurontario HLR\HLR_C_D470_V_03_01_RC1\DC_PAR.xls"
+
+        # ------------------------------- Ontario OL RSSOM -------------------------------#
+        elif project_name == Projects.Ontario_OL_RSSOM:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\USA\Ontario OL RSSOM\Mainline and deport early DB 00_01"
+                                r"\Ontario_DB_00_01(mainline+deport).xls")
 
         # ------------------------------- SEPTA MSH -------------------------------#
         elif project_name == Projects.SEPTA_MSH:
@@ -680,7 +721,7 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = 5
             self.survey_loc.survey_kp_col = 8
             # -- Control Tables -- #
-            # self.control_tables_config_ini_file = r"control_tables_configuration_cmrl_s1.ini"
+            self.control_tables_config_ini_file = r"control_tables_configuration_cmrl_s1.ini"
             self.control_tables_route.control_tables_addr = [
                 (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
                  r"\CMRL-14057-02.01-STAGE 1 Annexure B_Route_Control_Table.pdf"),
@@ -760,19 +801,24 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = 2
             self.survey_loc.survey_kp_col = 3
 
-        # --- China - Taiwan --- #
+        # --- China --- #
+
+        # ------------------------------- Sanying SYL -------------------------------#
+        elif project_name == Projects.Sanying_SYL:
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\CHINA\Sanying SYL\SYL_C_D470_02_09\DC_SYS_02_09.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\CHINA\Sanying SYL\SYL_C_D470_02_09\DC_PAR.xls"
 
         # ------------------------------- Taipei TC1 -------------------------------#
         elif project_name == Projects.Taipei_TC1:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Taipei TC1\TC1_C_D470_06_00_RC14\DC_SYS.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Taipei TC1\TC1_C_D470_06_00_RC14\DC_PAR.xls"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\CHINA\Taipei TC1\TC1_C_D470_06_00_RC14\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\CHINA\Taipei TC1\TC1_C_D470_06_00_RC14\DC_PAR.xls"
             # -- Survey -- #
-            self.block_def = r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Taipei TC1\CIRCUIT_DE_VOIE.xls"
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\Taipei TC1\CIRCUIT_DE_VOIE.xls"
             self.survey_loc.survey_addr = [
-                r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Taipei TC1\Survey\TC1_D932_Depot_20190221.xlsx",
-                r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Taipei TC1\Survey"
+                r"C:\CBTC\PROJECTS\CHINA\Taipei TC1\Survey\TC1_D932_Depot_20190221.xlsx",
+                r"C:\CBTC\PROJECTS\CHINA\Taipei TC1\Survey"
                 r"\TC1_Mainline_AFS_object_list_draft_J20180720_vs_cmts_20180817_R1_vs_mod_20181212.xlsx",
-                r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Taipei TC1\Survey\901_軌.xlsx"]
+                r"C:\CBTC\PROJECTS\CHINA\Taipei TC1\Survey\901_軌.xlsx"]
             self.survey_loc.survey_sheet = [r"Depot", r"Mainline ", r"工作表1"]
             self.survey_loc.all_sheets = [False, False, False]
             self.survey_loc.start_row = [2, 2, 2]
@@ -783,13 +829,13 @@ class ProjectDatabaseLoc:
 
         # ------------------------------- Wenzhou WZS1 -------------------------------#
         elif project_name == Projects.Wenzhou_WZS1:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Wenzhou WZS1\WZS1_C_D470_08_07\DC_SYS_0807.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Wenzhou WZS1\WZS1_C_D470_08_07\DC_PAR_0807.xls"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZS1_C_D470_08_07\DC_SYS_0807.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZS1_C_D470_08_07\DC_PAR_0807.xls"
             # -- Survey -- #
-            self.block_def = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Wenzhou WZS1\WZS1_C_D470_08_01"
+            self.block_def = (r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZS1_C_D470_08_01"
                               r"\CIRCUIT_DE_VOIE_Corrected.xls")
             self.survey_loc.survey_addr = (
-                r"C:\CBTC\PROJECTS\CHINA - TAIWAN\Wenzhou WZS1\WZ_S1P1_SIG_DB_D932_1409_D932_V1.8_modified.xlsx")
+                r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZ_S1P1_SIG_DB_D932_1409_D932_V1.8_modified.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
@@ -800,23 +846,114 @@ class ProjectDatabaseLoc:
 
         # --- China V4 --- #
 
+        # ------------------------------- Chengdu CDL1 -------------------------------#
+        elif project_name == Projects.Chengdu_CDL1:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL1"
+                                r"\CDL1_C_D470_13_04\DC_SYS_CDL1_13_04.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL1"
+                                r"\CDL1_C_D470_13_04\DC_PAR_CDL1_13_04.xls")
+
+        # ------------------------------- Chengdu CDL2 -------------------------------#
+        elif project_name == Projects.Chengdu_CDL2:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL2"
+                                r"\CDL2_C_D470_07_02\CDL2_DC_SYS_07_02.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL2"
+                                r"\CDL2_C_D470_07_02\CDL2_DC_PAR_07_02.xls")
+
+        # ------------------------------- Chengdu CDL6 -------------------------------#
+        elif project_name == Projects.Chengdu_CDL6:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL6"
+                                r"\CDL6_C_D470_02_02\DC_SYS_CDL6_V02_02.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL6"
+                                r"\CDL6_C_D470_02_02\DC_PAR_CDL6_V02_02.xls")
+
+        # ------------------------------- Chengdu CDL10 -------------------------------#
+        elif project_name == Projects.Chengdu_CDL10:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL10"
+                                r"\CDL10_C_D470_05_03\DC_SYS_CDL10_05_03.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL10"
+                                r"\CDL10_C_D470_05_03\DC_PAR_CDL10_05_02.xls")
+
+        # ------------------------------- Dalian DLL1 -------------------------------#
+        elif project_name == Projects.Dalian_DLL1:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL1"
+                                r"\DLL1_C_D470_02_02\DC_SYS_02_00.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL1"
+                                r"\DLL1_C_D470_02_02\DC_PAR_02_00.xls")
+
+        # ------------------------------- Dalian DLL2 -------------------------------#
+        elif project_name == Projects.Dalian_DLL2:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL2"
+                                r"\DLL2_C_D470_04_04\DC_SYS_DLL2_04_04.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL2"
+                                r"\DLL2_C_D470_04_04\DC_PAR_DLL2_04_04.xls")
+
+        # ------------------------------- Dalian DLL3 -------------------------------#
+        elif project_name == Projects.Dalian_DLL3:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL3"
+                                r"\DLL3_C_D470_02_00\DC_SYS_DLL3_02_00.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL3"
+                                r"\DLL3_C_D470_02_00\DC_PAR_DLL3_02_00.xls")
+
+        # ------------------------------- Dalian JinPu DLJP -------------------------------#
+        elif project_name == Projects.Dalian_JinPu_DLJP:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian JinPu DLJP"
+                                r"\DLJP_C_D470_02_00\DC_SYS_DLJP_02_00.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian JinPu DLJP"
+                                r"\DLJP_C_D470_02_00\DC_PAR_DLJP_02_00.xls")
+
+        # ------------------------------- HangShao HSL -------------------------------#
+        elif project_name == Projects.HangShao_HSL:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\HangShao HSL"
+                                r"\HSL_C_D470_01_02\DC_SYS_HSL_0102.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\HangShao HSL"
+                                r"\HSL_C_D470_01_02\DC_PAR_HSL_0102.xls")
+
         # ------------------------------- Hangzhou HZL1 -------------------------------#
         elif project_name == Projects.Hangzhou_HZL1:
-            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\CHINA V4\Hangzhou HZL1"
-                                r"\HZL1_C_D470_08_03\DC_SYS_HZL1_08_03.xls")
-            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\CHINA V4\Hangzhou HZL1"
-                                r"\HZL1_C_D470_08_03\DC_PAR_HZL1_08_03.xls")
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL1"
+                                r"\HZL1_C_D470_08_04\DC_SYS_HZL1_08_04.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL1"
+                                r"\HZL1_C_D470_08_04\DC_PAR_HZL1_08_04.xls")
 
-        # ------------------------------- Shenyang SHY_L1 -------------------------------#
+        # ------------------------------- Hangzhou HZL2 -------------------------------#
+        elif project_name == Projects.Hangzhou_HZL2:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL2"
+                                r"\HZL2_C_D470_07_01\DC_SYS_HZL2_0701.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL2"
+                                r"\HZL2_C_D470_07_01\DC_PAR_HZL2_0701.xls")
+
+        # ------------------------------- Hangzhou HZL4 -------------------------------#
+        elif project_name == Projects.Hangzhou_HZL4:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL4"
+                                r"\HZL4_C_D470_05_02\DC_SYS_HZL4_05_01.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL4"
+                                r"\HZL4_C_D470_05_02\DC_PAR_HZL4_05_01.xls")
+
+        # ------------------------------- Hangzhou HZL9 -------------------------------#
+        elif project_name == Projects.Hangzhou_HZL9:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL9"
+                                r"\HZL9_C_D470_02_02\DC_SYS_HZL9_02_02.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL9"
+                                r"\HZL9_C_D470_02_02\DC_PAR_HZL9_02_02.xls")
+
+        # ------------------------------- Shaoxing SXL1 -------------------------------#
+        elif project_name == Projects.Shaoxing_SXL1:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shaoxing SXL1"
+                                r"\SXL1_C_D470_03_02\DC_SYS_SXL1_03_02.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shaoxing SXL1"
+                                r"\SXL1_C_D470_03_02\DC_PAR_SXL1_03_02.xls")
+
+        # ------------------------------- Shenyang SHYL1 -------------------------------#
         elif project_name == Projects.Shenyang_SHYL1:
-            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\CHINA V4\Shenyang SHYL1"
-                                r"\SHYL1_10_00\DC_SYS_SHYL1_10_00.xls")
-            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\CHINA V4\Shenyang SHYL1"
-                                r"\SHYL1_10_00\DC_PAR_SHYL1_10_00.xls")
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL1"
+                                r"\SYL1_C_D470_V10_00\DC_SYS_SHYL1_10_00.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL1"
+                                r"\SYL1_C_D470_V10_00\DC_PAR_SHYL1_10_00.xls")
             # -- Survey -- #
-            self.block_def = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\CHINA V4\Shenyang SHYL1"
-                              r"\SHYL1_10_00\CIRCUIT_DE_VOIE.xls")
-            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\CHINA V4\Shenyang SHYL1"
+            self.block_def = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL1"
+                              r"\SYL1_C_D470_V10_00\CIRCUIT_DE_VOIE.xls")
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL1"
                                            r"\SY_L1_SIG_DB_D932_1409_V3.3_2016_5_11.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
@@ -826,12 +963,40 @@ class ProjectDatabaseLoc:
             self.survey_loc.track_col = 2
             self.survey_loc.survey_kp_col = 6
 
+        # ------------------------------- Shenyang SHYL2 -------------------------------#
+        elif project_name == Projects.Shenyang_SHYL2:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL2"
+                                r"\SYL2_C_D470_08_04\DC_SYS_SYL2_V08_04.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL2"
+                                r"\SYL2_C_D470_08_04\DC_PAR_SYL2_V08_04.xls")
+
+        # ------------------------------- Shenyang SHYL10 -------------------------------#
+        elif project_name == Projects.Shenyang_SHYL10:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL10"
+                                r"\SYL10_C_D470_01_00\DC_SYS_SYL10_01_00.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL10"
+                                r"\SYL10_C_D470_01_00\DC_PAR_SYL10_01_00.xls")
+
+        # ------------------------------- Tianjin TJL5 -------------------------------#
+        elif project_name == Projects.Tianjin_TJL5:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Tianjin TJL5"
+                                r"\TJL5_C_D470_02_01\DC_SYS_TJL5_02_01.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Tianjin TJL5"
+                                r"\TJL5_C_D470_02_01\DC_PAR_TJL5_02_01.xls")
+
         # ------------------------------- Xian XAL2 -------------------------------#
         elif project_name == Projects.Xian_XAL2:
-            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\CHINA V4\Xian XAL2"
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Xian XAL2"
                                 r"\XAL2_C_D470_10_03\DC_SYS_XAL2_10_03.xls")
-            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA - TAIWAN\CHINA V4\Xian XAL2"
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Xian XAL2"
                                 r"\XAL2_C_D470_10_03\DC_PAR_XAL2_10_03.xls")
+
+        # ------------------------------- Zhengzhou ZZL1 -------------------------------#
+        elif project_name == Projects.Zhengzhou_ZZL1:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Zhengzhou ZZL1"
+                                r"\ZZL1_C_D470_05_02\DC_SYS_ZZL1_V05_02.xls")
+            self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Zhengzhou ZZL1"
+                                r"\ZZL1_C_D470_05_02\DC_PAR_ZZL1_05_02.xls")
 
         # --- DB CORE --- #
 
@@ -908,15 +1073,15 @@ class ProjectDatabaseLoc:
         self.dc_par_addr = r""
         self.dc_bop_addr = r""
         self.block_def = None
-        self.survey_loc = self.SurveyLoc()
+        self.survey_loc = self.SurveyLocation()
         self.kit_c11_dir = r""
         self.kit_c11_sp_dir = r""
         self.kit_c121_d470_dir = r""
-        self.control_tables_route = self.ControlTablesLoc()
-        self.control_tables_overlap = self.ControlTablesLoc()
+        self.control_tables_route = self.ControlTablesLocation()
+        self.control_tables_overlap = self.ControlTablesLocation()
         self.control_tables_config_ini_file = r"control_tables_configuration.ini"
         self.ixl_apz = self.IxlApz()
         self.fouling_point_addr = r""
 
 
-DATABASE_LOC = ProjectDatabaseLoc(PROJECT_NAME)
+DATABASE_LOCATION = ProjectDatabaseLocation(PROJECT_NAME)

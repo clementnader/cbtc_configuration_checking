@@ -43,14 +43,14 @@ def _get_entrance_points_of_approach_zone(sig_name: str, list_ivb: list[str]) ->
     list_points = list()
     for ivb_name in list_ivb:
         if ivb_name not in tc_dict and ivb_name in ivb_dict:
-            obj_type = "IVB"
+            object_type = "IVB"
         elif ivb_name not in ivb_dict and ivb_name in tc_dict:
-            obj_type = "CDV"
+            object_type = "CDV"
         else:
             print_error(f"For Signal {sig_name}, IXL APZ is defined containing {ivb_name}. "
                         f"But this object does not exist in the DC_SYS (not inside IVB sheet, not inside CDV sheet).")
             continue
-        if obj_type == "IVB":
+        if object_type == "IVB":
             list_points.extend(list(get_dc_sys_zip_values(ivb_dict[ivb_name],
                                                           DCSYS.IVB.Limit.Seg, DCSYS.IVB.Limit.X)))
         else:

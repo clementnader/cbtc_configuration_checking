@@ -13,8 +13,8 @@ def get_joints_dict(block_def_dict: Optional[dict[str, dict[tuple[str, float], s
                     ) -> dict[tuple[str, Optional[str], str], tuple[tuple[str, float], str]]:
     joints_dict = dict()
     block_dict = load_sheet(DCSYS.CDV)
-    for block_name, block_val in block_dict.items():
-        matching_blocks = _find_associated_blocks(block_name, block_val)
+    for block_name, block_value in block_dict.items():
+        matching_blocks = _find_associated_blocks(block_name, block_value)
         for limit_position, matching_block_name in matching_blocks.items():
             if block_def_dict is not None and block_name in block_def_dict:
                 block_def_limit_name = block_def_dict[block_name].get(limit_position)
@@ -47,14 +47,14 @@ def get_joints_dict(block_def_dict: Optional[dict[str, dict[tuple[str, float], s
     return joints_dict
 
 
-def _find_associated_blocks(ref_block_name: str, ref_block_val: dict) -> dict[tuple[str, float], Optional[str]]:
+def _find_associated_blocks(ref_block_name: str, ref_block_value: dict) -> dict[tuple[str, float], Optional[str]]:
     block_dict = load_sheet(DCSYS.CDV)
-    ref_limits = list(get_dc_sys_zip_values(ref_block_val, DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk))
+    ref_limits = list(get_dc_sys_zip_values(ref_block_value, DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk))
     matching_blocks = {ref_limit: None for ref_limit in ref_limits}
-    for block_name, block_val in block_dict.items():
+    for block_name, block_value in block_dict.items():
         if block_name == ref_block_name:
             continue
-        limits = list(get_dc_sys_zip_values(block_val, DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk))
+        limits = list(get_dc_sys_zip_values(block_value, DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk))
         list_matching_limits = _matching_limits(ref_limits, limits)
         for matching_lim in list_matching_limits:
             if matching_blocks[matching_lim] is not None:

@@ -19,11 +19,11 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
     assert res_sheet_name == "Block"
 
     joints_dict = get_joints_dict(block_def_dict)
-    list_used_obj_names = list()
+    list_used_object_names = list()
     res_dict = dict()
-    for joint, obj_val in joints_dict.items():
+    for joint, object_value in joints_dict.items():
         tc1, tc2, joint_track = joint
-        limit_position, block_def_limit_name = obj_val
+        limit_position, block_def_limit_name = object_value
         original_dc_sys_track, dc_sys_kp = limit_position
         dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
@@ -32,23 +32,23 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
         other_limit_position = _manage_two_end_of_track_limits(end_of_track_suffix, tc1, tc2, joint_track,
                                                                original_dc_sys_track, joints_dict)
 
-        obj_name, survey_name, use_buffer = get_joint_name_in_survey(tc1, tc2, dc_sys_track, survey_info,
-                                                                     limit_position, end_of_track_suffix,
-                                                                     block_def_limit_name, buffer_survey_info,
-                                                                     other_limit_position)
-        obj_name = get_display_name(obj_name, tc1, tc2, dc_sys_track, joints_dict)
+        object_name, survey_name, use_buffer = get_joint_name_in_survey(tc1, tc2, dc_sys_track, survey_info,
+                                                                        limit_position, end_of_track_suffix,
+                                                                        block_def_limit_name, buffer_survey_info,
+                                                                        other_limit_position)
+        object_name = get_display_name(object_name, tc1, tc2, dc_sys_track, joints_dict)
         if use_buffer:
-            survey_obj_info = buffer_survey_info.get(survey_name)
+            survey_object_info = buffer_survey_info.get(survey_name)
         else:
-            survey_obj_info = survey_info.get(survey_name)
-        if survey_obj_info is not None:
-            list_used_obj_names.append(survey_name)
+            survey_object_info = survey_info.get(survey_name)
+        if survey_object_info is not None:
+            list_used_object_names.append(survey_name)
 
-        res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                dc_sys_track, original_dc_sys_track, dc_sys_kp)
-        res_dict[(obj_name, dc_sys_track)]["block_def_limit_name"] = block_def_limit_name
+        res_dict[(object_name, dc_sys_track)] = add_info_to_survey(survey_object_info, get_sheet_name(dc_sys_sheet),
+                                                                   dc_sys_track, original_dc_sys_track, dc_sys_kp)
+        res_dict[(object_name, dc_sys_track)]["block_def_limit_name"] = block_def_limit_name
 
-    res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
+    res_dict.update(add_extra_info_from_survey(list_used_object_names, survey_info))
     return res_dict
 
 
@@ -76,22 +76,22 @@ def _manage_two_end_of_track_limits(end_of_track_suffix: str, tc1: str, tc2: Opt
     return other_limit_position
 
 
-def get_display_name(obj_name: str, tc1: str, tc2: Optional[str], track: str,
+def get_display_name(object_name: str, tc1: str, tc2: Optional[str], track: str,
                      joints_dict: dict[tuple[str, Optional[str], str], tuple[tuple[str, float], str]]) -> str:
     if tc2 is not None:
         same_name_joints = [(block1, block2) for (block1, block2, _) in joints_dict
                             if (block1, block2) == (tc1, tc2)]
         if len(same_name_joints) < 2:
-            return obj_name
+            return object_name
         # There are multiple joints with this name, we precise in the name the track to get the unicity
-        return obj_name + f"__on_{track}"
+        return object_name + f"__on_{track}"
 
     else:  # tc2 is None
         same_name_joints = [(block1, block2) for (block1, block2, _) in joints_dict
                             if (block1, block2) == (tc1, tc2)]
         if len(same_name_joints) < 2:
-            return obj_name
-        if not obj_name.endswith("__end_of_track"):
-            return obj_name
+            return object_name
+        if not object_name.endswith("__end_of_track"):
+            return object_name
         # There are multiple joints with this name, we precise in the name the track to get the unicity
-        return obj_name.removesuffix("_track") + f"_{track}"  # joint is already called __end_of_track
+        return object_name.removesuffix("_track") + f"_{track}"  # joint is already called __end_of_track

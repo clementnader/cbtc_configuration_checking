@@ -44,14 +44,14 @@ def is_sig_plt_exit(sig_name) -> tuple[bool, Optional[str]]:
 
 def is_ivb_plt_related(ivb_name: str, with_tc: bool = False) -> tuple[bool, Optional[str]]:
     if with_tc:
-        obj_type = DCSYS.CDV
+        object_type = DCSYS.CDV
     else:
-        obj_type = DCSYS.IVB
-    plt_on_ivb = get_zones_intersecting_zone(DCSYS.Quai, obj_type, ivb_name)
+        object_type = DCSYS.IVB
+    plt_on_ivb = get_zones_intersecting_zone(DCSYS.Quai, object_type, ivb_name)
     if not plt_on_ivb:
         return False, None
     if len(plt_on_ivb) > 1:
-        print_error(f"There are multiple platforms on {get_sh_name(obj_type)} {ivb_name}: {plt_on_ivb}.")
+        print_error(f"There are multiple platforms on {get_sheet_name(object_type)} {ivb_name}: {plt_on_ivb}.")
     plt_name = plt_on_ivb[0]
     return True, plt_name
 
@@ -65,20 +65,21 @@ def _check_plt_exit_signal(plt_name: str) -> None:
         print_warning(f"There are multiple IVBs covering platform {Color.mint_green}{plt_name}{Color.reset}: "
                       f"{Color.default}{ivb_on_plt}{Color.reset}.")
 
-    sigs_on_ivb = list()
+    signals_on_ivb = list()
     for ivb_name in ivb_on_plt:
-        sigs_list = get_objects_in_zone(DCSYS.Sig, DCSYS.IVB, ivb_name)
-        if sigs_list is None:
+        signals_list = get_objects_in_zone(DCSYS.Sig, DCSYS.IVB, ivb_name)
+        if signals_list is None:
             continue
-        sigs_on_ivb.extend([sig for sig in sigs_list if get_dc_sys_value(sig, DCSYS.Sig.Type) != SignalType.HEURTOIR])
+        signals_on_ivb.extend([sig for sig in signals_list if get_dc_sys_value(sig,
+                                                                               DCSYS.Sig.Type) != SignalType.HEURTOIR])
 
     for direction in [Direction.CROISSANT, Direction.DECROISSANT]:
-        sigs_in_direction = [sig for sig in sigs_on_ivb if get_dc_sys_value(sig, DCSYS.Sig.Sens) == direction]
-        if not sigs_in_direction:
+        signals_in_direction = [sig for sig in signals_on_ivb if get_dc_sys_value(sig, DCSYS.Sig.Sens) == direction]
+        if not signals_in_direction:
             print_error(f"There is no signal in {Color.orange}{direction}{Color.reset} covering IVB "
                         f"{Color.default}{ivb_on_plt}{Color.reset} covering platform "
                         f"{Color.mint_green}{plt_name}{Color.reset}.")
-        if len(sigs_in_direction) > 1:
+        if len(signals_in_direction) > 1:
             print_error(f"There are multiple signals in {Color.orange}{direction}{Color.reset} covering IVB "
                         f"{Color.default}{ivb_on_plt}{Color.reset} covering platform "
-                        f"{Color.mint_green}{plt_name}{Color.reset}: {Color.yellow}{sigs_in_direction}{Color.reset}.")
+                        f"{Color.mint_green}{plt_name}{Color.reset}: {Color.yellow}{signals_in_direction}{Color.reset}.")

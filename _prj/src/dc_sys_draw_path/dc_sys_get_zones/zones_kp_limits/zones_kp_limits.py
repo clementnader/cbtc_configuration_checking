@@ -12,7 +12,7 @@ __all__ = ["get_zones_kp_limits", "get_dict_of_zones_kp_limits"]
 
 
 def get_zones_kp_limits(sheet_name: str):
-    sheet_name = get_sh_name(sheet_name)
+    sheet_name = get_sheet_name(sheet_name)
 
     res_dict = get_dict_of_zones_kp_limits(sheet_name)
 
@@ -21,17 +21,17 @@ def get_zones_kp_limits(sheet_name: str):
 
 
 def get_dict_of_zones_kp_limits(sheet_name: str):
-    sheet_name = get_sh_name(sheet_name)
+    sheet_name = get_sheet_name(sheet_name)
     res_dict = dict()
     objects_list = get_objects_list(sheet_name)
-    for obj_name in objects_list:
-        res_dict[obj_name] = _get_limits_on_every_track(sheet_name, obj_name)
+    for object_name in objects_list:
+        res_dict[object_name] = _get_limits_on_every_track(sheet_name, object_name)
     return res_dict
 
 
-def _get_limits_on_every_track(obj_type, obj_name: str) -> Optional[dict[str, list[tuple[float, float]]]]:
-    segs_in_zone = get_segments_within_zone(obj_type, obj_name)
-    zone_limits = get_zone_limits(obj_type, obj_name)
+def _get_limits_on_every_track(object_type, object_name: str) -> Optional[dict[str, list[tuple[float, float]]]]:
+    segs_in_zone = get_segments_within_zone(object_type, object_name)
+    zone_limits = get_zone_limits(object_type, object_name)
     if segs_in_zone is None or zone_limits is None:
         return None
 
@@ -60,9 +60,9 @@ def _get_track_dict_for_within_zone_segs(segs_in_zone: set[str]):
     res_dict = dict()
     seg_dict = load_sheet(DCSYS.Seg)
     for seg in segs_in_zone:
-        seg_val = seg_dict[seg]
-        track = get_dc_sys_value(seg_val, DCSYS.Seg.Voie)
-        start_kp, end_kp = sorted(get_dc_sys_values(seg_val, DCSYS.Seg.Origine, DCSYS.Seg.Fin))
+        seg_value = seg_dict[seg]
+        track = get_dc_sys_value(seg_value, DCSYS.Seg.Voie)
+        start_kp, end_kp = sorted(get_dc_sys_values(seg_value, DCSYS.Seg.Origine, DCSYS.Seg.Fin))
         if track not in res_dict:
             res_dict[track] = list()
         res_dict[track].append((start_kp, end_kp))
@@ -90,8 +90,8 @@ def _get_track_dict_for_limits(zone_limits: list[tuple[str, float, bool]]):
             res_dict[track].append((kp, other_kp))
 
         else:
-            seg_val = seg_dict[seg]
-            start_kp, end_kp = get_dc_sys_values(seg_val, DCSYS.Seg.Origine, DCSYS.Seg.Fin)
+            seg_value = seg_dict[seg]
+            start_kp, end_kp = get_dc_sys_values(seg_value, DCSYS.Seg.Origine, DCSYS.Seg.Fin)
             if downstream:
                 kp, end_kp = sorted((kp, end_kp))
                 res_dict[track].append((kp, end_kp))

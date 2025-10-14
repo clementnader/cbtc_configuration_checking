@@ -54,7 +54,7 @@ class XlBgColor:
 
 
 def get_xl_bg_dimmer_color(bg: str):
-    xl_bg_colors_dict = get_class_attr_dict(XlBgColor)
+    xl_bg_colors_dict = get_class_attributes_dict(XlBgColor)
     for key, val in xl_bg_colors_dict.items():
         if bg == val:
             if key.startswith("light_"):

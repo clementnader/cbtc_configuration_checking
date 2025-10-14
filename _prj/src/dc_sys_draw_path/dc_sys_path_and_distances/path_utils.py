@@ -97,7 +97,7 @@ def get_all_positions_at_a_distance_from_a_point(seg: str, x: float, direction: 
     return list_positions
 
 
-def get_next_objects_from_a_point(seg: str, x: float, direction: str, obj_type: str, obj_direction: str = None,
+def get_next_objects_from_a_point(seg: str, x: float, direction: str, object_type: str, object_direction: str = None,
                                   skip_object_on_point: str = None) -> list[tuple[str, bool, float]]:
     """ Return a list of the first objects reached in the given downstream direction starting from the given point.
     If a switch is met before reaching an object, the list will be composed of multiple objects for each path.
@@ -109,13 +109,13 @@ def get_next_objects_from_a_point(seg: str, x: float, direction: str, obj_type: 
     def inner_recurs_next_seg(inner_seg: str, inner_downstream: bool, path: list[str], path_len: float,
                               inner_x: float = None) -> None:
         nonlocal list_objects
-        obj_on_seg = _is_object_defined_on_seg(inner_seg, inner_x, inner_downstream, inner_downstream == downstream,
-                                               obj_type, obj_direction, skip_object_on_point)
-        if obj_on_seg is not False:
-            obj_name, obj_x = obj_on_seg
-            final_path_len = round(path_len - ((get_segment_length(inner_seg) - obj_x) if inner_downstream else obj_x),
+        object_on_seg = _is_object_defined_on_seg(inner_seg, inner_x, inner_downstream, inner_downstream == downstream,
+                                                  object_type, object_direction, skip_object_on_point)
+        if object_on_seg is not False:
+            object_name, object_x = object_on_seg
+            final_path_len = round(path_len - ((get_segment_length(inner_seg) - object_x) if inner_downstream else object_x),
                                    3)
-            list_objects.append((obj_name, inner_downstream == downstream, final_path_len))
+            list_objects.append((object_name, inner_downstream == downstream, final_path_len))
             return
 
         for next_seg in get_linked_segments(inner_seg, inner_downstream):
@@ -137,43 +137,43 @@ def get_next_objects_from_a_point(seg: str, x: float, direction: str, obj_type: 
 
 
 def _is_object_defined_on_seg(seg: str, x: Optional[float], downstream: bool, polarity: bool,
-                              obj_type: str, obj_direction: str = None, skip_object_on_point: str = None
+                              object_type: str, object_direction: str = None, skip_object_on_point: str = None
                               ) -> Union[bool, tuple[str, float]]:
     """ Return the first object on the segment in the given downstream direction (or first object after the offset x
      if it is specified),
      return False if there is no object on the segment (or no object after the offset x if it is specified).
     Check also that the object matches the object direction if it is specified."""
-    obj_list = get_objects_list(obj_type)
+    object_list = get_objects_list(object_type)
     list_objects = list()
-    for obj_name in obj_list:
-        if obj_name == skip_object_on_point:
+    for object_name in object_list:
+        if object_name == skip_object_on_point:
             continue
-        obj_position = get_object_position(obj_type, obj_name)
-        if isinstance(obj_position, tuple):  # single-point object
-            obj_seg = obj_position[0]
-            obj_x = obj_position[1]
-            if obj_direction is not None and len(obj_position) > 2:
-                if (obj_position[2] != obj_direction) == polarity:  # if the direction is not matching
+        object_position = get_object_position(object_type, object_name)
+        if isinstance(object_position, tuple):  # single-point object
+            object_seg = object_position[0]
+            object_x = object_position[1]
+            if object_direction is not None and len(object_position) > 2:
+                if (object_position[2] != object_direction) == polarity:  # if the direction is not matching
                     # we take into account if we pass a depolarization point on the path
                     continue
-            if seg == obj_seg:
+            if seg == object_seg:
                 if downstream:
-                    if x is None or x <= obj_x:
-                        list_objects.append((obj_name, obj_x))
+                    if x is None or x <= object_x:
+                        list_objects.append((object_name, object_x))
                 else:
-                    if x is None or x >= obj_x:
-                        list_objects.append((obj_name, obj_x))
+                    if x is None or x >= object_x:
+                        list_objects.append((object_name, object_x))
         else:  # zone object
-            for obj_limit in obj_position:
-                lim_seg = obj_limit[0]
-                lim_x = obj_limit[1]
+            for object_limit in object_position:
+                lim_seg = object_limit[0]
+                lim_x = object_limit[1]
                 if seg == lim_seg:
                     if downstream:
                         if x is None or x <= lim_x:
-                            list_objects.append((obj_name, lim_x))
+                            list_objects.append((object_name, lim_x))
                     else:
                         if x is None or x >= lim_x:
-                            list_objects.append((obj_name, lim_x))
+                            list_objects.append((object_name, lim_x))
 
     if not list_objects:
         return False

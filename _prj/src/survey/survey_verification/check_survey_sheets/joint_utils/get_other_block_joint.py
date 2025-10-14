@@ -30,8 +30,8 @@ def get_corresponding_ivb_joint(tc1: str, tc2: Optional[str], limit_position: tu
 def _get_ivb_matching_limit(limit_position: tuple[str, float]) -> list[str]:
     list_matching_ivb = list()
     ivb_dict = load_sheet(DCSYS.IVB)
-    for ivb_name, ivb_val in ivb_dict.items():
-        ivb_limits = list(get_dc_sys_zip_values(ivb_val, DCSYS.IVB.Limit.Track, DCSYS.IVB.Limit.Kp))
+    for ivb_name, ivb_value in ivb_dict.items():
+        ivb_limits = list(get_dc_sys_zip_values(ivb_value, DCSYS.IVB.Limit.Track, DCSYS.IVB.Limit.Kp))
         if any(ivb == limit_position for ivb in ivb_limits):
             list_matching_ivb.append(ivb_name)
     return list_matching_ivb

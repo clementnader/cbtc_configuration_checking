@@ -11,8 +11,8 @@ __all__ = ["generate_cc_parameters_diff_reports"]
 
 
 def generate_cc_parameters_diff_reports():
-    kit_c11 = DATABASE_LOC.kit_c11_dir
-    kit_c11_sp = DATABASE_LOC.kit_c11_sp_dir
+    kit_c11 = DATABASE_LOCATION.kit_c11_dir
+    kit_c11_sp = DATABASE_LOCATION.kit_c11_sp_dir
     if not kit_c11:
         print_error("C11 kit is not filled.")
         return
@@ -24,7 +24,7 @@ def generate_cc_parameters_diff_reports():
 
 def _generate_c11_kit_diff(kit_c11: str, kit_c11_sp: str):
     script_file = _generate_bcomp_script(kit_c11, kit_c11_sp)
-    _generate_cc_param_diff(kit_c11, kit_c11_sp, script_file)
+    _generate_cc_parameter_diff(kit_c11, kit_c11_sp, script_file)
 
 
 def _generate_bcomp_script(kit_c11: str, kit_c11_sp: str) -> str:
@@ -48,7 +48,7 @@ output-options:print-color,print-landscape
     return os.path.realpath(script_file)
 
 
-def _generate_cc_param_diff(kit_c11: str, kit_c11_sp: str, script_file: str):
+def _generate_cc_parameter_diff(kit_c11: str, kit_c11_sp: str, script_file: str):
     if BEYOND_COMPARE_PATH is None:
         print_error(f"\nBeyond Compare 4 is not installed.")
         return

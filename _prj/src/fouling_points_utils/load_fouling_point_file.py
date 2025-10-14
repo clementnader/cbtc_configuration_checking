@@ -3,7 +3,7 @@
 
 import os
 from ..utils import *
-from ..database_location import DATABASE_LOC
+from ..database_location import DATABASE_LOCATION
 
 
 __all__ = ["get_fouling_point_file", "load_fouling_point_info"]
@@ -17,7 +17,7 @@ FOULING_POINT_KP_COLUMN = "C"
 
 
 def get_fouling_point_file() -> Optional[str]:
-    fp_addr = DATABASE_LOC.fouling_point_addr
+    fp_addr = DATABASE_LOCATION.fouling_point_addr
     if not fp_addr:
         return None
     display_info = f"{os.path.split(fp_addr)[-1]} (sheet \"{FP_SHEET}\")"
@@ -25,10 +25,10 @@ def get_fouling_point_file() -> Optional[str]:
 
 
 def load_fouling_point_info() -> Optional[dict[str, float]]:
-    if not DATABASE_LOC.fouling_point_addr:
+    if not DATABASE_LOCATION.fouling_point_addr:
         return None
     res_dict = dict()
-    wb = load_xlsx_wb(DATABASE_LOC.fouling_point_addr)
+    wb = load_xlsx_wb(DATABASE_LOCATION.fouling_point_addr)
     ws = get_xl_sheet_by_name(wb, FP_SHEET)
     for row in range(FIRST_ROW, get_xl_number_of_rows(ws) + 1):
         sw_name = get_xl_cell_value(ws, row=row, column=SW_NAME_COLUMN)

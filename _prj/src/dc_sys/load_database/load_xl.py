@@ -16,15 +16,15 @@ def load_dc_sys_wb(old: bool = False) -> xlrd.book.Book:
     if old:
         global WB_OLD
         if not WB_OLD:
-            print_log(f"Open DC_SYS file {Color.default}\"{DATABASE_LOC.dc_sys_addr_old}\"{Color.reset}.")
-            WB_OLD = load_xlrd_wb(DATABASE_LOC.dc_sys_addr_old, formatting_info=True)
+            print_log(f"Open DC_SYS file {Color.default}\"{DATABASE_LOCATION.dc_sys_addr_old}\"{Color.reset}.")
+            WB_OLD = load_xlrd_wb(DATABASE_LOCATION.dc_sys_addr_old, formatting_info=True)
             print()
         return WB_OLD
     else:
         global WB
         if not WB:
-            print_log(f"Open DC_SYS file {Color.default}\"{DATABASE_LOC.dc_sys_addr}\"{Color.reset}.")
-            WB = load_xlrd_wb(DATABASE_LOC.dc_sys_addr, formatting_info=True)
+            print_log(f"Open DC_SYS file {Color.default}\"{DATABASE_LOCATION.dc_sys_addr}\"{Color.reset}.")
+            WB = load_xlrd_wb(DATABASE_LOCATION.dc_sys_addr, formatting_info=True)
             print()
         return WB
 

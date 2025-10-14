@@ -12,7 +12,7 @@ __all__ = ["get_joint_possible_names"]
 def get_joint_possible_names(tc1: str, tc2: Optional[str], limit_position: tuple[str, float]) -> list[str]:
     list_names = list()
     other_tc1, other_tc2 = get_other_corresponding_tc_joint_on_limit_of_track(tc1, tc2, limit_position)
-    if "IVB" not in get_class_attr_dict(DCSYS):
+    if "IVB" not in get_class_attributes_dict(DCSYS):
         ivb1, ivb2 = None, None
         other_ivb1, other_ivb2 = None, None
     else:

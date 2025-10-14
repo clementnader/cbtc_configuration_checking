@@ -9,19 +9,22 @@ from .object_utils import *
 __all__ = ["get_dc_sys_value", "get_dc_sys_values", "get_dc_sys_zip_values"]
 
 
-def get_dc_sys_value(obj: Union[str, dict[str, Any]], attr: dict[str, Any], obj_sheet: str = None) -> Any:
-    if isinstance(obj, str):
-        if obj_sheet is None:
-            obj_sheet = attr["sh_name"]
-        obj = get_object_value(obj_sheet, obj)
+def get_dc_sys_value(object_value: Union[str, dict[str, Any]], attribute: dict[str, Any],
+                     object_sheet: str = None) -> Any:
+    if isinstance(object_value, str):
+        if object_sheet is None:
+            object_sheet = attribute["sheet_name"]
+        object_value = get_object_value(object_sheet, object_value)
 
-    return get_database_value(obj, attr)
-
-
-def get_dc_sys_values(obj: Union[str, dict[str, Any]], *attrs: dict[str, Any], obj_sheet: str = None):
-    return (get_dc_sys_value(obj, attr, obj_sheet=obj_sheet) for attr in attrs)
+    return get_database_value(object_value, attribute)
 
 
-def get_dc_sys_zip_values(obj: Union[str, dict[str, Any]], *attrs: dict[str, Any], obj_sheet: str = None):
-    gen = get_dc_sys_values(obj, *attrs, obj_sheet=obj_sheet)
+def get_dc_sys_values(object_name: Union[str, dict[str, Any]], *attrs: dict[str, Any],
+                      object_sheet: str = None):
+    return (get_dc_sys_value(object_name, attribute, object_sheet=object_sheet) for attribute in attrs)
+
+
+def get_dc_sys_zip_values(object_name: Union[str, dict[str, Any]], *attrs: dict[str, Any],
+                          object_sheet: str = None):
+    gen = get_dc_sys_values(object_name, *attrs, object_sheet=object_sheet)
     return zip(*gen)

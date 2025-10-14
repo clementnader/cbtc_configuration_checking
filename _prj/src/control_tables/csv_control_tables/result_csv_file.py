@@ -31,7 +31,9 @@ def analyze_csv_file_control_table(control_table_type: str, result_file: str) ->
     return res_dict
 
 
-def create_csv_file_control_table(res_dict: dict, result_file: str) -> dict:
+def create_csv_file_control_table(control_table_type: str, res_dict: dict, result_file: str,
+                                  control_table_addr: str, all_pages: bool, specific_pages: Union[int, tuple[int, int]]
+                                  ) -> dict:
     control_table_info = dict()
     csv = str()
     for name, tables_dict in res_dict.items():
@@ -44,6 +46,12 @@ def create_csv_file_control_table(res_dict: dict, result_file: str) -> dict:
     if csv.strip():
         result_file = _create_csv(csv, result_file)
         print_success(f"The result CSV file can be accessed at \"{result_file}\".")
+    else:
+        print_error(f"No information for {control_table_type.title()} type has been found inside the file\n"
+                    f"{control_table_addr}" + ("page" + (
+            f"s {specific_pages[0]} to {specific_pages[1]}" if isinstance(specific_pages, tuple)
+            else f" {specific_pages}")
+                                               ) if not all_pages else "" + "\nCheck your input.")
     return control_table_info
 
 

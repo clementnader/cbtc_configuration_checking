@@ -18,7 +18,7 @@ def check_pz_ze():
     results = {zc_name: dict() for zc_name in list_zc}
     pz_dict = load_sheet(DCSYS.CBTC_Protection_Zone)
     pz_per_zc = {zc_name: sorted([pz_name for pz_name in pz_dict
-                                  if zc_name in get_zc_of_obj(DCSYS.CBTC_Protection_Zone, pz_name)])
+                                  if zc_name in get_zc_of_object(DCSYS.CBTC_Protection_Zone, pz_name)])
                  for zc_name in list_zc}
 
     for zc_name in list_zc:

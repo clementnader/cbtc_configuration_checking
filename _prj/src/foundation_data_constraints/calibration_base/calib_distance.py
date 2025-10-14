@@ -13,10 +13,10 @@ __all__ = ["verif_calib_distance", "cf_calib_4"]
 def verif_calib_distance():
     print_title(f"Verification of Calibration Base Distance", color=Color.mint_green)
     calib_dict = load_sheet(DCSYS.Calib)
-    for calib_val in calib_dict.values():
-        start_tag, end_tag = get_dc_sys_values(calib_val, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
-        dist_calib = get_dc_sys_value(calib_val, DCSYS.Calib.DistanceCalib)
-        direction_calib = get_dc_sys_value(calib_val, DCSYS.Calib.SensCalib)
+    for calib_value in calib_dict.values():
+        start_tag, end_tag = get_dc_sys_values(calib_value, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
+        dist_calib = get_dc_sys_value(calib_value, DCSYS.Calib.DistanceCalib)
+        direction_calib = get_dc_sys_value(calib_value, DCSYS.Calib.SensCalib)
         loc_start_tag = get_object_position(DCSYS.Bal, start_tag)
         loc_end_tag = get_object_position(DCSYS.Bal, end_tag)
         dist_test = get_dist_downstream(*loc_start_tag, *loc_end_tag, downstream=direction_calib == Direction.CROISSANT)

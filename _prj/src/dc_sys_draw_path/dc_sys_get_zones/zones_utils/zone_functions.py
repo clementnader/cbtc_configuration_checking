@@ -15,11 +15,11 @@ __all__ = ["is_point_in_zone", "is_seg_in_zone", "get_zones_on_point", "get_zone
            "depolarization_in_zone", "get_dist_downstream_in_zone", "get_min_path_downstream_in_zone"]
 
 
-def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str = None,
+def is_point_in_zone(object_type, object_name: str, seg: str, x: float, direction: str = None,
                      ignore_objects_on_zone_limits: bool = False) -> Optional[bool]:
-    obj_type = get_sh_name(obj_type)
-    zone_segments = get_segments_within_zone(obj_type, obj_name)
-    zone_limits = get_zone_limits(obj_type, obj_name)
+    object_type = get_sheet_name(object_type)
+    zone_segments = get_segments_within_zone(object_type, object_name)
+    zone_limits = get_zone_limits(object_type, object_name)
     if seg in zone_segments:
         return True
 
@@ -28,7 +28,7 @@ def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str
                        if are_points_matching(lim_seg, lim_x, seg, x)]
     if limits_on_point:
         if len(limits_on_point) > 1:
-            print_warning(f"Weird zone for {obj_type} {Color.blue}{obj_name}{Color.reset} with multiple limits "
+            print_warning(f"Weird zone for {object_type} {Color.blue}{object_name}{Color.reset} with multiple limits "
                           f"defined on the same point:\n{limits_on_point}")
         lim_downstream = limits_on_point[0][2]
         if not ignore_objects_on_zone_limits and direction is not None:
@@ -52,38 +52,38 @@ def is_point_in_zone(obj_type, obj_name: str, seg: str, x: float, direction: str
     return False
 
 
-def is_seg_in_zone(obj_type, obj_name: str, seg: str) -> bool:
-    zone_segments = get_all_segments_in_zone(obj_type, obj_name)
+def is_seg_in_zone(object_type, object_name: str, seg: str) -> bool:
+    zone_segments = get_all_segments_in_zone(object_type, object_name)
     return seg in zone_segments
 
 
-def get_objects_in_zone(obj_type, zone_obj_type, zone_name: str,
+def get_objects_in_zone(object_type, zone_object_type, zone_name: str,
                         ignore_objects_on_zone_limits: bool = False) -> Optional[list[str]]:
-    obj_type = get_sh_name(obj_type)
+    object_type = get_sheet_name(object_type)
     list_obj = list()
 
-    obj_list = get_objects_list(obj_type)
-    for obj_name in obj_list:
-        obj_position = get_object_position(obj_type, obj_name)
-        if obj_position is None:
+    object_list = get_objects_list(object_type)
+    for object_name in object_list:
+        object_position = get_object_position(object_type, object_name)
+        if object_position is None:
             continue
 
-        if isinstance(obj_position, tuple):  # single point object
-            if is_point_in_zone(zone_obj_type, zone_name, *obj_position,
+        if isinstance(object_position, tuple):  # single point object
+            if is_point_in_zone(zone_object_type, zone_name, *object_position,
                                 ignore_objects_on_zone_limits=ignore_objects_on_zone_limits):
-                list_obj.append(obj_name)
+                list_obj.append(object_name)
         else:  # zone object
-            if are_zones_intersecting(zone_obj_type, zone_name, obj_type, obj_name):
-                list_obj.append(obj_name)
+            if are_zones_intersecting(zone_object_type, zone_name, object_type, object_name):
+                list_obj.append(object_name)
     if not list_obj:
         return None
     return list_obj
 
 
-def depolarization_in_zone(obj_type, obj_name: str) -> list[list[str]]:
+def depolarization_in_zone(object_type, object_name: str) -> list[list[str]]:
     depolarized_segments = get_depolarized_segments()
     all_depolarized_segments = [segment_name for sub_list in depolarized_segments for segment_name in sub_list]
-    segments_in_zone = get_all_segments_in_zone(obj_type, obj_name)
+    segments_in_zone = get_all_segments_in_zone(object_type, object_name)
     if not any(seg in segments_in_zone for seg in all_depolarized_segments):
         return []
 
@@ -111,100 +111,100 @@ def depolarization_in_zone(obj_type, obj_name: str) -> list[list[str]]:
     return list_depol_in_zone
 
 
-def get_zones_on_object(zones_obj_type, obj_type, obj_name: str) -> Optional[list[str]]:
-    obj_position = get_object_position(obj_type, obj_name)
-    if obj_position is None:
+def get_zones_on_object(zones_object_type, object_type, object_name: str) -> Optional[list[str]]:
+    object_position = get_object_position(object_type, object_name)
+    if object_position is None:
         return None
 
-    if isinstance(obj_position, tuple):  # single-point object
-        return get_zones_on_point(zones_obj_type, *obj_position)
+    if isinstance(object_position, tuple):  # single-point object
+        return get_zones_on_point(zones_object_type, *object_position)
 
     else:  # zone object
-        return get_zones_intersecting_zone(zones_obj_type, obj_type, obj_name)
+        return get_zones_intersecting_zone(zones_object_type, object_type, object_name)
 
 
-def get_zones_on_point(obj_type, seg: str, x: float, direction: str = None) -> Optional[list[str]]:
-    obj_type = get_sh_name(obj_type)
+def get_zones_on_point(object_type, seg: str, x: float, direction: str = None) -> Optional[list[str]]:
+    object_type = get_sheet_name(object_type)
     list_obj = list()
 
-    obj_list = get_objects_list(obj_type)
-    for obj_name in obj_list:
-        if is_point_in_zone(obj_type, obj_name, seg, x, direction):
-            list_obj.append(obj_name)
+    object_list = get_objects_list(object_type)
+    for object_name in object_list:
+        if is_point_in_zone(object_type, object_name, seg, x, direction):
+            list_obj.append(object_name)
     if not list_obj:
-        # print_warning(f"No {get_sh_name(obj_type)} has been found covering {(seg, x)}.")
+        # print_warning(f"No {get_sheet_name(object_type)} has been found covering {(seg, x)}.")
         return None
     return list_obj
 
 
-def get_zones_on_segment(obj_type, seg: str) -> Optional[list[str]]:
-    obj_type = get_sh_name(obj_type)
+def get_zones_on_segment(object_type, seg: str) -> Optional[list[str]]:
+    object_type = get_sheet_name(object_type)
     list_obj = list()
 
-    obj_list = get_objects_list(obj_type)
-    for obj_name in obj_list:
-        if is_seg_in_zone(obj_type, obj_name, seg):
-            list_obj.append(obj_name)
+    object_list = get_objects_list(object_type)
+    for object_name in object_list:
+        if is_seg_in_zone(object_type, object_name, seg):
+            list_obj.append(object_name)
     if not list_obj:
-        # print_warning(f"No {get_sh_name(obj_type)} has been found covering {(seg, x)}.")
+        # print_warning(f"No {get_sheet_name(object_type)} has been found covering {(seg, x)}.")
         return None
     return list_obj
 
 
-def get_zones_intersecting_zone(zones_obj_type, my_obj_type, my_obj_name: str) -> list[str]:
+def get_zones_intersecting_zone(zones_object_type, my_object_type, my_object_name: str) -> list[str]:
     list_obj = list()
-    obj_list = get_objects_list(zones_obj_type)
-    for obj_name in obj_list:
-        if are_zones_intersecting(zones_obj_type, obj_name, my_obj_type, my_obj_name):
-            list_obj.append(obj_name)
+    object_list = get_objects_list(zones_object_type)
+    for object_name in object_list:
+        if are_zones_intersecting(zones_object_type, object_name, my_object_type, my_object_name):
+            list_obj.append(object_name)
     return list_obj
 
 
-def are_zones_intersecting(obj_type1, obj_name1: str, obj_type2, obj_name2: str):
-    zone_segments1 = get_segments_within_zone(obj_type1, obj_name1)
-    zone_limits1 = get_zone_limits(obj_type1, obj_name1)
-    zone_segments2 = get_segments_within_zone(obj_type2, obj_name2)
-    zone_limits2 = get_zone_limits(obj_type2, obj_name2)
+def are_zones_intersecting(object_type1, object_name1: str, object_type2, object_name2: str):
+    zone_segments1 = get_segments_within_zone(object_type1, object_name1)
+    zone_limits1 = get_zone_limits(object_type1, object_name1)
+    zone_segments2 = get_segments_within_zone(object_type2, object_name2)
+    zone_limits2 = get_zone_limits(object_type2, object_name2)
 
     for seg in zone_segments1:
-        if is_seg_in_zone(obj_type2, obj_name2, seg):
+        if is_seg_in_zone(object_type2, object_name2, seg):
             return True
     for seg in zone_segments2:
-        if is_seg_in_zone(obj_type1, obj_name1, seg):
+        if is_seg_in_zone(object_type1, object_name1, seg):
             return True
 
     for seg, x, downstream in zone_limits1:
         limit_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
-        test_direction = get_reverse_direction(limit_direction)
+        test_direction = get_opposite_direction(limit_direction)
         # for a single point object, we consider it belongs to the zone upstream of it,
         # behavior is mimicked for the zone limits too
-        if is_point_in_zone(obj_type2, obj_name2, seg, x, test_direction):
+        if is_point_in_zone(object_type2, object_name2, seg, x, test_direction):
             return True
 
     for seg, x, downstream in zone_limits2:
         limit_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
-        test_direction = get_reverse_direction(limit_direction)
+        test_direction = get_opposite_direction(limit_direction)
         # for a single point object, we consider it belongs to the zone upstream of it,
         # behavior is mimicked for the zone limits too
-        if is_point_in_zone(obj_type1, obj_name1, seg, x, test_direction):
+        if is_point_in_zone(object_type1, object_name1, seg, x, test_direction):
             return True
 
     return False
 
 
-def is_zone_completely_included_in_zone(small_obj_type, small_obj_name: str, big_obj_type, big_obj_name: str
+def is_zone_completely_included_in_zone(small_object_type, small_object_name: str, big_object_type, big_object_name: str
                                         ) -> tuple[bool, list[tuple[str, float, str]]]:
     test = True
     list_limits_not_in_big_zone = list()
 
-    small_zone_limits = get_zone_limits(small_obj_type, small_obj_name)
+    small_zone_limits = get_zone_limits(small_object_type, small_object_name)
 
     for seg, x, downstream in small_zone_limits:
         limit_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
-        test_direction = get_reverse_direction(limit_direction)
+        test_direction = get_opposite_direction(limit_direction)
         # for a single point object, we consider it belongs to the zone upstream of it,
         # behavior is mimicked for the zone limits too
-        if not is_point_in_zone(big_obj_type, big_obj_name, seg, x, test_direction):
+        if not is_point_in_zone(big_object_type, big_object_name, seg, x, test_direction):
             test = False
             list_limits_not_in_big_zone.append((seg, x, limit_direction))
 
@@ -212,9 +212,9 @@ def is_zone_completely_included_in_zone(small_obj_type, small_obj_name: str, big
 
 
 def get_dist_downstream_in_zone(seg1: str, x1: float, seg2: str, x2: float, downstream: bool,
-                                obj_type, obj_name: str) -> Optional[float]:
-    if (is_point_in_zone(obj_type, obj_name, seg1, x1) is False
-            or is_point_in_zone(obj_type, obj_name, seg2, x2) is False):
+                                object_type, object_name: str) -> Optional[float]:
+    if (is_point_in_zone(object_type, object_name, seg1, x1) is False
+            or is_point_in_zone(object_type, object_name, seg2, x2) is False):
         return None
 
     if are_points_matching(seg1, x1, seg2, x2, tolerance=1E-4):
@@ -226,7 +226,7 @@ def get_dist_downstream_in_zone(seg1: str, x1: float, seg2: str, x2: float, down
         else:
             return None
 
-    dist, _, upstream = get_min_path_downstream_in_zone(seg1, seg2, downstream, obj_type, obj_name)
+    dist, _, upstream = get_min_path_downstream_in_zone(seg1, seg2, downstream, object_type, object_name)
 
     if dist is None:
         return None
@@ -243,7 +243,7 @@ def get_dist_downstream_in_zone(seg1: str, x1: float, seg2: str, x2: float, down
 
 
 def get_min_path_downstream_in_zone(start_seg: str, end_seg: str, downstream: bool,
-                                    obj_type, obj_name: str
+                                    object_type, object_name: str
                                     ) -> tuple[Optional[float], list[str], Optional[bool]]:
     min_len = -1
     min_path = []
@@ -262,7 +262,7 @@ def get_min_path_downstream_in_zone(start_seg: str, end_seg: str, downstream: bo
             min_path = path
             associated_upstream = upstream
             return
-        if seg not in get_all_segments_in_zone(obj_type, obj_name):  # not inside the zone, we stop
+        if seg not in get_all_segments_in_zone(object_type, object_name):  # not inside the zone, we stop
             return
         if (seg, not inner_downstream) not in accessible_segs_from_end:  # to optimize:
             # if we reach a segment not accessible from the end segment in the other direction, we can stop,

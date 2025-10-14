@@ -3,7 +3,7 @@
 
 import os
 from ..utils import *
-# from ..database_location import DATABASE_LOC
+# from ..database_location import DATABASE_LOCATION
 from .cc_param_utils import *
 from .html_style_diff_file import *
 
@@ -31,16 +31,16 @@ def check_diff_cc_param():
     for train_type, type_dict in dict_split_type_trains.items():
         ref_train_num = list(type_dict.keys())[0]
         ref_train_unit_dir = type_dict[ref_train_num]["main_dir"]
-        ref_cc_param_path = type_dict[ref_train_num]["file_path"]
-        ref_file = os.path.join(MAIN_DIRECTORY, ref_train_unit_dir, ref_cc_param_path)
+        ref_cc_parameter_path = type_dict[ref_train_num]["file_path"]
+        ref_file = os.path.join(MAIN_DIRECTORY, ref_train_unit_dir, ref_cc_parameter_path)
         with open(os.path.join(ref_file), "r") as ref_f:
             ref_lines = ref_f.readlines()
             titles = read_csv(ref_lines[0])
             dict_diff = dict()
             for train_value in type_dict.values():
                 train_unit_dir = train_value["main_dir"]
-                cc_param_path = train_value["file_path"]
-                other_file = os.path.join(MAIN_DIRECTORY, train_unit_dir, cc_param_path)
+                cc_parameter_path = train_value["file_path"]
+                other_file = os.path.join(MAIN_DIRECTORY, train_unit_dir, cc_parameter_path)
                 with open(os.path.join(MAIN_DIRECTORY, other_file), "r") as f:
                     lines = f.readlines()
                     for i, (ref_line, line) in enumerate(zip(ref_lines, lines)):
@@ -92,20 +92,20 @@ def get_cc_param():
             if len(list_cab_dir) != 1:  # TODO take multiple cabs into account
                 print_warning(f"Multiple Cabs in {os.path.join(MAIN_DIRECTORY, train_dir)}:"
                               f"\n\t{list_cab_dir = }.")
-            dict_train_units[train_num]["file_path"] = get_cc_param_from_cabdir(train_dir, list_cab_dir[0])
+            dict_train_units[train_num]["file_path"] = get_cc_parameter_from_cabdir(train_dir, list_cab_dir[0])
     return dict_train_units
 
 
-def get_cc_param_from_cabdir(train_dir, cab_dir):
+def get_cc_parameter_from_cabdir(train_dir, cab_dir):
     list_cc_param = list()
     cab_full_path = os.path.join(MAIN_DIRECTORY, train_dir, cab_dir)
-    for cc_param_dir in os.listdir(cab_full_path):
-        cc_param_full_path = os.path.join(cab_full_path, cc_param_dir)
-        if os.path.isdir(cc_param_full_path) and cc_param_dir == CC_PARAM_DIR:
-            for cc_param_file in os.listdir(cc_param_full_path):
-                file_full_path = os.path.join(cc_param_full_path, cc_param_file)
-                if os.path.isfile(file_full_path) and cc_param_file == CC_PARAM_FILE:
-                    list_cc_param.append(os.path.join(cab_dir, cc_param_dir, cc_param_file))
+    for cc_parameter_dir in os.listdir(cab_full_path):
+        cc_parameter_full_path = os.path.join(cab_full_path, cc_parameter_dir)
+        if os.path.isdir(cc_parameter_full_path) and cc_parameter_dir == CC_PARAM_DIR:
+            for cc_parameter_file in os.listdir(cc_parameter_full_path):
+                file_full_path = os.path.join(cc_parameter_full_path, cc_parameter_file)
+                if os.path.isfile(file_full_path) and cc_parameter_file == CC_PARAM_FILE:
+                    list_cc_param.append(os.path.join(cab_dir, cc_parameter_dir, cc_parameter_file))
     if not list_cc_param:
         print_warning(f"No {CC_PARAM_FILE} in {os.path.join(MAIN_DIRECTORY, train_dir)}")
         return None
@@ -152,7 +152,7 @@ def write_file(html_code):
 
 
 def create_html_file(dict_diff_results):
-    html_code = html_start(title="CCparam_diff", additional_style=additional_css_style())
+    html_code = html_start(title="CCparameter_diff", additional_style=additional_css_style())
     html_code += html_h1("Differences between CC parameters")
     html_code += html_h2(f"within {MAIN_DIRECTORY.split(os.path.sep)[-1]}")
     html_code += html_display_info()

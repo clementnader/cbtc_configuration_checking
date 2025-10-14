@@ -5,8 +5,8 @@
 # Automatically generated Python file defining classes for the enumerates from the EnumList sheet  #
 # the CCTool-OO Schema file.                                                                       #
 # ------------------------------------------------------------------------------------------------ #
-# Revision: 08/03/00/00                                                                            #
-# Comments: Compliant with Ref Sys 08-03-00-00                                                     #
+# Revision: 08/03/01/00                                                                            #
+# Comments: Compliant with Ref Sys 08-03-01-00                                                     #
 # ------------------------------------------------------------------------------------------------ #
 
 
@@ -86,6 +86,8 @@ class TypeClasseObjetMESPAS:
     TRAFFIC_STOP = "TRAFFIC_STOP"
     TSR_PREDEFINED_AREA = "TSR_PREDEFINED_AREA"
     PASSAGE_DETECTOR = "PASSAGE_DETECTOR"
+    SWEEPING_ZONE = "SWEEPING ZONE"
+    TRACTION_POWER_ZONE = "TRACTION POWER ZONE"
 
 
 class TypeClasseObjetPASATS:
@@ -95,6 +97,7 @@ class TypeClasseObjetPASATS:
     AIGUILLE = "AIGUILLE"
     IVB = "IVB"
     ZAUM = "ZAUM"
+    SUB_SWEEPING_ZONE = "SUB_SWEEPING_ZONE"
 
 
 class TypeClasseObjetPASMES:
@@ -106,7 +109,9 @@ class TypeClasseObjetPASMES:
     IVB = "IVB"
     CROSSING_CALLING_AREA = "CROSSING_CALLING_AREA"
     PROTECTION_ZONE = "PROTECTION_ZONE"
-    TSR_PREDEFINED_AREA_SPEED = "TSR_PREDEFINED_AREA_SPEED"
+    TSR_PREDEFINED_AREA = "TSR_PREDEFINED_AREA"
+    SWEEPING_ZONE = "SWEEPING_ZONE"
+    TRACTION_POWER_ZONE = "TRACTION POWER ZONE"
 
 
 class TypeClasseObjetVariantBF:
@@ -253,6 +258,8 @@ class TypeNomLogiqueInfoMESPAS:
     TSR_AREA_SPEED_REMOVE_CMD = "TSR_AREA_SPEED_REMOVE_CMD"
     NO_PASSAGE = "NO_PASSAGE"
     NO_PRESENCE = "NO_PRESENCE"
+    SZ_STATUS = "SZ_STATUS"
+    SZ_CLEARABLE = "SZ_CLEARABLE"
 
 
 class TypeNomLogiqueInfoPASATS:
@@ -272,6 +279,7 @@ class TypeNomLogiqueInfoPASATS:
     SAFETY_RELATED_SKIP_REVERSE_DIR = "SAFETY_RELATED_SKIP_REVERSE_DIR"
     SAFETY_RELATED_SKIP_NORMAL_DIR = "SAFETY_RELATED_SKIP_NORMAL_DIR"
     AM_MVT_AUTH = "AM_MVT_AUTH"
+    ACTIVE_STATE = "ACTIVE_STATE"
 
 
 class TypeNomLogiqueInfoPASMES:
@@ -300,6 +308,7 @@ class TypeNomLogiqueInfoPASMES:
     POWER_AUTHORIZED = "POWER_AUTHORIZED"
     CROSSING_AUTH_REQUEST = "CROSSING_AUTH_REQUEST"
     TSR_AREA_SPEED_SUPERVISION = "TSR_AREA_SPEED_SUPERVISION"
+    SZ_CLEARED = "SZ_CLEARED"
 
 
 class TypeNomLogiqueVariantBF:

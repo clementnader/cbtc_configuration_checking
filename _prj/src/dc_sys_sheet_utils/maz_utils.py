@@ -25,7 +25,7 @@ def get_maz_of_extremities(limits: Union[list[tuple[str, float]], list[tuple[str
     for lim in limits:
         seg, x = lim[0], lim[1]
         if len(lim) > 2:
-            direction = get_reverse_direction(lim[2])  # for a single point object,
+            direction = get_opposite_direction(lim[2])  # for a single point object,
             # we consider it belongs to the zone upstream of it,
             # behavior is mimicked for the zone too
         else:

@@ -6,7 +6,7 @@ from ..cctool_oo_schema import *
 from ..dc_sys import *
 from ..dc_sys_draw_path.dc_sys_path_and_distances import is_seg_downstream, get_next_objects_from_a_point
 from ..dc_sys_draw_path.dc_sys_get_zones import (get_objects_in_zone_limits, depolarization_in_zone_limits,
-                                                 is_seg_in_zone_limits, get_oriented_limits_of_obj)
+                                                 is_seg_in_zone_limits, get_oriented_limits_of_object)
 
 
 __all__ = ["get_slope_at_point", "get_min_and_max_slopes_at_point",
@@ -164,10 +164,10 @@ def get_min_and_max_slopes_in_zone_limits(zone_limits: list[tuple[str, float, st
     return min(slopes_values), max(slopes_values)
 
 
-def get_min_and_max_slopes_in_zone(obj_type, obj_name: str,
+def get_min_and_max_slopes_in_zone(object_type, object_name: str,
                                    polarity_ref_seg: str = None) -> Optional[tuple[float, float]]:
-    zone_limits = get_oriented_limits_of_obj(obj_type, obj_name)
+    zone_limits = get_oriented_limits_of_object(object_type, object_name)
     if zone_limits is None:
-        print(f"{get_sh_name(obj_type)} {obj_name} is not a zone object.")
+        print(f"{get_sheet_name(object_type)} {object_name} is not a zone object.")
         return None
     return get_min_and_max_slopes_in_zone_limits(zone_limits, polarity_ref_seg)

@@ -77,8 +77,8 @@ def get_sw_associated_to_vb(vb_limits):
     assert len(vb_limits) == 3
     sw_dict = load_sheet(DCSYS.Aig)
     lim_segs = sorted([seg for seg, _ in vb_limits])
-    for sw_name, sw_val in sw_dict.items():
-        sw_segs = sorted(get_dc_sys_values(sw_val, DCSYS.Aig.SegmentPointe, DCSYS.Aig.SegmentTd, DCSYS.Aig.SegmentTg))
+    for sw_name, sw_value in sw_dict.items():
+        sw_segs = sorted(get_dc_sys_values(sw_value, DCSYS.Aig.SegmentPointe, DCSYS.Aig.SegmentTd, DCSYS.Aig.SegmentTg))
         if lim_segs == sw_segs:
             return sw_name
         if all(is_seg_in_vb(vb_limits, seg) for seg in sw_segs):

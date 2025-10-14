@@ -17,8 +17,8 @@ __all__ = ["cc_quai_6", "r_point_arret_ato_10"]
 
 def cc_quai_6(in_cbtc: bool = False):
     print_title("Verification of CC_QUAI_6", color=Color.mint_green)
-    stopping_point_station_without_psd_dist = get_param_value("stopping_point_station_without_psd_dist")
-    stopping_point_station_with_psd_dist = get_param_value("stopping_point_station_with_psd_dist")
+    stopping_point_station_without_psd_dist = get_parameter_value("stopping_point_station_without_psd_dist")
+    stopping_point_station_with_psd_dist = get_parameter_value("stopping_point_station_with_psd_dist")
 
     res_dict = dict()
 
@@ -55,7 +55,7 @@ def cc_quai_6(in_cbtc: bool = False):
 
 def r_point_arret_ato_10(in_cbtc: bool = False):
     print_title("Verification of R_POINT_ARRET_ATO_10", color=Color.mint_green)
-    stopping_point_out_station_calibration_dist = get_param_value("stopping_point_out_station_calibration_dist")
+    stopping_point_out_station_calibration_dist = get_parameter_value("stopping_point_out_station_calibration_dist")
 
     res_dict = dict()
 

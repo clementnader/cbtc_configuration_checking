@@ -167,30 +167,30 @@ def create_parameters_sheet(wb: openpyxl.workbook.Workbook) -> None:
     ws, start_row = _create_empty_parameters_sheet(wb)
 
     params_dict = {
-        "oc_zc_data_freshness_threshold": get_param_with_unit("oc_zc_data_freshness_threshold"),
-        "ixl_cycle_time": get_param_with_unit("ixl_cycle_time"),
+        "oc_zc_data_freshness_threshold": get_parameter_value_with_unit("oc_zc_data_freshness_threshold"),
+        "ixl_cycle_time": get_parameter_value_with_unit("ixl_cycle_time"),
         "rs_max_speed": (get_train_max_speed()*3.6, "km/h"),
-        "line_max_speed": get_param_with_unit("line_max_speed", keep_km_per_h=True),
+        "line_max_speed": get_parameter_value_with_unit("line_max_speed", keep_km_per_h=True),
     }
 
-    for row, (param_name, param_info) in enumerate(params_dict.items(), start=start_row):
-        param_value, param_unit = param_info
-        create_cell(ws, param_name, row=row, column=PARAM_NAME_COL, borders=True)
-        create_cell(ws, param_value, row=row, column=PARAM_VALUE_COL, borders=True)
-        create_defined_name(wb, PARAMETERS_SHEET, name=param_name, row=row, column=PARAM_VALUE_COL)
-        create_cell(ws, param_unit, row=row, column=PARAM_UNIT_COL, borders=True)
+    for row, (parameter_name, parameter_info) in enumerate(params_dict.items(), start=start_row):
+        parameter_value, parameter_unit = parameter_info
+        create_cell(ws, parameter_name, row=row, column=PARAM_NAME_COL, borders=True)
+        create_cell(ws, parameter_value, row=row, column=PARAM_VALUE_COL, borders=True)
+        create_defined_name(wb, PARAMETERS_SHEET, name=parameter_name, row=row, column=PARAM_VALUE_COL)
+        create_cell(ws, parameter_unit, row=row, column=PARAM_UNIT_COL, borders=True)
 
 
 def _create_empty_parameters_sheet(wb: openpyxl.workbook.Workbook) -> tuple[xl_ws.Worksheet, int]:
     wb.create_sheet(PARAMETERS_SHEET)
     ws = wb[PARAMETERS_SHEET]
     # Set properties and display options for the sheet
-    _set_param_sheet_columns_width(ws)
+    _set_parameter_sheet_columns_width(ws)
     ws.sheet_view.zoomScale = 100  # set zoom level to 100 %
     ws.sheet_view.showGridLines = False  # turn off gridlines display
     # Write columns titles
     row = 1
-    _write_param_sheet_columns_title(ws, row)
+    _write_parameter_sheet_columns_title(ws, row)
     # Set filter
     row += 1
     ws.auto_filter.ref = f"A{row}:{PARAM_UNIT_COL}{row}"
@@ -200,13 +200,13 @@ def _create_empty_parameters_sheet(wb: openpyxl.workbook.Workbook) -> tuple[xl_w
     return ws, row
 
 
-def _set_param_sheet_columns_width(ws: xl_ws.Worksheet):
+def _set_parameter_sheet_columns_width(ws: xl_ws.Worksheet):
     ws.column_dimensions[PARAM_NAME_COL].width = 38
     ws.column_dimensions[PARAM_VALUE_COL].width = 13
     ws.column_dimensions[PARAM_UNIT_COL].width = 13
 
 
-def _write_param_sheet_columns_title(ws: xl_ws.Worksheet, row: int):
+def _write_parameter_sheet_columns_title(ws: xl_ws.Worksheet, row: int):
     # Parameter Name
     create_merged_cell(ws, f"Parameter Name", start_row=row, end_row=row+1,
                        start_column=PARAM_NAME_COL, end_column=PARAM_NAME_COL,

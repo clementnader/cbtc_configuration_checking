@@ -54,19 +54,19 @@ def is_seg_in_zone_limits(zone_limits: list[tuple[str, float, str]], seg: str) -
     return seg in zone_segments
 
 
-def get_objects_in_zone_limits(obj_type, zone_limits: list[tuple[str, float, str]]) -> Optional[list[str]]:
-    obj_type = get_sh_name(obj_type)
+def get_objects_in_zone_limits(object_type, zone_limits: list[tuple[str, float, str]]) -> Optional[list[str]]:
+    object_type = get_sheet_name(object_type)
     list_obj = list()
 
-    obj_list = get_objects_list(obj_type)
-    for obj_name in obj_list:
-        obj_position = get_object_position(obj_type, obj_name)
-        if obj_position is None:
+    object_list = get_objects_list(object_type)
+    for object_name in object_list:
+        object_position = get_object_position(object_type, object_name)
+        if object_position is None:
             continue
 
-        if isinstance(obj_position, tuple):  # single-point object
-            if is_point_in_zone_limits(zone_limits, *obj_position):
-                list_obj.append(obj_name)
+        if isinstance(object_position, tuple):  # single-point object
+            if is_point_in_zone_limits(zone_limits, *object_position):
+                list_obj.append(object_name)
         else:  # zone object
             pass
     if not list_obj:
@@ -105,18 +105,18 @@ def depolarization_in_zone_limits(zone_limits: list[tuple[str, float, str]]) -> 
     return list_depol_in_zone
 
 
-def get_zones_intersecting_zone_limits(zones_obj_type, zone_limits: list[tuple[str, float, str]]) -> list[str]:
+def get_zones_intersecting_zone_limits(zones_object_type, zone_limits: list[tuple[str, float, str]]) -> list[str]:
     list_obj = list()
-    obj_list = get_objects_list(zones_obj_type)
-    for obj_name in obj_list:
-        if is_zone_intersecting_zone_limits(zones_obj_type, obj_name, zone_limits):
-            list_obj.append(obj_name)
+    object_list = get_objects_list(zones_object_type)
+    for object_name in object_list:
+        if is_zone_intersecting_zone_limits(zones_object_type, object_name, zone_limits):
+            list_obj.append(object_name)
     return list_obj
 
 
-def is_zone_intersecting_zone_limits(obj_type, obj_name: str, zone_limits: list[tuple[str, float, str]]):
-    zone_segments1 = get_segments_within_zone(obj_type, obj_name)
-    zone_limits1 = get_zone_limits(obj_type, obj_name)
+def is_zone_intersecting_zone_limits(object_type, object_name: str, zone_limits: list[tuple[str, float, str]]):
+    zone_segments1 = get_segments_within_zone(object_type, object_name)
+    zone_limits1 = get_zone_limits(object_type, object_name)
     zone_segments2 = get_segments_within_zone_limits(zone_limits)
     zone_limits2 = zone_limits
 
@@ -124,12 +124,12 @@ def is_zone_intersecting_zone_limits(obj_type, obj_name: str, zone_limits: list[
         if is_seg_in_zone_limits(zone_limits, seg):
             return True
     for seg in zone_segments2:
-        if is_seg_in_zone(obj_type, obj_name, seg):
+        if is_seg_in_zone(object_type, object_name, seg):
             return True
 
     for seg, x, downstream in zone_limits1:
         limit_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
-        test_direction = get_reverse_direction(limit_direction)
+        test_direction = get_opposite_direction(limit_direction)
         # for a single point object, we consider it belongs to the zone upstream of it,
         # behavior is mimicked for the zone limits too
         if is_point_in_zone_limits(zone_limits, seg, x, test_direction):
@@ -137,10 +137,10 @@ def is_zone_intersecting_zone_limits(obj_type, obj_name: str, zone_limits: list[
 
     for seg, x, downstream in zone_limits2:
         limit_direction = Direction.CROISSANT if downstream else Direction.DECROISSANT
-        test_direction = get_reverse_direction(limit_direction)
+        test_direction = get_opposite_direction(limit_direction)
         # for a single point object, we consider it belongs to the zone upstream of it,
         # behavior is mimicked for the zone limits too
-        if is_point_in_zone(obj_type, obj_name, seg, x, test_direction):
+        if is_point_in_zone(object_type, object_name, seg, x, test_direction):
             return True
 
     return False

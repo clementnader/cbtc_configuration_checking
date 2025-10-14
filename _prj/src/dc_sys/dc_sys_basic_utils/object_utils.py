@@ -11,83 +11,83 @@ from ..dc_sys_special_objects import *
 __all__ = ["get_objects_list", "get_object_value"]
 
 
-def get_objects_list(obj_type: str) -> list[str]:
-    obj_type = get_sh_name(obj_type)
+def get_objects_list(object_type: str) -> list[str]:
+    object_type = get_sheet_name(object_type)
 
-    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
+    if "PAS" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.PAS):
         # ZC can have subsets, the key of the sheet will be the subset names so we cannot directly use the sheet key to
         # have the list of ZCs.
         return get_all_zc()
 
-    if "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
+    if "DCS_Elementary_Zones" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.DCS_Elementary_Zones):
         # DCS EZ can have subsets similarly to ZC.
         return get_all_dcs_elementary_zones()
 
-    if "Traffic_Stop" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Traffic_Stop):
+    if "Traffic_Stop" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.Traffic_Stop):
         # Traffic_Stop can have subsets.
         return get_all_traffic_stops()
 
-    if ("Sig" in get_class_attr_dict(DCSYS) and "DistPap" in get_class_attr_dict(DCSYS.Sig)
-            and obj_type == get_sh_name(DCSYS.Sig.DistPap)):
+    if ("Sig" in get_class_attributes_dict(DCSYS) and "DistPap" in get_class_attributes_dict(DCSYS.Sig)
+            and object_type == get_sheet_name(DCSYS.Sig.DistPap)):
         # We create a fake type to get signal VSP directly using DCSYS.Sig.DistPap as the object type.
         # List of VSPs is the list of signals except for Permanent Reds.
         sig_dict = load_sheet(DCSYS.Sig)
         return [sig for sig in get_objects_list(DCSYS.Sig)
                 if get_database_value(sig_dict[sig], DCSYS.Sig.Type) != SignalType.PERMANENT_ARRET]
 
-    if ("IXL_Overlap" in get_class_attr_dict(DCSYS) and "VitalStoppingPoint" in get_class_attr_dict(DCSYS.IXL_Overlap)
-            and obj_type == get_sh_name(DCSYS.IXL_Overlap.VitalStoppingPoint)):
+    if ("IXL_Overlap" in get_class_attributes_dict(DCSYS) and "VitalStoppingPoint" in get_class_attributes_dict(DCSYS.IXL_Overlap)
+            and object_type == get_sheet_name(DCSYS.IXL_Overlap.VitalStoppingPoint)):
         # We create a fake type to get IXL Overlap VSP directly using DCSYS.IXL_Overlap.VitalStoppingPoint
         #  as the object type.
         # List of IXL Overlap VSPs is the list of IXL Overlaps.
         return [ixl_overlap for ixl_overlap in get_objects_list(DCSYS.IXL_Overlap)]
 
-    if ("IXL_Overlap" in get_class_attr_dict(DCSYS) and "ReleasePoint" in get_class_attr_dict(DCSYS.IXL_Overlap)
-            and obj_type == get_sh_name(DCSYS.IXL_Overlap.ReleasePoint)):
+    if ("IXL_Overlap" in get_class_attributes_dict(DCSYS) and "ReleasePoint" in get_class_attributes_dict(DCSYS.IXL_Overlap)
+            and object_type == get_sheet_name(DCSYS.IXL_Overlap.ReleasePoint)):
         # We create a fake type to get IXL Overlap Release Point directly using DCSYS.IXL_Overlap.ReleasePoint
         #  as the object type.
         # List of IXL Overlap VSPs is the list of IXL Overlaps.
         return [ixl_overlap for ixl_overlap in get_objects_list(DCSYS.IXL_Overlap)]
 
-    if ("Quai" in get_class_attr_dict(DCSYS) and "PointDArret" in get_class_attr_dict(DCSYS.Quai)
-            and obj_type == get_sh_name(DCSYS.Quai.PointDArret)):
+    if ("Quai" in get_class_attributes_dict(DCSYS) and "PointDArret" in get_class_attributes_dict(DCSYS.Quai)
+            and object_type == get_sheet_name(DCSYS.Quai.PointDArret)):
         # We create a fake type to get platform OSP directly using DCSYS.Quai.PointDArret as the object type.
         return get_all_plt_osp()
 
-    obj_dict = load_sheet(obj_type)
-    return list(obj_dict.keys())
+    object_dict = load_sheet(object_type)
+    return list(object_dict.keys())
 
 
-def get_object_value(obj_type: str, object_name: str) -> dict[str, Any]:
-    obj_type = get_sh_name(obj_type)
+def get_object_value(object_type: str, object_name: str) -> dict[str, Any]:
+    object_type = get_sheet_name(object_type)
 
-    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
+    if "PAS" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.PAS):
         return get_zc_value(object_name)
 
-    if "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
+    if "DCS_Elementary_Zones" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.DCS_Elementary_Zones):
         return get_dcs_elementary_zone_value(object_name)
 
-    if "Traffic_Stop" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Traffic_Stop):
+    if "Traffic_Stop" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.Traffic_Stop):
         return get_traffic_stop_value(object_name)
 
-    if ("Sig" in get_class_attr_dict(DCSYS) and "DistPap" in get_class_attr_dict(DCSYS.Sig)
-            and obj_type == get_sh_name(DCSYS.Sig.DistPap)):
-        obj_dict = load_sheet(DCSYS.Sig)
-        return obj_dict[object_name]
+    if ("Sig" in get_class_attributes_dict(DCSYS) and "DistPap" in get_class_attributes_dict(DCSYS.Sig)
+            and object_type == get_sheet_name(DCSYS.Sig.DistPap)):
+        object_dict = load_sheet(DCSYS.Sig)
+        return object_dict[object_name]
 
-    if ("IXL_Overlap" in get_class_attr_dict(DCSYS) and "VitalStoppingPoint" in get_class_attr_dict(DCSYS.IXL_Overlap)
-            and obj_type == get_sh_name(DCSYS.IXL_Overlap.VitalStoppingPoint)):
-        obj_dict = load_sheet(DCSYS.IXL_Overlap)
-        return obj_dict[object_name]
+    if ("IXL_Overlap" in get_class_attributes_dict(DCSYS) and "VitalStoppingPoint" in get_class_attributes_dict(DCSYS.IXL_Overlap)
+            and object_type == get_sheet_name(DCSYS.IXL_Overlap.VitalStoppingPoint)):
+        object_dict = load_sheet(DCSYS.IXL_Overlap)
+        return object_dict[object_name]
 
-    if ("IXL_Overlap" in get_class_attr_dict(DCSYS) and "ReleasePoint" in get_class_attr_dict(DCSYS.IXL_Overlap)
-            and obj_type == get_sh_name(DCSYS.IXL_Overlap.ReleasePoint)):
-        obj_dict = load_sheet(DCSYS.IXL_Overlap)
-        return obj_dict[object_name]
+    if ("IXL_Overlap" in get_class_attributes_dict(DCSYS) and "ReleasePoint" in get_class_attributes_dict(DCSYS.IXL_Overlap)
+            and object_type == get_sheet_name(DCSYS.IXL_Overlap.ReleasePoint)):
+        object_dict = load_sheet(DCSYS.IXL_Overlap)
+        return object_dict[object_name]
 
-    if ("Quai" in get_class_attr_dict(DCSYS) and "PointDArret" in get_class_attr_dict(DCSYS.Quai)
-            and obj_type == get_sh_name(DCSYS.Quai.PointDArret)):
+    if ("Quai" in get_class_attributes_dict(DCSYS) and "PointDArret" in get_class_attributes_dict(DCSYS.Quai)
+            and object_type == get_sheet_name(DCSYS.Quai.PointDArret)):
         return get_plt_osp_value(object_name)
 
-    obj_dict = load_sheet(obj_type)
-    return obj_dict[object_name]
+    object_dict = load_sheet(object_type)
+    return object_dict[object_name]

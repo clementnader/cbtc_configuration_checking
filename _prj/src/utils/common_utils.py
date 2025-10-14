@@ -11,7 +11,7 @@ __all__ = ["DESKTOP_DIRECTORY",
            "SRC_DIRECTORY", "PRJ_DIRECTORY", "ROOT_DIRECTORY", "TEMPLATE_DIRECTORY", "LAUNCH_FUNCTION_DIRECTORY",
            "Optional", "Union", "Generator", "Callable", "Any",
            "ascii_uppercase", "columns_from_to", "sort_dict",
-           "get_file_directory_path", "get_full_path", "get_class_attr_dict",
+           "get_file_directory_path", "get_full_path", "get_class_attributes_dict",
            "get_class_keys", "get_class_values",
            "remove_common_min_max_kp"]
 
@@ -46,7 +46,7 @@ def get_file_directory_path(file: str) -> str:
     return os.path.dirname(os.path.realpath(file))
 
 
-def get_class_attr_dict(cl) -> dict[str, Any]:
+def get_class_attributes_dict(cl) -> dict[str, Any]:
     if isinstance(cl, type):
         return {key: val for key, val in cl.__dict__.items()
                 if not (key.startswith("__") and key.endswith("__"))}
@@ -56,13 +56,13 @@ def get_class_attr_dict(cl) -> dict[str, Any]:
 
 
 def get_class_keys(cl) -> list[Any]:
-    class_attr_dict = get_class_attr_dict(cl)
-    return list(class_attr_dict.keys())
+    class_attributes_dict = get_class_attributes_dict(cl)
+    return list(class_attributes_dict.keys())
 
 
 def get_class_values(cl) -> list[Any]:
-    class_attr_dict = get_class_attr_dict(cl)
-    return list(class_attr_dict.values())
+    class_attributes_dict = get_class_attributes_dict(cl)
+    return list(class_attributes_dict.values())
 
 
 def columns_from_to(first: str, last: str) -> list[str]:

@@ -78,7 +78,7 @@ def _get_train_rear_position(osp_name: str, osp_seg: str, osp_x: float, osp_type
         return None
 
     if osp_approach_dir == StoppingPointApproachType.DOUBLE_SENS:
-        return [(osp_dir, train_rear), (get_reverse_direction(osp_dir), train_front)]
+        return [(osp_dir, train_rear), (get_opposite_direction(osp_dir), train_front)]
 
     return [(osp_dir, train_rear)]
 
@@ -87,7 +87,7 @@ def _get_closest_civil_infrastructure_vsp_upstream(seg: str, x: float, direction
                                                    civil_infrastructure_vsp_dict: dict[str, dict[str, Any]]):
     aligned_civil_infrastructure_vsp_dict = {sig_name: vsp_info for sig_name, vsp_info
                                              in civil_infrastructure_vsp_dict.items()
-                                             if vsp_info["vsp_direction"] == get_reverse_direction(direction)}
+                                             if vsp_info["vsp_direction"] == get_opposite_direction(direction)}
 
     vsp_in_rear = _vsp_upstream_on_seg(seg, direction, aligned_civil_infrastructure_vsp_dict, ref_x=x)
 

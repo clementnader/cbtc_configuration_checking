@@ -36,9 +36,9 @@ def give_switch_kp_position(sw_name: str):
 
 
 SWITCH_INFO_DICT = {
-    "left": {"suffix": "_L", "attr": DCSYS.Aig.SegmentTg, "seg_start_if_sw_upstream": True},
-    "right": {"suffix": "_R", "attr": DCSYS.Aig.SegmentTd, "seg_start_if_sw_upstream": True},
-    "center": {"suffix": "_C", "attr": DCSYS.Aig.SegmentPointe, "seg_start_if_sw_upstream": False}
+    "left": {"suffix": "_L", "attribute": DCSYS.Aig.SegmentTg, "seg_start_if_sw_upstream": True},
+    "right": {"suffix": "_R", "attribute": DCSYS.Aig.SegmentTd, "seg_start_if_sw_upstream": True},
+    "center": {"suffix": "_C", "attribute": DCSYS.Aig.SegmentPointe, "seg_start_if_sw_upstream": False}
 }
 
 def get_dc_sys_switch_points_dict() -> dict[str, dict[str, Union[str, float]]]:
@@ -49,11 +49,11 @@ def get_dc_sys_switch_points_dict() -> dict[str, dict[str, Union[str, float]]]:
     seg_dict = load_sheet(DCSYS.Seg)
     for sw_name in sw_dict:
         upstream = is_switch_point_upstream_heels(sw_name)
-        for sw_pos_name, pos_val in SWITCH_INFO_DICT.items():
-            sw_name_and_pos = sw_name + pos_val["suffix"]
-            seg = get_dc_sys_value(sw_name, pos_val["attr"])
+        for sw_pos_name, pos_value in SWITCH_INFO_DICT.items():
+            sw_name_and_pos = sw_name + pos_value["suffix"]
+            seg = get_dc_sys_value(sw_name, pos_value["attribute"])
             track = get_dc_sys_value(seg_dict[seg], DCSYS.Seg.Voie)
-            kp_attr = DCSYS.Seg.Origine if upstream == pos_val["seg_start_if_sw_upstream"] else DCSYS.Seg.Fin
+            kp_attr = DCSYS.Seg.Origine if upstream == pos_value["seg_start_if_sw_upstream"] else DCSYS.Seg.Fin
             kp = get_dc_sys_value(seg_dict[seg], kp_attr)
             res_dict[sw_name_and_pos] = {"track": track, "kp": kp}
     return res_dict

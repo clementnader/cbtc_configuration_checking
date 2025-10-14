@@ -14,7 +14,7 @@ __all__ = ["cc_cv_19", "cc_cv_20"]
 
 def cc_cv_19():
     print_title("Verification of CC_CV_19", color=Color.mint_green)
-    at_rollback_dist = get_param_value("at_rollback_dist")
+    at_rollback_dist = get_parameter_value("at_rollback_dist")
 
     no_ko = True
     vb_list = get_objects_list(DCSYS.CV)
@@ -95,11 +95,11 @@ def _get_overlaps_vsp_on_vb(vb_name: str) -> list[str]:
     return ixl_ovl_vsp_on_vb
 
 
-def _check_vsp_distance_to_vb_limit(vb_name: str, obj_type: str, obj_name: str,
+def _check_vsp_distance_to_vb_limit(vb_name: str, object_type: str, object_name: str,
                                     vsp_seg: str, vsp_x: float, vsp_direction: str,
                                     at_rollback_dist: float) -> tuple[str, bool]:
     no_ko = True
-    vsp_related_info = (f"VSP of {Color.beige}{obj_type}{Color.reset} {Color.yellow}{obj_name}"
+    vsp_related_info = (f"VSP of {Color.beige}{object_type}{Color.reset} {Color.yellow}{object_name}"
                         f"{Color.reset} {(vsp_seg, vsp_x)}")
 
     downstream_limit = get_vb_downstream_limits(vb_name, vsp_direction)[0]
@@ -116,7 +116,7 @@ def _check_vsp_distance_to_vb_limit(vb_name: str, obj_type: str, obj_name: str,
 
 def cc_cv_20():
     print_title("Verification of CC_CV_20", color=Color.mint_green)
-    at_rollback_dist = get_param_value("at_rollback_dist")
+    at_rollback_dist = get_parameter_value("at_rollback_dist")
 
     no_ko = True
     vb_list = get_objects_list(DCSYS.CV)
@@ -161,11 +161,11 @@ def cc_cv_20():
         print_log("No KO found on the constraint.")
 
 
-def _check_vsp_distance_to_switch(vb_name: str, obj_type: str, obj_name: str, sw_on_vb: str,
+def _check_vsp_distance_to_switch(vb_name: str, object_type: str, object_name: str, sw_on_vb: str,
                                   vsp_seg: str, vsp_x: float, vsp_direction: str,
                                   at_rollback_dist: float) -> tuple[str, bool]:
     no_ko = True
-    vsp_related_info = (f"VSP of {Color.beige}{obj_type}{Color.reset} {Color.yellow}{obj_name}"
+    vsp_related_info = (f"VSP of {Color.beige}{object_type}{Color.reset} {Color.yellow}{object_name}"
                         f"{Color.reset} {(vsp_seg, vsp_x, vsp_direction)}")
 
     sw_seg, sw_x = get_object_position(DCSYS.Aig, sw_on_vb)

@@ -9,30 +9,30 @@ from .line_section_utils import *
 from .maz_utils import *
 
 
-__all__ = ["get_zc_of_point", "get_zc_of_obj",
-           "get_zc_managing_obj", "get_ls_managed_by_zc", "get_zc_managing_ls"]
+__all__ = ["get_zc_of_point", "get_zc_of_object",
+           "get_zc_managing_object", "get_ls_managed_by_zc", "get_zc_managing_ls"]
 
 
 def get_zc_of_point(seg: str, x: float, direction: str = None) -> list[str]:
     return get_zones_on_point(DCSYS.PAS, seg, x, direction)
 
 
-def _get_zc_of_traffic_stop(obj_name: str) -> list[str]:
-    platform_list = get_traffic_stop_platform_list(obj_name)
+def _get_zc_of_traffic_stop(object_name: str) -> list[str]:
+    platform_list = get_traffic_stop_platform_list(object_name)
     list_zc = list()
     for plt_name in platform_list:
-        list_zc.extend([zc_name for zc_name in get_zc_of_obj(DCSYS.Quai, plt_name) if zc_name not in list_zc])
+        list_zc.extend([zc_name for zc_name in get_zc_of_object(DCSYS.Quai, plt_name) if zc_name not in list_zc])
     return list_zc
 
 
-def _get_zc_of_overlap(obj_name: str) -> list[str]:
+def _get_zc_of_overlap(object_name: str) -> list[str]:
     # For a ZC to manage an overlap, it has to contain both RP and VSP
-    position = get_object_position(DCSYS.IXL_Overlap, obj_name)
+    position = get_object_position(DCSYS.IXL_Overlap, object_name)
     dict_zc_on_limits = dict()
     for seg, x, direction in position:
         zc_list = get_zones_on_point(DCSYS.PAS, seg, x, direction)
         if zc_list is None:
-            print_error(f"Point {(seg, x, direction)} for overlap {obj_name} is on no ZC.")
+            print_error(f"Point {(seg, x, direction)} for overlap {object_name} is on no ZC.")
             zc_list = []
         dict_zc_on_limits[(seg, x)] = zc_list
 
@@ -43,18 +43,18 @@ def _get_zc_of_overlap(obj_name: str) -> list[str]:
     return list_zc
 
 
-def get_zc_of_obj(obj_type, obj_name: str) -> list[str]:
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.Traffic_Stop):  # a dedicated function for traffic stops
-        return _get_zc_of_traffic_stop(obj_name)
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.IXL_Overlap):  # a dedicated function for overlaps
-        return _get_zc_of_overlap(obj_name)
+def get_zc_of_object(object_type, object_name: str) -> list[str]:
+    if get_sheet_name(object_type) == get_sheet_name(DCSYS.Traffic_Stop):  # a dedicated function for traffic stops
+        return _get_zc_of_traffic_stop(object_name)
+    if get_sheet_name(object_type) == get_sheet_name(DCSYS.IXL_Overlap):  # a dedicated function for overlaps
+        return _get_zc_of_overlap(object_name)
 
-    position = get_object_position(obj_type, obj_name)
+    position = get_object_position(object_type, object_name)
     if isinstance(position, tuple):  # single-point object
         list_zc = get_zones_on_point(DCSYS.PAS, *position)
         return list_zc if list_zc is not None else []
     if isinstance(position, list):  # zone object
-        list_zc = get_zones_intersecting_zone(DCSYS.PAS, obj_type, obj_name)
+        list_zc = get_zones_intersecting_zone(DCSYS.PAS, object_type, object_name)
         return list_zc if list_zc is not None else []
     return []
 
@@ -106,7 +106,7 @@ def _get_zc_managing_signal(sig_name: str, sig_upstream_ivb: bool) -> Optional[s
 def _get_zc_managing_ivb(ivb_name: str) -> Optional[str]:
     ivb_dict = load_sheet(DCSYS.IVB)
     dedicated_zc = get_dc_sys_value(ivb_dict[ivb_name], DCSYS.IVB.ZcName)
-    list_of_zc_covering_ivb = get_zc_of_obj(DCSYS.IVB, ivb_name)
+    list_of_zc_covering_ivb = get_zc_of_object(DCSYS.IVB, ivb_name)
     if dedicated_zc is None:  # some IVB are not sent to the IXL and thus don't have a dedicated ZC sending it
         if len(list_of_zc_covering_ivb) == 1:
             return list_of_zc_covering_ivb[0]
@@ -122,7 +122,7 @@ def _get_zc_managing_ivb(ivb_name: str) -> Optional[str]:
 def _get_zc_managing_maz(maz_name: str) -> tuple[Optional[str], Optional[str]]:
     if not maz_name:
         return None, None
-    ls = get_line_section_of_obj(DCSYS.Zaum, maz_name)[0]
+    ls = get_line_section_of_object(DCSYS.Zaum, maz_name)[0]
     zc_name = get_zc_managing_ls(ls)
     info = f"{maz_name} -> {ls} -> {zc_name}"
     return zc_name, info
@@ -136,15 +136,15 @@ def _get_zc_managing_sw(sw_name: str) -> tuple[Optional[str], str]:
 
 
 def _get_zc_managing_platform_end(plt_name: str, plt_end: str) -> tuple[str, str]:
-    ls = get_line_section_of_obj(DCSYS.Quai, plt_name, plt_end=plt_end)[0]
+    ls = get_line_section_of_object(DCSYS.Quai, plt_name, plt_end=plt_end)[0]
     zc_name = get_zc_managing_ls(ls)
     info = f"{plt_name}::{plt_end.upper()} -> {ls} -> {zc_name}"
     return zc_name, info
 
 
-def _get_zc_managing_maz_on_zone(obj_type, obj_name: str) -> tuple[list[str], str]:
+def _get_zc_managing_maz_on_zone(object_type, object_name: str) -> tuple[list[str], str]:
     """ Function that shall work for both GES, CBTC Protection Zones, Protection Zones and Traction Power Zones. """
-    zone_limits = get_object_position(obj_type, obj_name)
+    zone_limits = get_object_position(object_type, object_name)
     maz_list = get_maz_of_extremities(zone_limits)
     zc_list = list()
     info_list = list()
@@ -158,43 +158,43 @@ def _get_zc_managing_maz_on_zone(obj_type, obj_name: str) -> tuple[list[str], st
     return zc_list, "\n\t".join(info_list)
 
 
-def get_zc_managing_obj(obj_type, obj_name: str, sig_upstream_ivb: bool = None, plt_end: str = None
+def get_zc_managing_object(object_type, object_name: str, sig_upstream_ivb: bool = None, plt_end: str = None
                         ) -> tuple[list[str], Optional[str]]:
     # Platform End
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai) and plt_end in ["normal", "reverse"]:
-        zc_name, info = _get_zc_managing_platform_end(obj_name, plt_end)
+    if get_sheet_name(object_type) == get_sheet_name(DCSYS.Quai) and plt_end in ["normal", "reverse"]:
+        zc_name, info = _get_zc_managing_platform_end(object_name, plt_end)
         return [zc_name], info
     # Platform
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.Quai):
-        zc_name = _get_zc_managing_platform(obj_name)
+    if get_sheet_name(object_type) == get_sheet_name(DCSYS.Quai):
+        zc_name = _get_zc_managing_platform(object_name)
         return [zc_name], None
     # Signal
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.Sig):
-        zc_name = _get_zc_managing_signal(obj_name, sig_upstream_ivb)
+    if get_sheet_name(object_type) == get_sheet_name(DCSYS.Sig):
+        zc_name = _get_zc_managing_signal(object_name, sig_upstream_ivb)
         return [zc_name], None
     # Switch
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.Aig):
-        zc_name, info = _get_zc_managing_sw(obj_name)
+    if get_sheet_name(object_type) == get_sheet_name(DCSYS.Aig):
+        zc_name, info = _get_zc_managing_sw(object_name)
         return [zc_name], info
     # IVB
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.IVB):
-        zc_name = _get_zc_managing_ivb(obj_name)
+    if get_sheet_name(object_type) == get_sheet_name(DCSYS.IVB):
+        zc_name = _get_zc_managing_ivb(object_name)
         return [zc_name], None
     # MAZ
-    if get_sh_name(obj_type) == get_sh_name(DCSYS.Zaum):
-        zc_name, info = _get_zc_managing_maz(obj_name)
+    if get_sheet_name(object_type) == get_sheet_name(DCSYS.Zaum):
+        zc_name, info = _get_zc_managing_maz(object_name)
         return [zc_name], info
     # GES, CBTC_Protection_Zone, Protection Zone and Traction Power Zone
-    if (("GES" in get_class_attr_dict(DCSYS)
-         and get_sh_name(obj_type) == get_sh_name(DCSYS.GES))
-        or ("CBTC_Protection_Zone" in get_class_attr_dict(DCSYS)
-            and get_sh_name(obj_type) == get_sh_name(DCSYS.CBTC_Protection_Zone))
-        or ("Protection_Zone" in get_class_attr_dict(DCSYS)
-            and get_sh_name(obj_type) == get_sh_name(DCSYS.Protection_Zone))
-        or ("SS" in get_class_attr_dict(DCSYS)
-            and get_sh_name(obj_type) == get_sh_name(DCSYS.SS))):
+    if (("GES" in get_class_attributes_dict(DCSYS)
+         and get_sheet_name(object_type) == get_sheet_name(DCSYS.GES))
+        or ("CBTC_Protection_Zone" in get_class_attributes_dict(DCSYS)
+            and get_sheet_name(object_type) == get_sheet_name(DCSYS.CBTC_Protection_Zone))
+        or ("Protection_Zone" in get_class_attributes_dict(DCSYS)
+            and get_sheet_name(object_type) == get_sheet_name(DCSYS.Protection_Zone))
+        or ("SS" in get_class_attributes_dict(DCSYS)
+            and get_sheet_name(object_type) == get_sheet_name(DCSYS.SS))):
         # we need at least that the ZC managing the MAZ intersecting the zone is receiving the message
-        return _get_zc_managing_maz_on_zone(obj_type, obj_name)
+        return _get_zc_managing_maz_on_zone(object_type, object_name)
 
-    list_zc = get_zc_of_obj(obj_type, obj_name)
+    list_zc = get_zc_of_object(object_type, object_name)
     return list_zc, None

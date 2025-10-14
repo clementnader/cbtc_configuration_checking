@@ -81,7 +81,35 @@ def main():
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: CF_SIGNAL_7 Signal VSP protects Switch Point or Fouling Point ---------- #
+    """Uncomment next line to verify CF_SIGNAL_7. It checks that the VSP of a signal is correctly placed before
+     the Switch Point or Fouling Point that the signal protects.
+    @inputs: DC_SYS, CCTool-OO Schema and Fouling Point"""
     #cf_signal_7()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: Signal Approach Zone at IXL level ---------- #
+    """Uncomment one of next lines to verify some constraints and rules about the IXL Signal Approach Zone:
+        CF_SIGNAL_12
+        R_ZSM_3
+    You can use argument apz_with_tc=True to consider than the default IXL approach zone is the physical Track Circuit
+     containing the signal and not simply the IVB. It needs to be stated in the ZC-IXL ICDD that the IXL will lock the
+     physical block by default, else the tool considers only the IVB containing the signal, which is the default case
+     if no precision is given.
+    You can use as optional input an Excel file defining the IXL Approach Zone, it can only contain the signals where
+     the IXL extends the APZ, the signals not present in the file will follow the rule of APZ is composed of the first
+     IVB (or TC) upstream the signal. Indeed, it can be specified in the ZC-IXL ICDD that for some signals the
+     APZ is extended to more IVB/TC.
+    @inputs: DC_SYS, CCTool-OO Schema, DC_PAR and optionally IXL Approach Zone file"""
+    #cf_signal_12(apz_with_tc=False)  # DLT distance
+    #r_zsm_3(apz_with_tc=False)
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: CBTC Direction Zones Home Signals (Non Vital) ---------- #
+    """Uncomment next line to verify CF_ZSM_CBTC_16. It checks that the Home Signals of CBTC Direction Zones (of type
+     BLOCK_DIRECTION_LOCKING) are correctly configured: either they are on the CDZ or their distance to the CDZ is
+     lower than the DLT distance of the signal, so that the turnback can be performed.
+    @inputs: DC_SYS and CCTool-OO Schema"""
+    #cf_zsm_cbtc_16()  # Non-Vital, verification of Home Signals of CBTC Direction Zones
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: messages ---------- #
@@ -126,6 +154,13 @@ def main():
     #check_sieving_limit_definition()
 
     # ---------------------------------------------------------------------------------------------------------------- #
+    # ---------- Constraints and Rules: R_CDV_5 and R_IVB_1 ---------- #
+    """Uncomment one of next lines to verify rules R_CDV_5 and R_IVB_1.
+    @inputs: DC_SYS, CCTool-OO Schema, Fouling Point, DC_PAR and C11_D470"""
+    #r_cdv_5()
+    #r_ivb_1()
+
+    # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Foundation Data: Platform Related Overlaps (Non Vital) ---------- #
     """Uncomment next line to verify the attribute [Platform Related] of the Overlaps.
     @inputs: DC_SYS and CCTool-OO Schema"""
@@ -137,30 +172,6 @@ def main():
      train_to_home_signal_max_dist so to respect R_ZSM_3 at CBTC level.
     @inputs: DC_SYS, CCTool-OO Schema and DC_PAR"""
     #check_cbtc_sig_apz()
-
-    # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- Constraints and Rules: Signal Approach Zone at IXL level ---------- #
-    """Uncomment one of next lines to verify some constraints and rules about the IXL Signal Approach Zone:
-        CF_SIGNAL_12
-        R_ZSM_3
-    You can use argument apz_with_tc=True to consider than the default IXL approach zone is the physical Track Circuit
-     containing the signal and not simply the IVB. It needs to be stated in the ZC-IXL ICDD that the IXL will lock the
-     physical block by default, else the tool considers only the IVB containing the signal, which is the default case
-     if no precision is given.
-    You can use as optional input an Excel file defining the IXL Approach Zone, it can only contain the signals where
-     the IXL extends the APZ, the signals not present in the file will follow the rule of APZ is composed of the first
-     IVB (or TC) upstream the signal. Indeed, it can be specified in the ZC-IXL ICDD that for some signals the
-     APZ is extended to more IVB/TC.
-    @inputs: DC_SYS, CCTool-OO Schema, DC_PAR and optionally IXL Approach Zone file"""
-    #cf_signal_12(apz_with_tc=False)  # DLT distance
-    #r_zsm_3(apz_with_tc=False)
-
-    # ---------------------------------------------------------------------------------------------------------------- #
-    # ---------- Constraints and Rules: R_CDV_5 and R_IVB_1 ---------- #
-    """Uncomment one of next lines to verify rules R_CDV_5 and R_IVB_1.
-    @inputs: DC_SYS, CCTool-OO Schema, Fouling Point, DC_PAR and C11_D470"""
-    #r_cdv_5()
-    #r_ivb_1()
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Functions about DC_SYS zones that are configurable using DC_SYS sheet names ---------- #
@@ -255,7 +266,8 @@ def main():
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Fouling Point template file ---------- #
-    """Uncomment next line to create an empty Fouling Points template file with the list of switches from DC_SYS.
+    """Uncomment next line to create an empty Fouling Points template file with the list of switches from DC_SYS,
+     to be filled with the Signalling Plan.
     @inputs: DC_SYS and CCTool-OO Schema"""
     #create_fouling_points_template_file()
 

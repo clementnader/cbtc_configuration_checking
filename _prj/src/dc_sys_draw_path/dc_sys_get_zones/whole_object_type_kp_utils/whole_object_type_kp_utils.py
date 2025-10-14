@@ -12,7 +12,7 @@ __all__ = ["get_whole_object_type_kp_limits"]
 
 
 def get_whole_object_type_kp_limits(sheet_name):
-    sheet_name = get_sh_name(sheet_name)
+    sheet_name = get_sheet_name(sheet_name)
     object_type_min_max_kp_dict = _get_dict_of_tracks_covered_by_object_type(sheet_name)
 
     res_file_path = create_verif_file(sheet_name, object_type_min_max_kp_dict)

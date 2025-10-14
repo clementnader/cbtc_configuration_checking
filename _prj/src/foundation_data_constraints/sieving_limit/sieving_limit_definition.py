@@ -4,7 +4,7 @@
 from ...utils import *
 from ...cctool_oo_schema import *
 from ...dc_sys import *
-from ...dc_sys_draw_path.dc_sys_get_zones import get_oriented_limits_of_obj
+from ...dc_sys_draw_path.dc_sys_get_zones import get_oriented_limits_of_object
 
 
 __all__ = ["check_sieving_limit_definition"]
@@ -74,7 +74,7 @@ def _sl_position_matches_a_buffer(sl_name: str, sl_type: str, sl_position: tuple
 def _check_sl_matches_related_block(sl_name: str, sl_type: str, sl_position: tuple[str, float, str],
                                     related_block: str) -> bool:
     sl_seg, sl_x, sl_direction = sl_position
-    block_oriented_limits = get_oriented_limits_of_obj(DCSYS.CDV, related_block)
+    block_oriented_limits = get_oriented_limits_of_object(DCSYS.CDV, related_block)
     for block_oriented_limit in block_oriented_limits:
         joint_seg, joint_x, joint_direction = block_oriented_limit
         if are_points_matching(sl_seg, sl_x, joint_seg, joint_x):
@@ -95,7 +95,7 @@ def _sl_position_matches_a_block_limit(sl_position: tuple[str, float, str]) -> O
     sl_seg, sl_x, sl_direction = sl_position
     block_list = get_objects_list(DCSYS.CDV)
     for block_name in block_list:
-        block_oriented_limits = get_oriented_limits_of_obj(DCSYS.CDV, block_name)
+        block_oriented_limits = get_oriented_limits_of_object(DCSYS.CDV, block_name)
         for block_oriented_limit in block_oriented_limits:
             joint_seg, joint_x, joint_direction = block_oriented_limit
             if are_points_matching(sl_seg, sl_x, joint_seg, joint_x):

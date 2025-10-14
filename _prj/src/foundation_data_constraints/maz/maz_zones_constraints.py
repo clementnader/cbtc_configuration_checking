@@ -31,7 +31,7 @@ def cf_zaum_11():
     no_ko = True
     maz_list = get_objects_list(DCSYS.Zaum)
     for maz_name in maz_list:
-        dedicated_ls = get_line_section_of_obj(DCSYS.Zaum, maz_name)[0]
+        dedicated_ls = get_line_section_of_object(DCSYS.Zaum, maz_name)[0]
         zc_name = get_zc_managing_ls(dedicated_ls)
         test, list_limits_not_in_big_zone = is_zone_completely_included_in_zone(DCSYS.Zaum, maz_name,
                                                                                 DCSYS.PAS, zc_name)

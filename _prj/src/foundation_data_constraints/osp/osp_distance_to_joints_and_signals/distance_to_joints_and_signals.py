@@ -90,9 +90,9 @@ def _compute_dist_to_joint(osp_seg: str, osp_x: float, osp_direction: str) -> di
 
 def _compute_dist_to_sig(osp_seg: str, osp_x: float) -> dict[str, Any]:
     next_sig_inc = get_next_objects_from_a_point(osp_seg, osp_x, Direction.CROISSANT, DCSYS.Sig,
-                                                 obj_direction=Direction.CROISSANT)
+                                                 object_direction=Direction.CROISSANT)
     next_sig_dec = get_next_objects_from_a_point(osp_seg, osp_x, Direction.DECROISSANT, DCSYS.Sig,
-                                                 obj_direction=Direction.DECROISSANT)
+                                                 object_direction=Direction.DECROISSANT)
     comments_list = list()
     if not next_sig_inc:
         comments_list.append(f"No signal downstream the OSP.")
@@ -184,26 +184,26 @@ def _add_osp_line_info(ws: xl_ws.Worksheet, row: int, osp_name: str, osp_seg: st
 def _update_joint_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[str, dict[str, Any]]) -> None:
     joint_sheet_comments = False
 
-    for row, obj_val in enumerate(verif_dict.values(), start=start_row):
-        osp_name = obj_val.get("osp_name")
-        osp_seg = obj_val.get("osp_seg")
-        osp_x = obj_val.get("osp_x")
-        osp_direction = obj_val.get("osp_direction")
-        osp_track = obj_val.get("osp_track")
-        osp_kp = obj_val.get("osp_kp")
-        osp_approach_direction = obj_val.get("osp_approach_direction")
-        osp_type = obj_val.get("osp_type")
-        osp_permanent_stop = obj_val.get("osp_permanent_stop")
-        osp_parking = obj_val.get("osp_parking")
-        osp_washing = obj_val.get("osp_washing")
+    for row, object_value in enumerate(verif_dict.values(), start=start_row):
+        osp_name = object_value.get("osp_name")
+        osp_seg = object_value.get("osp_seg")
+        osp_x = object_value.get("osp_x")
+        osp_direction = object_value.get("osp_direction")
+        osp_track = object_value.get("osp_track")
+        osp_kp = object_value.get("osp_kp")
+        osp_approach_direction = object_value.get("osp_approach_direction")
+        osp_type = object_value.get("osp_type")
+        osp_permanent_stop = object_value.get("osp_permanent_stop")
+        osp_parking = object_value.get("osp_parking")
+        osp_washing = object_value.get("osp_washing")
         _add_osp_line_info(ws, row, osp_name, osp_seg, osp_x, osp_direction, osp_track, osp_kp,
                            osp_approach_direction, osp_type, osp_permanent_stop, osp_parking, osp_washing)
 
-        joint_inc = obj_val.get("joint_inc")
-        joint_dist_inc = obj_val.get("joint_dist_inc")
-        joint_dec = obj_val.get("joint_dec")
-        joint_dist_dec = obj_val.get("joint_dist_dec")
-        joint_comments = obj_val.get("joint_comments")
+        joint_inc = object_value.get("joint_inc")
+        joint_dist_inc = object_value.get("joint_dist_inc")
+        joint_dec = object_value.get("joint_dec")
+        joint_dist_dec = object_value.get("joint_dist_dec")
+        joint_comments = object_value.get("joint_comments")
         if joint_comments:
             joint_sheet_comments = True
 
@@ -235,28 +235,28 @@ def _add_joint_line_info(ws: xl_ws.Worksheet, row: int, joint_inc: str, joint_di
 def _update_sig_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[str, dict[str, Any]]) -> None:
     sig_sheet_comments = False
 
-    for row, obj_val in enumerate(verif_dict.values(), start=start_row):
-        osp_name = obj_val.get("osp_name")
-        osp_seg = obj_val.get("osp_seg")
-        osp_x = obj_val.get("osp_x")
-        osp_direction = obj_val.get("osp_direction")
-        osp_track = obj_val.get("osp_track")
-        osp_kp = obj_val.get("osp_kp")
-        osp_approach_direction = obj_val.get("osp_approach_direction")
-        osp_type = obj_val.get("osp_type")
-        osp_permanent_stop = obj_val.get("osp_permanent_stop")
-        osp_parking = obj_val.get("osp_parking")
-        osp_washing = obj_val.get("osp_washing")
+    for row, object_value in enumerate(verif_dict.values(), start=start_row):
+        osp_name = object_value.get("osp_name")
+        osp_seg = object_value.get("osp_seg")
+        osp_x = object_value.get("osp_x")
+        osp_direction = object_value.get("osp_direction")
+        osp_track = object_value.get("osp_track")
+        osp_kp = object_value.get("osp_kp")
+        osp_approach_direction = object_value.get("osp_approach_direction")
+        osp_type = object_value.get("osp_type")
+        osp_permanent_stop = object_value.get("osp_permanent_stop")
+        osp_parking = object_value.get("osp_parking")
+        osp_washing = object_value.get("osp_washing")
         _add_osp_line_info(ws, row, osp_name, osp_seg, osp_x, osp_direction, osp_track, osp_kp,
                            osp_approach_direction, osp_type, osp_permanent_stop, osp_parking, osp_washing)
 
-        sig_inc = obj_val.get("sig_inc")
-        sig_type_inc = obj_val.get("sig_type_inc")
-        sig_dist_inc = obj_val.get("sig_dist_inc")
-        sig_dec = obj_val.get("sig_dec")
-        sig_type_dec = obj_val.get("sig_type_dec")
-        sig_dist_dec = obj_val.get("sig_dist_dec")
-        sig_comments = obj_val.get("sig_comments")
+        sig_inc = object_value.get("sig_inc")
+        sig_type_inc = object_value.get("sig_type_inc")
+        sig_dist_inc = object_value.get("sig_dist_inc")
+        sig_dec = object_value.get("sig_dec")
+        sig_type_dec = object_value.get("sig_type_dec")
+        sig_dist_dec = object_value.get("sig_dist_dec")
+        sig_comments = object_value.get("sig_comments")
         if sig_comments:
             sig_sheet_comments = True
 

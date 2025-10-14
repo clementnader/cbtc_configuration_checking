@@ -19,10 +19,10 @@ def check_walkway(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
     assert res_sheet_name == "Walkway"
 
     ww_dict = load_sheet(DCSYS.Walkways_Area)
-    list_used_obj_names = list()
+    list_used_object_names = list()
     res_dict = dict()
-    for ww_name, ww_val in ww_dict.items():
-        ww_limits = _get_ww_limits(ww_val)
+    for ww_name, ww_value in ww_dict.items():
+        ww_limits = _get_ww_limits(ww_value)
         associated_survey_dict = _get_corresponding_ww_survey_extremities(ww_name, ww_limits, survey_info,
                                                                           plt_survey_info, set_of_survey_tracks)
 
@@ -30,18 +30,18 @@ def check_walkway(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
                               for n, ((lim_track, lim_kp), survey_name)
                               in enumerate(associated_survey_dict.items(), start=1)]
 
-        for obj_name, dc_sys_original_track, dc_sys_kp, survey_name in limits_survey_info:
+        for object_name, dc_sys_original_track, dc_sys_kp, survey_name in limits_survey_info:
             dc_sys_track = clean_track_name(dc_sys_original_track, set_of_survey_tracks)
-            survey_obj_info = survey_info.get(survey_name)
-            if survey_obj_info is not None:
-                list_used_obj_names.append(survey_name)
+            survey_object_info = survey_info.get(survey_name)
+            if survey_object_info is not None:
+                list_used_object_names.append(survey_name)
             else:  # we try to find it among the surveyed platforms
-                survey_obj_info = plt_survey_info.get(survey_name)
+                survey_object_info = plt_survey_info.get(survey_name)
 
-            res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                    dc_sys_track, dc_sys_original_track, dc_sys_kp)
+            res_dict[(object_name, dc_sys_track)] = add_info_to_survey(survey_object_info, get_sheet_name(dc_sys_sheet),
+                                                                       dc_sys_track, dc_sys_original_track, dc_sys_kp)
 
-    res_dict.update(add_extra_info_from_survey(list_used_obj_names, survey_info))
+    res_dict.update(add_extra_info_from_survey(list_used_object_names, survey_info))
     return res_dict
 
 
@@ -53,8 +53,8 @@ def _clean_walkway_extremity_name(ww_lim_name: str) -> str:
     return ww_name
 
 
-def _get_ww_limits(ww_val: dict) -> list[tuple[str, float]]:
-    limits = list(get_dc_sys_zip_values(ww_val, DCSYS.Walkways_Area.Limit.Seg, DCSYS.Walkways_Area.Limit.X))
+def _get_ww_limits(ww_value: dict) -> list[tuple[str, float]]:
+    limits = list(get_dc_sys_zip_values(ww_value, DCSYS.Walkways_Area.Limit.Seg, DCSYS.Walkways_Area.Limit.X))
     track_kp_limits = [from_seg_offset_to_track_kp(seg, x) for seg, x in limits]
     return track_kp_limits
 

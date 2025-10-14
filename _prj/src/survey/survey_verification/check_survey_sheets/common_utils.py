@@ -11,16 +11,16 @@ __all__ = ["add_info_to_survey", "add_extra_info_from_survey", "test_names_in_su
            "get_smallest_unique_prefix_dict"]
 
 
-def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
+def add_info_to_survey(survey_object_info: Optional[dict[str, Any]],
                        dc_sys_sheet: str, dc_sys_track: str, dc_sys_original_track: str, dc_sys_kp: float,
                        extra_comment: str = None):
-    survey_name = survey_obj_info["obj_name"] if survey_obj_info is not None else None
-    survey_type = survey_obj_info["survey_type"] if survey_obj_info is not None else None
-    survey_track = survey_obj_info["survey_track"] if survey_obj_info is not None else None
-    survey_original_track = survey_obj_info["survey_original_track"] if survey_obj_info is not None else None
-    surveyed_kp = survey_obj_info["surveyed_kp"] if survey_obj_info is not None else None
-    surveyed_kp_comment = survey_obj_info["surveyed_kp_comment"] if survey_obj_info is not None else None
-    comments = survey_obj_info["comments"] if survey_obj_info is not None else None
+    survey_name = survey_object_info["object_name"] if survey_object_info is not None else None
+    survey_type = survey_object_info["survey_type"] if survey_object_info is not None else None
+    survey_track = survey_object_info["survey_track"] if survey_object_info is not None else None
+    survey_original_track = survey_object_info["survey_original_track"] if survey_object_info is not None else None
+    surveyed_kp = survey_object_info["surveyed_kp"] if survey_object_info is not None else None
+    surveyed_kp_comment = survey_object_info["surveyed_kp_comment"] if survey_object_info is not None else None
+    comments = survey_object_info["comments"] if survey_object_info is not None else None
     if extra_comment is not None:
         if comments is None:
             comments = extra_comment
@@ -37,19 +37,19 @@ def add_info_to_survey(survey_obj_info: Optional[dict[str, Any]],
 
 def add_extra_info_from_survey(used_objects_from_survey: list[str], survey_info: dict[str, dict[str, Any]]):
     extra_dict = dict()
-    for obj_name, obj_val in survey_info.items():
-        if obj_name in used_objects_from_survey:
+    for object_name, object_value in survey_info.items():
+        if object_name in used_objects_from_survey:
             continue
-        extra_dict[(obj_name, obj_val["survey_track"])] = \
+        extra_dict[(object_name, object_value["survey_track"])] = \
             {"dc_sys_sheet": None, "dc_sys_track": None, "dc_sys_original_track": None, "dc_sys_kp": None,
-             "survey_name": obj_val["obj_name"], "survey_type": obj_val["survey_type"],
-             "survey_track": obj_val["survey_track"], "survey_original_track": obj_val["survey_original_track"],
-             "surveyed_kp": obj_val["surveyed_kp"],
-             "surveyed_kp_comment": obj_val["surveyed_kp_comment"], "comments": obj_val["comments"]}
+             "survey_name": object_value["object_name"], "survey_type": object_value["survey_type"],
+             "survey_track": object_value["survey_track"], "survey_original_track": object_value["survey_original_track"],
+             "surveyed_kp": object_value["surveyed_kp"],
+             "surveyed_kp_comment": object_value["surveyed_kp_comment"], "comments": object_value["comments"]}
 
-        defined_name = obj_val.get("defined_name")
+        defined_name = object_value.get("defined_name")
         if defined_name is not None:
-            extra_dict[(obj_name, obj_val["survey_track"])]["defined_name"] = defined_name
+            extra_dict[(object_name, object_value["survey_track"])]["defined_name"] = defined_name
     return extra_dict
 
 
@@ -164,7 +164,7 @@ def _test_name_in_survey(original_test_name: str, track: str, survey_info: dict[
     if len(corresponding_survey_name_list) > 1 and do_print:
         print_log(f"Multiple objects in survey can correspond to {Color.yellow}{original_test_name}{Color.reset} on "
                   f"{Color.light_yellow}{track}{Color.reset}, unable to associate it:\n{Color.default}"
-                  f"{[survey_info[matching_obj]['obj_name'] for matching_obj in corresponding_survey_name_list]}"
+                  f"{[survey_info[matching_obj]['object_name'] for matching_obj in corresponding_survey_name_list]}"
                   f"{Color.reset}")
     return None
 

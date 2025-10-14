@@ -42,27 +42,27 @@ def create_verif_file(verif_dict: dict[str, dict[str, Any]], constraint_name: st
 
 
 def _update_verif_sheet(ws: xl_ws.Worksheet, row: int, verif_dict: dict[str, dict[str, Any]]) -> None:
-    for osp_name, osp_val in verif_dict.items():
+    for osp_name, osp_value in verif_dict.items():
         osp_start_row = row
-        calib_auth = osp_val.pop("Allow Accelerometers Calibration")
-        osp_position_and_type = osp_val.pop("osp_position_and_type")
+        calib_auth = osp_value.pop("Allow Accelerometers Calibration")
+        osp_position_and_type = osp_value.pop("osp_position_and_type")
         (_, _, osp_direction, osp_track, osp_kp), osp_type = osp_position_and_type
-        for train_type, train_type_val in osp_val.items():
+        for train_type, train_type_value in osp_value.items():
             train_type_start_row = row
-            train_front_position_at_osp = train_type_val.pop("train_front_position_at_osp")
+            train_front_position_at_osp = train_type_value.pop("train_front_position_at_osp")
             _, _, train_front_track, train_front_kp = train_front_position_at_osp
-            for accel_car_str, accel_car_val in train_type_val.items():
+            for accel_car_str, accel_car_value in train_type_value.items():
                 accel_car_start_row = row
                 accel_car = accel_car_str.removeprefix("accelerometer_car = ")
-                for train_polarity_str, train_polarity_val in accel_car_val.items():
+                for train_polarity_str, train_polarity_value in accel_car_value.items():
                     train_polarity = train_polarity_str.removeprefix("train_polarity = ")
-                    accel_car_pos_with_tol = train_polarity_val.get("accelerometer_car_position_with_tolerance_at_osp")
+                    accel_car_pos_with_tol = train_polarity_value.get("accelerometer_car_position_with_tolerance_at_osp")
                     ((_, _, _, accel_car_start_track, accel_car_start_kp),
                      (_, _, _, accel_car_end_track, accel_car_end_kp)) = accel_car_pos_with_tol
 
-                    slope_change_under_car = train_polarity_val.get("slope_change_under_car")
-                    min_slope = train_polarity_val.get("min_slope")
-                    max_slope = train_polarity_val.get("max_slope")
+                    slope_change_under_car = train_polarity_value.get("slope_change_under_car")
+                    min_slope = train_polarity_value.get("min_slope")
+                    max_slope = train_polarity_value.get("max_slope")
 
                     _add_train_polarity_info(ws, row, train_polarity, accel_car_start_track, accel_car_start_kp,
                                              accel_car_end_track, accel_car_end_kp,

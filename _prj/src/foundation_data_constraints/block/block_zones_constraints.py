@@ -22,7 +22,7 @@ def r_cdv_10():
 
         ivb_intersecting_block = get_objects_in_zone(DCSYS.IVB, DCSYS.CDV, block_name)
         for ivb_name in ivb_intersecting_block:
-            if "UsedByIxl" in get_class_attr_dict(DCSYS.IVB):
+            if "UsedByIxl" in get_class_attributes_dict(DCSYS.IVB):
                 if get_dc_sys_value(ivb_dict[ivb_name], DCSYS.IVB.UsedByIxl) != YesOrNo.O:
                     continue  # only when related IVB is used by IXL
             else:

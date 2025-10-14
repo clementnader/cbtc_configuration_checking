@@ -28,8 +28,8 @@ def load_cctool_oo_schema(addr: str) -> dict:
     global LOADED_CCTOOL_OO_SCHEMA
     if not LOADED_CCTOOL_OO_SCHEMA:
         wb = load_cctool_oo_schema_wb(addr)
-        cctool_oo_schema_sh = wb.sheet_by_name(SHEET_NAME)
-        LOADED_CCTOOL_OO_SCHEMA = get_cctool_oo_schema(cctool_oo_schema_sh)
+        cctool_oo_schema_sheet = wb.sheet_by_name(SHEET_NAME)
+        LOADED_CCTOOL_OO_SCHEMA = get_cctool_oo_schema(cctool_oo_schema_sheet)
     return LOADED_CCTOOL_OO_SCHEMA
 
 
@@ -52,25 +52,25 @@ def get_cctool_oo_schema(ws: xlrd.sheet.Sheet) -> dict:
             else:
                 info_dict[sheet_name][title] = column
         else:
-            list_attr_name, sub_attr_name = get_list_attr_names(title)
-            if list_attr_name not in info_dict[sheet_name]:
-                info_dict[sheet_name][list_attr_name] = dict()
-            if sub_attr_name not in info_dict[sheet_name][list_attr_name]:
-                info_dict[sheet_name][list_attr_name][sub_attr_name] = list()
-            info_dict[sheet_name][list_attr_name][sub_attr_name].append(column)
+            list_attribute_name, sub_attribute_name = get_list_attribute_names(title)
+            if list_attribute_name not in info_dict[sheet_name]:
+                info_dict[sheet_name][list_attribute_name] = dict()
+            if sub_attribute_name not in info_dict[sheet_name][list_attribute_name]:
+                info_dict[sheet_name][list_attribute_name][sub_attribute_name] = list()
+            info_dict[sheet_name][list_attribute_name][sub_attribute_name].append(column)
     return info_dict
 
 
-def get_list_attr_names(title: str):
+def get_list_attribute_names(title: str):
     title = re.sub(r"[1-9][0-9]*", r"", title)
-    list_attr_name, sub_attr_name = title.split("::", 1)
-    if sub_attr_name == "":
-        sub_attr_name = "Cell"
-    return list_attr_name, sub_attr_name
+    list_attribute_name, sub_attribute_name = title.split("::", 1)
+    if sub_attribute_name == "":
+        sub_attribute_name = "Cell"
+    return list_attribute_name, sub_attribute_name
 
 
-def get_clean_cell(ws: xlrd.sheet.Sheet, row: int, col: int):
-    cell_str = unidecode.unidecode(f"{get_xlrd_value(ws, row, col)}").strip()  # translate non-ASCII characters
+def get_clean_cell(ws: xlrd.sheet.Sheet, row: int, column: int):
+    cell_str = unidecode.unidecode(f"{get_xlrd_value(ws, row, column)}").strip()  # translate non-ASCII characters
     cell_str = (cell_str.replace("'", " ").replace(".", " ")
                 .replace("-", " ").replace("/", " "))  # remove special chars
     cell_str = cell_str.replace("#", "Number")  # remove special char

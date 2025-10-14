@@ -28,10 +28,10 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict,
                                                      is_mid_plt_survey_info=True)
 
     plt_dict = load_sheet(DCSYS.Quai)
-    list_used_obj_names = list()
+    list_used_object_names = list()
     res_dict = dict()
-    for plt_name, plt_val in plt_dict.items():
-        plt_limits = _get_plt_limits(plt_val)
+    for plt_name, plt_value in plt_dict.items():
+        plt_limits = _get_plt_limits(plt_value)
         associated_survey_dict = get_corresponding_plt_survey_extremities(plt_name, plt_limits, plt_survey_info,
                                                                           set_of_survey_tracks)
 
@@ -39,21 +39,21 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict,
                               for n, ((lim_track, lim_kp), survey_name)
                               in enumerate(associated_survey_dict.items(), start=1)]
 
-        for obj_name, dc_sys_original_track, dc_sys_kp, survey_name in limits_survey_info:
+        for object_name, dc_sys_original_track, dc_sys_kp, survey_name in limits_survey_info:
             dc_sys_track = clean_track_name(dc_sys_original_track, set_of_survey_tracks)
-            survey_obj_info = plt_survey_info.get(survey_name)
-            if survey_obj_info is not None:
-                list_used_obj_names.append(survey_name)
+            survey_object_info = plt_survey_info.get(survey_name)
+            if survey_object_info is not None:
+                list_used_object_names.append(survey_name)
             else:
-                survey_obj_info = _associate_plt_extremity_to_survey_mid_plt(
-                    obj_name, plt_name, dc_sys_kp, limits_survey_info, plt_survey_info, mid_plt_survey_info)
-                if survey_obj_info is not None:  # we made an association with a Middle Platform
+                survey_object_info = _associate_plt_extremity_to_survey_mid_plt(
+                    object_name, plt_name, dc_sys_kp, limits_survey_info, plt_survey_info, mid_plt_survey_info)
+                if survey_object_info is not None:  # we made an association with a Middle Platform
                     middle_platforms_exist_bool = True
 
-            res_dict[(obj_name, dc_sys_track)] = add_info_to_survey(survey_obj_info, get_sh_name(dc_sys_sheet),
-                                                                    dc_sys_track, dc_sys_original_track, dc_sys_kp)
+            res_dict[(object_name, dc_sys_track)] = add_info_to_survey(survey_object_info, get_sheet_name(dc_sys_sheet),
+                                                                       dc_sys_track, dc_sys_original_track, dc_sys_kp)
 
-    res_dict.update(add_extra_info_from_survey(list_used_obj_names, plt_survey_info))
+    res_dict.update(add_extra_info_from_survey(list_used_object_names, plt_survey_info))
 
     # Add Middle Platforms from survey and set defined names
     res_dict.update(add_extra_info_from_survey([], mid_plt_survey_info))
@@ -90,8 +90,8 @@ def _clean_platform_middle_name(plt_mid_name: str, is_mid_plt_survey_info: bool)
     return plt_name
 
 
-def _get_plt_limits(plt_val: dict) -> list[tuple[str, float]]:
-    limits = list(get_dc_sys_zip_values(plt_val, DCSYS.Quai.ExtremiteDuQuai.Voie, DCSYS.Quai.ExtremiteDuQuai.Pk))
+def _get_plt_limits(plt_value: dict) -> list[tuple[str, float]]:
+    limits = list(get_dc_sys_zip_values(plt_value, DCSYS.Quai.ExtremiteDuQuai.Voie, DCSYS.Quai.ExtremiteDuQuai.Pk))
     return limits
 
 
@@ -231,7 +231,7 @@ def _add_associated_plt_to_mid(plt_survey_info: dict, set_of_survey_tracks: set[
     return plt_survey_info
 
 
-def _associate_plt_extremity_to_survey_mid_plt(obj_name: str, plt_name: str, dc_sys_kp: float,
+def _associate_plt_extremity_to_survey_mid_plt(object_name: str, plt_name: str, dc_sys_kp: float,
                                                limits_survey_info: list[tuple[str, str, float, str]],
                                                plt_survey_info: dict, mid_plt_survey_info: dict
                                                ) -> Optional[dict]:
@@ -248,17 +248,17 @@ def _associate_plt_extremity_to_survey_mid_plt(obj_name: str, plt_name: str, dc_
     survey_info = list_matching_survey_info[0]
 
     # Get formula to compute this extremity from middle platform
-    other_limit_dc_sys_kp = [kp for lim_name, _, kp, _ in limits_survey_info if lim_name != obj_name][0]
+    other_limit_dc_sys_kp = [kp for lim_name, _, kp, _ in limits_survey_info if lim_name != object_name][0]
     if dc_sys_kp < other_limit_dc_sys_kp:
         formula_symbol = "-"
     else:
         formula_symbol = "+"
 
     surveyed_kp_formula = f'= {corresponding_defined_name} {formula_symbol} platform_length/2'
-    comments = f"Computed with Middle Platform \"{survey_info['obj_name']}\"."
+    comments = f"Computed with Middle Platform \"{survey_info['object_name']}\"."
 
-    survey_obj_info = {
-        "obj_name": "Computed",
+    survey_object_info = {
+        "object_name": "Computed",
         "survey_type": None,
         "survey_track": survey_info["survey_track"],
         "survey_original_track": survey_info["survey_original_track"],
@@ -266,4 +266,4 @@ def _associate_plt_extremity_to_survey_mid_plt(obj_name: str, plt_name: str, dc_
         "surveyed_kp_comment": None,
         "comments": comments,
     }
-    return survey_obj_info
+    return survey_object_info

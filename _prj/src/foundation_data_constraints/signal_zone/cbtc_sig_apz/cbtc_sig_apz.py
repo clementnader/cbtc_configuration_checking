@@ -46,24 +46,24 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> str:
 
 
 def _update_verif_sheet(ws: xl_ws.Worksheet, row: int, verif_dict: dict[str, dict[str, Any]]) -> None:
-    train_to_home_signal_max_dist = get_param_value("train_to_home_signal_max_dist")
+    train_to_home_signal_max_dist = get_parameter_value("train_to_home_signal_max_dist")
 
-    for obj_val in verif_dict.values():
-        sig_name = obj_val.get("sig_name")
-        sig_type = obj_val.get("sig_type")
-        sig_direction = obj_val.get("sig_direction")
-        sig_with_imc = obj_val.get("sig_with_imc")
-        downstream_seg = obj_val.get("downstream_seg")
-        downstream_x = obj_val.get("downstream_x")
-        downstream_track = obj_val.get("downstream_track")
-        downstream_kp = obj_val.get("downstream_kp")
-        sig_apz_limit_seg_list = obj_val.get("sig_apz_limit_seg_list", list())
-        sig_apz_limit_x_list = obj_val.get("sig_apz_limit_x_list", list())
-        sig_apz_limit_track_list = obj_val.get("sig_apz_limit_track_list", list())
-        sig_apz_limit_kp_list = obj_val.get("sig_apz_limit_kp_list", list())
-        dist_list = obj_val.get("dist_list", list())
-        status = obj_val.get("status")
-        comments = obj_val.get("comments")
+    for object_value in verif_dict.values():
+        sig_name = object_value.get("sig_name")
+        sig_type = object_value.get("sig_type")
+        sig_direction = object_value.get("sig_direction")
+        sig_with_imc = object_value.get("sig_with_imc")
+        downstream_seg = object_value.get("downstream_seg")
+        downstream_x = object_value.get("downstream_x")
+        downstream_track = object_value.get("downstream_track")
+        downstream_kp = object_value.get("downstream_kp")
+        sig_apz_limit_seg_list = object_value.get("sig_apz_limit_seg_list", list())
+        sig_apz_limit_x_list = object_value.get("sig_apz_limit_x_list", list())
+        sig_apz_limit_track_list = object_value.get("sig_apz_limit_track_list", list())
+        sig_apz_limit_kp_list = object_value.get("sig_apz_limit_kp_list", list())
+        dist_list = object_value.get("dist_list", list())
+        status = object_value.get("status")
+        comments = object_value.get("comments")
 
         # Multiple rows can be written at once for multiple Entry Points
         row = _add_line_info(ws, row, sig_name, sig_type, sig_direction, sig_with_imc,

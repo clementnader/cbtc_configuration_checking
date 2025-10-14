@@ -30,7 +30,7 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                             TypeNomLogiqueInfoPASPAS.SAFETY_RELATED_SKIP_NORMAL_DIR,
                             TypeNomLogiqueInfoPASPAS.SAFETY_RELATED_HOLD_REVERSE_DIR,
                             TypeNomLogiqueInfoPASPAS.SAFETY_RELATED_SKIP_REVERSE_DIR]
-        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
+        if not check_object_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
                               "shall exist for all Platforms",
                               target_msg_types):
             success = False
@@ -40,14 +40,14 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
 
 
 # ------- Common Sub Functions to test flows ------- #
-def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, condition_str: str,
+def check_object_msgs(object_type, msg_dict: dict, object_name: str, condition: bool, condition_str: str,
                    target_msg_types: Union[str, list[str]]) -> bool:
     if not isinstance(target_msg_types, list):
         target_msg_types = [target_msg_types]
-    obj_type_str = get_sh_name(obj_type)
+    object_type_str = get_sheet_name(object_type)
 
     associated_msgs = {msg_name: msg_info for msg_name, msg_info in msg_dict.items()
-                       if get_dc_sys_value(msg_info, DCSYS.Flux_ZCR_ZC.ObjectName) == obj_name
+                       if get_dc_sys_value(msg_info, DCSYS.Flux_ZCR_ZC.ObjectName) == object_name
                        and get_dc_sys_value(msg_info, DCSYS.Flux_ZCR_ZC.NomLogiqueInfo) in target_msg_types}
 
     success = True
@@ -55,7 +55,7 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
         if associated_msgs:
             print_warning(f"Useless flow(s) to be removed as the condition for the message {Color.white}"
                           f"{condition_str.replace(Color.reset, Color.reset + Color.white)}{Color.reset} "
-                          f"is not met for {obj_type_str} {Color.blue}{obj_name}{Color.reset}.")
+                          f"is not met for {object_type_str} {Color.blue}{object_name}{Color.reset}.")
             for msg_name, msg_info in associated_msgs.items():
                 print(f"\t{Color.beige}{msg_name}{Color.reset}", end="\n\t\t")
                 print(msg_info)
@@ -67,7 +67,7 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
                           if get_dc_sys_value(msg_info, DCSYS.Flux_ZCR_ZC.NomLogiqueInfo) == target_msg_type}
         if not associated_msg:
             print_error(f"A flow of type {Color.yellow}{target_msg_type}{Color.reset} shall be defined for "
-                        f"{obj_type_str} {Color.blue}{obj_name}{Color.reset} "
+                        f"{object_type_str} {Color.blue}{object_name}{Color.reset} "
                         f"as the condition for the message {Color.white}"
                         f"{condition_str.replace(Color.reset, Color.reset + Color.white)}{Color.reset} is met.")
             success = False

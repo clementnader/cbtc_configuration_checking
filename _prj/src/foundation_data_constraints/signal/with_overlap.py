@@ -16,27 +16,27 @@ def check_signal_with_overlap():
     sig_dict = load_sheet(DCSYS.Sig)
     ovl_dict = load_sheet(DCSYS.IXL_Overlap)
 
-    dict_ovl_sigs = dict()
+    dict_ovl_signals = dict()
     for ovl_name, ovl in ovl_dict.items():
         corresponding_sig = get_dc_sys_value(ovl, DCSYS.IXL_Overlap.DestinationSignal)
-        if corresponding_sig not in dict_ovl_sigs:
-            dict_ovl_sigs[corresponding_sig] = list()
-        dict_ovl_sigs[corresponding_sig].append(ovl_name)
+        if corresponding_sig not in dict_ovl_signals:
+            dict_ovl_signals[corresponding_sig] = list()
+        dict_ovl_signals[corresponding_sig].append(ovl_name)
 
     success = True
     for sig_name, sig in sig_dict.items():
         with_ovl = get_dc_sys_value(sig, DCSYS.Sig.Enc_Dep) == YesOrNo.O
         if with_ovl:
-            if sig_name not in dict_ovl_sigs:
+            if sig_name not in dict_ovl_signals:
                 success = False
                 print_error(f"Signal {Color.yellow}{sig_name}{Color.reset} has flag [With overlap] set to 'Y', "
                             f"but there is no associated overlap in sheet IXL_Overlap.")
         else:
-            if sig_name in dict_ovl_sigs:
+            if sig_name in dict_ovl_signals:
                 success = False
                 print_error(f"Signal {Color.yellow}{sig_name}{Color.reset} has flag [With overlap] set to 'N', "
                             f"but there is associated overlap in sheet IXL_Overlap:\n"
-                            f"{Color.beige}{dict_ovl_sigs[sig_name]}{Color.reset}")
+                            f"{Color.beige}{dict_ovl_signals[sig_name]}{Color.reset}")
 
     if success:
         print_log("No KO has been raised in the verification of the signals flag [With overlap].")

@@ -40,7 +40,7 @@ def check_if_constant_slope_under_car_with_accel(osp_seg: str, osp_x: float, osp
                 (front_seg, front_x), (tail_seg, tail_x) = _enlarged_position_by_osp_tolerance(
                     car_front_seg, car_front_x, car_tail_seg, car_tail_x, osp_direction, tolerance_around_osp)
 
-                zone_limits = [(front_seg, front_x, get_reverse_direction(osp_direction)),
+                zone_limits = [(front_seg, front_x, get_opposite_direction(osp_direction)),
                                (tail_seg, tail_x, osp_direction)]
 
                 # We check that the slope is constant under, before and after the car

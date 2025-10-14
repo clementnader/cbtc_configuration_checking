@@ -75,27 +75,27 @@ def _update_values_sheet(ws: xl_ws.Worksheet, nb_of_diff_values: int,
             current_row = _merged_cell_for_train_unit_number(ws, current_row, train_unit_number, color_bool)
             for cc_num, sub_sub_sub_dict in sub_sub_dict.items():
                 current_row, list_of_values = (
-                    _update_param_sheet_per_cc(ws, current_row, cc_num, sub_sub_sub_dict, list_of_values, color_bool))
+                    _update_parameter_sheet_per_cc(ws, current_row, cc_num, sub_sub_sub_dict, list_of_values, color_bool))
                 list_of_ranges_for_duplicate_conditional_formatting.append(
                     f"$B${current_row-nb_of_diff_values}:$D${current_row-1}")
     _set_up_conditional_formatting(ws, list_of_ranges_for_duplicate_conditional_formatting)
 
 
-def _update_param_sheet_per_cc(ws: xl_ws.Worksheet, current_row: int, cc_num: int,
-                               param_dict: dict[str, Union[str, list[tuple[int, str]]]],
+def _update_parameter_sheet_per_cc(ws: xl_ws.Worksheet, current_row: int, cc_num: int,
+                               parameter_dict: dict[str, Union[str, list[tuple[int, str]]]],
                                list_of_all_values: list[tuple[str, int, int]],
                                color_bool: bool
                                ) -> tuple[int, list[tuple[str, int, int]]]:
 
-    for param_pattern, param_values in param_dict.items():
-        if param_pattern == get_pattern(CC_ID_REGEX_PATTERN):
-            param_values: str
-            current_row = _merged_cell_for_cc_id(ws, current_row, cc_num, param_pattern, param_values, color_bool)
-        elif param_pattern in [get_pattern(CC_PMC_ALPHA_ADDRESS_REGEX_PATTERN),
+    for parameter_pattern, parameter_values in parameter_dict.items():
+        if parameter_pattern == get_pattern(CC_ID_REGEX_PATTERN):
+            parameter_values: str
+            current_row = _merged_cell_for_cc_id(ws, current_row, cc_num, parameter_pattern, parameter_values, color_bool)
+        elif parameter_pattern in [get_pattern(CC_PMC_ALPHA_ADDRESS_REGEX_PATTERN),
                                get_pattern(CC_PMC_BETA_ADDRESS_REGEX_PATTERN),
                                get_pattern(CC_PMC_SSH_PUBLIC_KEY_REGEX_PATTERN)]:
-            param_values: list[tuple[int, str]]
-            current_row = _add_row_for_param(ws, current_row, cc_num, param_pattern, param_values, list_of_all_values,
+            parameter_values: list[tuple[int, str]]
+            current_row = _add_row_for_param(ws, current_row, cc_num, parameter_pattern, parameter_values, list_of_all_values,
                                              color_bool)
     return current_row, list_of_all_values
 
@@ -129,12 +129,12 @@ def _merged_cell_for_cc_id(ws: xl_ws.Worksheet, current_row: int, cc_num: int, c
     return current_row + 1
 
 
-def _add_row_for_param(ws: xl_ws.Worksheet, current_row: int, cc_num: int, param_pattern: str,
-                       param_values: list[tuple[int, str]], list_of_all_values: list[tuple[str, int, int]],
+def _add_row_for_param(ws: xl_ws.Worksheet, current_row: int, cc_num: int, parameter_pattern: str,
+                       parameter_values: list[tuple[int, str]], list_of_all_values: list[tuple[str, int, int]],
                        color_bool: bool) -> int:
     bg_color = XlBgColor.light_blue if color_bool else XlBgColor.light_green
     # Write the PMC header line
-    if param_pattern != get_pattern(CC_PMC_BETA_ADDRESS_REGEX_PATTERN):
+    if parameter_pattern != get_pattern(CC_PMC_BETA_ADDRESS_REGEX_PATTERN):
         current_col = PMC_FIRST_COLUMN
         for pmc_num in range(1, NB_PMC+1):
             create_cell(ws, f"PMC {pmc_num}", row=current_row, column=current_col,
@@ -142,17 +142,17 @@ def _add_row_for_param(ws: xl_ws.Worksheet, current_row: int, cc_num: int, param
             current_col += 1
         current_row += 1
     # Write the parameter name cell
-    param_name = param_pattern.replace("CCx", f"CC{cc_num}")
-    create_cell(ws, f"{param_name}", row=current_row, column=PARAMETER_NAME_COLUMN,
+    parameter_name = parameter_pattern.replace("CCx", f"CC{cc_num}")
+    create_cell(ws, f"{parameter_name}", row=current_row, column=PARAMETER_NAME_COLUMN,
                 bg_color=bg_color, borders=True)
     # Write the parameter values for all the PMC
     current_col = PMC_FIRST_COLUMN
     dict_of_status = dict()
-    for pmc_num, param_value in param_values:
-        create_cell(ws, f"{param_value}", row=current_row, column=current_col,
+    for pmc_num, parameter_value in parameter_values:
+        create_cell(ws, f"{parameter_value}", row=current_row, column=current_col,
                     bg_color=bg_color, borders=True)
-        dict_of_status[pmc_num] = _manage_status(param_value, current_row, current_col, list_of_all_values)
-        list_of_all_values.append((param_value, current_row, current_col))
+        dict_of_status[pmc_num] = _manage_status(parameter_value, current_row, current_col, list_of_all_values)
+        list_of_all_values.append((parameter_value, current_row, current_col))
         current_col += 1
     # Write the status and comments
     _set_status_and_comments_columns(ws, current_row, dict_of_status)

@@ -19,40 +19,40 @@ def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
         res_sheet = survey_type_value["res_sheet"]
         if res_sheet is None:
             continue
-        dcsys_sh = survey_type_value["dcsys_sh"]
+        dcsys_sheet = survey_type_value["dcsys_sh"]
         func = survey_type_value["func"]
         display_name = survey_type_value["display_name"]
         print(f"\n{Color.white}{Color.underline}Analyzing {display_name} positioning...{Color.reset}{NBSP}")
 
         if survey_type == "PLATFORM":
             sub_verif_dict, middle_platforms_exist_bool = func(
-                dcsys_sh, res_sheet, survey_info.get("PLATFORM"),
+                dcsys_sheet, res_sheet, survey_info.get("PLATFORM"),
                 set_of_survey_tracks, survey_info.get("OSP"), survey_info.get("MIDDLE_PLATFORM"))
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(sub_verif_dict)
 
         elif survey_type == "TAG":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("TAG"),
+                func(dcsys_sheet, res_sheet, survey_info.get("TAG"),
                      set_of_survey_tracks, survey_info.get("DYNAMIC_TAG"), survey_info.get("VERSION_TAG")))
 
         elif survey_type == "BLOCK":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("BLOCK"), block_def_dict,
+                func(dcsys_sheet, res_sheet, survey_info.get("BLOCK"), block_def_dict,
                      set_of_survey_tracks, survey_info.get("BUFFER")))
 
         elif survey_type == "SIGNAL":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("SIGNAL"),
+                func(dcsys_sheet, res_sheet, survey_info.get("SIGNAL"),
                      set_of_survey_tracks, survey_info.get("PERMANENT_RED"), survey_info.get("BUFFER")))
 
         elif survey_type == "WALKWAY":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get("WALKWAY"),
+                func(dcsys_sheet, res_sheet, survey_info.get("WALKWAY"),
                      set_of_survey_tracks, survey_info.get("PLATFORM")))
 
         else:
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sh, res_sheet, survey_info.get(survey_type),
+                func(dcsys_sheet, res_sheet, survey_info.get(survey_type),
                      set_of_survey_tracks))
 
         _print_logs_survey_verif(display_name, survey_type_value, survey_verif_dict[res_sheet])

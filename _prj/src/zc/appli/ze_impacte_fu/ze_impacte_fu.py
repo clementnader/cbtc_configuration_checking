@@ -16,14 +16,14 @@ __all__ = ["compute_ze_impacte_fu", "create_computed_result_file_ze_impacte_fu"]
 
 
 def compute_ze_impacte_fu() -> dict[str, dict[str, Union[bool, dict[str, Union[bool, tuple[str, ...]]]]]]:
-    eb_max_dist = get_param_value("eb_max_dist")
+    eb_max_dist = get_parameter_value("eb_max_dist")
     list_zc = get_all_zc()
     results = {zc_name: dict() for zc_name in list_zc}
     vb_dict = load_sheet(DCSYS.CV)
     maz_dict = load_sheet(DCSYS.Zaum)
-    vb_per_zc = {zc_name: sorted([vb_name for vb_name in vb_dict if zc_name in get_zc_of_obj(DCSYS.CV, vb_name)])
+    vb_per_zc = {zc_name: sorted([vb_name for vb_name in vb_dict if zc_name in get_zc_of_object(DCSYS.CV, vb_name)])
                  for zc_name in list_zc}
-    maz_per_zc = {zc_name: sorted([maz_name for maz_name in maz_dict if zc_name in get_zc_of_obj(DCSYS.Zaum, maz_name)])
+    maz_per_zc = {zc_name: sorted([maz_name for maz_name in maz_dict if zc_name in get_zc_of_object(DCSYS.Zaum, maz_name)])
                   for zc_name in list_zc}
 
     for zc_name in list_zc:

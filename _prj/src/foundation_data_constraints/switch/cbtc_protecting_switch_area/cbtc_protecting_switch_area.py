@@ -49,16 +49,16 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
 
 def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[str, dict[str, Any]]) -> None:
 
-    for row, (sw_name, sw_val) in enumerate(verif_dict.items(), start=start_row):
-        sw_block_locking_area = sw_val.get("sw_block_locking_area")
-        cbtc_protecting_switch_area = sw_val.get("cbtc_protecting_switch_area")
-        fouling_point_distance = sw_val.get("fouling_point_distance")
-        local_speed_km_per_h = sw_val.get("local_speed_km_per_h")
-        list_ivb_to_protect = sw_val.get("list_ivb_to_protect")
-        ivb_that_shall_be_added = sw_val.get("ivb_that_shall_be_added")
-        ivb_that_can_be_removed = sw_val.get("ivb_that_can_be_removed")
-        status = sw_val.get("status")
-        comments = sw_val.get("comments")
+    for row, (sw_name, sw_value) in enumerate(verif_dict.items(), start=start_row):
+        sw_block_locking_area = sw_value.get("sw_block_locking_area")
+        cbtc_protecting_switch_area = sw_value.get("cbtc_protecting_switch_area")
+        fouling_point_distance = sw_value.get("fouling_point_distance")
+        local_speed_km_per_h = sw_value.get("local_speed_km_per_h")
+        list_ivb_to_protect = sw_value.get("list_ivb_to_protect")
+        ivb_that_shall_be_added = sw_value.get("ivb_that_shall_be_added")
+        ivb_that_can_be_removed = sw_value.get("ivb_that_can_be_removed")
+        status = sw_value.get("status")
+        comments = sw_value.get("comments")
 
         _add_line_info(ws, row, sw_name, sw_block_locking_area, cbtc_protecting_switch_area,
                        fouling_point_distance, local_speed_km_per_h,
@@ -67,15 +67,15 @@ def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[st
         _add_comments(ws, row, comments)
 
     # Hide empty columns
-    max_len_sw_block_locking_area = max(len(sw_val.get("sw_block_locking_area"))
-                                        for sw_val in verif_dict.values())
+    max_len_sw_block_locking_area = max(len(sw_value.get("sw_block_locking_area"))
+                                        for sw_value in verif_dict.values())
     for sw_block_locking_area_col in range(SW_BLOCK_LOCKING_AREA_START_COL+max_len_sw_block_locking_area,
                                            SW_BLOCK_LOCKING_AREA_START_COL+CBTC_PROTECTING_SW_AREA_NB_COL):
         ws.column_dimensions[get_xl_column_letter(sw_block_locking_area_col)].hidden = True
 
     # Hide empty columns
-    max_cbtc_protecting_switch_area = max(len(sw_val.get("cbtc_protecting_switch_area"))
-                                          for sw_val in verif_dict.values())
+    max_cbtc_protecting_switch_area = max(len(sw_value.get("cbtc_protecting_switch_area"))
+                                          for sw_value in verif_dict.values())
     for cbtc_protecting_sw_area_col in range(CBTC_PROTECTING_SW_AREA_START_COL+max_cbtc_protecting_switch_area,
                                              CBTC_PROTECTING_SW_AREA_START_COL+CBTC_PROTECTING_SW_AREA_NB_COL):
         ws.column_dimensions[get_xl_column_letter(cbtc_protecting_sw_area_col)].hidden = True

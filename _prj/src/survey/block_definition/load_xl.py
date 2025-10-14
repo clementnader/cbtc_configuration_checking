@@ -9,7 +9,7 @@ __all__ = ["load_block_def_wb"]
 
 
 def load_block_def_wb() -> tuple[Optional[Union[xlrd.book.Book, openpyxl.workbook.Workbook]], Optional[str]]:
-    block_def_addr = DATABASE_LOC.block_def
+    block_def_addr = DATABASE_LOCATION.block_def
     if block_def_addr is None:
         return None, None
     print_log(f"Open Block Definition file {Color.default}\"{block_def_addr}\"{Color.reset}.")

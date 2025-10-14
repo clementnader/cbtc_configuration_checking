@@ -30,7 +30,7 @@ def create_verif_file(dc_sys_sheet_name: str, zones_kp_dict: dict):
     # Update Verification sheet
     color_bool = False
     track_dict = load_sheet(DCSYS.Voie)
-    for obj_name, sub_dict in zones_kp_dict.items():
+    for object_name, sub_dict in zones_kp_dict.items():
         color_bool = not color_bool  # to alternate colors
         for track, list_min_max_kp in sub_dict.items():
             for min_kp, max_kp in list_min_max_kp:
@@ -49,7 +49,7 @@ def create_verif_file(dc_sys_sheet_name: str, zones_kp_dict: dict):
                     comments = "Limit 2 matches track End KP."
                 else:
                     comments = None
-                _add_line(ws, row, obj_name, track, min_kp, max_kp, comments, color_bool)
+                _add_line(ws, row, object_name, track, min_kp, max_kp, comments, color_bool)
                 row += 1
 
     # Save workbook
@@ -61,11 +61,11 @@ def create_verif_file(dc_sys_sheet_name: str, zones_kp_dict: dict):
     return res_file_path
 
 
-def _add_line(ws: xl_ws.Worksheet, row: int, obj_name: str, track: str, min_kp: float, max_kp: float,
+def _add_line(ws: xl_ws.Worksheet, row: int, object_name: str, track: str, min_kp: float, max_kp: float,
               comments: Optional[str], color_bool: bool):
     bg_color = XlBgColor.light_blue if color_bool else XlBgColor.light_green
     # Object Name
-    create_cell(ws, obj_name, row=row, column=NAME_COL, borders=True, bg_color=bg_color)
+    create_cell(ws, object_name, row=row, column=NAME_COL, borders=True, bg_color=bg_color)
     # Track
     create_cell(ws, track, row=row, column=TRACK_COL, borders=True)
     # Start KP

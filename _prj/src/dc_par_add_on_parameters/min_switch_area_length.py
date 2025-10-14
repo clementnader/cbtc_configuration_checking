@@ -7,7 +7,7 @@ from ..dc_sys import *
 from ..dc_sys_get_cbtc_territory import *
 from ..dc_sys_sheet_utils.block_utils import *
 from ..dc_sys_draw_path.dc_sys_path_and_distances import get_dist_downstream, get_dist, is_seg_downstream
-from ..dc_sys_draw_path.dc_sys_get_zones import get_oriented_limits_of_obj
+from ..dc_sys_draw_path.dc_sys_get_zones import get_oriented_limits_of_object
 
 
 __all__ = ["min_switch_area_length"]
@@ -58,7 +58,7 @@ def get_len_point_side(sw_block_name: str, sw_name: str):
     point_seg, point_x = get_switch_position(sw_name)
     sw_point_downstream = not(is_switch_point_upstream_heels(sw_name))
 
-    oriented_limits = get_oriented_limits_of_obj(DCSYS.CDV, sw_block_name)
+    oriented_limits = get_oriented_limits_of_object(DCSYS.CDV, sw_block_name)
     list_upstream_limits = list()
     for lim_seg, lim_x, lim_direction in enumerate(oriented_limits):
         if (is_seg_downstream(lim_seg, point_seg, lim_x, point_x, downstream=lim_direction == Direction.CROISSANT)

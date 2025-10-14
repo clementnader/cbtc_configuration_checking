@@ -6,7 +6,7 @@ import argparse
 from .config_ini import *
 from ..utils import *
 from ..dc_sys import *
-from ..database_location import DATABASE_LOC
+from ..database_location import DATABASE_LOCATION
 
 
 __all__ = ["init_log", "init", "get_log_file_sub_python"]
@@ -37,7 +37,7 @@ def init(args, main_file: str, log_file_instance: Any, log_file_name: str):
     else:
         print_title(f"Tool Initialization")
         update_cctool_oo()
-        skip_init = not DATABASE_LOC.cctool_oo_schema
+        skip_init = not DATABASE_LOCATION.cctool_oo_schema
 
     # Initialization Commands
     if skip_init:

@@ -87,32 +87,32 @@ def _copy_converted_train_unit(input_path, dest_path, input_dir):
 
 
 def _copy_converted_cab(input_path, dest_path, input_dir):
-    for ccparam_dir in os.listdir(input_path):
-        ccparam_dir_full_path = os.path.join(input_path, ccparam_dir)
-        ccparam_dir_dest_path = os.path.join(dest_path, ccparam_dir)
-        if os.path.isdir(ccparam_dir_full_path) and ccparam_dir == CC_PARAM_DIR:
-            _create_dir(ccparam_dir_dest_path)
-            _copy_converted_ccparam(ccparam_dir_full_path, ccparam_dir_dest_path, input_dir)
+    for ccparameter_dir in os.listdir(input_path):
+        ccparameter_dir_full_path = os.path.join(input_path, ccparameter_dir)
+        ccparameter_dir_dest_path = os.path.join(dest_path, ccparameter_dir)
+        if os.path.isdir(ccparameter_dir_full_path) and ccparameter_dir == CC_PARAM_DIR:
+            _create_dir(ccparameter_dir_dest_path)
+            _copy_converted_ccparam(ccparameter_dir_full_path, ccparameter_dir_dest_path, input_dir)
         else:
-            _copy_file_or_dir(ccparam_dir_full_path, ccparam_dir_dest_path)
+            _copy_file_or_dir(ccparameter_dir_full_path, ccparameter_dir_dest_path)
 
 
 def _copy_converted_ccparam(input_path, dest_path, input_dir):
     for ccparam in os.listdir(input_path):
-        ccparam_full_path = os.path.join(input_path, ccparam)
-        ccparam_dest_path = os.path.join(dest_path, ccparam)
-        if os.path.isfile(ccparam_full_path) and ccparam == CC_PARAM_FILE:
-            _convert_ccparam_file_unix_to_windows(ccparam_full_path, ccparam_dest_path, input_dir)
+        ccparameter_full_path = os.path.join(input_path, ccparam)
+        ccparameter_dest_path = os.path.join(dest_path, ccparam)
+        if os.path.isfile(ccparameter_full_path) and ccparam == CC_PARAM_FILE:
+            _convert_ccparameter_file_unix_to_windows(ccparameter_full_path, ccparameter_dest_path, input_dir)
         else:
-            _copy_file_or_dir(ccparam_full_path, ccparam_dest_path)
+            _copy_file_or_dir(ccparameter_full_path, ccparameter_dest_path)
 
 
 UNIX_LINE_END = b"\n"
 WINDOWS_LINE_END = b"\r\n"
 
 
-def _convert_ccparam_file_unix_to_windows(ccparam_full_path, ccparam_dest_path, input_dir):
-    print(f"{Color.blue}Converting file \"{ccparam_full_path.removeprefix(input_dir)}\"...{Color.reset}")
-    with open(ccparam_full_path, "rb") as f:
-        with open(ccparam_dest_path, "wb") as dest_f:
+def _convert_ccparameter_file_unix_to_windows(ccparameter_full_path, ccparameter_dest_path, input_dir):
+    print(f"{Color.blue}Converting file \"{ccparameter_full_path.removeprefix(input_dir)}\"...{Color.reset}")
+    with open(ccparameter_full_path, "rb") as f:
+        with open(ccparameter_dest_path, "wb") as dest_f:
             dest_f.write(f.read().replace(UNIX_LINE_END, WINDOWS_LINE_END))

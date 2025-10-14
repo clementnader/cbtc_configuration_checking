@@ -31,9 +31,9 @@ def _get_zc_limits_within_other_zc() -> dict[str, dict[str, list[tuple[str, floa
     zc_limits_within_other_zc = dict()
     zc_list = get_objects_list(DCSYS.PAS)
     for zc_name in zc_list:
-        zc_limits = get_obj_zone_limits(DCSYS.PAS, zc_name)
+        zc_limits = get_object_zone_limits(DCSYS.PAS, zc_name)
         for limit_seg, limit_x, limit_direction in zc_limits:
-            test_direction = get_reverse_direction(limit_direction)
+            test_direction = get_opposite_direction(limit_direction)
             # for a single point object, we consider it belongs to the zone upstream of it,
             # behavior is mimicked for the zone limits too
             other_zc = get_zones_on_point(DCSYS.PAS, limit_seg, limit_x, test_direction)

@@ -28,7 +28,7 @@ def get_control_tables_template_info() -> tuple[dict[str, dict[str, Union[str, b
 def _read_control_tables_ini_info():
     global ROUTE_INFORMATION, OVERLAP_INFORMATION
 
-    config_ini_file_name = DATABASE_LOC.control_tables_config_ini_file
+    config_ini_file_name = DATABASE_LOCATION.control_tables_config_ini_file
     config_ini_file = os.path.join(ROOT_DIRECTORY, "control_tables_configuration", config_ini_file_name)
 
     print_section_title(f"Read \"{config_ini_file_name}\" file to get the Control Tables PDF format:")

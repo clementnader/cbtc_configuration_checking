@@ -29,10 +29,10 @@ def get_atb_zone_related_to_plt(plt_name: str):
 def is_accelerometer_calibration_authorized_at_platform(plt_name: str) -> Optional[bool]:
     plt_dict = load_sheet(DCSYS.Quai)
     plt_value = plt_dict[plt_name]
-    if "AllowAccelerometerCalibration" in get_class_attr_dict(DCSYS.Quai):
+    if "AllowAccelerometerCalibration" in get_class_attributes_dict(DCSYS.Quai):
         return get_dc_sys_value(plt_value, DCSYS.Quai.AllowAccelerometerCalibration) == YesOrNo.O
 
-    if "AllowAccelerometersCalibration" in get_class_attr_dict(DCSYS.Quai):
+    if "AllowAccelerometersCalibration" in get_class_attributes_dict(DCSYS.Quai):
         return get_dc_sys_value(plt_value, DCSYS.Quai.AllowAccelerometersCalibration) == YesOrNo.O
 
     return None

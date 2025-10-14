@@ -12,10 +12,10 @@ __all__ = ["get_par_worst_suspect_coupling_overrun_additionnal_dist"]
 
 
 def get_par_worst_suspect_coupling_overrun_additionnal_dist():
-    par_max_couplable_train_units = get_cc_param_values("PAR_max_couplable_train_units")[0]
-    par_gravity = get_cc_param_values("PAR_gravity")[0]
-    par_train_unit_length_array = get_cc_param_values("PAR_train_unit_length_ARRAY__1")[0]
-    par_train_worst_gamma_eb = get_cc_param_values("PAR_train_worst_gamma_eb")[0]
+    par_max_couplable_train_units = get_cc_parameter_values("PAR_max_couplable_train_units")[0]
+    par_gravity = get_cc_parameter_values("PAR_gravity")[0]
+    par_train_unit_length_array = get_cc_parameter_values("PAR_train_unit_length_ARRAY__1")[0]
+    par_train_worst_gamma_eb = get_cc_parameter_values("PAR_train_worst_gamma_eb")[0]
     print_log(f"PAR_max_couplable_train_units = {par_max_couplable_train_units}")
     print_log(f"PAR_gravity = {par_gravity}")
     print_log(f"PAR_train_unit_length_ARRAY__1 = {par_train_unit_length_array}")
@@ -48,15 +48,15 @@ def _get_max_in_direction(par_max_couplable_train_units: int, par_gravity: float
     slope_dict = load_sheet(DCSYS.Profil)
     nb_slopes = len(slope_dict)
     progress_bar(1, 1, end=True)  # reset progress_bar
-    for i, (alpha1_name, alpha1_obj) in enumerate(slope_dict.items()):
+    for i, (alpha1_name, alpha1_object) in enumerate(slope_dict.items()):
         print_log_progress_bar(i, nb_slopes, f"distances between {alpha1_name} and other slopes")
-        alpha1 = (1 if downstream else -1) * get_dc_sys_value(alpha1_obj, DCSYS.Profil.Pente)
-        alpha1_seg, alpha1_x = get_dc_sys_values(alpha1_obj, DCSYS.Profil.Seg, DCSYS.Profil.X)
+        alpha1 = (1 if downstream else -1) * get_dc_sys_value(alpha1_object, DCSYS.Profil.Pente)
+        alpha1_seg, alpha1_x = get_dc_sys_values(alpha1_object, DCSYS.Profil.Seg, DCSYS.Profil.X)
         for alpha2_obj in slope_dict.values():
             if alpha2_obj == alpha1_obj:
                 continue
-            alpha2 = (1 if downstream else -1) * get_dc_sys_value(alpha2_obj, DCSYS.Profil.Pente)
-            alpha2_seg, alpha2_x = get_dc_sys_values(alpha2_obj, DCSYS.Profil.Seg, DCSYS.Profil.X)
+            alpha2 = (1 if downstream else -1) * get_dc_sys_value(alpha2_object, DCSYS.Profil.Pente)
+            alpha2_seg, alpha2_x = get_dc_sys_values(alpha2_object, DCSYS.Profil.Seg, DCSYS.Profil.X)
             if not is_seg_downstream(start_seg=alpha1_seg, end_seg=alpha2_seg, start_x=alpha1_x, end_x=alpha2_x,
                                      downstream=downstream):
                 continue

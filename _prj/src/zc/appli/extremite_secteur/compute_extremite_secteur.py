@@ -16,8 +16,8 @@ __all__ = ["extremite_secteur"]
 def extremite_secteur():
     # EXTREMITE_SECTEUR
     variables = dict()
-    tracking_delocalization_threshold = get_param_value("tracking_delocalization_threshold", variables)
-    train_max_length = get_param_value("train_max_length", variables)
+    tracking_delocalization_threshold = get_parameter_value("tracking_delocalization_threshold", variables)
+    train_max_length = get_parameter_value("train_max_length", variables)
     limit_value = tracking_delocalization_threshold + train_max_length
     print_sub_variables(variables)
     print(f"limit is {limit_value}\n")

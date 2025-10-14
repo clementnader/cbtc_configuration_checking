@@ -33,8 +33,8 @@ def load_cctool_oo_enum_lists_info(cctool_oo_file: str):
 
 
 def get_corresponding_cctool_oo_schema():
-    if DATABASE_LOC.cctool_oo_schema != "":
-        return DATABASE_LOC.cctool_oo_schema
+    if DATABASE_LOCATION.cctool_oo_schema != "":
+        return DATABASE_LOCATION.cctool_oo_schema
 
     version = get_cctool_oo_name()
     for file in os.listdir(CCTOOL_OO_SCHEMA_DIR):
@@ -49,10 +49,10 @@ def get_corresponding_cctool_oo_schema():
 
 def get_cctool_oo_version_info(cctool_oo_file: str) -> tuple[str, str]:
     wb = load_cctool_oo_schema_wb(cctool_oo_file)
-    revision_sh = wb.sheet_by_name(REVISION_SHEET)
-    for row in range(get_xl_number_of_rows(revision_sh) + 1, 0, -1):
-        revision = get_xl_cell_value(revision_sh, row=row, column=1)
-        comments = get_xl_cell_value(revision_sh, row=row, column=4)
+    revision_sheet = wb.sheet_by_name(REVISION_SHEET)
+    for row in range(get_xl_number_of_rows(revision_sheet) + 1, 0, -1):
+        revision = get_xl_cell_value(revision_sheet, row=row, column=1)
+        comments = get_xl_cell_value(revision_sheet, row=row, column=4)
         if revision is not None:
             return revision, comments
     return "", ""

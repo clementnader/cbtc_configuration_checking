@@ -11,11 +11,11 @@ from .switch_utils import *
 from .segments_utils import get_correct_seg_offset
 
 
-__all__ = ["get_object_position", "get_obj_zone_limits",
+__all__ = ["get_object_position", "get_object_zone_limits",
            "remove_common_limits_of_oriented_limits"]
 
 
-def get_object_position(obj_type, obj_name: str) -> Union[tuple[str, float],
+def get_object_position(object_type, object_name: str) -> Union[tuple[str, float],
                                                           tuple[str, float, str],
                                                           list[tuple[str, float]],
                                                           list[tuple[str, float, str]], None]:
@@ -25,48 +25,48 @@ def get_object_position(obj_type, obj_name: str) -> Union[tuple[str, float],
         position (segment, offset, direction)
         - if it is a zone, returns a list of its extremities (segment, offset) and if these extremities are oriented,
         returns a list of its oriented extremities (segment, offset, direction)
-    :param obj_type: type of the object, using DCSYS class attributes
-    :param obj_name: name of the object
+    :param object_type: type of the object, using DCSYS class attributes
+    :param object_name: name of the object
     :return: tuple[str, float] for point object, list[tuple[str, float]] for non-oriented zone object,
      list[tuple[str, float, str]] for oriented zone object, None if it was unable to find the position
     """
-    obj_type = get_sh_name(obj_type)
+    object_type = get_sheet_name(object_type)
 
     # Objects with no direct corresponding DC_SYS sheet
-    if ("Sig" in get_class_attr_dict(DCSYS) and "DistPap" in get_class_attr_dict(DCSYS.Sig)
-            and obj_type == get_sh_name(DCSYS.Sig.DistPap)):
+    if ("Sig" in get_class_attributes_dict(DCSYS) and "DistPap" in get_class_attributes_dict(DCSYS.Sig)
+            and object_type == get_sheet_name(DCSYS.Sig.DistPap)):
         # a dedicated function for signal VSP
-        return _get_vsp_position(obj_name)
+        return _get_vsp_position(object_name)
 
-    if ("IXL_Overlap" in get_class_attr_dict(DCSYS) and "VitalStoppingPoint" in get_class_attr_dict(DCSYS.IXL_Overlap)
-            and obj_type == get_sh_name(DCSYS.IXL_Overlap.VitalStoppingPoint)):
+    if ("IXL_Overlap" in get_class_attributes_dict(DCSYS) and "VitalStoppingPoint" in get_class_attributes_dict(DCSYS.IXL_Overlap)
+            and object_type == get_sheet_name(DCSYS.IXL_Overlap.VitalStoppingPoint)):
         # a dedicated function for IXL Overlap VSP
-        return _get_ixl_ovl_vsp_position(obj_name)
+        return _get_ixl_ovl_vsp_position(object_name)
 
-    if ("IXL_Overlap" in get_class_attr_dict(DCSYS) and "ReleasePoint" in get_class_attr_dict(DCSYS.IXL_Overlap)
-            and obj_type == get_sh_name(DCSYS.IXL_Overlap.ReleasePoint)):
+    if ("IXL_Overlap" in get_class_attributes_dict(DCSYS) and "ReleasePoint" in get_class_attributes_dict(DCSYS.IXL_Overlap)
+            and object_type == get_sheet_name(DCSYS.IXL_Overlap.ReleasePoint)):
         # a dedicated function for IXL Overlap Release Point
-        return _get_ixl_ovl_release_point_position(obj_name)
+        return _get_ixl_ovl_release_point_position(object_name)
 
-    if ("Quai" in get_class_attr_dict(DCSYS) and "PointDArret" in get_class_attr_dict(DCSYS.Quai)
-            and obj_type == get_sh_name(DCSYS.Quai.PointDArret)):
+    if ("Quai" in get_class_attributes_dict(DCSYS) and "PointDArret" in get_class_attributes_dict(DCSYS.Quai)
+            and object_type == get_sheet_name(DCSYS.Quai.PointDArret)):
         # a dedicated function for platform OSP
-        return _get_plt_osp_position(obj_name)
+        return _get_plt_osp_position(object_name)
 
-    limits = get_obj_zone_limits(obj_type, obj_name)  # zone object, we put it first to manage the zone subsets objects
+    limits = get_object_zone_limits(object_type, object_name)  # zone object, we put it first to manage the zone subsets objects
     if limits is not None:
         return limits
 
-    obj_sh = get_sheet_class_from_name(obj_type)
-    sh_attrs = get_class_attr_dict(obj_sh).keys()
+    object_sheet = get_sheet_class_from_name(object_type)
+    sheet_attributes = get_class_attributes_dict(object_sheet).keys()
 
-    if "Aig" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Aig):
+    if "Aig" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.Aig):
         # a dedicated function for switches
-        return get_switch_position(obj_name)
+        return get_switch_position(object_name)
 
-    if "Seg" in sh_attrs and "X" in sh_attrs:  # one point object
-        seg, x = get_dc_sys_values(obj_name, obj_sh.Seg, obj_sh.X)
-        direction = _get_direction_of_point(obj_type, obj_name)
+    if "Seg" in sheet_attributes and "X" in sheet_attributes:  # one point object
+        seg, x = get_dc_sys_values(object_name, object_sheet.Seg, object_sheet.X)
+        direction = _get_direction_of_point(object_type, object_name)
         if direction is not None:
             return seg, x, direction
         return seg, x
@@ -74,96 +74,96 @@ def get_object_position(obj_type, obj_name: str) -> Union[tuple[str, float],
     return None
 
 
-def _get_direction_of_point(obj_type, obj_name: str) -> Optional[str]:
-    obj_dict = load_sheet(obj_type)
-    obj_val = obj_dict[obj_name]
-    obj_sh = get_sheet_class_from_name(obj_type)
-    sh_attrs = get_class_attr_dict(obj_sh).keys()
-    if "Direction" in sh_attrs:
-        direction = get_dc_sys_value(obj_val, obj_sh.Direction)
-    elif "Sens" in sh_attrs:
-        direction = get_dc_sys_value(obj_val, obj_sh.Sens)
-    elif "SensAssocie" in sh_attrs:
-        direction = get_dc_sys_value(obj_val, obj_sh.SensAssocie)
+def _get_direction_of_point(object_type, object_name: str) -> Optional[str]:
+    object_dict = load_sheet(object_type)
+    object_value = object_dict[object_name]
+    object_sheet = get_sheet_class_from_name(object_type)
+    sheet_attributes = get_class_attributes_dict(object_sheet).keys()
+    if "Direction" in sheet_attributes:
+        direction = get_dc_sys_value(object_value, object_sheet.Direction)
+    elif "Sens" in sheet_attributes:
+        direction = get_dc_sys_value(object_value, object_sheet.Sens)
+    elif "SensAssocie" in sheet_attributes:
+        direction = get_dc_sys_value(object_value, object_sheet.SensAssocie)
     else:
         direction = None
     return direction
 
 
-def get_obj_zone_limits(obj_type, obj_name: str) -> Union[None, list[tuple[str, float]], list[tuple[str, float, str]]]:
+def get_object_zone_limits(object_type, object_name: str) -> Union[None, list[tuple[str, float]], list[tuple[str, float, str]]]:
     """ Return the list of limits (seg, offset) or (seg, offset, direction) if the object is a zone
      else it returns None. """
-    obj_type = get_sh_name(obj_type)
+    object_type = get_sheet_name(object_type)
 
     # Zones with subsets
-    if "PAS" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.PAS):
+    if "PAS" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.PAS):
         # a dedicated function for ZC
-        limits = _get_zc_oriented_limits(obj_name)
+        limits = _get_zc_oriented_limits(object_name)
         return limits
-    if "DCS_Elementary_Zones" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.DCS_Elementary_Zones):
+    if "DCS_Elementary_Zones" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.DCS_Elementary_Zones):
         # a dedicated function for DCS Elementary Zones
-        limits = _get_dcs_ez_oriented_limits(obj_name)
+        limits = _get_dcs_ez_oriented_limits(object_name)
         return limits
 
-    obj_dict = load_sheet(obj_type)
-    obj_val = obj_dict[obj_name]
-    obj_sh = get_sheet_class_from_name(obj_type)
-    sh_attrs = get_class_attr_dict(obj_sh).keys()
+    object_dict = load_sheet(object_type)
+    object_value = object_dict[object_name]
+    object_sheet = get_sheet_class_from_name(object_type)
+    sheet_attributes = get_class_attributes_dict(object_sheet).keys()
 
-    if "Quai" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Quai):
+    if "Quai" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.Quai):
         # a dedicated function for platforms
-        limits = _get_platform_oriented_limits(obj_val)
+        limits = _get_platform_oriented_limits(object_value)
         return limits
-    if "Seg" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Seg):
+    if "Seg" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.Seg):
         # a dedicated function for segments
-        limits = _get_segment_oriented_limits(obj_val)
+        limits = _get_segment_oriented_limits(object_value)
         return limits
-    if "IXL_Overlap" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.IXL_Overlap):
+    if "IXL_Overlap" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.IXL_Overlap):
         # a dedicated function for overlaps
-        return _get_overlap_oriented_limits(obj_val)
-    if "Calib" in get_class_attr_dict(DCSYS) and obj_type == get_sh_name(DCSYS.Calib):
+        return _get_overlap_oriented_limits(object_value)
+    if "Calib" in get_class_attributes_dict(DCSYS) and object_type == get_sheet_name(DCSYS.Calib):
         # a dedicated function for calibration bases
-        return _get_calibration_base_oriented_limits(obj_val)
+        return _get_calibration_base_oriented_limits(object_value)
 
-    if "Limit" in sh_attrs:
-        limits = _get_obj_limits(obj_val, obj_sh.Limit)
+    if "Limit" in sheet_attributes:
+        limits = _get_object_limits(object_value, object_sheet.Limit)
         return limits
-    if "Extremite" in sh_attrs:
-        limits = _get_obj_limits(obj_val, obj_sh.Extremite)
+    if "Extremite" in sheet_attributes:
+        limits = _get_object_limits(object_value, object_sheet.Extremite)
         return limits
-    if "ExtZsm" in sh_attrs:
-        limits = _get_obj_limits(obj_val, obj_sh.ExtZsm)
+    if "ExtZsm" in sheet_attributes:
+        limits = _get_object_limits(object_value, object_sheet.ExtZsm)
         return limits
-    if "OdometricZone" in sh_attrs:
-        limits = _get_obj_limits(obj_val, obj_sh.OdometricZone)
+    if "OdometricZone" in sheet_attributes:
+        limits = _get_object_limits(object_value, object_sheet.OdometricZone)
         return limits
-    if "From" in sh_attrs and "To" in sh_attrs:
-        seg1, x1 = get_dc_sys_values(obj_val, obj_sh.From.Seg, obj_sh.From.X)
-        seg2, x2 = get_dc_sys_values(obj_val, obj_sh.To.Seg, obj_sh.To.X)
+    if "From" in sheet_attributes and "To" in sheet_attributes:
+        seg1, x1 = get_dc_sys_values(object_value, object_sheet.From.Seg, object_sheet.From.X)
+        seg2, x2 = get_dc_sys_values(object_value, object_sheet.To.Seg, object_sheet.To.X)
         return [(seg1, x1), (seg2, x2)]
-    if "De" in sh_attrs and "A" in sh_attrs:
-        seg1, x1 = get_dc_sys_values(obj_val, obj_sh.De.Seg, obj_sh.De.X)
-        seg2, x2 = get_dc_sys_values(obj_val, obj_sh.A.Seg, obj_sh.A.X)
+    if "De" in sheet_attributes and "A" in sheet_attributes:
+        seg1, x1 = get_dc_sys_values(object_value, object_sheet.De.Seg, object_sheet.De.X)
+        seg2, x2 = get_dc_sys_values(object_value, object_sheet.A.Seg, object_sheet.A.X)
         return [(seg1, x1), (seg2, x2)]
     return None
 
 
-def _get_obj_limits(obj_val: dict[str, Any], obj_limit_attr
-                   ) -> Union[None, list[tuple[str, float]], list[tuple[str, float, str]]]:
-    limits = _get_obj_oriented_limits(obj_val, obj_limit_attr)
+def _get_object_limits(object_value: dict[str, Any], object_limit_attr
+                       ) -> Union[None, list[tuple[str, float]], list[tuple[str, float, str]]]:
+    limits = _get_object_oriented_limits(object_value, object_limit_attr)
     if limits is None:  # non-oriented limits
-        limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X))
+        limits = list(get_dc_sys_zip_values(object_value, object_limit_attr.Seg, object_limit_attr.X))
     if not limits:
         return None
     return limits
 
 
-def _get_obj_oriented_limits(obj_val: dict[str, Any], obj_limit_attr) -> Union[None, list[tuple[str, float, str]]]:
-    limit_sub_attrs = get_class_attr_dict(obj_limit_attr).keys()
-    if "Direction" in limit_sub_attrs:
-        limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X, obj_limit_attr.Direction))
-    elif "Sens" in limit_sub_attrs:
-        limits = list(get_dc_sys_zip_values(obj_val, obj_limit_attr.Seg, obj_limit_attr.X, obj_limit_attr.Sens))
+def _get_object_oriented_limits(object_value: dict[str, Any], object_limit_attr) -> Union[None, list[tuple[str, float, str]]]:
+    limit_sub_attributes = get_class_attributes_dict(object_limit_attr).keys()
+    if "Direction" in limit_sub_attributes:
+        limits = list(get_dc_sys_zip_values(object_value, object_limit_attr.Seg, object_limit_attr.X, object_limit_attr.Direction))
+    elif "Sens" in limit_sub_attributes:
+        limits = list(get_dc_sys_zip_values(object_value, object_limit_attr.Seg, object_limit_attr.X, object_limit_attr.Sens))
     else:
         limits = None
     if not limits:
@@ -171,9 +171,9 @@ def _get_obj_oriented_limits(obj_val: dict[str, Any], obj_limit_attr) -> Union[N
     return limits
 
 
-def _get_platform_oriented_limits(plt_val) -> list[tuple[str, float, str]]:
+def _get_platform_oriented_limits(plt_value) -> list[tuple[str, float, str]]:
     limits = list()
-    for seg, x, direction in get_dc_sys_zip_values(plt_val, DCSYS.Quai.ExtremiteDuQuai.Seg,
+    for seg, x, direction in get_dc_sys_zip_values(plt_value, DCSYS.Quai.ExtremiteDuQuai.Seg,
                                                    DCSYS.Quai.ExtremiteDuQuai.X, DCSYS.Quai.ExtremiteDuQuai.SensExt):
         if direction == LineRelatedDirection.SENS_LIGNE:  # the downstream platform end, so the zone is upstream
             direction = Direction.DECROISSANT
@@ -183,29 +183,29 @@ def _get_platform_oriented_limits(plt_val) -> list[tuple[str, float, str]]:
     return limits
 
 
-def _get_segment_oriented_limits(seg_val) -> list[tuple[str, float, str]]:
-    seg_name = get_dc_sys_value(seg_val, DCSYS.Seg.Nom)
-    seg_length = get_dc_sys_value(seg_val, DCSYS.Seg.Longueur)
+def _get_segment_oriented_limits(seg_value) -> list[tuple[str, float, str]]:
+    seg_name = get_dc_sys_value(seg_value, DCSYS.Seg.Nom)
+    seg_length = get_dc_sys_value(seg_value, DCSYS.Seg.Longueur)
     begin_limit = (seg_name, 0., Direction.CROISSANT)
     end_limit = (seg_name, seg_length, Direction.DECROISSANT)
     return [begin_limit, end_limit]
 
 
-def _get_overlap_oriented_limits(obj_val: dict[str, Any]) -> list[tuple[str, float, str]]:
-    vsp_direction = get_dc_sys_value(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
+def _get_overlap_oriented_limits(object_value: dict[str, Any]) -> list[tuple[str, float, str]]:
+    vsp_direction = get_dc_sys_value(object_value, DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
     # The zone of the overlap is upstream the VSP and downstream the release point
-    rp_seg, rp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.ReleasePoint.Seg,
+    rp_seg, rp_x = get_dc_sys_values(object_value, DCSYS.IXL_Overlap.ReleasePoint.Seg,
                                      DCSYS.IXL_Overlap.ReleasePoint.X)
-    vsp_seg, vsp_x = get_dc_sys_values(obj_val, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg,
+    vsp_seg, vsp_x = get_dc_sys_values(object_value, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg,
                                        DCSYS.IXL_Overlap.VitalStoppingPoint.X)
-    return [(rp_seg, rp_x, get_reverse_direction(vsp_direction)), (vsp_seg, vsp_x, vsp_direction)]
+    return [(rp_seg, rp_x, get_opposite_direction(vsp_direction)), (vsp_seg, vsp_x, vsp_direction)]
 
 
-def _get_calibration_base_oriented_limits(obj_val: dict[str, Any]) -> list[tuple[str, float]]:
-    start_tag, end_tag = get_dc_sys_values(obj_val, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
-    calib_direction = get_dc_sys_value(obj_val, DCSYS.Calib.SensCalib)
+def _get_calibration_base_oriented_limits(object_value: dict[str, Any]) -> list[tuple[str, float]]:
+    start_tag, end_tag = get_dc_sys_values(object_value, DCSYS.Calib.BaliseDeb, DCSYS.Calib.BaliseFin)
+    calib_direction = get_dc_sys_value(object_value, DCSYS.Calib.SensCalib)
     return [(*get_object_position(DCSYS.Bal, start_tag), calib_direction),
-            (*get_object_position(DCSYS.Bal, end_tag), get_reverse_direction(calib_direction))]
+            (*get_object_position(DCSYS.Bal, end_tag), get_opposite_direction(calib_direction))]
 
 
 def _get_zc_oriented_limits(zc_name):
@@ -215,7 +215,7 @@ def _get_zc_oriented_limits(zc_name):
                             if get_dc_sys_value(zc, DCSYS.PAS.Nom) == zc_name]
     limits = list()
     for zc_subset_value in zc_subset_value_list:
-        zc_subset_limit = _get_obj_oriented_limits(zc_subset_value, DCSYS.PAS.ExtremiteSuivi)
+        zc_subset_limit = _get_object_oriented_limits(zc_subset_value, DCSYS.PAS.ExtremiteSuivi)
         limits.extend(zc_subset_limit)
     return remove_common_limits_of_oriented_limits(limits)
 
@@ -227,7 +227,7 @@ def _get_dcs_ez_oriented_limits(dcs_ez_name):
                                 if get_dc_sys_value(dcs_ez, DCSYS.DCS_Elementary_Zones.Name) == dcs_ez_name]
     limits = list()
     for dcs_ez_subset_value in dcs_ez_subset_value_list:
-        dcs_ez_subset_limit = _get_obj_oriented_limits(dcs_ez_subset_value, DCSYS.DCS_Elementary_Zones.Limit)
+        dcs_ez_subset_limit = _get_object_oriented_limits(dcs_ez_subset_value, DCSYS.DCS_Elementary_Zones.Limit)
         limits.extend(dcs_ez_subset_limit)
     return remove_common_limits_of_oriented_limits(limits)
 
@@ -236,7 +236,7 @@ def remove_common_limits_of_oriented_limits(limits: list[tuple[str, float, str]]
     common_limits = list()
 
     for i, (seg1, x1, lim_dir1) in enumerate(limits):
-        if (seg1, x1, get_reverse_direction(lim_dir1)) in limits[i+1:]:
+        if (seg1, x1, get_opposite_direction(lim_dir1)) in limits[i + 1:]:
             common_limits.append((seg1, x1))
 
     if not common_limits:

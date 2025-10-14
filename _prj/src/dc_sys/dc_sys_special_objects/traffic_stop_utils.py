@@ -25,9 +25,9 @@ def get_traffic_stop_value(traffic_stop_name: str) -> dict[str, Any]:
                                  if get_database_value(traffic_stop, DCSYS.Traffic_Stop.Name) == traffic_stop_name][0]
     # When the Traffic Stop is split between multiple subsets for a matter of maximal number of platforms,
     # the information concerning the Traffic Stop is on the first subset.
-    traffic_stop_subset_value[
-        get_dc_sys_attr_name(DCSYS.Traffic_Stop.PlatformList)][
-        get_dc_sys_attr_name(DCSYS.Traffic_Stop.PlatformList.Name)] = get_traffic_stop_platform_list(traffic_stop_name)
+    traffic_stop_subset_value[get_dc_sys_attribute_name(DCSYS.Traffic_Stop.PlatformList)][
+        get_dc_sys_attribute_name(DCSYS.Traffic_Stop.PlatformList.Name)
+    ] = get_traffic_stop_platform_list(traffic_stop_name)
     return traffic_stop_subset_value
 
 

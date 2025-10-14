@@ -31,7 +31,7 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                             TypeNomLogiqueInfoATSCBTC.CPA_INTERDIT_DIR_IMPAIR,
                             TypeNomLogiqueInfoATSCBTC.CMCC_INTERDIT_DIR_PAIR,
                             TypeNomLogiqueInfoATSCBTC.CPA_INTERDIT_DIR_PAIR]
-        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
+        if not check_object_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
                               "shall exist for all Platforms",
                               target_msg_types):
             success = False
@@ -40,13 +40,13 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                              TypeNomLogiqueInfoATSCBTC.SKIP_NORMAL_DIR,
                              TypeNomLogiqueInfoATSCBTC.HOLD_REVERSE_DIR,
                              TypeNomLogiqueInfoATSCBTC.SKIP_REVERSE_DIR]
-                            if "SAFETY_RELATED_HOLD_NORMAL_DIR" not in get_class_attr_dict(TypeNomLogiqueInfoATSCBTC)
-                               or "SAFETY_RELATED_SKIP_NORMAL_DIR" not in get_class_attr_dict(TypeNomLogiqueInfoATSCBTC)
+                            if "SAFETY_RELATED_HOLD_NORMAL_DIR" not in get_class_attributes_dict(TypeNomLogiqueInfoATSCBTC)
+                               or "SAFETY_RELATED_SKIP_NORMAL_DIR" not in get_class_attributes_dict(TypeNomLogiqueInfoATSCBTC)
                             else [TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_HOLD_NORMAL_DIR,
                                   TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_SKIP_NORMAL_DIR,
                                   TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_HOLD_REVERSE_DIR,
                                   TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_SKIP_REVERSE_DIR])
-        if not check_obj_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
+        if not check_object_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
                               "shall exist for all Platforms",
                               target_msg_types):
             success = False
@@ -63,7 +63,7 @@ def _check_nv_psr(nv_psr_msg_dict: dict, in_cbtc: bool):
     success = True
     for nv_psr_name, nv_psr in nv_psr_dict.items():
         can_be_relaxed = get_dc_sys_value(nv_psr, DCSYS.NV_PSR.WithRelaxation) == YesOrNo.O
-        if not check_obj_msgs(DCSYS.Quai, nv_psr_msg_dict, nv_psr_name, can_be_relaxed,
+        if not check_object_msgs(DCSYS.Quai, nv_psr_msg_dict, nv_psr_name, can_be_relaxed,
                               "flag [With Relaxation] set to 'Y'",
                               TypeNomLogiqueInfoATSCBTC.NV_PSR_RELAXATION_CONDITION):
             success = False
@@ -72,14 +72,14 @@ def _check_nv_psr(nv_psr_msg_dict: dict, in_cbtc: bool):
 
 
 # ------- Common Sub Functions to test flows ------- #
-def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, condition_str: str,
+def check_object_msgs(object_type, msg_dict: dict, object_name: str, condition: bool, condition_str: str,
                    target_msg_types: Union[str, list[str]]) -> bool:
     if not isinstance(target_msg_types, list):
         target_msg_types = [target_msg_types]
-    obj_type_str = get_sh_name(obj_type)
+    object_type_str = get_sheet_name(object_type)
 
     associated_msgs = {msg_name: msg_info for msg_name, msg_info in msg_dict.items()
-                       if get_dc_sys_value(msg_info, DCSYS.TM_PAS_ATS.NomObjet) == obj_name
+                       if get_dc_sys_value(msg_info, DCSYS.TM_PAS_ATS.NomObjet) == object_name
                        and get_dc_sys_value(msg_info, DCSYS.TM_PAS_ATS.NomLogiqueInfoAts) in target_msg_types}
 
     success = True
@@ -87,7 +87,7 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
         if associated_msgs:
             print_warning(f"Useless flow(s) to be removed as the condition for the message {Color.white}"
                           f"{condition_str.replace(Color.reset, Color.reset + Color.white)}{Color.reset} "
-                          f"is not met for {obj_type_str} {Color.blue}{obj_name}{Color.reset}.")
+                          f"is not met for {object_type_str} {Color.blue}{object_name}{Color.reset}.")
             for msg_name, msg_info in associated_msgs.items():
                 print(f"\t{Color.beige}{msg_name}{Color.reset}", end="\n\t\t")
                 print(msg_info)
@@ -99,7 +99,7 @@ def check_obj_msgs(obj_type, msg_dict: dict, obj_name: str, condition: bool, con
                           if get_dc_sys_value(msg_info, DCSYS.TM_PAS_ATS.NomLogiqueInfoAts) == target_msg_type}
         if not associated_msg:
             print_error(f"A flow of type {Color.yellow}{target_msg_type}{Color.reset} shall be defined for "
-                        f"{obj_type_str} {Color.blue}{obj_name}{Color.reset} "
+                        f"{object_type_str} {Color.blue}{object_name}{Color.reset} "
                         f"as the condition for the message {Color.white}"
                         f"{condition_str.replace(Color.reset, Color.reset + Color.white)}{Color.reset} is met.")
             success = False

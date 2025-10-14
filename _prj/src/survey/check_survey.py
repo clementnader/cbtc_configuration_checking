@@ -23,7 +23,7 @@ def check_survey():
     print_title(f"Correspondence with Site Survey for "
                 f"{Color.cyan}{get_current_version()}{Color.reset}")
 
-    if DATABASE_LOC.block_def is not None:
+    if DATABASE_LOCATION.block_def is not None:
         print_section_title(f"Loading Block Def. information...")
         block_def_dict, block_definition_display_info = get_block_definition()
         print_bar(start="\n")

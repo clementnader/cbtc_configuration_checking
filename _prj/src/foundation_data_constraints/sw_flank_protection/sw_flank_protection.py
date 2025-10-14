@@ -89,7 +89,7 @@ def _verify_direct_flank(sw_name: str, fp_dist: float, heel_seg: str,
     else:
         start_seg, start_x = first_flank[2], first_flank[3]
         end_seg, end_x = first_flank[0], first_flank[1]
-        direction = get_reverse_direction(first_flank[4])
+        direction = get_opposite_direction(first_flank[4])
 
     if is_sw_upstream != (direction == Direction.CROISSANT):
         print_error(f"For {Color.yellow}{sw_name}{Color.reset}, for {left_or_right} flank area, "

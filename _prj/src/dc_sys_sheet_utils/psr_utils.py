@@ -20,10 +20,10 @@ def get_max_psr_speed_at_point(seg: str, x: float, direction: str = None) -> Opt
     return max_speed / 3.6  # convert to m/s
 
 
-def get_max_psr_speed_on_zone(obj_type, obj_name: str) -> Optional[float]:
+def get_max_psr_speed_on_zone(object_type, object_name: str) -> Optional[float]:
     # TODO check if there is a part of the zone not covered by any ZLPV -> because in that case it should be max speed
     #  even though there is a ZLPV intersecting the zone
-    list_psr = get_zones_intersecting_zone(DCSYS.ZLPV, obj_type, obj_name)
+    list_psr = get_zones_intersecting_zone(DCSYS.ZLPV, object_type, object_name)
     if not list_psr:
         return None
     max_speed = max([get_dc_sys_value(psr_name, DCSYS.ZLPV.VitesseZlpv) for psr_name in list_psr])
@@ -48,10 +48,10 @@ def get_min_psr_speed_at_point(seg: str, x: float, direction: str = None) -> Opt
     return min_speed / 3.6  # convert to m/s
 
 
-def get_min_psr_speed_on_zone(obj_type, obj_name: str) -> Optional[float]:
+def get_min_psr_speed_on_zone(object_type, object_name: str) -> Optional[float]:
     # TODO check if there is a part of the zone not covered by any ZLPV -> because in that case it should be max speed
     #  even though there is a ZLPV intersecting the zone
-    list_psr = get_zones_intersecting_zone(DCSYS.ZLPV, obj_type, obj_name)
+    list_psr = get_zones_intersecting_zone(DCSYS.ZLPV, object_type, object_name)
     if not list_psr:
         return None
     min_speed = min([get_dc_sys_value(psr_name, DCSYS.ZLPV.VitesseZlpv) for psr_name in list_psr])

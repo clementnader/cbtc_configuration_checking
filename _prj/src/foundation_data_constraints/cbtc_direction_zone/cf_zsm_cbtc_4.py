@@ -25,7 +25,7 @@ def cf_zsm_cbtc_4():
           "from the switch point on both heels, meaning that the point segment part of the switch is fully covered "
           "by a CDZ until the switch, and then there is a 1cm gap on each heel with no CDZ on, and then a new CDZ "
           "can start on each heel.\n"
-          "Besides, CDZ may be extended at end of line and its limit match the last segment end.")
+          "Besides, CDZ may be extended at end of line and its limit match the last segment end.\n")
     no_ko = True
     cdz_dict = load_sheet(DCSYS.ZSM_CBTC)
     for cdz_name, cdz_value in cdz_dict.items():

@@ -50,6 +50,6 @@ def get_route_switch_list(route_name: str) -> list[str]:
     sw_list = list()
     for sw_name, sw_pos in get_dc_sys_zip_values(route_value, DCSYS.Iti.Aiguille.Nom, DCSYS.Iti.Aiguille.Position):
         if sw_name:
-            sw_pos = convert_switch_pos_to_ixl(sw_name, sw_pos)
+            sw_pos = convert_switch_dc_sys_position_to_ixl(sw_name, sw_pos)
             sw_list.append(sw_name.upper() + sw_pos.upper())
     return sw_list

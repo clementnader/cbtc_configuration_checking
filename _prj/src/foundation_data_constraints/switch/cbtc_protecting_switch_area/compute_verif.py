@@ -24,7 +24,7 @@ def compute_verif() -> dict[str, dict[str, Any]]:
     nb_sw = len(sw_dict)
     info_dict = dict()
     progress_bar(1, 1, end=True)  # reset progress bar
-    for i, (sw_name, sw_val) in enumerate(sw_dict.items()):
+    for i, (sw_name, sw_value) in enumerate(sw_dict.items()):
 
         fouling_point_distance = None if not fouling_point_info else fouling_point_info.get(sw_name)
 
@@ -35,8 +35,8 @@ def compute_verif() -> dict[str, dict[str, Any]]:
             comments = None
 
         print_log_progress_bar(i, nb_sw, f"CBTC protecting switch area of {sw_name}")
-        sw_block_locking_area = get_dc_sys_value(sw_val, DCSYS.Aig.SwitchBlockLockingArea.Ivb)
-        cbtc_protecting_switch_area = get_dc_sys_value(sw_val, DCSYS.Aig.CbtcProtectingSwitchArea.Ivb)
+        sw_block_locking_area = get_dc_sys_value(sw_value, DCSYS.Aig.SwitchBlockLockingArea.Ivb)
+        cbtc_protecting_switch_area = get_dc_sys_value(sw_value, DCSYS.Aig.CbtcProtectingSwitchArea.Ivb)
 
         if not sw_block_locking_area:
             # This list can be empty if the [Switch block locking area] is empty.
@@ -127,8 +127,8 @@ def _get_local_speed(list_ivb: list[str], max_speed: float) -> float:
 
 
 def _get_dist_to_protect(local_speed: Optional[float]) -> float:
-    oc_zc_data_freshness_threshold = get_param_value("oc_zc_data_freshness_threshold")
-    ixl_cycle_time = get_param_value("ixl_cycle_time")
+    oc_zc_data_freshness_threshold = get_parameter_value("oc_zc_data_freshness_threshold")
+    ixl_cycle_time = get_parameter_value("ixl_cycle_time")
 
     dist_to_protect_line = local_speed * (oc_zc_data_freshness_threshold + ixl_cycle_time)
 

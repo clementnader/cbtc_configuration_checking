@@ -33,11 +33,11 @@ def r_zsm_3(apz_with_tc: bool = False):
 def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any]]:
     res_dict = dict()
     sig_dict = load_sheet(DCSYS.Sig)
-    zsm_sigs_dict = get_cbtc_direction_zone_related_signals()
-    nb_sigs = len(zsm_sigs_dict)
+    zsm_signals_dict = get_cbtc_direction_zone_related_signals()
+    nb_signals = len(zsm_signals_dict)
     progress_bar(1, 1, end=True)  # reset progress_bar
-    for i, (sig_name, related_zsm_list) in enumerate(zsm_sigs_dict.items()):
-        print_log_progress_bar(i, nb_sigs, f"R_ZSM_3 for {sig_name}")
+    for i, (sig_name, related_zsm_list) in enumerate(zsm_signals_dict.items()):
+        print_log_progress_bar(i, nb_signals, f"R_ZSM_3 for {sig_name}")
         sig_type = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.Type)
         sig_direction = get_dc_sys_value(sig_dict[sig_name], DCSYS.Sig.Sens)
         res_dict[sig_name] = {"sig_name": sig_name, "sig_type": sig_type, "sig_direction": sig_direction}
@@ -66,7 +66,7 @@ def _compute_r_zsm_3_verif(apz_with_tc: bool = False) -> dict[str, dict[str, Any
                                    "upstream_track": corresponding_entrance_track,
                                    "upstream_kp": corresponding_entrance_kp})
 
-    print_log_progress_bar(nb_sigs, nb_sigs, "verification of R_ZSM_3 finished", end=True)
+    print_log_progress_bar(nb_signals, nb_signals, "verification of R_ZSM_3 finished", end=True)
 
     return res_dict
 
@@ -99,25 +99,25 @@ def _create_verif_file(verif_dict: dict[str, dict[str, Any]]) -> None:
 
 
 def _update_verif_sheet(ws: xl_ws.Worksheet, start_row: int, verif_dict: dict[str, dict[str, Any]]) -> None:
-    train_to_home_signal_max_dist = get_param_value("train_to_home_signal_max_dist")
+    train_to_home_signal_max_dist = get_parameter_value("train_to_home_signal_max_dist")
 
-    for row, obj_val in enumerate(verif_dict.values(), start=start_row):
-        sig_name = obj_val.get("sig_name")
-        sig_type = obj_val.get("sig_type")
-        sig_direction = obj_val.get("sig_direction")
-        related_zsm = obj_val.get("related_zsm")
-        ixl_apz = obj_val.get("ixl_apz")
-        downstream_seg = obj_val.get("downstream_seg")
-        downstream_x = obj_val.get("downstream_x")
-        downstream_track = obj_val.get("downstream_track")
-        downstream_kp = obj_val.get("downstream_kp")
-        upstream_seg = obj_val.get("upstream_seg")
-        upstream_x = obj_val.get("upstream_x")
-        upstream_track = obj_val.get("upstream_track")
-        upstream_kp = obj_val.get("upstream_kp")
-        ixl_apz_dist = obj_val.get("ixl_apz_dist")
-        status = obj_val.get("status")
-        comments = obj_val.get("comments")
+    for row, object_value in enumerate(verif_dict.values(), start=start_row):
+        sig_name = object_value.get("sig_name")
+        sig_type = object_value.get("sig_type")
+        sig_direction = object_value.get("sig_direction")
+        related_zsm = object_value.get("related_zsm")
+        ixl_apz = object_value.get("ixl_apz")
+        downstream_seg = object_value.get("downstream_seg")
+        downstream_x = object_value.get("downstream_x")
+        downstream_track = object_value.get("downstream_track")
+        downstream_kp = object_value.get("downstream_kp")
+        upstream_seg = object_value.get("upstream_seg")
+        upstream_x = object_value.get("upstream_x")
+        upstream_track = object_value.get("upstream_track")
+        upstream_kp = object_value.get("upstream_kp")
+        ixl_apz_dist = object_value.get("ixl_apz_dist")
+        status = object_value.get("status")
+        comments = object_value.get("comments")
 
         _add_line_info(ws, row, sig_name, sig_type, sig_direction, related_zsm, ixl_apz,
                        downstream_seg, downstream_x, downstream_track, downstream_kp,

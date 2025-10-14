@@ -24,3 +24,4 @@ class Logger:
 
     def flush(self):
         self.terminal.flush()
+        self.log.flush()

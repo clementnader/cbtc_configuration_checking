@@ -5,10 +5,10 @@ from ...utils import *
 from ...cctool_oo_schema import *
 
 
-__all__ = ["get_reverse_direction", "UnknownDirection", "UnknownSwitchPosition"]
+__all__ = ["get_opposite_direction"]
 
 
-def get_reverse_direction(direction: str) -> Optional[str]:
+def get_opposite_direction(direction: str) -> Optional[str]:
     if direction == Direction.CROISSANT:
         return Direction.DECROISSANT
     if direction == Direction.DECROISSANT:

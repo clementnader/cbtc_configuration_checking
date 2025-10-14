@@ -13,9 +13,9 @@ __all__ = ["get_min_and_max_slope_at_all_overshoot_recovery_areas", "get_slope_a
 
 
 def get_min_and_max_slope_at_all_overshoot_recovery_areas(in_cbtc: bool = False):
-    overshoot_recovery_dist = get_param_value("overshoot_recovery_dist")
-    overshoot_recovery_stopping_max_dist = get_param_value("overshoot_recovery_stopping_max_dist")
-    overshoot_recovery_max_uncertainty = get_param_value("overshoot_recovery_max_uncertainty")
+    overshoot_recovery_dist = get_parameter_value("overshoot_recovery_dist")
+    overshoot_recovery_stopping_max_dist = get_parameter_value("overshoot_recovery_stopping_max_dist")
+    overshoot_recovery_max_uncertainty = get_parameter_value("overshoot_recovery_max_uncertainty")
     overshoot_recovery_area_distance = (overshoot_recovery_dist + overshoot_recovery_stopping_max_dist
                                         + overshoot_recovery_max_uncertainty)
     if in_cbtc:

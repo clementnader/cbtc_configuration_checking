@@ -34,7 +34,7 @@ SORT_BASH_CMD2 = f"sort -k2f \"{ORIGINAL_FILE2}\" > \"{ORDERED_ORIGINAL_FILE2}\"
 
 
 def verification_of_the_md5_checksum(sha256: bool = False):
-    path_kit_c11 = DATABASE_LOC.kit_c11_dir
+    path_kit_c11 = DATABASE_LOCATION.kit_c11_dir
     print_title(f"Verification of the Delivery Chain {'SHA256' if sha256 else 'MD5'} Checksum\n")
 
     bash_cmd = BASH_CMD2 if sha256 else BASH_CMD

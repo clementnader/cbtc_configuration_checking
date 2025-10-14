@@ -68,22 +68,22 @@ def _get_survey_files_display_info(survey_loc_info: list[tuple[Union[str, bool],
 
 
 def get_survey_loc_info():
-    survey_addr = (DATABASE_LOC.survey_loc.survey_addr if isinstance(DATABASE_LOC.survey_loc.survey_addr, list)
-                   else [DATABASE_LOC.survey_loc.survey_addr])
-    survey_sheet = (DATABASE_LOC.survey_loc.survey_sheet if isinstance(DATABASE_LOC.survey_loc.survey_sheet, list)
-                    else [DATABASE_LOC.survey_loc.survey_sheet])
-    all_sheets = (DATABASE_LOC.survey_loc.all_sheets if isinstance(DATABASE_LOC.survey_loc.all_sheets, list)
-                  else [DATABASE_LOC.survey_loc.all_sheets])
-    start_row = (DATABASE_LOC.survey_loc.start_row if isinstance(DATABASE_LOC.survey_loc.start_row, list)
-                 else [DATABASE_LOC.survey_loc.start_row])
-    ref_col = (DATABASE_LOC.survey_loc.ref_col if isinstance(DATABASE_LOC.survey_loc.ref_col, list)
-               else [DATABASE_LOC.survey_loc.ref_col])
-    type_col = (DATABASE_LOC.survey_loc.type_col if isinstance(DATABASE_LOC.survey_loc.type_col, list)
-                else [DATABASE_LOC.survey_loc.type_col])
-    track_col = (DATABASE_LOC.survey_loc.track_col if isinstance(DATABASE_LOC.survey_loc.track_col, list)
-                 else [DATABASE_LOC.survey_loc.track_col])
-    survey_kp_col = (DATABASE_LOC.survey_loc.survey_kp_col if isinstance(DATABASE_LOC.survey_loc.survey_kp_col, list)
-                     else [DATABASE_LOC.survey_loc.survey_kp_col])
+    survey_addr = (DATABASE_LOCATION.survey_loc.survey_addr if isinstance(DATABASE_LOCATION.survey_loc.survey_addr, list)
+                   else [DATABASE_LOCATION.survey_loc.survey_addr])
+    survey_sheet = (DATABASE_LOCATION.survey_loc.survey_sheet if isinstance(DATABASE_LOCATION.survey_loc.survey_sheet, list)
+                    else [DATABASE_LOCATION.survey_loc.survey_sheet])
+    all_sheets = (DATABASE_LOCATION.survey_loc.all_sheets if isinstance(DATABASE_LOCATION.survey_loc.all_sheets, list)
+                  else [DATABASE_LOCATION.survey_loc.all_sheets])
+    start_row = (DATABASE_LOCATION.survey_loc.start_row if isinstance(DATABASE_LOCATION.survey_loc.start_row, list)
+                 else [DATABASE_LOCATION.survey_loc.start_row])
+    ref_col = (DATABASE_LOCATION.survey_loc.ref_col if isinstance(DATABASE_LOCATION.survey_loc.ref_col, list)
+               else [DATABASE_LOCATION.survey_loc.ref_col])
+    type_col = (DATABASE_LOCATION.survey_loc.type_col if isinstance(DATABASE_LOCATION.survey_loc.type_col, list)
+                else [DATABASE_LOCATION.survey_loc.type_col])
+    track_col = (DATABASE_LOCATION.survey_loc.track_col if isinstance(DATABASE_LOCATION.survey_loc.track_col, list)
+                 else [DATABASE_LOCATION.survey_loc.track_col])
+    survey_kp_col = (DATABASE_LOCATION.survey_loc.survey_kp_col if isinstance(DATABASE_LOCATION.survey_loc.survey_kp_col, list)
+                     else [DATABASE_LOCATION.survey_loc.survey_kp_col])
     return zip(survey_addr, survey_sheet, all_sheets, start_row, ref_col, type_col, track_col, survey_kp_col)
 
 
@@ -93,10 +93,10 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, sheet_name: 
     intermediate_survey_dict = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
 
     for row in range(start_row, get_xl_number_of_rows(survey_ws) + 1):
-        obj_name = get_xl_cell_value(survey_ws, row=row, column=ref_col)
-        if not obj_name:
+        object_name = get_xl_cell_value(survey_ws, row=row, column=ref_col)
+        if not object_name:
             continue
-        key_name = obj_name.upper()
+        key_name = object_name.upper()
         key_name = key_name.replace("-", "_")
         key_name = "".join(key_name.split())  # remove all spaces
 
@@ -136,7 +136,7 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, sheet_name: 
                 for i, i_surveyed_kp in enumerate(surveyed_values, start=1):
                     intermediate_survey_dict[survey_type][f"{key_name}__{i}__{track}"] = {
                         "survey_type": type_name,
-                        "obj_name": obj_name, "survey_track": track, "survey_original_track": original_track,
+                        "object_name": object_name, "survey_track": track, "survey_original_track": original_track,
                         "surveyed_kp": i_surveyed_kp, "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
                         "list_surveyed_values": surveyed_values
                     }
@@ -146,7 +146,7 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, sheet_name: 
             surveyed_values = [surveyed_kp]
         intermediate_survey_dict[survey_type][f"{key_name}__{track}"] = {
             "survey_type": type_name,
-            "obj_name": obj_name, "survey_track": track, "survey_original_track": original_track,
+            "object_name": object_name, "survey_track": track, "survey_original_track": original_track,
             "surveyed_kp": surveyed_kp, "surveyed_kp_comment": surveyed_kp_comment, "comments": comments,
             "list_surveyed_values": surveyed_values, "to_delete": to_delete
         }
@@ -181,7 +181,7 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str, Any]],
                         comments = new_comment
             loaded_survey[survey_type][key_name] = {
                 "survey_type": intermediate_survey_value["survey_type"],
-                "obj_name": intermediate_survey_value["obj_name"],
+                "object_name": intermediate_survey_value["object_name"],
                 "survey_track": intermediate_survey_value["survey_track"],
                 "survey_original_track": intermediate_survey_value["survey_original_track"],
                 "surveyed_kp": intermediate_survey_value["surveyed_kp"],

@@ -23,5 +23,6 @@ from .sw_flank_protection import *
 from .switch import *
 from .virtual_block import *
 from .walkway import *
+from .zc_tracking_area import *
 
 from .check_offset import *

@@ -18,7 +18,7 @@ DC_TU_PARAMETER_VALUE_COLUMN = 2
 
 
 def load_dc_tu_information() -> dict[int, dict[int, dict[str, str]]]:
-    kit_c11_dir = DATABASE_LOC.kit_c11_dir
+    kit_c11_dir = DATABASE_LOCATION.kit_c11_dir
     dc_tu_dict = dict()
     for train_dir in os.listdir(kit_c11_dir):
         full_path = os.path.join(kit_c11_dir, train_dir)
@@ -61,9 +61,9 @@ def open_dc_tu_file(path: str) -> dict[int, dict[str, str]]:
         lines.__next__()  # skip the title line
         for current_line in lines:
             line_number = int(current_line[DC_TU_LINE_COLUMN].strip())
-            param_name = current_line[DC_TU_PARAMETER_NAME_COLUMN].strip().upper()
-            param_value = current_line[DC_TU_PARAMETER_VALUE_COLUMN].strip()
+            parameter_name = current_line[DC_TU_PARAMETER_NAME_COLUMN].strip().upper()
+            parameter_value = current_line[DC_TU_PARAMETER_VALUE_COLUMN].strip()
             if line_number not in dc_tu_dict:
                 dc_tu_dict[line_number] = dict()
-            dc_tu_dict[line_number][param_name] = param_value
+            dc_tu_dict[line_number][parameter_name] = parameter_value
     return dc_tu_dict

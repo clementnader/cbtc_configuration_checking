@@ -33,10 +33,10 @@ def get_train_front_position_at_osp(train_type: str, osp_seg: str, osp_x: float,
 def is_accelerometer_calibration_authorized_at_osp_not_platform_related(osp_name: str) -> Optional[bool]:
     osp_dict = load_sheet(DCSYS.PtA)
     osp_value = osp_dict[osp_name]
-    if "AllowAccelerometerCalibration" in get_class_attr_dict(DCSYS.PtA):
+    if "AllowAccelerometerCalibration" in get_class_attributes_dict(DCSYS.PtA):
         return get_dc_sys_value(osp_value, DCSYS.PtA.AllowAccelerometerCalibration) == YesOrNo.O
 
-    if "AllowAccelerometersCalibration" in get_class_attr_dict(DCSYS.PtA):
+    if "AllowAccelerometersCalibration" in get_class_attributes_dict(DCSYS.PtA):
         return get_dc_sys_value(osp_value, DCSYS.PtA.AllowAccelerometersCalibration) == YesOrNo.O
 
     return None

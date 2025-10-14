@@ -19,14 +19,14 @@ def r_dyntag_3():
         print("No Dynamic Tag.")
         return None
     nb_dyn_tags = len(dyn_tag_dict.keys())
-    block_laying_uncertainty = get_param_value("block_laying_uncertainty")
+    block_laying_uncertainty = get_parameter_value("block_laying_uncertainty")
 
     progress_bar(1, 1, end=True)  # reset progress_bar
-    for i, (dyn_tag, dyn_tag_val) in enumerate(dyn_tag_dict.items()):
+    for i, (dyn_tag, dyn_tag_value) in enumerate(dyn_tag_dict.items()):
         print_log_progress_bar(i, nb_dyn_tags, f"DMC timeout distance of {dyn_tag}")
-        res_dict[dyn_tag] = get_tag_to_last_route_distance(dyn_tag_val)
+        res_dict[dyn_tag] = get_tag_to_last_route_distance(dyn_tag_value)
         calc_dmc_timeout_dist = round(res_dict[dyn_tag]["tag_to_last_route_distance"] + block_laying_uncertainty, 3)
-        dc_sys_dmc_timeout_dist = round(get_dc_sys_value(dyn_tag_val, DCSYS.IATPM_tags.DmcTimeout.Distance), 3)
+        dc_sys_dmc_timeout_dist = round(get_dc_sys_value(dyn_tag_value, DCSYS.IATPM_tags.DmcTimeout.Distance), 3)
         res_dict[dyn_tag]["calc_dmc_timeout_dist"] = calc_dmc_timeout_dist
         res_dict[dyn_tag]["dc_sys_dmc_timeout_dist"] = dc_sys_dmc_timeout_dist
 
