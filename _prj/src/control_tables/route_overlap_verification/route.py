@@ -74,13 +74,14 @@ def _correspondence_route_control_table_dc_sys(route_control_table, route_dc_sys
     route_control_table = "_".join([sig.upper() for sig in route_control_table.split("-")]).replace(" ", "")
     if route_dc_sys.endswith(route_control_table):
         return True
+
     # in some projects, the route in DC_SYS is named with 'S' in front of signals name
     test_route_control_table = "_".join(["S" + sig for sig in route_control_table.split("_")])
     if route_dc_sys.endswith(test_route_control_table):
         return True
     # in some projects, the route in DC_SYS is named with 'f' or 'F' in at the end of route name
-    route_dc_sys = "_".join([sig.removesuffix("F") for sig in route_dc_sys.split("_")])
-    if route_dc_sys.endswith(route_control_table) or route_dc_sys.endswith(test_route_control_table):
+    test_route_dc_sys = "_".join([sig.removesuffix("F") for sig in route_dc_sys.split("_")])
+    if test_route_dc_sys.endswith(route_control_table) or test_route_dc_sys.endswith(test_route_control_table):
         return True
 
     return False

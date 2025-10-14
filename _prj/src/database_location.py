@@ -721,20 +721,20 @@ class ProjectDatabaseLocation:
             self.survey_loc.track_col = 5
             self.survey_loc.survey_kp_col = 8
             # -- Control Tables -- #
-            self.control_tables_config_ini_file = r"control_tables_configuration_cmrl_s1.ini"
+            self.control_tables_config_ini_file = r"control_tables_configuration_cmrl.ini"
             self.control_tables_route.control_tables_addr = [
                 (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
-                 r"\CMRL-14057-02.01-STAGE 1 Annexure B_Route_Control_Table.pdf"),
+                 r"\CMRL-14057-03.00-STAGE 1 Annexure B_Route_Control_Table.pdf"),
                 (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
-                 r"\CMRL-14093-03.01-POONAMALLEE DEPOT Annexure B_Route_Control_Table.pdf"),
+                 r"\CMRL-14093-05.00-POONAMALLEE DEPOT Annexure B_Route_Control_Table.pdf"),
             ]
             self.control_tables_route.all_pages = [True, True]
             self.control_tables_route.specific_pages = [None, None]
             self.control_tables_overlap.control_tables_addr = [
                 (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
-                 r"\CMRL-14057-02.01-STAGE 1 Annexure F_Overlap_Control_Table.pdf"),
+                 r"\CMRL-14057-03.00-STAGE 1 Annexure F_Overlap_Control_Table.pdf"),
                 (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CONTROL TABLES"
-                 r"\CMRL-14093-03.01-POONAMALLEE DEPOT Annexure E_Overlap Control Table.pdf"),
+                 r"\CMRL-14093-05.00-POONAMALLEE DEPOT Annexure E_Overlap_Control_Table.pdf"),
             ]
             self.control_tables_overlap.all_pages = [True, True]
             self.control_tables_overlap.specific_pages = [None, None]

@@ -281,7 +281,7 @@ if __name__ == "__main__":
     # Create a log file to store the info printed in the cmd window.
     log_file_name, args = init_log()
 
-    with open(log_file_name, "a", encoding="utf-8") as log_file:
+    with open(log_file_name, "a", buffering=1, encoding="utf-8") as log_file:
         # Use the Logger class to overwrite the default sys.stdout so that the prints are displayed both in the cmd
         # window using the default sys.stdout and written inside the log_file.
         sys.stdout = Logger(log_file)

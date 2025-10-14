@@ -12,6 +12,7 @@ def get_control_tables_ivb_list(ct_ivb_str: str) -> list[str]:
     if ct_ivb_str == "--":
         ct_ivb_list = []
     else:
+        # ct_ivb_str = ct_ivb_str.removesuffix("*")
         ct_ivb_list = [sw.strip() for sw in ct_ivb_str.split(",") if sw.strip()]
         ct_ivb_list[0] = ct_ivb_list[0].removeprefix("[").removesuffix("]")
 
@@ -44,6 +45,15 @@ def _remove_intersection_diamond_switch(ct_sw_list: list[str]) -> list[str]:
     if all((re.match(r"^1[0-9]{3}[NR]$", sw) is not None
             or re.match(r"^[0-9]{2}D*[NR]$", sw) is not None) for sw in ct_sw_list):
         ct_sw_list = [sw for sw in ct_sw_list if (re.match(r"^1[0-9]{3}[NR]$", sw) is None)]
+
+    # It can be a switch with 2 digits or D plus 1 digit (plus N/R) (see CMRL),
+    # we test if there are switches with 7 digits or more, and switches with length 2 digits
+    if all((re.match(r"^[A-Z]\_PM[0-9]{4}[NR][1-9]*$", sw) is not None
+            or re.match(r"^[0-9]{2}[NR]$", sw) is not None) for sw in ct_sw_list):
+        ct_sw_list = [sw for sw in ct_sw_list if (re.match(r"^[0-9]{2}[NR]$", sw) is None)]
+    if all((re.match(r"^[A-Z]\_PM[0-9]{4}[NR][1-9]*$", sw) is not None
+            or re.match(r"^D[0-9][NR]$", sw) is not None) for sw in ct_sw_list):
+        ct_sw_list = [sw for sw in ct_sw_list if (re.match(r"^D[0-9][NR]$", sw) is None)]
 
     return ct_sw_list
 

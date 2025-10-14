@@ -97,9 +97,12 @@ def _correspondence_ovl_control_table_dc_sys(ct_ovl: str, dc_sys_ovl: str,
         # The IXL overlap name is signal-signalEND
         ct_end = ct_ovl.removeprefix(ct_sig).removeprefix("o").removesuffix("o")
 
-    ct_ovl = ct_sig + (("_" + ct_end) if ct_end else "")
+    ct_ovl = ct_sig + (("_" + ct_end.removeprefix("_")) if ct_end else "")
 
     if dc_sys_ovl.endswith(ct_ovl):
+        return True
+
+    if dc_sys_ovl.replace("_", "").endswith(ct_ovl.replace("_", "")):
         return True
 
     if case_insensitive:
@@ -279,6 +282,10 @@ def _get_corresponding_ivb(control_table_ivb: str) -> Optional[str]:
     for ivb_name, ivb_value in ivb_dict.items():
         ivb_test_name = ivb_name.split("_")[-1]
         ivb_test_name = ivb_test_name.removeprefix("Ts").removeprefix("vTs")
+        if ivb_test_name.upper() == control_table_ivb.upper():
+            return ivb_name
+    for ivb_name, ivb_value in ivb_dict.items():
+        ivb_test_name = f'{ivb_name.split("_")[-2]}_{ivb_name.split("_")[-1]}'
         if ivb_test_name.upper() == control_table_ivb.upper():
             return ivb_name
     return None

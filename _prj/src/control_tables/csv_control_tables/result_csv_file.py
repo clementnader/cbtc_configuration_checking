@@ -47,11 +47,11 @@ def create_csv_file_control_table(control_table_type: str, res_dict: dict, resul
         result_file = _create_csv(csv, result_file)
         print_success(f"The result CSV file can be accessed at \"{result_file}\".")
     else:
-        print_error(f"No information for {control_table_type.title()} type has been found inside the file\n"
-                    f"{control_table_addr}" + ("page" + (
+        print_error(f"No information for \"{control_table_type.title()}\" type has been found inside the file:\n"
+                    f"{control_table_addr}" + (("(page" + (
             f"s {specific_pages[0]} to {specific_pages[1]}" if isinstance(specific_pages, tuple)
-            else f" {specific_pages}")
-                                               ) if not all_pages else "" + "\nCheck your input.")
+            else f" {specific_pages})")
+                                               ) if not all_pages else "") + "\nVerify if the PDF is the correct one.")
     return control_table_info
 
 

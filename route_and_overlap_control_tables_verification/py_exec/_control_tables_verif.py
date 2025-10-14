@@ -9,7 +9,7 @@ from _prj.src import *
 
 def main():
     log_file_name = get_log_file_sub_python()
-    with open(os.path.join("..", log_file_name), "a", encoding="utf-8") as log_file:
+    with open(os.path.join("..", log_file_name), "a", buffering=1, encoding="utf-8") as log_file:
         sys.stdout = Logger(log_file)
         os.chdir("..")
         control_tables_window()

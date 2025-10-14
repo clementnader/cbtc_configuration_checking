@@ -9,7 +9,7 @@ from _prj.src import *
 
 def main():
     log_file_name = f"dc_tu_log_{get_timestamp()}.log"
-    with open(os.path.join("..", log_file_name), "w", encoding="utf-8") as log_file:
+    with open(os.path.join("..", log_file_name), "w", buffering=1, encoding="utf-8") as log_file:
         sys.stdout = Logger(log_file)
         os.chdir("..")
         dc_tu_window()
