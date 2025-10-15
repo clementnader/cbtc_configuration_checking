@@ -257,17 +257,19 @@ def _get_vsp_position(sig_name: str) -> tuple[str, float, str]:
 
 
 def _get_ixl_ovl_vsp_position(ixl_ovl_name: str) -> tuple[str, float, str]:
-    vsp_seg, vsp_x, vsp_direction = get_dc_sys_values(
-        ixl_ovl_name, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg, DCSYS.IXL_Overlap.VitalStoppingPoint.X,
-        DCSYS.IXL_Overlap.VitalStoppingPoint.Sens)
-    return vsp_seg, vsp_x, vsp_direction
+    associated_signal = get_dc_sys_value(ixl_ovl_name, DCSYS.IXL_Overlap.DestinationSignal)
+    sig_direction = get_dc_sys_value(associated_signal, DCSYS.Sig.Sens)
+    vsp_seg, vsp_x = get_dc_sys_values(
+        ixl_ovl_name, DCSYS.IXL_Overlap.VitalStoppingPoint.Seg, DCSYS.IXL_Overlap.VitalStoppingPoint.X)
+    return vsp_seg, vsp_x, sig_direction
 
 
 def _get_ixl_ovl_release_point_position(ixl_ovl_name: str) -> tuple[str, float, str]:
-    rp_seg, rp_x, rp_direction = get_dc_sys_values(
-        ixl_ovl_name, DCSYS.IXL_Overlap.ReleasePoint.Seg, DCSYS.IXL_Overlap.ReleasePoint.X,
-        DCSYS.IXL_Overlap.ReleasePoint.Sens)
-    return rp_seg, rp_x, rp_direction
+    associated_signal = get_dc_sys_value(ixl_ovl_name, DCSYS.IXL_Overlap.DestinationSignal)
+    sig_direction = get_dc_sys_value(associated_signal, DCSYS.Sig.Sens)
+    rp_seg, rp_x = get_dc_sys_values(
+        ixl_ovl_name, DCSYS.IXL_Overlap.ReleasePoint.Seg, DCSYS.IXL_Overlap.ReleasePoint.X)
+    return rp_seg, rp_x, sig_direction
 
 
 def _get_plt_osp_position(osp_name: str) -> tuple[str, float, str]:
