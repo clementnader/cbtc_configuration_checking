@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
 from ...utils import *
 from ...cctool_oo_schema import *
 from ..load_database import *
@@ -40,6 +41,9 @@ def get_current_version() -> str:
     if get_dc_sys_folder():
         dc_sys_version = _get_dc_sys_version()
         if dc_sys_version and "_C_D470_" in dc_sys_version.upper():
+            return dc_sys_version
+        if dc_sys_version and re.match(r"^[A-Z]+_D470_", dc_sys_version.upper()) is not None:
+            # for older projects, the C_D470 name was not PRJ_C_D470 but directly PRJ_D470
             return dc_sys_version
         return get_line_name_and_version()
 

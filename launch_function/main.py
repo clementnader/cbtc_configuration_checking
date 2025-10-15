@@ -247,7 +247,7 @@ def main():
     # ---------- Onboard Additional Verification about md5sum regeneration ---------- #
     """Uncomment next line to regenerate the C11 MD5 Checksum and compare it to the one already present in the C11.
     @inputs: C11_D470"""
-    #verification_of_the_md5_checksum()
+    #verification_of_the_cc_kit_md5_checksum()
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Foundation Data: Distance from signal to joint ---------- #

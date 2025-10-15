@@ -17,6 +17,7 @@ class Projects:
     Milan_ML4 = "Milan_ML4"
     Panama = "Panama"
     Riyadh_RL3 = "Riyadh_RL3"
+    Stockholm_Red_Line = "Stockholm_Red_Line"
     Thessaloniki_TSK = "Thessaloniki_TSK"
 
     OCTYS_L3 = "OCTYS_L3"
@@ -87,6 +88,7 @@ class Projects:
 # PROJECT_NAME = Projects.Milan_ML4  # TODO manage R_S01_0102_202 in route verif
 PROJECT_NAME = Projects.Panama
 # PROJECT_NAME = Projects.Riyadh_RL3
+# PROJECT_NAME = Projects.Stockholm_Red_Line
 # PROJECT_NAME = Projects.Thessaloniki_TSK
 
 # --- OCTYS --- #
@@ -587,6 +589,21 @@ class ProjectDatabaseLocation:
                 r"\M-ANM-3K1DPE-SSXL-ESP-000003-REV_E-MANUAL AREA-Appendix O_Overlap.pdf"]
             self.control_tables_overlap.all_pages = [True, True, True, True, True]
             self.control_tables_overlap.specific_pages = [None, None, None, None, None]
+
+        # ------------------------------- Stockholm Red Line -------------------------------#
+        elif project_name == Projects.Stockholm_Red_Line:
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\Stockholm Red Line\SL_D470_V08_08\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\Stockholm Red Line\SL_D470_V08_08\DC_PAR.xls"
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\Stockholm Red Line\CIRCUIT_DE_VOIE_DB_V08.08.xls"
+            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\Stockholm Red Line\SL_C_D932_02_00.xlsm"
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Thessaloniki TSK -------------------------------#
         elif project_name == Projects.Thessaloniki_TSK:

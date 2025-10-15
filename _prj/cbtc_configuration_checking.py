@@ -26,17 +26,17 @@ def compare_dc_sys():
     return
 
 
-def cc():
-    # generate_cc_parameters_diff_reports()
-    # check_diff_cc_param()
-    # convert_cc_param()
-    return
-
-
 def zc():
     # create_computed_result_file_ze_impacte_fu()
     # check_pz_ze()
     # extremite_secteur()
+    return
+
+
+def cc():
+    # generate_cc_parameters_diff_reports()
+    # check_diff_cc_param()
+    # convert_cc_param()
     return
 
 
@@ -49,8 +49,8 @@ def wayside_additional_verifications():
 def onboard_additional_verifications():
     # dc_tu_verification()  # v1.4.2
     # dc_tu_window()
-    # verification_of_the_md5_checksum()
-    # verification_of_the_md5_checksum(sha256=True)
+    # verification_of_the_cc_kit_md5_checksum()
+    # verification_of_the_cc_kit_md5_checksum(sha256=True)
     return
 
 
@@ -120,6 +120,7 @@ def route_and_overlap():
 
 def survey():
     # check_survey()  # v2.9.1
+    # TODO: SL -> switch R/N, PLT, FG, remove "no Buffer info in survey" now it's with signals
     # survey_window()
     # cctool_oo_schema_window()
     return
@@ -270,11 +271,13 @@ def main():
     foundation_data_constraints()
     constraints_and_rules()
 
-    additional_verifications()
-
     dc_par_add_on_parameters()
     dc_par_customer_data()
     parameters_constraints()
+
+    additional_verifications()
+    onboard_additional_verifications()
+    wayside_additional_verifications()
 
     cc()
     zc()
