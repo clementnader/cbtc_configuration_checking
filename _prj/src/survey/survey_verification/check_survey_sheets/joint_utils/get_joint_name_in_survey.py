@@ -14,6 +14,8 @@ def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_in
                              limit_position: tuple[str, float],
                              end_of_track_suffix: str = "", block_def_limit_name: str = None,
                              buffer_survey_info: dict[str, dict[str, float]] = None,
+                             signal_survey_info: dict[str, dict[str, float]] = None,
+                             pr_survey_info: dict[str, dict[str, float]] = None,
                              other_limit_position: Optional[tuple[str, float]] = None
                              ) -> tuple[str, Optional[str], bool]:
 
@@ -24,7 +26,8 @@ def get_joint_name_in_survey(tc1: str, tc2: Optional[str], track: str, survey_in
     use_buffer = False
     if block_def_limit_name is not None:
         survey_name, use_buffer = _find_survey_name_using_block_def(block_def_limit_name, track, survey_info,
-                                                                    buffer_survey_info)
+                                                                    buffer_survey_info,
+                                                                    signal_survey_info, pr_survey_info)
 
     if survey_name is None:
         if end_of_track_suffix and other_limit_position is not None:
@@ -52,13 +55,22 @@ def _get_corresponding_two_limits_in_survey(limit_position: tuple[str, float], o
 
 
 def _find_survey_name_using_block_def(block_def_limit_name: str, track: str, survey_info: dict[str, Any],
-                                      buffer_survey_info: dict[str, dict[str, float]]
+                                      buffer_survey_info: dict[str, dict[str, float]],
+                                      signal_survey_info: dict[str, dict[str, float]],
+                                      pr_survey_info: dict[str, dict[str, float]],
                                       ) -> tuple[Optional[str], bool]:
-    if f"{block_def_limit_name.upper()}__{track}" in survey_info:
-        return f"{block_def_limit_name.upper()}__{track}", False
+    test_name = f"{block_def_limit_name.upper()}__{track}"
+    if test_name in survey_info:
+        return test_name, False
 
-    elif f"{block_def_limit_name.upper()}__{track}" in buffer_survey_info:
-        return f"{block_def_limit_name.upper()}__{track}", True
+    elif test_name in buffer_survey_info:
+        return test_name, True
+
+    elif test_name in signal_survey_info:
+        return test_name, True
+
+    elif test_name in pr_survey_info:
+        return test_name, True
 
     return None, False
 
@@ -251,6 +263,7 @@ def _survey_name_matching(survey_name: str, object_name: str, single: bool, remo
         suffix = re.sub(r"_T[0-9]+", r"", suffix)  # end of track suffix
         suffix = re.sub(r"_[FM]BS[0-9]+", r"", suffix)  # end of track suffix
         suffix = re.sub(r"_LCP[0-9]+", r"", suffix)  # end of track suffix
+        suffix = re.sub(r"_A[0-9]{2}_", r"_", suffix)  # switch suffix
         suffix = suffix.removesuffix("_DIRECT").removesuffix("_DIVERT")
         suffix = suffix.removesuffix("_LEFT").removesuffix("_RIGHT")
         suffix = suffix.removesuffix("_START").removesuffix("_END").removesuffix("_BUFFER")

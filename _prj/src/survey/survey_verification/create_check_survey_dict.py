@@ -19,7 +19,7 @@ def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
         res_sheet = survey_type_value["res_sheet"]
         if res_sheet is None:
             continue
-        dcsys_sheet = survey_type_value["dcsys_sh"]
+        dcsys_sheet = survey_type_value["dcsys_sheet"]
         func = survey_type_value["func"]
         display_name = survey_type_value["display_name"]
         print(f"\n{Color.white}{Color.underline}Analyzing {display_name} positioning...{Color.reset}{NBSP}")
@@ -38,17 +38,13 @@ def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
         elif survey_type == "BLOCK":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
                 func(dcsys_sheet, res_sheet, survey_info.get("BLOCK"), block_def_dict,
-                     set_of_survey_tracks, survey_info.get("BUFFER")))
+                     set_of_survey_tracks, survey_info.get("BUFFER"),
+                     survey_info.get("SIGNAL"), survey_info.get("PERMANENT_RED")))
 
         elif survey_type == "SIGNAL":
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
                 func(dcsys_sheet, res_sheet, survey_info.get("SIGNAL"),
                      set_of_survey_tracks, survey_info.get("PERMANENT_RED"), survey_info.get("BUFFER")))
-
-        elif survey_type == "WALKWAY":
-            survey_verif_dict[res_sheet] = _order_survey_verif_dict(
-                func(dcsys_sheet, res_sheet, survey_info.get("WALKWAY"),
-                     set_of_survey_tracks, survey_info.get("PLATFORM")))
 
         else:
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(

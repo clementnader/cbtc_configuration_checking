@@ -119,8 +119,7 @@ def route_and_overlap():
 
 
 def survey():
-    # check_survey()  # v2.9.1
-    # TODO: SL -> switch R/N, PLT, FG, remove "no Buffer info in survey" now it's with signals
+    # check_survey()  # v2.9.2
     # survey_window()
     # cctool_oo_schema_window()
     return

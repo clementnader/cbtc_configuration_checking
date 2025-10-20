@@ -7,4 +7,3 @@ from .check_platform import check_platform
 from .check_signal import check_signal
 from .check_switch import check_switch
 from .check_tag import check_tag
-from .check_walkway import check_walkway

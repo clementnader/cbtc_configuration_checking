@@ -31,7 +31,7 @@ def _cf_1_check_switch(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantHF.AIGUILLE}...")
     object_dict = load_sheet(DCSYS.Aig)
     success = True
-    for object_name, object in object_dict.items():
+    for object_name, object_value in object_dict.items():
         if not check_object_msgs(DCSYS.Aig, msg_dict, object_name, True, "shall exist for all Switches",
                               [TypeNomLogiqueVariantHF.SW_RIGHT_C,
                                TypeNomLogiqueVariantHF.SW_LEFT_C], shall_be_vital=True):
@@ -44,20 +44,20 @@ def _cf_1_check_signal(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantHF.SIGNAL}...")
     object_dict = load_sheet(DCSYS.Sig)
     success = True
-    for object_name, object in object_dict.items():
-        is_not_buffer_or_pr = get_dc_sys_value(object, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
-                                                                               SignalType.PERMANENT_ARRET]
+    for object_name, object_value in object_dict.items():
+        is_not_buffer_or_pr = get_dc_sys_value(object_value, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
+                                                                                     SignalType.PERMANENT_ARRET]
 
         if not check_object_msgs(DCSYS.Sig, msg_dict, object_name, is_not_buffer_or_pr, "shall exist for all Signals",
                               TypeNomLogiqueVariantHF.PR_ASPECT, shall_be_vital=False):
             success = False
 
-        is_home_signal = get_dc_sys_value(object, DCSYS.Sig.Type) == SignalType.MANOEUVRE
+        is_home_signal = get_dc_sys_value(object_value, DCSYS.Sig.Type) == SignalType.MANOEUVRE
         if not check_object_msgs(DCSYS.Sig, msg_dict, object_name, is_home_signal, "shall exist for all Home Signals",
                               TypeNomLogiqueVariantHF.IL_SET, shall_be_vital=True):
             success = False
 
-        func_stop = is_not_buffer_or_pr and (get_dc_sys_value(object, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O)
+        func_stop = is_not_buffer_or_pr and (get_dc_sys_value(object_value, DCSYS.Sig.WithFunc_Stop) == YesOrNo.O)
         if not check_object_msgs(DCSYS.Sig, msg_dict, object_name, func_stop, "flag [With Func Stop] set to 'Y'",
                               TypeNomLogiqueVariantHF.FUNC_STOP_RQ, shall_be_vital=False):
             success = False
@@ -69,7 +69,7 @@ def _cf_1_check_maz(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantHF.ZAUM}...")
     object_dict = load_sheet(DCSYS.Zaum)
     success = True
-    for object_name, object in object_dict.items():
+    for object_name, object_value in object_dict.items():
         if not check_object_msgs(DCSYS.Zaum, msg_dict, object_name, True, "shall exist for all MAZ",
                               [TypeNomLogiqueVariantHF.MVT_AUTH,
                                TypeNomLogiqueVariantHF.TRACTION_PWR_REGEN_AUTH,
@@ -87,7 +87,7 @@ def _cf_1_check_platform(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantHF.QUAI}...")
     object_dict = load_sheet(DCSYS.Quai)
     success = True
-    for object_name, object in object_dict.items():
+    for object_name, object_value in object_dict.items():
         if not check_object_msgs(DCSYS.Quai, msg_dict, object_name, True, "shall exist for all Platforms",
                               TypeNomLogiqueVariantHF.PLATFORM_ACCESS, shall_be_vital=False):
             success = False
@@ -107,7 +107,7 @@ def _cf_1_check_flood_gate(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantHF.FLOOD_GATE}...")
     object_dict = load_sheet(DCSYS.Flood_Gate)
     success = True
-    for object_name, object in object_dict.items():
+    for object_name, object_value in object_dict.items():
         if not check_object_msgs(DCSYS.Flood_Gate, msg_dict, object_name, True, "shall exist for all Flood Gates",
                               TypeNomLogiqueVariantHF.OPEN_AND_LOCKED, shall_be_vital=True):
             success = False
@@ -119,8 +119,8 @@ def _cf_1_check_block(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantHF.BLOCK}...")
     object_dict = load_sheet(DCSYS.CDV)
     success = True
-    for object_name, object in object_dict.items():
-        broken_rail_detection = get_dc_sys_value(object, DCSYS.CDV.BrokenRailDetection) == YesOrNo.O
+    for object_name, object_value in object_dict.items():
+        broken_rail_detection = get_dc_sys_value(object_value, DCSYS.CDV.BrokenRailDetection) == YesOrNo.O
         if not check_object_msgs(DCSYS.CDV, msg_dict, object_name, broken_rail_detection,
                               "flag [Broken Rail Detection] set to 'Y'", TypeNomLogiqueVariantHF.BLOCK_MVT_AUTH,
                               shall_be_vital=True):
@@ -133,7 +133,7 @@ def _cf_1_check_asr(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantHF.ASR}...")
     object_dict = load_sheet(DCSYS.ASR)
     success = True
-    for object_name, object in object_dict.items():
+    for object_name, object_value in object_dict.items():
         if not check_object_msgs(DCSYS.ASR, msg_dict, object_name, True, "shall exist for all ASR",
                               TypeNomLogiqueVariantHF.ASR_NOT_APPLIED, shall_be_vital=True):
             success = False

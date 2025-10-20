@@ -11,13 +11,14 @@ from .track_survey_utils import *
 __all__ = ["load_survey"]
 
 
-def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str]]:
+def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str], list[str]]:
+    global_missing_types = list()
     survey_info = dict()
     survey_loc_info = list(get_survey_loc_info())
     display_info_list = _get_survey_files_display_info(survey_loc_info)
     if not display_info_list:
         survey_info = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
-        return survey_info, display_info_list
+        return survey_info, display_info_list, global_missing_types
     nb_of_survey = len(display_info_list)
     for i, (survey_addr, survey_sheet, all_sheets, start_row,
             ref_col, type_col, track_col, survey_kp_col) in enumerate(survey_loc_info, start=1):
@@ -52,8 +53,10 @@ def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str]]:
             print(f"\t> The following type{'s' if len(missing_types) > 1 else ''} in the survey "
                   f"{'are' if len(missing_types) > 1 else 'is'} not loaded: "
                   f"{Color.yellow}{', '.join(missing_types)}{Color.reset}.")
-    middle_platforms_exist_bool = bool(survey_info["MIDDLE_PLATFORM"])
-    return survey_info, display_info_list
+            global_missing_types.extend([survey_type for survey_type in missing_types
+                                         if survey_type not in global_missing_types])
+
+    return survey_info, display_info_list, global_missing_types
 
 
 def _get_survey_files_display_info(survey_loc_info: list[tuple[Union[str, bool], ...]]) -> list[str]:

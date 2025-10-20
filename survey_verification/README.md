@@ -138,7 +138,7 @@ Sheet **"FD - Site Survey"** contains the list of objects to verify given in the
 For each type of objects that is automated, there is **a dedicated sheet** containing the results of the verification:
 - a sheet **"Switch"** containing the center (*SWP*_C), the left (*SWP*_L) and right (*SWP*_R) points of the switches.
 - a sheet **"Platform"** containing the platform ends (*PLT_NAME*__Limit_N), the platform OSPs and the not platform related OSPs. The different objects types have different colors.
-- a sheet **"Block"** containing the block joints (JOI_*BLOCK1*\_*BLOCK2* or JOI_*BLOCK1*__end_of_track), if a Block Def. file has been specified, an extra column will appear to display the associated joint name or buffer name.
+- a sheet **"Block"** containing the block joints (JOI_*BLOCK1*\_*BLOCK2* or JOI_*BLOCK1*__end_of_track), if a Block Definition file has been specified, an extra column will appear to display the associated joint name or buffer name.
 - a sheet **"Signal"** containing the home signals (type MANOEUVRE), the permanently red signals (type PERMANENT_ARRET) and the buffers (type HEURTOIR). The different objects types have different colors.
 - a sheet **"Tag"** containing the localization tags and the dynamic tags. The different objects types have different colors.
 - a sheet **"FloodGate"** containing the floodgate ends (*FG_NAME*__Limit_N).
@@ -173,7 +173,7 @@ Each sheet follows the same structure:
 - **<ins>Column E</ins>** contains the object **reference name** from the **survey**.
 
 
-- **<ins>Column F</ins>** contains the information set in the **type** column in the **survey** (useful for platform to differentiate platform ends and OSPs, for signals to differentiate signals and buffers, for tags to differentiate static and dynamic tags, and for blocks to differentiate joints and buffers if buffers are specified inside the Block Def. file).
+- **<ins>Column F</ins>** contains the information set in the **type** column in the **survey** (useful for platform to differentiate platform ends and OSPs, for signals to differentiate signals and buffers, for tags to differentiate static and dynamic tags, and for blocks to differentiate joints and buffers if buffers are specified inside the Block Definition file).
 
 
 - **<ins>Columns G and H</ins>** contain the **positioning (track, surveyed KP)** collected from the **survey file(s)**.

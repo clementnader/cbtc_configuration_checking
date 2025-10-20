@@ -41,7 +41,7 @@ def _find_correspondence_in_dc_sys(block_def_dict: dict[str, list[tuple[tuple[st
 
         block_dict = load_sheet(DCSYS.CDV)
         if block_name not in block_dict:
-            print_warning(f"Block {block_name} from Block Def. file is not in DC_SYS.")
+            print_warning(f"Block {block_name} from Block Definition file is not in DC_SYS.")
             continue
 
         block_value = block_dict[block_name]
@@ -72,7 +72,7 @@ def _get_association_block_limits_dict(block_name: str,
                                           for ((seg, x, track, dc_sys_kp), limit_name) in block_def_limits_info
                                           if track is not None and track.upper() == test_track.upper()]
         if len(dc_sys_limits_on_track) != len(block_def_limits_info_on_track):
-            print_warning(f"In Block Def. file, for block {block_name}, there are not the same number of limits "
+            print_warning(f"In Block Definition file, for block {block_name}, there are not the same number of limits "
                           f"on track {test_track} as in the DC_SYS:\n"
                           f"{Color.default}{dc_sys_limits_on_track = }\n"
                           f"{block_def_limits_info_on_track = }\n"

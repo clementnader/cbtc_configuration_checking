@@ -60,7 +60,7 @@ def _get_joint_suffix_name(block1_name: str, block2_name: str, one_merge: bool =
     split2 = block2_name.split("_")[1:]  # remove the TC_ or IVB_
     max_nb_merge = min(len(split1), len(split2)) - 1
     if not split1 or not split2:
-        print_error(f"There is no underscore in block name {block1_name = } or {block2_name = }.")
+        # There is no underscore in block1_name or block2_name.
         return "_" + block2_name
 
     for i, (t1, t2) in enumerate(zip(split1, split2)):

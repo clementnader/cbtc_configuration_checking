@@ -44,7 +44,12 @@ def check_flood_gate(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
 
 def _clean_flood_gate_extremity_name(fg_lim_name: str) -> str:
     fg_lim_name = fg_lim_name.upper()
-    fg_name = fg_lim_name.removeprefix("BEGIN_FLOODGATEAREA_").removeprefix("END_FLOODGATEAREA_")
+    fg_lim_name = fg_lim_name.removeprefix("KP_")
+    fg_name = fg_lim_name.removeprefix("LEFT_END_").removeprefix("RIGHT_END_")
+    fg_name = fg_name.removeprefix("BEGIN_").removeprefix("START_").removeprefix("END_")
+    fg_name = fg_name.removeprefix("FLOODGATEAREA_").removeprefix("FLOOD_GATE_AREA_")
+    fg_name = fg_name.removesuffix("_BEGIN").removesuffix("_START").removesuffix("_END")
+    fg_name = fg_name.removesuffix("_1").removesuffix("_2")
     return fg_name
 
 
@@ -54,12 +59,14 @@ def _get_fg_limits(fg_value: dict) -> list[tuple[str, float]]:
 
 
 def _get_survey_limits_on_track(fg_name: str, test_track: str, survey_info: dict[str, Any]) -> list[str]:
+    clean_fg_name = fg_name.upper().removeprefix("FLOODGATE_").removeprefix("FLOOD_GATE_").removeprefix("FG_")
     list_survey_limits = list()
     for survey_name in survey_info:
         survey_fg_lim_name, survey_track = survey_name.split("__", 1)
         survey_fg_name = _clean_flood_gate_extremity_name(survey_fg_lim_name)
+        survey_fg_name = survey_fg_name.removeprefix("FLOODGATE_").removeprefix("FLOOD_GATE_").removeprefix("FG_")
         if survey_track.upper() == test_track:
-            if survey_fg_name == fg_name.upper():
+            if survey_fg_name == clean_fg_name:
                 list_survey_limits.append(survey_name)
     return list_survey_limits
 

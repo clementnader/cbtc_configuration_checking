@@ -126,6 +126,7 @@ def check_value_has_spaces(sheet_name, value, row, column, key):
             # G_LIST_OF_VALUES_WITH_LEADING_SPACES.append(value)
 
     if ((sheet_name, key) in [("Quai", "Nom"), ("Quai", "Abreviation"),
+                              ("Bal", "TypePose"),
                               ("Driving_Modes", "Name"),
                               ("Wayside_Eqpt", "Location"),
                               ("Flux_PAS_MES", "ClasseObjet"),

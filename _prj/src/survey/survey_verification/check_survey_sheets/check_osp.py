@@ -24,7 +24,7 @@ def check_osp(dc_sys_sheets, res_sheet_name: str, survey_info: dict[str, dict[st
         original_dc_sys_track, dc_sys_kp, dc_sys_sheet = object_value
         dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
-        test_names = [object_name]
+        test_names = _get_osp_test_names(object_name)
         survey_name = test_names_in_survey(test_names, dc_sys_track, survey_info,
                                            do_smallest_amount_of_patterns=True)
         survey_object_info = survey_info.get(survey_name)
@@ -36,6 +36,18 @@ def check_osp(dc_sys_sheets, res_sheet_name: str, survey_info: dict[str, dict[st
 
     res_dict.update(add_extra_info_from_survey(list_used_object_names, survey_info))
     return res_dict
+
+
+def _get_osp_test_names(object_name: str) -> list[str]:
+    test_names = [object_name]
+    if object_name.startswith("PT_ARRET_"):
+        test_names.append("PLATFORM_" + object_name.removeprefix("PT_ARRET_"))
+        test_names.append("PLT_" + object_name.removeprefix("PT_ARRET_"))
+    elif object_name.startswith("OSP_SIG_"):
+        test_names.append("OSP_" + object_name.removeprefix("OSP_SIG_"))
+    elif object_name.startswith("ATO_SIG_"):
+        test_names.append("OSP_" + object_name.removeprefix("ATO_SIG_"))
+    return test_names
 
 
 def get_plt_osp_dict():

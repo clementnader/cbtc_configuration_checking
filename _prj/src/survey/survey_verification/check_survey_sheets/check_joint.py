@@ -14,7 +14,8 @@ __all__ = ["check_joint"]
 # Block
 def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[str, float]],
                 block_def_dict: Optional[dict[str, dict[tuple[str, float], str]]],
-                set_of_survey_tracks: set[str], buffer_survey_info: dict[str, dict[str, float]]):
+                set_of_survey_tracks: set[str], buffer_survey_info: dict[str, dict[str, float]],
+                signal_survey_info: dict[str, dict[str, float]], pr_survey_info: dict[str, dict[str, float]]):
     assert dc_sys_sheet == DCSYS.CDV
     assert res_sheet_name == "Block"
 
@@ -35,10 +36,15 @@ def check_joint(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[s
         object_name, survey_name, use_buffer = get_joint_name_in_survey(tc1, tc2, dc_sys_track, survey_info,
                                                                         limit_position, end_of_track_suffix,
                                                                         block_def_limit_name, buffer_survey_info,
+                                                                        signal_survey_info, pr_survey_info,
                                                                         other_limit_position)
         object_name = get_display_name(object_name, tc1, tc2, dc_sys_track, joints_dict)
         if use_buffer:
             survey_object_info = buffer_survey_info.get(survey_name)
+            if survey_object_info is None:
+                survey_object_info = signal_survey_info.get(survey_name)
+            if survey_object_info is None:
+                survey_object_info = pr_survey_info.get(survey_name)
         else:
             survey_object_info = survey_info.get(survey_name)
         if survey_object_info is not None:

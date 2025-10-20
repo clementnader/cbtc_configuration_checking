@@ -596,7 +596,7 @@ class ProjectDatabaseLocation:
             self.dc_par_addr = r"C:\CBTC\PROJECTS\Stockholm Red Line\SL_D470_V08_08\DC_PAR.xls"
             # -- Survey -- #
             self.block_def = r"C:\CBTC\PROJECTS\Stockholm Red Line\CIRCUIT_DE_VOIE_DB_V08.08.xls"
-            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\Stockholm Red Line\SL_C_D932_02_00.xlsm"
+            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\Stockholm Red Line\SL_C_D932_02_00.xlsm"  # TODO switch N/R
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
             self.survey_loc.start_row = 2
@@ -678,7 +678,7 @@ class ProjectDatabaseLocation:
             self.dc_sys_addr = r"C:\CBTC\PROJECTS\USA\Baltimore MTA\MTA_C_D470_03_01_RC0\DC_SYS.xls"
             self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\Baltimore MTA\MTA_C_D470_03_01_RC0\DC_PAR.xls"
             # -- Survey -- #
-            self.block_def = r"C:\CBTC\PROJECTS\USA\Baltimore MTA\CIRCUIT_DE_VOIE (12).xls"
+            self.block_def = r"C:\CBTC\PROJECTS\USA\Baltimore MTA\CIRCUIT_DE_VOIE.xls"
             self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\USA\Baltimore MTA\MTA_D932.xlsx"
             self.survey_loc.survey_sheet = r"Result Final"
             self.survey_loc.all_sheets = False
@@ -710,7 +710,7 @@ class ProjectDatabaseLocation:
             self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\MSH_C_D470_06_06_01_V00\DC_PAR.xls"
             self.kit_c11_dir = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\MSH_C11_D470_06_06_03_V00"
             # -- Survey -- #
-            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\SEPTA MSH\MSH\Topo_V_06_00.xlsx"
+            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\Topo_V_06_00.xlsx"
             self.survey_loc.survey_sheet = None
             self.survey_loc.all_sheets = True
             self.survey_loc.start_row = 4
@@ -777,7 +777,7 @@ class ProjectDatabaseLocation:
                 r"\KMRC-76054_Rev01_C_D932 - Advanced field survey report.xlsm",
                 r"C:\CBTC\PROJECTS\INDIA\Kolkata KMRC"
                 r"\KMRC-26054_Rev09_C_D932 - Advanced field survey report.xlsm"]
-            self.survey_loc.survey_sheet = [r"Result Final", r"KMRC_Kolkata-PH2A"]
+            self.survey_loc.survey_sheet = [r"Result Final", r"KMRC-PH2A"]
             self.survey_loc.all_sheets = [False, False]
             self.survey_loc.start_row = [2, 2]
             self.survey_loc.ref_col = [1, 2]
@@ -806,7 +806,7 @@ class ProjectDatabaseLocation:
             self.dc_sys_addr = r"C:\CBTC\PROJECTS\INDIA\Noida NS01\NS01_C_D470_18_00_RC1\DC_SYS.xls"
             self.dc_par_addr = r"C:\CBTC\PROJECTS\INDIA\Noida NS01\NS01_C_D470_18_00_RC1\DC_PAR.xls"
             # -- Survey -- #
-            self.block_def = r"C:\CBTC\PROJECTS\INDIA\Noida NS01\CIRCUIT_DE_VOIE.xls"
+            self.block_def = r"C:\CBTC\PROJECTS\INDIA\Noida NS01\CIRCUIT_DE_VOIE_NS01.xls"
             self.survey_loc.survey_addr = (
                 r"C:\CBTC\PROJECTS\INDIA\Noida NS01"
                 r"\NS01-L-SIG-9-0001 NS01_C_D932 - Advanced field survey report_06.00.xlsx")
@@ -824,6 +824,16 @@ class ProjectDatabaseLocation:
         elif project_name == Projects.Sanying_SYL:
             self.dc_sys_addr = r"C:\CBTC\PROJECTS\CHINA\Sanying SYL\SYL_C_D470_02_09\DC_SYS_02_09.xls"
             self.dc_par_addr = r"C:\CBTC\PROJECTS\CHINA\Sanying SYL\SYL_C_D470_02_09\DC_PAR.xls"
+            # -- Survey -- #
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\Sanying SYL"
+                                           r"\SYL_D932_export_DB0200_20250817 r1.xlsx")
+            self.survey_loc.survey_sheet = r"D932"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 2
+            self.survey_loc.track_col = 3
+            self.survey_loc.survey_kp_col = 15
 
         # ------------------------------- Taipei TC1 -------------------------------#
         elif project_name == Projects.Taipei_TC1:
@@ -849,8 +859,7 @@ class ProjectDatabaseLocation:
             self.dc_sys_addr = r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZS1_C_D470_08_07\DC_SYS_0807.xls"
             self.dc_par_addr = r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZS1_C_D470_08_07\DC_PAR_0807.xls"
             # -- Survey -- #
-            self.block_def = (r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZS1_C_D470_08_01"
-                              r"\CIRCUIT_DE_VOIE_Corrected.xls")
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZS1_C_D470_08_01\CIRCUIT_DE_VOIE_Corrected.xls"
             self.survey_loc.survey_addr = (
                 r"C:\CBTC\PROJECTS\CHINA\Wenzhou WZS1\WZ_S1P1_SIG_DB_D932_1409_D932_V1.8_modified.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
@@ -869,6 +878,16 @@ class ProjectDatabaseLocation:
                                 r"\CDL1_C_D470_13_04\DC_SYS_CDL1_13_04.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL1"
                                 r"\CDL1_C_D470_13_04\DC_PAR_CDL1_13_04.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL1\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL1\CDL1_C_D932_03_08.xlsx"
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Chengdu CDL2 -------------------------------#
         elif project_name == Projects.Chengdu_CDL2:
@@ -876,6 +895,16 @@ class ProjectDatabaseLocation:
                                 r"\CDL2_C_D470_07_02\CDL2_DC_SYS_07_02.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL2"
                                 r"\CDL2_C_D470_07_02\CDL2_DC_PAR_07_02.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL2\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL2\CDL2_C_D932_01 10.xlsx"
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Chengdu CDL6 -------------------------------#
         elif project_name == Projects.Chengdu_CDL6:
@@ -890,6 +919,16 @@ class ProjectDatabaseLocation:
                                 r"\CDL10_C_D470_05_03\DC_SYS_CDL10_05_03.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL10"
                                 r"\CDL10_C_D470_05_03\DC_PAR_CDL10_05_02.xls")
+            # -- Survey -- #
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Chengdu CDL10"
+                                           r"\CD_L10_SIG_DB_D932_1409_V1.6_20170502.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Dalian DLL1 -------------------------------#
         elif project_name == Projects.Dalian_DLL1:
@@ -897,6 +936,17 @@ class ProjectDatabaseLocation:
                                 r"\DLL1_C_D470_02_02\DC_SYS_02_00.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL1"
                                 r"\DLL1_C_D470_02_02\DC_PAR_02_00.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL1\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL1"
+                                           r"\DL_L1_SIG_DB_D932_1409_V2.1_20161204.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Dalian DLL2 -------------------------------#
         elif project_name == Projects.Dalian_DLL2:
@@ -904,6 +954,17 @@ class ProjectDatabaseLocation:
                                 r"\DLL2_C_D470_04_04\DC_SYS_DLL2_04_04.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL2"
                                 r"\DLL2_C_D470_04_04\DC_PAR_DLL2_04_04.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL2\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Dalian DLL2"
+                                           r"\DL_L2_SIG_DB_D932_1409_V1.6_20150202.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Dalian DLL3 -------------------------------#
         elif project_name == Projects.Dalian_DLL3:
@@ -932,6 +993,17 @@ class ProjectDatabaseLocation:
                                 r"\HZL1_C_D470_08_04\DC_SYS_HZL1_08_04.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL1"
                                 r"\HZL1_C_D470_08_04\DC_PAR_HZL1_08_04.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL1\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL1"
+                                           r"\HZL1_C_D932_00_10_09.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Hangzhou HZL2 -------------------------------#
         elif project_name == Projects.Hangzhou_HZL2:
@@ -939,6 +1011,16 @@ class ProjectDatabaseLocation:
                                 r"\HZL2_C_D470_07_01\DC_SYS_HZL2_0701.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL2"
                                 r"\HZL2_C_D470_07_01\DC_PAR_HZL2_0701.xls")
+            # -- Survey -- #
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL2"
+                                           r"\HZ_L2_SIG_DB_D932_1409_V1.7_20171229.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Hangzhou HZL4 -------------------------------#
         elif project_name == Projects.Hangzhou_HZL4:
@@ -946,6 +1028,17 @@ class ProjectDatabaseLocation:
                                 r"\HZL4_C_D470_05_02\DC_SYS_HZL4_05_01.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL4"
                                 r"\HZL4_C_D470_05_02\DC_PAR_HZL4_05_01.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL4\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Hangzhou HZL4"
+                                           r"\HZL4_SIG_DB_D932_1409_V1.6_20171019.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 3
 
         # ------------------------------- Hangzhou HZL9 -------------------------------#
         elif project_name == Projects.Hangzhou_HZL9:
@@ -968,8 +1061,7 @@ class ProjectDatabaseLocation:
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL1"
                                 r"\SYL1_C_D470_V10_00\DC_PAR_SHYL1_10_00.xls")
             # -- Survey -- #
-            self.block_def = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL1"
-                              r"\SYL1_C_D470_V10_00\CIRCUIT_DE_VOIE.xls")
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL1\CIRCUIT_DE_VOIE.xls"
             self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL1"
                                            r"\SY_L1_SIG_DB_D932_1409_V3.3_2016_5_11.xlsx")
             self.survey_loc.survey_sheet = r"Result Final"
@@ -986,6 +1078,17 @@ class ProjectDatabaseLocation:
                                 r"\SYL2_C_D470_08_04\DC_SYS_SYL2_V08_04.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL2"
                                 r"\SYL2_C_D470_08_04\DC_PAR_SYL2_V08_04.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL2\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Shenyang SHYL2"
+                                           r"\SYL2_C_D932_17_09_28.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 6
 
         # ------------------------------- Shenyang SHYL10 -------------------------------#
         elif project_name == Projects.Shenyang_SHYL10:
@@ -1000,6 +1103,16 @@ class ProjectDatabaseLocation:
                                 r"\TJL5_C_D470_02_01\DC_SYS_TJL5_02_01.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Tianjin TJL5"
                                 r"\TJL5_C_D470_02_01\DC_PAR_TJL5_02_01.xls")
+            # -- Survey -- #
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Tianjin TJL5"
+                                           r"\TJ_L5_SIG_DB_D932_1409_V1.9_20181012.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 6
 
         # ------------------------------- Xian XAL2 -------------------------------#
         elif project_name == Projects.Xian_XAL2:
@@ -1007,6 +1120,17 @@ class ProjectDatabaseLocation:
                                 r"\XAL2_C_D470_10_03\DC_SYS_XAL2_10_03.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Xian XAL2"
                                 r"\XAL2_C_D470_10_03\DC_PAR_XAL2_10_03.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Xian XAL2\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Xian XAL2"
+                                           r"\ASTS_Modified_XAL2_C_D932_2014_04_08.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 6
 
         # ------------------------------- Zhengzhou ZZL1 -------------------------------#
         elif project_name == Projects.Zhengzhou_ZZL1:
@@ -1014,6 +1138,17 @@ class ProjectDatabaseLocation:
                                 r"\ZZL1_C_D470_05_02\DC_SYS_ZZL1_V05_02.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Zhengzhou ZZL1"
                                 r"\ZZL1_C_D470_05_02\DC_PAR_ZZL1_05_02.xls")
+            # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Zhengzhou ZZL1\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = (r"C:\CBTC\PROJECTS\CHINA\CHINA V4\Zhengzhou ZZL1"
+                                           r"\ZZ_L1_SIG_DB_D932_1409_V2.3_20170815.xlsx")
+            self.survey_loc.survey_sheet = r"Result Final"
+            self.survey_loc.all_sheets = False
+            self.survey_loc.start_row = 2
+            self.survey_loc.ref_col = 1
+            self.survey_loc.type_col = 4
+            self.survey_loc.track_col = 2
+            self.survey_loc.survey_kp_col = 6
 
         # --- DB CORE --- #
 

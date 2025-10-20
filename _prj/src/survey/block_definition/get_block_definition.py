@@ -28,7 +28,7 @@ def get_block_definition() -> tuple[Optional[dict[str, dict[tuple[str, float], s
         _get_columns(block_def_ws))
     if (block_name_column is None or segment_limits_list_column is None or offset_limits_list_column is None
             or not joint_name_columns_list):
-        print_error(f"Block Def. file is not formatted as expected. Tool was unable to find title columns: "
+        print_error(f"Block Definition file is not formatted as expected. Tool was unable to find title columns: "
                     f"{BLOCK_NAME_COLUMN_TITLE} and/or {LIMITS_LIST_COLUMN_TITLE}"
                     f"::{SEGMENT_LIMITS_LIST_COLUMN_TITLE} and/or {LIMITS_LIST_COLUMN_TITLE}"
                     f"::{OFFSET_LIMITS_LIST_COLUMN_TITLE} and/or {JOINT_NAME_COLUMN_TITLE_PREFIX}N:\n"
@@ -61,7 +61,7 @@ def get_block_definition() -> tuple[Optional[dict[str, dict[tuple[str, float], s
         seg_x_limits_list = list(zip(segment_limits_list, offset_limits_list))
 
         if len(seg_x_limits_list) != len(limit_objects):
-            print_error(f"In Block Def. file, for block {block_name}, limit objects in columns "
+            print_error(f"In Block Definition file, for block {block_name}, limit objects in columns "
                         f"{JOINT_NAME_COLUMN_TITLE_PREFIX}N do not correspond to the "
                         f"{LIMITS_LIST_COLUMN_TITLE}::{SEGMENT_LIMITS_LIST_COLUMN_TITLE}:\n"
                         f"{seg_x_limits_list = }\n"

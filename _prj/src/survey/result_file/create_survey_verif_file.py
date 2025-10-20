@@ -43,7 +43,7 @@ def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], bloc
         extra_column = (sheet_name == SURVEY_TYPES_DICT["BLOCK"]["res_sheet"]) and block_def_exists_bool
         middle_platform = (sheet_name == SURVEY_TYPES_DICT["PLATFORM"]["res_sheet"]) and middle_platforms_exist_bool
         ws, start_row = create_verif_sheet(wb, sheet_name, extra_column, middle_platform)
-        _update_verif_sheet(wb, sheet_name, ws, verif_dict, extra_column, start_row)
+        _update_verif_sheet(wb, sheet_name, ws, verif_dict, extra_column, start_row, middle_platform)
 
     # Save workbook
     verif_file_name = f" - {get_current_version()}".join(os.path.splitext(VERIF_FILE_NAME))
@@ -63,7 +63,8 @@ def _update_menu_sheet(wb: openpyxl.workbook.Workbook):
 
 
 def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_ws.Worksheet,
-                        verif_dict: dict[str, dict], extra_column: bool, start_row: int) -> None:
+                        verif_dict: dict[str, dict], extra_column: bool, start_row: int,
+                        middle_platform: bool) -> None:
     tolerance_dict = get_tolerance_dict(sheet_name)
     multiple_dc_sys_objets = _get_multiple_dc_sys_objets(sheet_name)
     multiple_survey_objets = _get_multiple_survey_objets(sheet_name)
@@ -80,7 +81,9 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_
         surveyed_kp = object_value["surveyed_kp"]
         surveyed_kp_comment = object_value["surveyed_kp_comment"]
         comments = object_value["comments"]
-        defined_name = object_value.get("defined_name")
+        # If defined_name is not used, don't create it and don't write comments on it
+        defined_name = object_value.get("defined_name") if middle_platform else None
+        defined_name_comments = object_value.get("defined_name_comments") if middle_platform else None
 
         object_name = None if dc_sys_sheet is None else object_name
 
@@ -98,7 +101,7 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_
         _add_line_cell_comments(ws, row, surveyed_kp_comment, extra_column)
         _add_line_calculations(ws, row, tolerance, extra_column)
         sheet_comments = _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity, extra_column,
-                                                   sheet_comments)
+                                                   sheet_comments, defined_name_comments)
         _set_defined_name(wb, sheet_name, row, defined_name, extra_column)
 
     if not sheet_comments:  # no automatic comments, the column can be hidden
@@ -139,7 +142,7 @@ def _add_line_info(ws: xl_ws.Worksheet, row: int,
 
 def _add_block_def_info(ws: xl_ws.Worksheet, row: int,
                         block_def_limit_name: str) -> None:
-    # Block Def. Limit Name
+    # Block Definition Limit Name
     create_cell(ws, block_def_limit_name, row=row, column=BLOCK_DEF_LIMIT_NAME_COL, borders=True,
                 bg_color=XlBgColor.light_grey if block_def_limit_name is not None else None)
 
@@ -169,9 +172,13 @@ def _add_line_calculations(ws: xl_ws.Worksheet, row: int,
 
 def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
                               comments: str, tolerance: str, reverse_polarity: bool, extra_column: bool,
-                              sheet_comments: bool) -> bool:
+                              sheet_comments: bool, defined_name_comments: Optional[str]) -> bool:
     if comments is not None:
         comments = comments.replace("2 times", "twice")
+
+    if defined_name_comments is not None:
+        comments = (defined_name_comments if comments is None
+                    else (comments + "\n\n" + defined_name_comments))
 
     if reverse_polarity:
         if comments is None:
@@ -251,8 +258,8 @@ def _get_dc_sys_color(multiple_dc_sys_objets: Optional[list], dc_sys_sheet: str)
         return list_colors[0]
     if not multiple_dc_sys_objets:
         return list_colors[0]
-    for object, color in zip(multiple_dc_sys_objets, list_colors):
-        if object == dc_sys_sheet:
+    for object_name, color in zip(multiple_dc_sys_objets, list_colors):
+        if object_name == dc_sys_sheet:
             return color
     print_warning(f"{dc_sys_sheet = } not found inside multiple_dc_sys_objets or not enough colors defined:\n"
                   f"{multiple_dc_sys_objets = }\n"
@@ -275,10 +282,13 @@ def _get_survey_color(multiple_survey_objets: Optional[list[tuple]], survey_type
         return list_colors[0]
     if not multiple_survey_objets:
         return list_colors[0]
-    for object_name, color in zip(multiple_survey_objets, list_colors):
-        list_survey_objects = SURVEY_TYPES_DICT[object_name]["survey_type_names"]
-        if survey_type.strip().upper() in list_survey_objects:
-            return color
+    for object_name_tuple, color in zip(multiple_survey_objets, list_colors):
+        if isinstance(object_name_tuple, str):
+            object_name_tuple = (object_name_tuple,)
+        for object_name in object_name_tuple:
+            list_survey_objects = SURVEY_TYPES_DICT[object_name]["survey_type_names"]
+            if survey_type.strip().upper() in list_survey_objects:
+                return color
     print_warning(f"{survey_type = } not found inside multiple_survey_objets or not enough colors defined:\n"
                   f"{multiple_survey_objets = }\n"
                   f"{list_colors = }")

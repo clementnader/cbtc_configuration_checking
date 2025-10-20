@@ -66,17 +66,20 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict,
 
 def _clean_platform_extremity_name(plt_lim_name: str) -> str:
     plt_lim_name = plt_lim_name.upper()
+    plt_lim_name = plt_lim_name.removeprefix("KP_")
     plt_name = plt_lim_name.removeprefix("LEFT_END_").removeprefix("RIGHT_END_")
     plt_name = plt_name.removeprefix("PLATFORM_BEGIN_").removeprefix("PLATFORM_START_").removeprefix("PLATFORM_END_")
     plt_name = plt_name.removeprefix("BEGIN_").removeprefix("START_").removeprefix("END_")
     plt_name = plt_name.removeprefix("PLATFORM1_").removeprefix("PLATFORM2_")
     plt_name = plt_name.removeprefix("QUAI1_").removeprefix("QUAI2_")
     plt_name = plt_name.removesuffix("_BEGIN").removesuffix("_START").removesuffix("_END")
+    plt_name = plt_name.removesuffix("_1").removesuffix("_2")
     return plt_name
 
 
 def _clean_platform_middle_name(plt_mid_name: str, is_mid_plt_survey_info: bool) -> Optional[str]:
     plt_mid_name = plt_mid_name.upper()
+    plt_mid_name = plt_mid_name.removeprefix("KP_")
     if (not is_mid_plt_survey_info  # if type is already Middle Platform, we don't do this check
             and not (plt_mid_name.startswith("MIDDLE_") or plt_mid_name.startswith("MID_")
                      or plt_mid_name.startswith("MID")
@@ -222,11 +225,8 @@ def _add_associated_plt_to_mid(plt_survey_info: dict, set_of_survey_tracks: set[
         survey_mid_plt_name = survey_mid_plt_name[0]
 
         plt_survey_info[survey_mid_plt_name]["defined_name"] = corresponding_defined_name
-
-        new_comments = "Middle Platform. A defined name is defined on the Surveyed KP cell."
-        plt_survey_info[survey_mid_plt_name]["comments"] = (
-            new_comments if plt_survey_info[survey_mid_plt_name]["comments"] is None
-            else (plt_survey_info[survey_mid_plt_name]["comments"] + "\n\n" + new_comments))
+        plt_survey_info[survey_mid_plt_name]["defined_name_comments"] = (
+            "Middle Platform. A defined name is defined on the Surveyed KP cell.")
 
     return plt_survey_info
 

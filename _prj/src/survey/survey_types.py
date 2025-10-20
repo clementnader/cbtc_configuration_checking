@@ -26,7 +26,7 @@ def _add_other_spaces_names(names_list: list[str]) -> list[str]:
 
 SURVEY_TYPES_DICT = {
     "SWP":               {"res_sheet": "Switch",
-                          "dcsys_sh": DCSYS.Aig,
+                          "dcsys_sheet": DCSYS.Aig,
                           "func": check_switch,
                           "tol": ("switches", "switch_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
@@ -35,7 +35,7 @@ SURVEY_TYPES_DICT = {
                           "display_name": "Switches",
                           },
     "PLATFORM":          {"res_sheet": "Platform",
-                          "dcsys_sh": DCSYS.Quai,
+                          "dcsys_sheet": DCSYS.Quai,
                           "func": check_platform,
                           "tol": {
                               ((get_sheet_name(DCSYS.Quai),), "PLATFORM"):
@@ -63,16 +63,17 @@ SURVEY_TYPES_DICT = {
                           },
     "MIDDLE_PLATFORM":   {"res_sheet": None,
                           "survey_type_names": _add_other_spaces_names([
-                              "MPLATFORM", "PLATFORM_CENTER",
+                              "MPLATFORM", "PLATFORM_CENTER", "PFC",
                           ]),
                           },
     "OSP":               {"res_sheet": None,
                           "survey_type_names": _add_other_spaces_names([
                               "OSP", "PAE", "PLATFORM_OSP", "PSD_Xth_DOOR_CENTER",
+                              "OUT_PLATFORM_OSP", "OSP_OUTP",
                           ]),
                           },
     "BLOCK":             {"res_sheet": "Block",
-                          "dcsys_sh": DCSYS.CDV,
+                          "dcsys_sheet": DCSYS.CDV,
                           "func": check_joint,
                           "tol": ("joints", "joint_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
@@ -80,11 +81,12 @@ SURVEY_TYPES_DICT = {
                               "AXC", "AXLE_COUNTER", "IJ", "INSULATED_JOINT", "AXLE_COUNTER_DP",
                           ]),
                           "multiple_survey_objets": ["BLOCK",
-                                                     "BUFFER"],
+                                                     "BUFFER",
+                                                     ("SIGNAL", "PERMANENT_RED")],
                           "display_name": "Blocks",
                           },
     "SIGNAL":            {"res_sheet": "Signal",
-                          "dcsys_sh": DCSYS.Sig,
+                          "dcsys_sheet": DCSYS.Sig,
                           "func": check_signal,
                           "tol": {
                               ((get_sheet_name(DCSYS.Sig) + f"__{SignalType.MANOEUVRE}",
@@ -106,8 +108,10 @@ SURVEY_TYPES_DICT = {
                           "display_name": "Signals and Buffers",
                           "dc_sys_display_names": [((get_sheet_name(DCSYS.Sig) + f"__{SignalType.MANOEUVRE}",
                                                     get_sheet_name(DCSYS.Sig) + f"__{SignalType.PERMANENT_ARRET}",
-                                                    get_sheet_name(DCSYS.Sig) + f"__{SignalType.ESPACEMENT}"), "Signals"),
-                                                   ((get_sheet_name(DCSYS.Sig) + f"__{SignalType.HEURTOIR}",), "Buffers")],
+                                                    get_sheet_name(DCSYS.Sig) + f"__{SignalType.ESPACEMENT}"),
+                                                    "Signals"),
+                                                   ((get_sheet_name(DCSYS.Sig) + f"__{SignalType.HEURTOIR}",),
+                                                    "Buffers")],
                           "survey_display_names": [(("SIGNAL", "PERMANENT_RED"), "Signals"),
                                                    (("BUFFER",), "Buffers")],
                           },
@@ -122,7 +126,7 @@ SURVEY_TYPES_DICT = {
                           ]),
                           },
     "TAG":               {"res_sheet": "Tag",
-                          "dcsys_sh": [DCSYS.Bal, DCSYS.IATPM_tags, DCSYS.IATPM_Version_Tags],
+                          "dcsys_sheet": [DCSYS.Bal, DCSYS.IATPM_tags, DCSYS.IATPM_Version_Tags],
                           "func": check_tag,
                           "tol": ("tags", "tag_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
@@ -155,7 +159,7 @@ SURVEY_TYPES_DICT = {
                           ]),
                           },
     "FLOOD_GATE":        {"res_sheet": "FloodGate",
-                          "dcsys_sh": DCSYS.Flood_Gate,
+                          "dcsys_sheet": DCSYS.Flood_Gate,
                           "func": check_flood_gate,
                           "tol": ("flood gates", "flood_gate_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
@@ -163,21 +167,4 @@ SURVEY_TYPES_DICT = {
                           ]),
                           "display_name": "Flood Gates",
                           },
-    # "WALKWAY":           {"res_sheet": "Walkway",
-    #                       "dcsys_sh": DCSYS.Walkways_Area,
-    #                       "func": check_walkway,
-    #                       "tol": ("walkway ends", "walkway_tolerance", 0.006),
-    #                       "survey_type_names": _add_other_spaces_names([
-    #                           "WALKWAY", "WALKWAYS", "WALKWAYS_AREA",
-    #                       ]),
-    #                       "multiple_survey_objets": ["WALKWAY",
-    #                                                  "PLATFORM",
-    #                                                  "TURNBACK_PLATFORM"],
-    #                       "display_name": "Walkways",
-    #                       },
-    # "TURNBACK_PLATFORM": {"res_sheet": None,
-    #                       "survey_type_names": _add_other_spaces_names([
-    #                           "TURNBACK_PLATFORM",
-    #                       ]),
-    #                       },
 }

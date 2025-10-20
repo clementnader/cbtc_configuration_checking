@@ -29,8 +29,8 @@ def _cf_2_check_signal(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantBF.SIGNAL}...")
     object_dict = load_sheet(DCSYS.Sig)
     success = True
-    for object_name, object in object_dict.items():
-        is_not_buffer_or_pr = get_dc_sys_value(object, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
+    for object_name, object_value in object_dict.items():
+        is_not_buffer_or_pr = get_dc_sys_value(object_value, DCSYS.Sig.Type) not in [SignalType.HEURTOIR,
                                                                                SignalType.PERMANENT_ARRET]
         if not check_object_msgs(DCSYS.Sig, msg_dict, object_name, is_not_buffer_or_pr,
                               "shall exist for all Signals except Permanently Red and Buffer",
@@ -44,7 +44,7 @@ def _cf_2_check_maz(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantBF.ZAUM}...")
     object_dict = load_sheet(DCSYS.Zaum)
     success = True
-    for object_name, object in object_dict.items():
+    for object_name, object_value in object_dict.items():
         if not check_object_msgs(DCSYS.Zaum, msg_dict, object_name, True, "shall exist for all MAZ",
                               TypeNomLogiqueVariantBF.PROTECTION_LEVEL, shall_be_vital=True, is_hf=False):
             success = False
@@ -56,7 +56,7 @@ def _cf_2_check_platform(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantBF.QUAI}...")
     object_dict = load_sheet(DCSYS.Quai)
     success = True
-    for object_name, object in object_dict.items():
+    for object_name, object_value in object_dict.items():
         if not check_object_msgs(DCSYS.Quai, msg_dict, object_name, True, "shall exist for all Platforms",
                               [TypeNomLogiqueVariantBF.SAFETY_RELATED_PLATFORM_HOLD_NORMAL_DIR,
                                TypeNomLogiqueVariantBF.SAFETY_RELATED_PLATFORM_HOLD_REVERSE_DIR,
@@ -86,7 +86,7 @@ def _cf_2_check_platform(msg_dict: dict):
                                TypeNomLogiqueVariantBF.T_ATB_PROHIB_REVERSE_DIR], shall_be_vital=False, is_hf=False):
             success = False
 
-        train_ahead_departure = get_dc_sys_value(object, DCSYS.Quai.WithTad) == YesOrNo.O
+        train_ahead_departure = get_dc_sys_value(object_value, DCSYS.Quai.WithTad) == YesOrNo.O
         if not check_object_msgs(DCSYS.Quai, msg_dict, object_name, train_ahead_departure, f"flag [With TAD] set to 'Y'",
                               TypeNomLogiqueVariantBF.TRAIN_AHEAD_DEPARTURE, shall_be_vital=False, is_hf=False):
             success = False
@@ -98,8 +98,8 @@ def _cf_2_check_nv_psr(msg_dict: dict):
     print_section_title(f"\nChecking {TypeClasseObjetVariantBF.NV_PSR}...")
     object_dict = load_sheet(DCSYS.NV_PSR)
     success = True
-    for object_name, object in object_dict.items():
-        can_be_relaxed = get_dc_sys_value(object, DCSYS.NV_PSR.WithRelaxation) == YesOrNo.O
+    for object_name, object_value in object_dict.items():
+        can_be_relaxed = get_dc_sys_value(object_value, DCSYS.NV_PSR.WithRelaxation) == YesOrNo.O
         if not check_object_msgs(DCSYS.NV_PSR, msg_dict, object_name, can_be_relaxed, "flag [With Relaxation] set to 'Y'",
                               TypeNomLogiqueVariantBF.NV_PSR_RELAXATION_CONDITION, shall_be_vital=False, is_hf=False):
             success = False

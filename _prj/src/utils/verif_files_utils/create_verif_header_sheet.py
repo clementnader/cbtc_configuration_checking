@@ -39,7 +39,7 @@ def create_empty_verification_file() -> openpyxl.workbook.Workbook:
 def create_empty_header_sheet(wb: openpyxl.workbook.Workbook):
     # Create Header sheet
     # When a sheet is created at index 0, it becomes the active sheet, so we need to restore the active sheet after.
-    print_log(f" > Creating Header sheet...")
+    print_log(f" > Creating \"Header\" sheet...")
     active_ws = wb.active  # get active sheet
     wb.create_sheet("Header", 0)  # insert at first position
     if active_ws is not None:  # restore active sheet if any
