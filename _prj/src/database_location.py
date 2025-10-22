@@ -608,8 +608,9 @@ class ProjectDatabaseLocation:
         # ------------------------------- Thessaloniki TSK -------------------------------#
         elif project_name == Projects.Thessaloniki_TSK:
             self.dc_sys_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V08_KLM\DC_SYS.xls"
+            # self.dc_sys_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V08_KLM\DC_SYS_patch_route.xls"
             self.dc_par_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V08_KLM\DC_PAR.xls"
-            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V08_KLM\DC_BOP.xls"
+            self.dc_bop_addr = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C_D470_07_03_03_V08_KLM\C64_D413\DC_BOP.xls"
             self.kit_c11_dir = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C11_D470_07_03_03_V13"
             # self.kit_c11_sp_dir = r"C:\CBTC\PROJECTS\Thessaloniki TSK\TSK_C11_D470_07_03_03_V12_SP1"
             self.fouling_point_addr = (r"C:\CBTC\PROJECTS\Thessaloniki TSK"
