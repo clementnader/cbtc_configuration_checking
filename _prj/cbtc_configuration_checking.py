@@ -114,7 +114,6 @@ def route_and_overlap():
     # verify_switches_along_the_routes()  # TODO
     # TODO: verif overlap: du signal jusqu'au VSP tous les IVB et aiguilles (+position) qu'on passe
     #  doivent être côté IXL et toutes les aiguilles (+position) doivent être côté CBTC
-    # TODO: refaire les tests de correspondance sans dépendre de la variable PROJECT_NAME
     return
 
 

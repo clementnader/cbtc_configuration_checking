@@ -153,7 +153,7 @@ def _is_object_defined_on_seg(seg: str, x: Optional[float], downstream: bool, po
             object_seg = object_position[0]
             object_x = object_position[1]
             if object_direction is not None and len(object_position) > 2:
-                if (object_position[2] != object_direction) == polarity:  # if the direction is not matching
+                if (object_position[2] != object_direction) == polarity:  # if the direction does not match
                     # we take into account if we pass a depolarization point on the path
                     continue
             if seg == object_seg:

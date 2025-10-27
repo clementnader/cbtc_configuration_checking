@@ -53,7 +53,7 @@ def check_zc_limits_definition():
             vb2_limits = get_object_position(DCSYS.CV, vb2)
 
             if not ((seg, x) in vb1_limits):
-                print_error(f"{zc_name} limit {seg, x, direction} is not matching VB limit of {vb1}.")
+                print_error(f"{zc_name} limit {seg, x, direction} does not match VB limit of {vb1}.")
 
             if not ((seg, x) in vb2_limits):
-                print_error(f"{zc_name} limit {seg, x, direction} is not matching VB limit of {vb2}.")
+                print_error(f"{zc_name} limit {seg, x, direction} does not match VB limit of {vb2}.")

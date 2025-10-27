@@ -42,16 +42,21 @@ def is_sig_plt_exit(sig_name) -> tuple[bool, Optional[str]]:
     return is_ivb_plt_related(ivb_name)
 
 
-def is_ivb_plt_related(ivb_name: str, with_tc: bool = False) -> tuple[bool, Optional[str]]:
-    if with_tc:
-        object_type = DCSYS.CDV
+def is_ivb_plt_related(ivb_name: str) -> tuple[bool, Optional[str]]:
+    ivb_dict = load_sheet(DCSYS.IVB)
+    tc_dict = load_sheet(DCSYS.CDV)
+    if ivb_name not in tc_dict and ivb_name in ivb_dict:
+        object_type = "IVB"
+    elif ivb_name not in ivb_dict and ivb_name in tc_dict:
+        object_type = "CDV"
     else:
-        object_type = DCSYS.IVB
+        print_error(f"Object {ivb_name} does not exist inside IVB sheet, nor inside CDV sheet.")
+        return False, None
     plt_on_ivb = get_zones_intersecting_zone(DCSYS.Quai, object_type, ivb_name)
     if not plt_on_ivb:
         return False, None
     if len(plt_on_ivb) > 1:
-        print_error(f"There are multiple platforms on {get_sheet_name(object_type)} {ivb_name}: {plt_on_ivb}.")
+        print_error(f"There are multiple platforms on {object_type} {ivb_name}: {plt_on_ivb}.")
     plt_name = plt_on_ivb[0]
     return True, plt_name
 

@@ -68,12 +68,12 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
                                               "and to compute a path.")
             continue
 
-        last_ivb = _get_last_ivb(corresponding_entrance, ivb_names, apz_with_tc)
+        last_ivb = _get_last_ivb(corresponding_entrance, ivb_names)
         if last_ivb is None:
             is_last_ivb_plt_rel = None
             plt_name = None
         else:
-            is_last_ivb_plt_rel, plt_name = is_ivb_plt_related(last_ivb, apz_with_tc)
+            is_last_ivb_plt_rel, plt_name = is_ivb_plt_related(last_ivb)
         res_dict[sig_name]["last_ivb_platform_related"] = (None if not is_last_ivb_plt_rel
                                                            else f"{last_ivb}\n{plt_name}")
 
@@ -90,16 +90,21 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
     return res_dict
 
 
-def _get_last_ivb(corresponding_entrance: tuple[str, float], ivb_names: str, apz_with_tc: bool) -> Optional[str]:
+def _get_last_ivb(corresponding_entrance: tuple[str, float], ivb_names: str) -> Optional[str]:
     """ Get last IVB or block of the IXL APZ. """
-    if apz_with_tc:
-        seg_attr = DCSYS.CDV.Extremite.Seg
-        x_attr = DCSYS.CDV.Extremite.X
-    else:
-        seg_attr = DCSYS.IVB.Limit.Seg
-        x_attr = DCSYS.IVB.Limit.X
+    ivb_dict = load_sheet(DCSYS.IVB)
+    tc_dict = load_sheet(DCSYS.CDV)
     list_ivb = ivb_names.split(", ")
     for ivb_name in list_ivb:
+        if ivb_name not in tc_dict and ivb_name in ivb_dict:
+            seg_attr = DCSYS.IVB.Limit.Seg
+            x_attr = DCSYS.IVB.Limit.X
+        elif ivb_name not in ivb_dict and ivb_name in tc_dict:
+            seg_attr = DCSYS.CDV.Extremite.Seg
+            x_attr = DCSYS.CDV.Extremite.X
+        else:
+            print_error(f"Object {ivb_name} does not exist inside IVB sheet, nor inside CDV sheet.")
+            continue
         for ivb_seg, ivb_x in get_dc_sys_zip_values(ivb_name, seg_attr, x_attr):
             if are_points_matching(*corresponding_entrance, ivb_seg, ivb_x):
                 return ivb_name

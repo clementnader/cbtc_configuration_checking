@@ -711,6 +711,7 @@ class ProjectDatabaseLocation:
             self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\MSH_C_D470_06_06_01_V00\DC_PAR.xls"
             self.kit_c11_dir = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\MSH_C11_D470_06_06_03_V00"
             # -- Survey -- #
+            self.block_def = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\CIRCUIT_DE_VOIE.xls"
             self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\Topo_V_06_00.xlsx"
             self.survey_loc.survey_sheet = None
             self.survey_loc.all_sheets = True
