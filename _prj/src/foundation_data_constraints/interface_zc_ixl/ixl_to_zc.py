@@ -14,12 +14,6 @@ from .common_functions import *
 __all__ = ["r_mes_pas_itf_1"]
 
 
-LIST_OF_TSR_SPEEDS = ["Speed_0", "Speed_5", "Speed_10",
-                      "Speed_20", "Speed_25", "Speed_30", "Speed_35", "Speed_40", "Speed_45",
-                      "Speed_50", "Speed_55", "Speed_60", "Speed_65", "Speed_70", "Speed_75", "Speed_80"]
-# TODO générer la liste de TSR Speeds automatiquement,
-
-
 def r_mes_pas_itf_1(in_cbtc: bool = False):
     # IXL -> ZC Interface
     print_title(f"Verification of R_MES_PAS_ITF_1\nIXL -> ZC Interface", color=Color.mint_green)
@@ -377,12 +371,13 @@ def _rule_1_check_asr(asr_msg_dict: dict, in_cbtc: bool):
 
 def _rule_1_check_tsr_area(tsr_area_msg_dict: dict, in_cbtc: bool):
     print_section_title(f"\nChecking {TypeClasseObjetMESPAS.TSR_PREDEFINED_AREA}...")
+    list_of_tsr_speeds = _get_list_of_tsr_speeds()
     tsr_interfaced_with_vhmi = get_parameter_value("tsr_interfaced_with_VHMI")
     if not in_cbtc:
         tsr_area_dict = load_sheet(DCSYS.TSR_Area)
     else:
         tsr_area_dict = get_objects_in_cbtc_ter(DCSYS.TSR_Area)
-    missing_speeds_dict = {key: {speed: False for speed in LIST_OF_TSR_SPEEDS} for key in tsr_area_dict}
+    missing_speeds_dict = {key: {speed: False for speed in list_of_tsr_speeds} for key in tsr_area_dict}
     tsr_speed_dict = load_sheet(DCSYS.TSR_Possible_Speeds)
     wayside_eqpt_dict = load_sheet(DCSYS.Wayside_Eqpt)
     success = True
@@ -423,22 +418,25 @@ def _rule_1_check_tsr_area(tsr_area_msg_dict: dict, in_cbtc: bool):
         if tsr_area_missing_speeds_for_set_cmd == tsr_area_missing_speeds_for_remove_cmd:
             for speed in tsr_area_missing_speeds_for_set_cmd:
                 missing_speeds_dict[tsr_area_name][speed] = True
-            # print_warning(f"The following speeds have no messages {TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_SET_CMD} "
-            #               f"and {TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_REMOVE_CMD} "
-            #               f"for TSR_Area {Color.blue}{tsr_area_name}{Color.reset}:")
-            # print(tsr_area_missing_speeds_for_set_cmd)
         else:
             print_error(f"The missing speeds for messages {TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_SET_CMD} "
                         f"and {TypeNomLogiqueInfoMESPAS.TSR_AREA_SPEED_REMOVE_CMD} do not correspond:")
             print(f"{tsr_area_missing_speeds_for_set_cmd = }")
             print(f"{tsr_area_missing_speeds_for_remove_cmd = }")
     if missing_speeds_dict:
-        csv = "TSR_Area;" + ";".join(LIST_OF_TSR_SPEEDS) + "\n"
+        csv = "TSR_Area;" + ";".join(list_of_tsr_speeds) + "\n"
         for tsr_area, speed_dict in missing_speeds_dict.items():
             csv += f"{tsr_area};"
             for is_missing in speed_dict.values():
                 csv += f"{'Missing' if is_missing else ''};"
             csv += "\n"
+        print(f"{Color.white}TSR messages to be analyzed manually with following csv file:\n{Color.reset}")
         print(csv)
     if success:
         print_log(f"No KO.")
+
+
+def _get_list_of_tsr_speeds() -> list[str]:
+    if "TSR_Possible_Speeds" in get_class_attributes_dict(DCSYS):
+        return get_objects_list(DCSYS.TSR_Possible_Speeds)
+    return []

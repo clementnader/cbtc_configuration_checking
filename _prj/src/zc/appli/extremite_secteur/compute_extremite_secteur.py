@@ -9,7 +9,6 @@ from ....dc_sys_draw_path import *
 from ....dc_par import *
 
 
-
 __all__ = ["extremite_secteur"]
 
 

@@ -7,10 +7,10 @@ from ..utils import *
 from ..database_location import *
 
 
-__all__ = ["generate_cc_parameters_diff_reports"]
+__all__ = ["generate_cc_parameters_diff_reports_for_sp"]
 
 
-def generate_cc_parameters_diff_reports():
+def generate_cc_parameters_diff_reports_for_sp():
     kit_c11 = DATABASE_LOCATION.kit_c11_dir
     kit_c11_sp = DATABASE_LOCATION.kit_c11_sp_dir
     if not kit_c11:

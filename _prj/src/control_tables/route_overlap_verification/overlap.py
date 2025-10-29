@@ -199,7 +199,7 @@ def _check_ovl_sw(ovl: str, ovl_value: dict[str, Any], ct_ovl_sw: str, ct_ovl_pa
 def _check_ovl_path(ovl_name: str, ovl_value: dict[str, Any], ct_ovl_path: str, table_name: str) -> bool:
     result = True
     # dc_sys_ovl_sw: list[str] = ovl_value["Overlap Path Switch"]  # TODO use the switch to determine
-    #                                                               which IVB limit is the correct one
+    #                                                                 which IVB limit is the correct one
     # dc_sys_sig = get_dc_sys_value(ovl_value, DCSYS.IXL_Overlap.DestinationSignal)
     # sig_dict = load_sheet(DCSYS.Sig)
     # sig_value = sig_dict[dc_sys_sig]

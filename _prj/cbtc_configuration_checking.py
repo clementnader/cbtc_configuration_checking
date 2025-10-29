@@ -34,9 +34,7 @@ def zc():
 
 
 def cc():
-    # generate_cc_parameters_diff_reports()
-    # check_diff_cc_param()
-    # convert_cc_param()
+    # generate_cc_parameters_diff_reports_for_sp()
     return
 
 
