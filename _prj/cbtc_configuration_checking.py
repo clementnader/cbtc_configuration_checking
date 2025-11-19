@@ -204,6 +204,9 @@ def constraints_and_rules():
     # Walkway constraints
     # cf_walkway_2()
 
+    # Slope constraints
+    # cf_pente_3()
+
     # Constraints related to signal Approach Zone
     # check_cbtc_sig_apz()  # NV
     # cf_signal_12(apz_with_tc=False)  # DLT Distance

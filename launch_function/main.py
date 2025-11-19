@@ -72,6 +72,9 @@ def main():
     # --- Walkway constraints --- #
     #cf_walkway_2()
 
+    # --- Slope constraints --- #
+    #cf_pente_3()
+
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: VSP on Virtual Blocks constraints ---------- #
     """Uncomment one of next lines to verify some constraints about VSP on Virtual Blocks.

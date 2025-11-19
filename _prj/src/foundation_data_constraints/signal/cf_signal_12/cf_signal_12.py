@@ -24,7 +24,7 @@ def cf_signal_12(apz_with_tc: bool = False):
     # or the first IVB. By default, the first IVB is taken as it is more conservative.
     print_title(f"Verification of CF_SIGNAL_12", color=Color.mint_green)
     print_warning(f"This function only checks that the DLT distance respects the constraint linked to "
-                  f"the IXL APZ length, but not that there is no civil infrastructure in the DLT.")
+                  f"the IXL APZ length, but not that there is no civil infrastructure in the DLT.\n")
 
     load_ixl_apz_file()
     verif_dict = _compute_cf_signal_12_verif(apz_with_tc)
@@ -49,9 +49,7 @@ def _compute_cf_signal_12_verif(apz_with_tc: bool) -> dict[str, dict[str, Any]]:
         dlt_distance = get_dc_sys_value(sig, DCSYS.Sig.DelayedLtDistance)
         res_dict[sig_name]["dlt_distance"] = dlt_distance
         if dlt_distance == 0:
-            res_dict[sig_name]["status"] = "OK"
             res_dict[sig_name]["comments"] = "0 is a safe value."
-            continue
 
         (ivb_lim_seg, ivb_lim_x), ivb_lim_str = get_ivb_limit_of_a_signal(sig_name, sig)
         ivb_lim_track, ivb_lim_kp = from_seg_offset_to_track_kp(ivb_lim_seg, ivb_lim_x)
@@ -248,7 +246,7 @@ def _add_status(ws: xl_ws.Worksheet, row: int, status: Optional[str]) -> None:
     create_cell(ws, min_dist_formula, row=row, column=MIN_DIST_COL, borders=True,
                 align_horizontal=XlAlign.center, nb_of_digits=3)
     # Status
-    status_formula = f'= IF({DLT_DIST_COL}{row} <= {MIN_DIST_COL}{row}, "OK", "KO")'
+    status_formula = f'= IF(OR({DLT_DIST_COL}{row} = 0, {DLT_DIST_COL}{row} <= {MIN_DIST_COL}{row}), "OK", "KO")'
     create_cell(ws, status_formula, row=row, column=STATUS_COL, borders=True,
                 align_horizontal=XlAlign.center)
 

@@ -173,7 +173,7 @@ def _write_columns_title(ws: xl_ws.Worksheet, row: int, apz_with_tc: bool):
                        start_column=STATUS_COL, end_column=STATUS_COL,
                        align_horizontal=XlAlign.center, bold=True, borders=True)
     # Comments
-    create_merged_cell(ws, "Comments", start_row=row, end_row=row+1,
+    create_merged_cell(ws, "Automatic Comments", start_row=row, end_row=row+1,
                        start_column=COMMENTS_COL, end_column=COMMENTS_COL,
                        align_horizontal=XlAlign.center, bold=True, borders=True)
 

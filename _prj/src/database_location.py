@@ -26,8 +26,8 @@ class Projects:
     Baltimore_MTA = "Baltimore_MTA"
     BART = "BART"
     Hurontario_HLR = "Hurontario_HLR"
+    MSH_SEPTA = "MSH_SEPTA"
     Ontario_OL_RSSOM = "Ontario_OL_RSSOM"
-    SEPTA_MSH = "SEPTA_MSH"
 
     Chennai_CMRL = "Chennai_CMRL"
     Kolkata_KMRC = "Kolkata_KMRC"
@@ -99,8 +99,8 @@ PROJECT_NAME = Projects.Panama
 # PROJECT_NAME = Projects.Baltimore_MTA
 # PROJECT_NAME = Projects.BART
 # PROJECT_NAME = Projects.Hurontario_HLR
+# PROJECT_NAME = Projects.MSH_SEPTA
 # PROJECT_NAME = Projects.Ontario_OL_RSSOM
-# PROJECT_NAME = Projects.SEPTA_MSH
 
 # --- India --- #
 # PROJECT_NAME = Projects.Chennai_CMRL
@@ -377,9 +377,9 @@ class ProjectDatabaseLocation:
             iatp = project_name == Projects.Glasgow_IATP
             cbtc = project_name == Projects.Glasgow_CBTC
             if iatp:
-                self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V05\DC_SYS_IATPM.xls"
-                self.dc_par_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V05\DC_PAR.xls"
-                self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V05\C64_D413\DC_BOP.xls"
+                self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V06\DC_SYS.xls"
+                self.dc_par_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V06\DC_PAR.xls"
+                self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V06\C64_D413\DC_BOP.xls"
                 self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_06_06_01_V05"
             elif cbtc:
                 self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V04\DC_SYS.xls"
@@ -705,14 +705,14 @@ class ProjectDatabaseLocation:
             self.dc_sys_addr = (r"C:\CBTC\PROJECTS\USA\Ontario OL RSSOM\Mainline and deport early DB 00_01"
                                 r"\Ontario_DB_00_01(mainline+deport).xls")
 
-        # ------------------------------- SEPTA MSH -------------------------------#
-        elif project_name == Projects.SEPTA_MSH:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\MSH_C_D470_06_06_01_V00\DC_SYS.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\MSH_C_D470_06_06_01_V00\DC_PAR.xls"
-            self.kit_c11_dir = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\MSH_C11_D470_06_06_03_V00"
+        # ------------------------------- MSH SEPTA -------------------------------#
+        elif project_name == Projects.MSH_SEPTA:
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\USA\MSH SEPTA\MSH_C_D470_06_06_01_V00\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\USA\MSH SEPTA\MSH_C_D470_06_06_01_V00\DC_PAR.xls"
+            self.kit_c11_dir = r"C:\CBTC\PROJECTS\USA\MSH SEPTA\MSH_C11_D470_06_06_03_V00"
             # -- Survey -- #
-            self.block_def = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\CIRCUIT_DE_VOIE.xls"
-            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\USA\SEPTA MSH\Topo_V_06_00.xlsx"
+            self.block_def = r"C:\CBTC\PROJECTS\USA\MSH SEPTA\CIRCUIT_DE_VOIE.xls"
+            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\USA\MSH SEPTA\Topo_V_06_00.xlsx"
             self.survey_loc.survey_sheet = None
             self.survey_loc.all_sheets = True
             self.survey_loc.start_row = 4

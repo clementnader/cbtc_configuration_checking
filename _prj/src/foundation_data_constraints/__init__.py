@@ -19,6 +19,7 @@ from .platform import *
 from .sieving_limit import *
 from .signal import *
 from .signal_zone import *
+from .slope import *
 from .sw_flank_protection import *
 from .switch import *
 from .virtual_block import *
