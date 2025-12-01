@@ -18,9 +18,12 @@ def r_tm_ats_itf_1(in_cbtc: bool = False):
     _check_block(get_sub_dict_zc_ats_supervision(TypeClasseObjetPASATS.CDV), in_cbtc)
     _check_dd(get_sub_dict_zc_ats_supervision(TypeClasseObjetPASATS.DP), in_cbtc)
     _check_plt(get_sub_dict_zc_ats_supervision(TypeClasseObjetPASATS.QUAI), in_cbtc)
-    _check_ivb(get_sub_dict_zc_ats_supervision(TypeClasseObjetPASATS.IVB), in_cbtc)
+    if "IVB" in get_class_attributes_dict(TypeClasseObjetPASATS):
+        _check_ivb(get_sub_dict_zc_ats_supervision(TypeClasseObjetPASATS.IVB), in_cbtc)
     _check_switch(get_sub_dict_zc_ats_supervision("AIGUILLE"), in_cbtc)  # TypeClasseObjetPASATS.AIGUILLE
     _check_maz(get_sub_dict_zc_ats_supervision(TypeClasseObjetPASATS.ZAUM), in_cbtc)
+    if "SUB_SWEEPING_ZONE" in get_class_attributes_dict(TypeClasseObjetPASATS):
+        _check_sub_sweeping_zone(get_sub_dict_zc_ats_supervision(TypeClasseObjetPASATS.SUB_SWEEPING_ZONE), in_cbtc)
 
 
 # ------- Sub Functions ------- #
@@ -134,7 +137,7 @@ def _check_switch(sw_msg_dict: dict, in_cbtc: bool):
     success = True
     for sw_name, sw in sw_dict.items():
         if not check_object_msgs(DCSYS.Aig, sw_msg_dict, sw_name, True,
-                              "shall exist for switches",
+                              "shall exist for all switches",
                               TypeNomLogiqueInfoPASATS.PREVENTS_EID,
                               only_one_zc=True):
             success = False
@@ -157,9 +160,26 @@ def _check_maz(maz_msg_dict: dict, in_cbtc: bool):
                                   TypeNomLogiqueInfoPASATS.UTO_MVT_AUTH,
                                   TypeNomLogiqueInfoPASATS.AM_MVT_AUTH])
         if not check_object_msgs(DCSYS.Zaum, maz_msg_dict, maz_name, True,
-                              "shall exist for MAZ",
+                              "shall exist for all MAZ",
                               target_msg_types,
                               only_one_zc=True):
+            success = False
+    if success:
+        print_log(f"No KO.")
+
+
+def _check_sub_sweeping_zone(sub_sweeping_zone_msg_dict: dict, in_cbtc: bool):
+    print_section_title(f"\nChecking {TypeClasseObjetPASATS.SUB_SWEEPING_ZONE}...")
+    if not in_cbtc:
+        ssz_dict = load_sheet(DCSYS.Sub_Sweeping_Zone)
+    else:
+        ssz_dict = get_objects_in_cbtc_ter(DCSYS.Sub_Sweeping_Zone)
+    success = True
+    for ssz_name, ssz in ssz_dict.items():
+        if not check_object_msgs(DCSYS.Zaum, sub_sweeping_zone_msg_dict, ssz_name, True,
+                              "shall exist for all Sub Sweeping Zones",
+                                 TypeNomLogiqueInfoPASATS.ACTIVE_STATE,
+                                 only_one_zc=True):
             success = False
     if success:
         print_log(f"No KO.")

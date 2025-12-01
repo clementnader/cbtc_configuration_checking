@@ -34,6 +34,8 @@ def get_parameter_info(parameter_name: str) -> tuple[Optional[Union[float, bool,
     if param is None:
         print_error(f"Parameter {parameter_name} does not exist in DC_PAR.")
         return None, None, None, None
+    if parameter_name.lower() == "tsr_interfaced_with_vhmi":
+        param["unit"] = "Booleen"  # Correct unit for this parameter from "sans" to "Booléen"
     value = _convert_bool(param["value"], param["unit"])
     unit = param["unit"]
     s_ns = param["s_ns"]

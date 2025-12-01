@@ -380,7 +380,7 @@ class ProjectDatabaseLocation:
                 self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V06\DC_SYS.xls"
                 self.dc_par_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V06\DC_PAR.xls"
                 self.dc_bop_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_06_06_01_V06\C64_D413\DC_BOP.xls"
-                self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_06_06_01_V05"
+                self.kit_c11_dir = r"C:\CBTC\PROJECTS\Glasgow\GW_C11_D470_06_06_01_V06"
             elif cbtc:
                 self.dc_sys_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V04\DC_SYS.xls"
                 self.dc_par_addr = r"C:\CBTC\PROJECTS\Glasgow\GW_C_D470_07_03_03_V04\DC_PAR.xls"
@@ -389,15 +389,39 @@ class ProjectDatabaseLocation:
                 self.fouling_point_addr = (r"C:\CBTC\PROJECTS\Glasgow"
                                            r"\Fouling Points - GW_C_D470_07_03_03_V02_R3.xlsx")
             # -- Survey -- #
-            self.survey_loc.survey_addr = (
-                r"C:\CBTC\PROJECTS\Glasgow\SURVEY\2025_01_15 Survey Data and Input Sheet.xlsx")
-            self.survey_loc.survey_sheet = r"GW_ML_survey_inputs"
-            self.survey_loc.all_sheets = False
-            self.survey_loc.start_row = 2
-            self.survey_loc.ref_col = 1
-            self.survey_loc.type_col = 2
-            self.survey_loc.track_col = 3
-            self.survey_loc.survey_kp_col = 5
+            if iatp:
+                self.survey_loc.survey_addr = [
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\2022_03_11_Inner_Circle_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\2022_03_11_Outer_Circle_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\Inner_to_Outer_Com_A_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\Outer_to_Inner_Com_A_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\Ramp_North_TsYF_A_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\Ramp_South_TsYA_A_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\Road_16_A_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\Road_17_A_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\Road_17a_A_Features.xlsx",
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\rev 01.00\Road_17b_A_Features.xlsx"
+                ]
+                self.survey_loc.survey_sheet = [r"Inner Circle", r"Outer Circle",
+                                                r"57677 inner_to_outer_com_A", r"57677 outer_to_inner_com_A",
+                                                r"57677 Ramp_North_TsYF_A", r"57677 TsYA_A",
+                                                r"57677 R16_A", r"57677 R17_A", r"57677 R17a_A", r"57677 R17b_A"]
+                self.survey_loc.all_sheets = [False, False, False, False, False, False, False, False, False, False]
+                self.survey_loc.start_row = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+                self.survey_loc.ref_col = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                self.survey_loc.type_col = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+                self.survey_loc.track_col = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+                self.survey_loc.survey_kp_col = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+            else:
+                self.survey_loc.survey_addr = (
+                    r"C:\CBTC\PROJECTS\Glasgow\SURVEY\2025_01_15 Survey Data and Input Sheet.xlsx")
+                self.survey_loc.survey_sheet = r"GW_ML_survey_inputs"
+                self.survey_loc.all_sheets = False
+                self.survey_loc.start_row = 2
+                self.survey_loc.ref_col = 1
+                self.survey_loc.type_col = 2
+                self.survey_loc.track_col = 3
+                self.survey_loc.survey_kp_col = 5
             # -- Control Tables -- #
             if iatp:
                 self.control_tables_config_ini_file = "control_tables_configuration_gw.ini"
@@ -725,9 +749,9 @@ class ProjectDatabaseLocation:
 
         # ------------------------------- Chennai CMRL -------------------------------#
         elif project_name == Projects.Chennai_CMRL:
-            self.dc_sys_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V04_01\DC_SYS.xls"
-            self.dc_par_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V04_01\DC_PAR.xls"
-            self.dc_bop_addr = (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V04_01"
+            self.dc_sys_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V05_02\DC_SYS.xls"
+            self.dc_par_addr = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V05_02\DC_PAR.xls"
+            self.dc_bop_addr = (r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\CMRL_S1_C_D470_08_03_01_V05_02"
                                 r"\C64_D413\DC_BOP.xls")
             # -- Survey -- #
             self.block_def = r"C:\CBTC\PROJECTS\INDIA\Chennai CMRL\C_D470_08_03_01_V04_01_Blocks_Definition_v2.xlsx"

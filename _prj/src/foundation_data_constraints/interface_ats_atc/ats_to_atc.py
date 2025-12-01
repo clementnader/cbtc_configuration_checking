@@ -27,13 +27,33 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
         plt_dict = get_objects_in_cbtc_ter(DCSYS.Quai)
     success = True
     for plt_name, plt in plt_dict.items():
+        driving_modes = load_sheet(DCSYS.Driving_Modes)
+
+        atp_md_mode = any(get_dc_sys_value(driving_mode, DCSYS.Driving_Modes.Group) == DrivingModesGroups.T_ATP_MD
+                          for driving_mode in driving_modes)
         target_msg_types = [TypeNomLogiqueInfoATSCBTC.CMCC_INTERDIT_DIR_IMPAIR,
-                            TypeNomLogiqueInfoATSCBTC.CPA_INTERDIT_DIR_IMPAIR,
-                            TypeNomLogiqueInfoATSCBTC.CMCC_INTERDIT_DIR_PAIR,
+                            TypeNomLogiqueInfoATSCBTC.CMCC_INTERDIT_DIR_PAIR]
+        if not check_object_msgs(DCSYS.Quai, plt_msg_dict, plt_name, atp_md_mode,
+                                 "ATP_MD mode exists on the project",
+                                 target_msg_types):
+            success = False
+
+        ad_mode = any(get_dc_sys_value(driving_mode, DCSYS.Driving_Modes.Group) == DrivingModesGroups.T_AD
+                      for driving_mode in driving_modes)
+        target_msg_types = [TypeNomLogiqueInfoATSCBTC.CPA_INTERDIT_DIR_IMPAIR,
                             TypeNomLogiqueInfoATSCBTC.CPA_INTERDIT_DIR_PAIR]
-        if not check_object_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
-                              "shall exist for all Platforms",
-                              target_msg_types):
+        if not check_object_msgs(DCSYS.Quai, plt_msg_dict, plt_name, ad_mode,
+                                 "AD mode exists on the project",
+                                 target_msg_types):
+            success = False
+
+        atb_mode = any(get_dc_sys_value(driving_mode, DCSYS.Driving_Modes.Group) == DrivingModesGroups.T_ATB
+                       for driving_mode in driving_modes)
+        target_msg_types = [TypeNomLogiqueInfoATSCBTC.CRA_INTERDIT_DIR_IMPAIR,
+                            TypeNomLogiqueInfoATSCBTC.CRA_INTERDIT_DIR_PAIR]
+        if not check_object_msgs(DCSYS.Quai, plt_msg_dict, plt_name, atb_mode,
+                                 "ATB mode exists on the project",
+                                 target_msg_types):
             success = False
 
         target_msg_types = ([TypeNomLogiqueInfoATSCBTC.HOLD_NORMAL_DIR,
@@ -47,8 +67,8 @@ def _check_plt(plt_msg_dict: dict, in_cbtc: bool):
                                   TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_HOLD_REVERSE_DIR,
                                   TypeNomLogiqueInfoATSCBTC.SAFETY_RELATED_SKIP_REVERSE_DIR])
         if not check_object_msgs(DCSYS.Quai, plt_msg_dict, plt_name, True,
-                              "shall exist for all Platforms",
-                              target_msg_types):
+                                 "shall exist for all Platforms",
+                                 target_msg_types):
             success = False
     if success:
         print_log(f"No KO.")
@@ -64,8 +84,8 @@ def _check_nv_psr(nv_psr_msg_dict: dict, in_cbtc: bool):
     for nv_psr_name, nv_psr in nv_psr_dict.items():
         can_be_relaxed = get_dc_sys_value(nv_psr, DCSYS.NV_PSR.WithRelaxation) == YesOrNo.O
         if not check_object_msgs(DCSYS.Quai, nv_psr_msg_dict, nv_psr_name, can_be_relaxed,
-                              "flag [With Relaxation] set to 'Y'",
-                              TypeNomLogiqueInfoATSCBTC.NV_PSR_RELAXATION_CONDITION):
+                                 "flag [With Relaxation] set to 'Y'",
+                                 TypeNomLogiqueInfoATSCBTC.NV_PSR_RELAXATION_CONDITION):
             success = False
     if success:
         print_log(f"No KO.")
