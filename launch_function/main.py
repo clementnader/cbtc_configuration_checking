@@ -145,7 +145,7 @@ def main():
      lower than train_travel_distance_during_transmission_delay, from the motor part of the switch (moving_part_of_the_switch_distance).
     This list can be empty if the [Switch block locking area] is empty.
     @inputs: DC_SYS and CCTool-OO Schema, and configure the 2 arguments"""
-    check_cbtc_protecting_switch_area_with_fixed_values(train_travel_distance_during_transmission_delay=35, moving_part_of_the_switch_distance=12)
+    #check_cbtc_protecting_switch_area_with_fixed_values(train_travel_distance_during_transmission_delay=35, moving_part_of_the_switch_distance=12)
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: Allow Accel Calibration at OSP ---------- #
