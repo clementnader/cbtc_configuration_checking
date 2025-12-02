@@ -30,7 +30,7 @@ SURVEY_TYPES_DICT = {
                           "func": check_switch,
                           "tol": ("switches", "switch_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
-                              "SWP", "SWITCH", "SWITCH_POINT",
+                              "SWP", "SWITCH", "SWITCH_POINT", "PRA",
                           ]),
                           "display_name": "Switches",
                           },
@@ -44,7 +44,7 @@ SURVEY_TYPES_DICT = {
                                 get_sheet_name(DCSYS.PtA)), "OSP"):
                                   ("OSPs", "osp_tolerance", 0.006)},
                           "survey_type_names": _add_other_spaces_names([
-                              "PLATFORM", "PLATFORM_END", "PLATFORM_EXTREMITY", "BOARDING_PLATFORM",
+                              "PLATFORM", "PLATFORM_END", "PLATFORM_EXTREMITY", "BOARDING_PLATFORM", "LMQ",
                           ]),
                           "multiple_dc_sys_objets": [get_sheet_name(DCSYS.Quai),
                                                      get_sheet_name(DCSYS.Quai.PointDArret),
@@ -78,7 +78,7 @@ SURVEY_TYPES_DICT = {
                           "tol": ("joints", "joint_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
                               "BLOCK", "TC", "TRACK_CIRCUIT", "TRACK_CIRCUITS_JOINT", "TRACK_CIRCUIT_JOINT",
-                              "AXC", "AXLE_COUNTER", "IJ", "INSULATED_JOINT", "AXLE_COUNTER_DP",
+                              "AXC", "AXLE_COUNTER", "IJ", "INSULATED_JOINT", "AXLE_COUNTER_DP", "JCDV"
                           ]),
                           "multiple_survey_objets": ["BLOCK",
                                                      "BUFFER",
@@ -117,12 +117,12 @@ SURVEY_TYPES_DICT = {
                           },
     "PERMANENT_RED":     {"res_sheet": None,
                           "survey_type_names": _add_other_spaces_names([
-                              "PERMANENT_RED", "BUFFER_RED_SIGNAL",
+                              "PERMANENT_RED", "BUFFER_RED_SIGNAL", "SPA",
                           ]),
                           },
     "BUFFER":            {"res_sheet": None,
                           "survey_type_names": _add_other_spaces_names([
-                              "BUFFER", "SIGNAL_BUFFER", "BS", "BUFFER_STOP", "BUFFER_STOP_SIGNAL",
+                              "BUFFER", "SIGNAL_BUFFER", "BS", "BUFFER_STOP", "BUFFER_STOP_SIGNAL", "FDV",
                           ]),
                           },
     "TAG":               {"res_sheet": "Tag",

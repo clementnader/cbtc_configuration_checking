@@ -137,9 +137,15 @@ def main():
     """Uncomment next line to verify the CBTC protecting switch area so that it contains all IVB that are at a distance
      lower than the distance travelled during oc_zc_data_freshness_threshold + ixl_cycle_time, from the motor part of
      the switch (between the switch and the fouling points). The tool uses the local max speed for the computation.
-    This list can be empty if the [switch block locking area] is empty.
+    This list can be empty if the [Switch block locking area] is empty.
     @inputs: DC_SYS, CCTool-OO Schema, Fouling Point and DC_PAR"""
     #check_cbtc_protecting_switch_area()
+
+    """Uncomment next line to verify the CBTC protecting switch area so that it contains all IVB that are at a distance
+     lower than train_travel_distance_during_transmission_delay, from the motor part of the switch (moving_part_of_the_switch_distance).
+    This list can be empty if the [Switch block locking area] is empty.
+    @inputs: DC_SYS and CCTool-OO Schema, and configure the 2 arguments"""
+    check_cbtc_protecting_switch_area_with_fixed_values(train_travel_distance_during_transmission_delay=35, moving_part_of_the_switch_distance=12)
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------- Constraints and Rules: Allow Accel Calibration at OSP ---------- #

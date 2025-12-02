@@ -22,6 +22,7 @@ class Projects:
 
     OCTYS_L3 = "OCTYS_L3"
     OCTYS_L6 = "OCTYS_L6"
+    OCTYS_L12 = "OCTYS_L12"
 
     Baltimore_MTA = "Baltimore_MTA"
     BART = "BART"
@@ -94,6 +95,7 @@ PROJECT_NAME = Projects.Panama
 # --- OCTYS --- #
 # PROJECT_NAME = Projects.OCTYS_L3
 # PROJECT_NAME = Projects.OCTYS_L6
+# PROJECT_NAME = Projects.OCTYS_L12
 
 # --- USA --- #
 # PROJECT_NAME = Projects.Baltimore_MTA
@@ -695,6 +697,20 @@ class ProjectDatabaseLocation:
                                 r"\DC_SYS_OCTYS_L6C_D405-6_0502.xls")
             self.dc_par_addr = (r"C:\CBTC\PROJECTS\OCTYS\Ligne 6\OCTYS_L6C_D405-6_0502"
                                 r"\DC_PAR_OCTYS_L6C_D405-6_0502.xls")
+
+        # ------------------------------- OCTYS_L12 -------------------------------#
+        elif project_name == Projects.OCTYS_L12:
+            self.dc_sys_addr = (r"C:\CBTC\PROJECTS\OCTYS\Ligne 12\OCTYS_L6C_D405-6_0502"
+                                r"\DC_SYS_OCTYS_L6C_D405-6_0502.xls")
+            # -- Survey -- #
+            self.survey_loc.survey_addr = r"C:\CBTC\PROJECTS\OCTYS\Ligne 12\RDDBT\L12_O_D932_1.0_Donnees_Topographiques_RATP.xlsx"
+            self.survey_loc.survey_sheet = None
+            self.survey_loc.all_sheets = True
+            self.survey_loc.start_row = 3
+            self.survey_loc.ref_col = 6
+            self.survey_loc.type_col = 3
+            self.survey_loc.track_col = 1
+            self.survey_loc.survey_kp_col = 20
 
         # --- USA --- #
 
