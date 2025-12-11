@@ -14,7 +14,7 @@ from .result_file import *
 __all__ = ["check_survey", "SURVEY_CHECKING_VERSION"]
 
 
-SURVEY_CHECKING_VERSION = "v2.9.2"
+SURVEY_CHECKING_VERSION = "v2.10"
 
 
 def check_survey():

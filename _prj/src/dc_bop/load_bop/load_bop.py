@@ -27,8 +27,8 @@ def load_dc_bop() -> dict:
         if not DATABASE_LOCATION.dc_bop_addr:
             print_error(f"DC_BOP address is not filled.")
         print_log(f"Open DC_BOP file {Color.default}\"{DATABASE_LOCATION.dc_bop_addr}\"{Color.reset}.")
-        wb = load_xlrd_wb(DATABASE_LOCATION.dc_bop_addr)
-        sw_sheet = wb.sheet_by_name(SWITCH_SHEET)
+        wb = load_xl_file(DATABASE_LOCATION.dc_bop_addr)
+        sw_sheet = get_xl_sheet_by_name(wb, SWITCH_SHEET)
         LOADED_SWITCH_DIRECTIONS = get_switch_bop(sw_sheet)
     return LOADED_SWITCH_DIRECTIONS
 
@@ -39,14 +39,16 @@ def get_switch_bop(switch_sheet: xlrd.sheet.Sheet) -> dict:
 
     bop_dict = dict()
     for row in range(START_ROW, switch_sheet.nrows + 1):
-        sw_name = get_xlrd_value(switch_sheet, row, SW_NAME_COL)
+        sw_name = get_xl_cell_value(switch_sheet, row=row, column=SW_NAME_COL)
         if sw_name:
-            reverse_equals_right = convert_sw_pos(get_xlrd_value(switch_sheet, row, REVERSE_EQUALS_RIGHT_COL))
+            reverse_equals_right = convert_sw_pos(get_xl_cell_value(switch_sheet, row=row,
+                                                                    column=REVERSE_EQUALS_RIGHT_COL))
             bop_dict[sw_name] = reverse_equals_right
 
-        sw_name2 = get_xlrd_value(switch_sheet, row, SW_NAME_2_COL)
+        sw_name2 = get_xl_cell_value(switch_sheet, row=row, column=SW_NAME_2_COL)
         if sw_name2:
-            reverse_equals_right2 = convert_sw_pos(get_xlrd_value(switch_sheet, row, REVERSE_EQUALS_RIGHT_2_COL))
+            reverse_equals_right2 = convert_sw_pos(get_xl_cell_value(switch_sheet, row=row,
+                                                                     column=REVERSE_EQUALS_RIGHT_2_COL))
             bop_dict[sw_name2] = reverse_equals_right2
     return bop_dict
 

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from ..utils import *
 from ..cctool_oo_schema import *
+from ..dc_sys import *
 from .survey_verification.check_survey_sheets import *
 
 
@@ -26,16 +28,24 @@ def _add_other_spaces_names(names_list: list[str]) -> list[str]:
 
 SURVEY_TYPES_DICT = {
     "SWP":               {"res_sheet": "Switch",
-                          "dcsys_sheet": DCSYS.Aig,
+                          "french_res_sheet": "Aig",
+                          "dc_sys_sheet": DCSYS.Aig,
                           "func": check_switch,
                           "tol": ("switches", "switch_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
                               "SWP", "SWITCH", "SWITCH_POINT", "PRA",
                           ]),
                           "display_name": "Switches",
+                          "multiple_survey_objets": ["SWP",
+                                                     "DERAILER"],
+                          },
+    "DERAILER":          {"res_sheet": None,
+                          "survey_type_names": _add_other_spaces_names([
+                              "DERAILER", "TAQ",
+                          ]),
                           },
     "PLATFORM":          {"res_sheet": "Platform",
-                          "dcsys_sheet": DCSYS.Quai,
+                          "dc_sys_sheet": DCSYS.Quai,
                           "func": check_platform,
                           "tol": {
                               ((get_sheet_name(DCSYS.Quai),), "PLATFORM"):
@@ -60,6 +70,17 @@ SURVEY_TYPES_DICT = {
                                                    (("OSP",), "OSPs")],
                           "extra_defined_name":  ("Length of the platforms:", "platform_length", None,
                                                   "Used to compute platform extremity position from middle platform."),
+                          } if get_cctool_oo_name() != "ADONF"
+                          else {  # for OCTYS, we separate the PtA in another sheet, and we don't check plt OSP
+                          "res_sheet": "Platform",
+                          "french_res_sheet": "Quai",
+                          "dc_sys_sheet": DCSYS.Quai,
+                          "func": check_platform,
+                          "tol": ("platform ends", "platform_end_tolerance", 0.006),
+                          "survey_type_names": _add_other_spaces_names([
+                              "PLATFORM", "PLATFORM_END", "PLATFORM_EXTREMITY", "BOARDING_PLATFORM", "LMQ",
+                          ]),
+                          "display_name": "Platform ends",
                           },
     "MIDDLE_PLATFORM":   {"res_sheet": None,
                           "survey_type_names": _add_other_spaces_names([
@@ -72,8 +93,18 @@ SURVEY_TYPES_DICT = {
                               "OUT_PLATFORM_OSP", "OSP_OUTP",
                           ]),
                           },
+    "PtA":               {"res_sheet": "PtA",
+                          "dc_sys_sheet": DCSYS.PtA,
+                          "func": check_garage,
+                          "tol": ("PtA", "pta_limit_tolerance", 0.006),
+                          "survey_type_names": _add_other_spaces_names([
+                              "GAR", "GARAGE",
+                          ]),
+                          "display_name": "PtA",
+                          } if get_cctool_oo_name() == "ADONF" else None,  # for OCTYS only
     "BLOCK":             {"res_sheet": "Block",
-                          "dcsys_sheet": DCSYS.CDV,
+                          "french_res_sheet": "CDV",
+                          "dc_sys_sheet": DCSYS.CDV,
                           "func": check_joint,
                           "tol": ("joints", "joint_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
@@ -86,7 +117,8 @@ SURVEY_TYPES_DICT = {
                           "display_name": "Blocks",
                           },
     "SIGNAL":            {"res_sheet": "Signal",
-                          "dcsys_sheet": DCSYS.Sig,
+                          "french_res_sheet": "Sig",
+                          "dc_sys_sheet": DCSYS.Sig,
                           "func": check_signal,
                           "tol": {
                               ((get_sheet_name(DCSYS.Sig) + f"__{SignalType.MANOEUVRE}",
@@ -100,8 +132,8 @@ SURVEY_TYPES_DICT = {
                           ]),
                           "multiple_dc_sys_objets": [get_sheet_name(DCSYS.Sig) + f"__{SignalType.MANOEUVRE}",
                                                      get_sheet_name(DCSYS.Sig) + f"__{SignalType.PERMANENT_ARRET}",
-                                                     get_sheet_name(DCSYS.Sig) + f"__{SignalType.ESPACEMENT}",
-                                                     get_sheet_name(DCSYS.Sig) + f"__{SignalType.HEURTOIR}"],
+                                                     get_sheet_name(DCSYS.Sig) + f"__{SignalType.HEURTOIR}",
+                                                     get_sheet_name(DCSYS.Sig) + f"__{SignalType.ESPACEMENT}"],
                           "multiple_survey_objets": ["SIGNAL",
                                                      "BUFFER",
                                                      "PERMANENT_RED"],
@@ -126,7 +158,7 @@ SURVEY_TYPES_DICT = {
                           ]),
                           },
     "TAG":               {"res_sheet": "Tag",
-                          "dcsys_sheet": [DCSYS.Bal, DCSYS.IATPM_tags, DCSYS.IATPM_Version_Tags],
+                          "dc_sys_sheet": [DCSYS.Bal, DCSYS.IATPM_tags, DCSYS.IATPM_Version_Tags],
                           "func": check_tag,
                           "tol": ("tags", "tag_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
@@ -143,6 +175,21 @@ SURVEY_TYPES_DICT = {
                           "display_name": "Localization and Dynamic Tags",
                           "dc_sys_display_names": [((get_sheet_name(DCSYS.Bal),), "Localization Tags"),
                                                    ((get_sheet_name(DCSYS.IATPM_tags),), "Dynamic Tags")],
+                          } if ("IATPM_tags" in get_class_attributes_dict(DCSYS)
+                                and "IATPM_Version_Tags" in get_class_attributes_dict(DCSYS)
+                                and get_cctool_oo_name() != "ADONF")
+                          else {  # for OCTYS, we only have static tags and dynamic tags sheets don't exist
+                          "res_sheet": "Tag",
+                          "french_res_sheet": "Bal",
+                          "dc_sys_sheet": DCSYS.Bal,
+                          "func": check_tag,
+                          "tol": ("tags", "tag_tolerance", 0.006),
+                          "survey_type_names": _add_other_spaces_names([
+                              "BAL", "BALISE", "TAG", "TAGS",
+                              "FIXED_BAL", "FIXED_BALISE",
+                              "FIXED_TAG", "FIXED_TAGS",
+                          ]),
+                          "display_name": "Localization Tags",
                           },
     "DYNAMIC_TAG":       {"res_sheet": None,
                           "survey_type_names": _add_other_spaces_names([
@@ -159,12 +206,33 @@ SURVEY_TYPES_DICT = {
                           ]),
                           },
     "FLOOD_GATE":        {"res_sheet": "FloodGate",
-                          "dcsys_sheet": DCSYS.Flood_Gate,
+                          "dc_sys_sheet": DCSYS.Flood_Gate,
                           "func": check_flood_gate,
                           "tol": ("flood gates", "flood_gate_tolerance", 0.006),
                           "survey_type_names": _add_other_spaces_names([
                               "FLOOD_GATE", "FLOOD_GATES",
                           ]),
                           "display_name": "Flood Gates",
-                          },
+                          } if "Flood_Gate" in get_class_attributes_dict(DCSYS)
+                            else None,
+    "ZVR":               {"res_sheet": "ZVR",
+                          "dc_sys_sheet": DCSYS.ZVR,
+                          "func": check_zvr,
+                          "tol": ("ZVR", "zvr_limit_tolerance", 0.006),
+                          "survey_type_names": _add_other_spaces_names([
+                              "ZVR",
+                          ]),
+                          "display_name": "ZVR",
+                          } if "ZVR" in get_class_attributes_dict(DCSYS)
+                               and get_cctool_oo_name() == "ADONF" else None,  # for OCTYS only
+    "SS":                {"res_sheet": "SS",
+                          "dc_sys_sheet": DCSYS.SS,
+                          "func": check_sse,
+                          "tol": ("SS", "sse_limit_tolerance", 0.006),
+                          "survey_type_names": _add_other_spaces_names([
+                              "SS", "LSS", "SSE",
+                          ]),
+                          "display_name": "SS",
+                          } if "SS" in get_class_attributes_dict(DCSYS)
+                               and get_cctool_oo_name() == "ADONF" else None,  # for OCTYS only
 }

@@ -68,10 +68,10 @@ def _manage_two_end_of_track_limits(end_of_track_suffix: str, tc1: str, tc2: Opt
     other_joints_info = [((other_tc1, other_tc2, other_joint_track),
                           ((other_original_dc_sys_track, other_dc_sys_kp), other_block_def_limit_name))
                          for (other_tc1, other_tc2, other_joint_track),
-                         ((other_original_dc_sys_track, other_dc_sys_kp), other_block_def_limit_name)
-                         in joints_dict.items()
+                            ((other_original_dc_sys_track, other_dc_sys_kp), other_block_def_limit_name)
+                                in joints_dict.items()
                          if (other_tc1, other_tc2) == (tc1, tc2) and other_joint_track != joint_track
-                         and other_original_dc_sys_track == original_dc_sys_track]
+                            and other_original_dc_sys_track == original_dc_sys_track]
 
     if len(other_joints_info) != 1:
         print_error(f"Weird Construction for joint {(tc1, tc2)} on track {original_dc_sys_track}.")
@@ -80,24 +80,3 @@ def _manage_two_end_of_track_limits(end_of_track_suffix: str, tc1: str, tc2: Opt
     other_joint_info = other_joints_info[0]
     (_, (other_limit_position, _)) = other_joint_info
     return other_limit_position
-
-
-def get_display_name(object_name: str, tc1: str, tc2: Optional[str], track: str,
-                     joints_dict: dict[tuple[str, Optional[str], str], tuple[tuple[str, float], str]]) -> str:
-    if tc2 is not None:
-        same_name_joints = [(block1, block2) for (block1, block2, _) in joints_dict
-                            if (block1, block2) == (tc1, tc2)]
-        if len(same_name_joints) < 2:
-            return object_name
-        # There are multiple joints with this name, we precise in the name the track to get the unicity
-        return object_name + f"__on_{track}"
-
-    else:  # tc2 is None
-        same_name_joints = [(block1, block2) for (block1, block2, _) in joints_dict
-                            if (block1, block2) == (tc1, tc2)]
-        if len(same_name_joints) < 2:
-            return object_name
-        if not object_name.endswith("__end_of_track"):
-            return object_name
-        # There are multiple joints with this name, we precise in the name the track to get the unicity
-        return object_name.removesuffix("_track") + f"_{track}"  # joint is already called __end_of_track

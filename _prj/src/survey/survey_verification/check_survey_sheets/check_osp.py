@@ -3,7 +3,7 @@
 
 from ....cctool_oo_schema import *
 from ....dc_sys import *
-from ...survey_utils import clean_track_name
+from ...survey_utils import clean_track_name, clean_object_name
 from .common_utils import *
 
 
@@ -15,6 +15,8 @@ def check_osp(dc_sys_sheets, res_sheet_name: str, survey_info: dict[str, dict[st
               set_of_survey_tracks: set[str]):
     assert dc_sys_sheets == [DCSYS.Quai.PointDArret, DCSYS.PtA]
     assert res_sheet_name == "Platform"
+    if "Name" not in get_class_attributes_dict(DCSYS.Quai.PointDArret):
+        return dict()
 
     dc_sys_dict = get_plt_osp_dict()
     dc_sys_dict.update(get_not_plt_osp_dict())
@@ -39,6 +41,7 @@ def check_osp(dc_sys_sheets, res_sheet_name: str, survey_info: dict[str, dict[st
 
 
 def _get_osp_test_names(object_name: str) -> list[str]:
+    object_name = clean_object_name(object_name)
     test_names = [object_name]
     if object_name.startswith("PT_ARRET_"):
         test_names.append("PLATFORM_" + object_name.removeprefix("PT_ARRET_"))

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .....utils import *
 from .....cctool_oo_schema import *
 from .....dc_sys import *
+from .joints_utils import *
 
 
 __all__ = ["get_joints_dict"]
@@ -14,7 +14,9 @@ def get_joints_dict(block_def_dict: Optional[dict[str, dict[tuple[str, float], s
     joints_dict = dict()
     block_dict = load_sheet(DCSYS.CDV)
     for block_name, block_value in block_dict.items():
-        matching_blocks = _find_associated_blocks(block_name, block_value)
+
+        matching_blocks = find_associated_blocks(block_name, block_value, DCSYS.CDV,
+                                                 DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk)
         for limit_position, matching_block_name in matching_blocks.items():
             if block_def_dict is not None and block_name in block_def_dict:
                 block_def_limit_name = block_def_dict[block_name].get(limit_position)
@@ -45,84 +47,3 @@ def get_joints_dict(block_def_dict: Optional[dict[str, dict[tuple[str, float], s
                                                                                      block_def_limit_name)
 
     return joints_dict
-
-
-def _find_associated_blocks(ref_block_name: str, ref_block_value: dict) -> dict[tuple[str, float], Optional[str]]:
-    block_dict = load_sheet(DCSYS.CDV)
-    ref_limits = list(get_dc_sys_zip_values(ref_block_value, DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk))
-    matching_blocks = {ref_limit: None for ref_limit in ref_limits}
-    for block_name, block_value in block_dict.items():
-        if block_name == ref_block_name:
-            continue
-        limits = list(get_dc_sys_zip_values(block_value, DCSYS.CDV.Extremite.Voie, DCSYS.CDV.Extremite.Pk))
-        list_matching_limits = _matching_limits(ref_limits, limits)
-        for matching_lim in list_matching_limits:
-            if matching_blocks[matching_lim] is not None:
-                print_error(f"Limit {matching_lim} of block {ref_block_name} is matching with two different blocks:\n"
-                            f"{matching_blocks[matching_lim]} and {block_name}.")
-            matching_blocks[matching_lim] = block_name
-    return matching_blocks
-
-
-def _matching_limits(ref_limits: list[tuple[str, float]], limits: list[tuple[str, float]]) -> list[tuple[str, float]]:
-    list_matching_limits = list()
-    for track1, kp1 in ref_limits:
-        for track2, kp2 in limits:
-            if track1 == track2 and kp1 == kp2:
-                list_matching_limits.append((track1, kp1))
-    return list_matching_limits
-
-
-def _get_missing_limits_per_track(missing_limits: list[tuple[str, float]]) -> dict[str, list[float]]:
-    missing_limits_dict_per_track = dict()
-    for missing_lim_track, missing_lim_kp in missing_limits:
-        if missing_lim_track not in missing_limits_dict_per_track:
-            missing_limits_dict_per_track[missing_lim_track] = list()
-        missing_limits_dict_per_track[missing_lim_track].append(missing_lim_kp)
-    return missing_limits_dict_per_track
-
-
-# def _sorted_block_dict() -> dict[str, dict]:
-#     def _split_name(block_name: str) -> tuple[Union[str, int], ...]:
-#         """ Split block name into a tuple to separate the numeric and the alphabetic words. """
-#         if all(not c.isnumeric() for c in block_name):  # no number if the track name
-#             return int(1E9), block_name.lower()
-#         list_num = list()
-#         list_other = list()
-#         pos = 0
-#         char_type = "num" if block_name[pos].isnumeric() else "other"
-#         first_type = char_type
-#         current_word = block_name[pos]
-#         while pos < len(block_name) - 1:
-#             pos += 1
-#             new_char_type = "num" if block_name[pos].isnumeric() else "other"
-#             if new_char_type == char_type:
-#                 current_word += block_name[pos]
-#             else:
-#                 if char_type == "num":
-#                     current_word = int(current_word)
-#                     list_num.append(current_word)
-#                 else:
-#                     current_word = current_word.lower()
-#                     list_other.append(current_word)
-#                 current_word = block_name[pos]
-#             char_type = new_char_type
-#
-#         if char_type == "num":
-#             current_word = int(current_word)
-#             list_num.append(current_word)
-#             if first_type == char_type:
-#                 list_other.append("")  # add an element so that both lists have the same length
-#         else:
-#             current_word = current_word.lower()
-#             list_other.append(current_word)
-#             if first_type == char_type:
-#                 list_num.append(int(1E9))  # add an element so that both lists have the same length
-#         list_words = list()
-#         for num, other in zip(list_num, list_other):
-#             list_words.append(num)
-#             list_words.append(other)
-#         return tuple(list_words)
-#
-#     block_dict = load_sheet(DCSYS.CDV)
-#     return {block_name: block_dict[block_name] for block_name in sorted(block_dict, key=_split_name)}

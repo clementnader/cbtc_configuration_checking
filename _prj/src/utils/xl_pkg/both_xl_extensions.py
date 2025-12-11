@@ -8,16 +8,16 @@ from .xl_utils import *
 
 
 __all__ = ["load_xl_file", "get_xl_sheet_by_name", "get_xl_number_of_rows", "get_xl_number_of_columns",
-           "is_xl_sheet_visible",
+           "is_xl_sheet_visible", "get_xl_sheet_name",
            "get_xl_sheet_names", "get_xl_cell_value", "get_xl_float_value", "get_xl_cell_style",
            "check_xl_cell_style_percent", "get_xl_sheet_names_preload"]
 
 
-def load_xl_file(xl_file_address: str, preload: bool = False
+def load_xl_file(xl_file_address: str, preload: bool = False, formatting_info: bool = False
                  ) -> Optional[Union[xlrd.book.Book, openpyxl.workbook.Workbook]]:
     ext = os.path.splitext(xl_file_address)[1]
     if ext == ".xls":
-        wb = load_xlrd_wb(xl_file_address, on_demand=preload)
+        wb = load_xlrd_wb(xl_file_address, on_demand=preload, formatting_info=formatting_info)
         return wb
     elif ext == ".xlsx" or ext == ".xlsm":
         wb = load_xlsx_wb(xl_file_address, read_only=preload)
@@ -63,6 +63,13 @@ def is_xl_sheet_visible(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> bool:
         # SHEETSTATE_HIDDEN = 'hidden'
         # SHEETSTATE_VERYHIDDEN = 'veryHidden'
         return ws.sheet_state == xl_ws.Worksheet.SHEETSTATE_VISIBLE
+
+
+def get_xl_sheet_name(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> str:
+    if isinstance(ws, xlrd.sheet.Sheet):
+        return ws.name
+    elif isinstance(ws, xl_ws.Worksheet):
+        return ws.title
 
 
 def get_xl_number_of_rows(ws: Union[xlrd.sheet.Sheet, xl_ws.Worksheet]) -> int:

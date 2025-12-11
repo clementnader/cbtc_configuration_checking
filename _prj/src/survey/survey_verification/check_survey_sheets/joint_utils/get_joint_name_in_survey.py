@@ -3,6 +3,7 @@
 
 import re
 from .....utils import *
+from ....survey_utils import clean_object_name
 from ..common_utils import *
 from .joint_names_utils import *
 
@@ -80,7 +81,7 @@ def _try_to_find_name_in_survey(object_name: str, list_test_names: list[str], tr
                                 second_try: bool = False, third_try: bool = False, fourth_try: bool = False
                                 ) -> Union[None, str, list[str]]:
     for test_name in list_test_names:
-        test_name = test_name.upper()
+        test_name = clean_object_name(test_name)
         if second_try:
             test_name = _remove_leading_zeros_and_trailing_letters(test_name)
         elif third_try:
@@ -127,7 +128,9 @@ def _get_list_of_joint_test_names_multiple_prefixes(tc1: str, tc2: Optional[str]
     other_prefix_list_2 = ["TC_JOINT_" + name.removeprefix("JOI_") for name in list_test_names if name is not None]
     # In some surveys, joint prefix is "AXC_" instead of "JOI_"
     other_prefix_list_3 = ["AXC_" + name.removeprefix("JOI_") for name in list_test_names if name is not None]
-    return list_test_names + other_prefix_list + other_prefix_list_2 + other_prefix_list_3
+    # In some surveys, there is no joint prefix
+    other_prefix_list_4 = [name.removeprefix("JOI_") for name in list_test_names if name is not None]
+    return list_test_names + other_prefix_list + other_prefix_list_2 + other_prefix_list_3 + other_prefix_list_4
 
 
 def _remove_leading_zeros_and_trailing_letters(test_name: str) -> Optional[str]:

@@ -4,7 +4,7 @@
 from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys_sheet_utils.switch_utils import get_dc_sys_switch_points_dict
-from ...survey_utils import clean_track_name
+from ...survey_utils import clean_track_name, clean_object_name
 from .common_utils import *
 
 
@@ -13,11 +13,12 @@ __all__ = ["check_switch"]
 
 # Switch
 def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
-                 set_of_survey_tracks: set[str]):
+                 set_of_survey_tracks: set[str], derailer_survey_info: dict):
     assert dc_sys_sheet == DCSYS.Aig
     assert res_sheet_name == "Switch"
 
     dc_sys_dict = get_dc_sys_switch_points_dict()
+    survey_info.update(derailer_survey_info)
     list_used_object_names = list()
     res_dict = dict()
     for object_name, object_value in dc_sys_dict.items():
@@ -48,6 +49,7 @@ def check_switch(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
 
 
 def _get_test_names(object_name: str) -> tuple[list[str], str]:
+    object_name = clean_object_name(object_name)
     test_names = [object_name]
     if object_name.endswith("_L"):
         # The left heel name in the survey uses sometimes the French "gauche" instead of left heel

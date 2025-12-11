@@ -116,7 +116,7 @@ def route_and_overlap():
 
 
 def survey():
-    # check_survey()  # v2.9.2
+    # check_survey()  # v2.10
     # survey_window()
     # cctool_oo_schema_window()
     return
@@ -133,8 +133,7 @@ def foundation_data_constraints():
 
     # --- Verify CBTC Protecting Switch Area definition --- #
     # check_cbtc_protecting_switch_area()
-    # check_cbtc_protecting_switch_area_with_fixed_values(train_travel_distance_during_transmission_delay=35,
-    #                                                     moving_part_of_the_switch_distance=12)
+    # check_cbtc_protecting_switch_area_with_fixed_values(train_travel_distance_during_transmission_delay=35, moving_part_of_the_switch_distance=12)
 
     # --- Verify Sieving Limits definition --- #
     # check_sieving_limit_definition()

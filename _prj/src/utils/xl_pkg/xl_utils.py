@@ -11,18 +11,17 @@ from ..common_utils import *
 from ..colors_pkg import *
 
 
-__all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws", "load_xlsx_wb", "load_xlrd_wb", "get_xlrd_column", "get_xlrd_row",
-           "get_xl_column_letter", "get_xl_column_number", "get_xlrd_float_value", "get_xlrd_value", "get_xlsx_value",
+__all__ = ["openpyxl", "xlrd", "xl_ut", "xl_ws",
+           "load_xlsx_wb", "load_xlrd_wb", "get_xlrd_column", "get_xlrd_row",
+           "get_xl_column_letter", "get_xl_column_number",
+           "get_xlrd_value", "get_xlsx_value",
            "get_row_and_column_from_cell", "get_cell_from_row_and_column",
            "get_xl_max_row", "get_xl_max_column", "get_cell_range",
            "get_xl_column_from_number_or_letter"]
 
 
 def load_xlsx_wb(xl_file_address: str, template: bool = False, read_only: bool = False) -> openpyxl.workbook.Workbook:
-    warnings.filterwarnings("ignore", message="Cannot parse header or footer so it will be ignored",
-                            category=UserWarning, module="openpyxl")  # deactivate the warning for header/footer
-    warnings.filterwarnings("ignore", message="Data Validation extension is not supported and will be removed",
-                            category=UserWarning, module="openpyxl")  # deactivate the warning for extension
+    warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")  # deactivate the warnings
     if template:
         # It seems that rich_text argument is causing some issues on the saving depending on openpyxl version.
         # wb = openpyxl.load_workbook(xl_file_address, rich_text=True)
@@ -85,16 +84,6 @@ def get_xl_column_number(column_letter: str) -> int:
     return xl_ut.column_index_from_string(column_letter)
 
 
-def get_xlrd_float_value(ws: xlrd.sheet.Sheet, row: int, column: int) -> Optional[Union[float, str]]:
-    value = get_xlrd_value(ws, row, column)
-    if isinstance(value, str):
-        try:
-            value = float(value.replace(",", "."))
-        except ValueError:
-            pass
-    return value
-
-
 def get_xlrd_value(ws: xlrd.sheet.Sheet, row: int, column: int) -> Optional[str]:
     xlrd_row = get_xlrd_row(row)
     xlrd_col = get_xlrd_column(column)
@@ -107,7 +96,7 @@ def get_xlrd_value(ws: xlrd.sheet.Sheet, row: int, column: int) -> Optional[str]
     return cell_value
 
 
-def get_xlsx_value(ws, row: int, column: int) -> Optional[str]:
+def get_xlsx_value(ws: xl_ws.Worksheet, row: int, column: int) -> Optional[str]:
     cell_value = ws.cell(row=row, column=column).value
     if cell_value == "":
         cell_value = None

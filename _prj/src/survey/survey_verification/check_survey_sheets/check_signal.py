@@ -4,7 +4,7 @@
 from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
-from ...survey_utils import clean_track_name
+from ...survey_utils import clean_track_name, clean_object_name
 from .common_utils import *
 
 
@@ -58,6 +58,7 @@ def check_signal(dc_sys_sheet, res_sheet_name: str, survey_info: dict[str, dict[
 def _get_test_names(object_name: str, dc_sys_track: str, dc_sys_dict: dict[str, dict[str, Any]],
                     is_home_sig: bool, is_permanently_red_sig: bool, is_buffer: bool,
                     survey_info: dict[str, dict[str, Union[str, float]]]):
+    object_name = clean_object_name(object_name)
     test_names = [object_name]
     # Permanently Red Signals
     if is_permanently_red_sig:

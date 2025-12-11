@@ -5,7 +5,7 @@ import re
 from ..utils import *
 
 
-__all__ = ["check_polarity", "clean_track_name"]
+__all__ = ["check_polarity", "clean_object_name", "clean_track_name"]
 
 
 def check_polarity(dc_sys_kp: Optional[float], surveyed_kp: Optional[float]) -> bool:
@@ -18,8 +18,16 @@ def check_polarity(dc_sys_kp: Optional[float], surveyed_kp: Optional[float]) -> 
     return True
 
 
+def clean_object_name(original_object_name: str) -> str:
+    object_name = original_object_name.strip().upper()
+    object_name = "".join(object_name.split())  # remove all spaces
+    object_name = object_name.replace("-", "_").replace("+", "_").replace(".", "_")
+    object_name = object_name.replace("*", "_").replace("/", "_")
+    return object_name
+
+
 def clean_track_name(original_track: str, set_to_test: set[str]):
-    test_track_name = original_track.upper()
+    test_track_name = original_track.strip().upper().replace("-", "_")
     if test_track_name in set_to_test:
         return test_track_name
 

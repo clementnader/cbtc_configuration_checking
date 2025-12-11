@@ -4,7 +4,7 @@
 from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
-from ...survey_utils import clean_track_name
+from ...survey_utils import clean_track_name, clean_object_name
 from .common_utils import *
 
 
@@ -59,15 +59,17 @@ def _get_fg_limits(fg_value: dict) -> list[tuple[str, float]]:
 
 
 def _get_survey_limits_on_track(fg_name: str, test_track: str, survey_info: dict[str, Any]) -> list[str]:
-    clean_fg_name = fg_name.upper().removeprefix("FLOODGATE_").removeprefix("FLOOD_GATE_").removeprefix("FG_")
+    clean_fg_name = (clean_object_name(fg_name)
+                     .removeprefix("FLOODGATE_").removeprefix("FLOOD_GATE_").removeprefix("FG_"))
     list_survey_limits = list()
     for survey_name in survey_info:
         survey_fg_lim_name, survey_track = survey_name.split("__", 1)
+        if survey_track.upper() != test_track:
+            continue
         survey_fg_name = _clean_flood_gate_extremity_name(survey_fg_lim_name)
         survey_fg_name = survey_fg_name.removeprefix("FLOODGATE_").removeprefix("FLOOD_GATE_").removeprefix("FG_")
-        if survey_track.upper() == test_track:
-            if survey_fg_name == clean_fg_name:
-                list_survey_limits.append(survey_name)
+        if survey_fg_name == clean_fg_name:
+            list_survey_limits.append(survey_name)
     return list_survey_limits
 
 

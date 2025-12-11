@@ -5,6 +5,7 @@ import os
 from ...utils import *
 from ...database_location import *
 from ..survey_types import *
+from ..survey_utils import clean_object_name
 from .track_survey_utils import *
 
 
@@ -17,12 +18,12 @@ def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str], list
     survey_loc_info = list(get_survey_loc_info())
     display_info_list = _get_survey_files_display_info(survey_loc_info)
     if not display_info_list:
+        print(f"{Color.white}No survey loaded.{Color.reset}")
         survey_info = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
         return survey_info, display_info_list, global_missing_types
     nb_of_survey = len(display_info_list)
     for i, (survey_addr, survey_sheet, all_sheets, start_row,
             ref_col, type_col, track_col, survey_kp_col) in enumerate(survey_loc_info, start=1):
-        missing_types = list()
         if all_sheets:
             print(f"\n {i}/{nb_of_survey} - "
                   f"{Color.white}{Color.underline}Loading {Color.blue}all sheets{Color.white} of "
@@ -46,16 +47,19 @@ def load_survey() -> tuple[dict[str, dict[str, dict[str, Any]]], list[str], list
             survey_ws = get_xl_sheet_by_name(wb, sheet_name)
             if all_sheets:
                 print_log(f"\t\tLoading info from sheet \"{sheet_name}\".")
-            survey_info.update(
-                get_survey(survey_info, survey_ws, sheet_name, start_row, ref_col, type_col, track_col, survey_kp_col,
-                           os.path.split(survey_addr)[-1], missing_types))
-        if missing_types:
-            print(f"\t> The following type{'s' if len(missing_types) > 1 else ''} in the survey "
-                  f"{'are' if len(missing_types) > 1 else 'is'} not loaded: "
-                  f"{Color.yellow}{', '.join(missing_types)}{Color.reset}.")
-            global_missing_types.extend([survey_type for survey_type in missing_types
-                                         if survey_type not in global_missing_types])
+            sub_survey_info, missing_types = get_survey(survey_info, survey_ws, sheet_name, start_row, ref_col,
+                                                        type_col, track_col, survey_kp_col,
+                                                        os.path.split(survey_addr)[-1])
+            survey_info.update(sub_survey_info)
+            if missing_types:
+                missing_types.sort()
+                print(f"\t> The following type{'s' if len(missing_types) > 1 else ''} in the survey "
+                      f"{'are' if len(missing_types) > 1 else 'is'} not loaded: "
+                      f"{Color.yellow}{', '.join(missing_types)}{Color.reset}.")
+                global_missing_types.extend([survey_type for survey_type in missing_types
+                                             if survey_type not in global_missing_types])
 
+    global_missing_types.sort()
     return survey_info, display_info_list, global_missing_types
 
 
@@ -91,26 +95,26 @@ def get_survey_loc_info():
 
 
 def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, sheet_name: str, start_row,
-               ref_col, type_col, track_col, survey_kp_col,
-               survey_name: str, missing_types: list[str]) -> dict[str, dict[str, Any]]:
+               ref_col, type_col, track_col, survey_kp_col, survey_name: str
+               ) -> tuple[dict[str, dict[str, Any]], list[str]]:
     intermediate_survey_dict = {type_name: dict() for type_name in SURVEY_TYPES_DICT}
+    missing_types = list()
 
     for row in range(start_row, get_xl_number_of_rows(survey_ws) + 1):
         object_name = get_xl_cell_value(survey_ws, row=row, column=ref_col)
         if not object_name:
             continue
-        key_name = object_name.upper()
-        key_name = key_name.replace("-", "_")
-        key_name = "".join(key_name.split())  # remove all spaces
+        key_name = clean_object_name(object_name)
 
         type_name = get_xl_cell_value(survey_ws, row=row, column=type_col)
-        survey_type = _get_survey_type(type_name, missing_types)
+        survey_type, missing_type = _get_survey_type(type_name)
+        if missing_type is not None and missing_type not in missing_types:
+            missing_types.append(missing_type)
         if survey_type is None:
             continue
 
         original_track = get_xl_cell_value(survey_ws, row=row, column=track_col)
-        track = original_track.strip().upper().replace("-", "_")
-        track = find_corresponding_dc_sys_track(track)
+        track = find_corresponding_dc_sys_track(original_track)
 
         surveyed_kp = get_xl_float_value(survey_ws, row=row, column=survey_kp_col)
         if surveyed_kp is None:
@@ -156,7 +160,7 @@ def get_survey(loaded_survey: dict[str, dict[str, Any]], survey_ws, sheet_name: 
 
     loaded_survey = _update_survey_dictionary(loaded_survey, intermediate_survey_dict)
 
-    return loaded_survey
+    return loaded_survey, missing_types
 
 
 def _update_survey_dictionary(loaded_survey: dict[str, dict[str, Any]],
@@ -195,13 +199,13 @@ def _update_survey_dictionary(loaded_survey: dict[str, dict[str, Any]],
     return loaded_survey
 
 
-def _get_survey_type(name: Optional[str], missing_types: list[str]):
+def _get_survey_type(name: Optional[str]):
     if name is None:
-        return None
+        return None, None
     test_name = name.strip().upper()
     for type_name, type_info in SURVEY_TYPES_DICT.items():
+        if type_info is None:
+            continue
         if test_name in type_info["survey_type_names"]:
-            return type_name
-    if name not in missing_types:
-        missing_types.append(name)
-    return None
+            return type_name, None
+    return None, name

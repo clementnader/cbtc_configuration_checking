@@ -16,14 +16,14 @@ def get_sheet_dict(ws: xlrd.sheet.Sheet, columns_dict: dict[str, Any],
     sheet_dict = dict()
     if generic_object_name is not None:
         return _get_generic_sheet_dict(ws, columns_dict, generic_object_name)
-    for row in range(START_ROW, ws.nrows + 1):
-        object_name = get_xlrd_value(ws, row, DEFAULT_NAME_COLUMN)
+    for row in range(START_ROW, get_xl_number_of_rows(ws) + 1):
+        object_name = get_xl_cell_value(ws, row=row, column=DEFAULT_NAME_COLUMN)
         if object_name is None:
             continue
         if object_name in sheet_dict:
             print_error(f"Two objects have the same name {Color.beige}{object_name}{Color.reset} at {Color.orange}rows "
                         f"{sheet_dict[object_name]['ws_row']} and {row}{Color.reset} "
-                        f"in sheet {Color.blue}{ws.name}{Color.reset}.")
+                        f"in sheet {Color.blue}{get_xl_sheet_name(ws)}{Color.reset}.")
             continue  # keep the first value
         sheet_dict[object_name] = get_info_for_object(ws, row, columns_dict)
     return sheet_dict
@@ -33,14 +33,14 @@ def _get_generic_sheet_dict(ws: xlrd.sheet.Sheet, columns_dict: dict[str, Any],
                             generic_object_name: dict[str, Any]) -> dict[str, dict[str, Any]]:
     temp_dict = dict()
     columns: list = generic_object_name["columns"]
-    for row in range(START_ROW, ws.nrows + 1):
-        object_name = get_xlrd_value(ws, row, DEFAULT_NAME_COLUMN)
+    for row in range(START_ROW, get_xl_number_of_rows(ws) + 1):
+        object_name = get_xl_cell_value(ws, row=row, column=DEFAULT_NAME_COLUMN)
         if object_name is not None:
             info_for_object = get_info_for_object(ws, row, columns_dict)
             key = _get_generic_sheet_object_key(columns, info_for_object)
             temp_dict[key] = info_for_object
     # temp_dict = {key: temp_dict[key] for key in sorted(temp_dict.keys())}
-    sheet_dict = {f"{ws.name}_row{val['ws_row']}": val for val in temp_dict.values()}
+    sheet_dict = {f"{get_xl_sheet_name(ws)}_row{val['ws_row']}": val for val in temp_dict.values()}
     return sheet_dict
 
 
@@ -68,8 +68,8 @@ def get_info_for_object(ws: xlrd.sheet.Sheet, row: int, columns_dict: dict[str, 
     info_dict["ws_row"] = row
     for key, column in columns_dict.items():
         if isinstance(column, int):
-            value = get_xlrd_float_value(ws, row, column)
-            check_value_has_spaces(ws.name, value, row, column, key)
+            value = get_xl_float_value(ws, row=row, column=column)
+            check_value_has_spaces(get_xl_sheet_name(ws), value, row, column, key)
             if isinstance(value, str):
                 value = value.strip()
             info_dict[key] = value
@@ -83,8 +83,8 @@ def _get_sub_attribute_list_info(ws: xlrd.sheet.Sheet, row: int, sub_dict: dict[
     for key, columns in sub_dict.items():
         info_sub_dict[key] = list()
         for column in columns:
-            value = get_xlrd_float_value(ws, row, column)
-            check_value_has_spaces(ws.name, value, row, column, key)
+            value = get_xl_float_value(ws, row=row, column=column)
+            check_value_has_spaces(get_xl_sheet_name(ws), value, row, column, key)
             if isinstance(value, str):
                 value = value.strip()
             info_sub_dict[key].append(value)

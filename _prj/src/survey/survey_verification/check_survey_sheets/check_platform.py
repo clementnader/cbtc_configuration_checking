@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import re
-from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
-from ...survey_utils import clean_track_name
+from ...survey_utils import clean_track_name, clean_object_name
 from .common_utils import *
 from .check_osp import *
 
@@ -65,20 +64,22 @@ def check_platform(dc_sys_sheet, res_sheet_name: str, plt_survey_info: dict,
 
 
 def _clean_platform_extremity_name(plt_lim_name: str) -> str:
-    plt_lim_name = plt_lim_name.upper()
+    plt_lim_name = clean_object_name(plt_lim_name)
     plt_lim_name = plt_lim_name.removeprefix("KP_")
     plt_name = plt_lim_name.removeprefix("LEFT_END_").removeprefix("RIGHT_END_")
     plt_name = plt_name.removeprefix("PLATFORM_BEGIN_").removeprefix("PLATFORM_START_").removeprefix("PLATFORM_END_")
     plt_name = plt_name.removeprefix("BEGIN_").removeprefix("START_").removeprefix("END_")
     plt_name = plt_name.removeprefix("PLATFORM1_").removeprefix("PLATFORM2_")
     plt_name = plt_name.removeprefix("QUAI1_").removeprefix("QUAI2_")
+    plt_name = plt_name.removeprefix("LMQ_")
     plt_name = plt_name.removesuffix("_BEGIN").removesuffix("_START").removesuffix("_END")
     plt_name = plt_name.removesuffix("_1").removesuffix("_2")
+    plt_name = plt_name.removesuffix("_PAIR").removesuffix("_IMPAIR")
     return plt_name
 
 
 def _clean_platform_middle_name(plt_mid_name: str, is_mid_plt_survey_info: bool) -> Optional[str]:
-    plt_mid_name = plt_mid_name.upper()
+    plt_mid_name = clean_object_name(plt_mid_name)
     plt_mid_name = plt_mid_name.removeprefix("KP_")
     if (not is_mid_plt_survey_info  # if type is already Middle Platform, we don't do this check
             and not (plt_mid_name.startswith("MIDDLE_") or plt_mid_name.startswith("MID_")
@@ -118,14 +119,14 @@ def _get_unique_prefix_plt_names_dict() -> dict[str, dict[str, str]]:
     return UNIQUE_PREFIX_PLT_NAMES_DICT
 
 
-def _get_survey_limits_on_track(plt_name: str, track: str, dc_sys_track: str, plt_survey_info: dict[str, Any],
+def _get_survey_limits_on_track(plt_name: str, test_track: str, dc_sys_track: str, plt_survey_info: dict[str, Any],
                                 test_with_mid_plt: bool = False, is_mid_plt_survey_info: bool = False) -> list[str]:
-    clean_plt_name = plt_name.upper().removeprefix("PLATFORM_").removeprefix("PLT_")
+    clean_plt_name = clean_object_name(plt_name).removeprefix("PLATFORM_").removeprefix("PLT_")
     # Get survey platform names from the platform extremity (or middle platform) and remove the PLATFORM prefix
     list_survey_plt_names = list()
     for survey_name in plt_survey_info:
         survey_plt_lim_name, survey_track = survey_name.split("__", 1)
-        if survey_track.upper() != track:
+        if survey_track.upper() != test_track:
             continue
         if test_with_mid_plt:
             survey_plt_name = _clean_platform_middle_name(survey_plt_lim_name, is_mid_plt_survey_info)

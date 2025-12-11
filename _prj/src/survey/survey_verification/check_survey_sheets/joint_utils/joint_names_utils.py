@@ -3,6 +3,7 @@
 
 from .....utils import *
 from .....cctool_oo_schema import *
+from ....survey_utils import clean_object_name
 from .get_other_block_joint import *
 
 

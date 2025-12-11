@@ -47,7 +47,7 @@ def update_header_sheet_for_verif_file(wb: openpyxl.workbook.Workbook, title: st
 def _add_title_cells(ws: xl_ws.Worksheet, title: str) -> int:
     print_log(f"Setting title to {Color.default}\"{title}\"{Color.reset}.")
     create_merged_cell(ws, title, cell_range=TITLE_CELL_RANGE,
-                       borders=True, bold=True, font_size=20, align_horizontal=XlAlign.center)
+                       borders=True, bold=True, font_size=20, align_horizontal=XlAlign.center, line_wrap=True)
     row, _ = get_row_and_column_from_cell(TITLE_CELL_RANGE.split(":")[1])
     row += 1
     return row
@@ -92,21 +92,21 @@ def _add_info_cells(ws: xl_ws.Worksheet, row: int,
         row += 1
         create_cell(ws, "C_D470:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
         print_log(f"Setting C_D470 to {Color.default}\"{c_d470}\"{Color.reset}.")
-        create_cell(ws, c_d470, row=row, column=INFO_COLUMN, borders=True)
+        create_cell(ws, c_d470, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # C11_D470
     if c11_d470 is not None:
         row += 1
         create_cell(ws, "C11_D470:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
         print_log(f"Setting C11_D470 to {Color.default}\"{c11_d470}\"{Color.reset}.")
-        create_cell(ws, c11_d470, row=row, column=INFO_COLUMN, borders=True)
+        create_cell(ws, c11_d470, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # C121_D470
     if c121_d470 is not None:
         row += 1
         create_cell(ws, "C121_D470:", row=row, column=INFO_NAME_COLUMN, borders=True, bold=True)
         print_log(f"Setting C121_D470 to {Color.default}\"{c121_d470}\"{Color.reset}.")
-        create_cell(ws, c121_d470, row=row, column=INFO_COLUMN, borders=True)
+        create_cell(ws, c121_d470, row=row, column=INFO_COLUMN, borders=True, line_wrap=True)
 
     # Survey file(s)
     if survey is not None:

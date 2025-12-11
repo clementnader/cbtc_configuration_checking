@@ -4,7 +4,7 @@
 from ....utils import *
 from ....cctool_oo_schema import *
 from ....dc_sys import *
-from ...survey_utils import clean_track_name
+from ...survey_utils import clean_track_name, clean_object_name
 from .common_utils import *
 
 
@@ -15,21 +15,26 @@ __all__ = ["check_tag"]
 def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dict[str, float]],
               set_of_survey_tracks: set[str], dyn_tag_survey_info: dict[str, dict[str, float]],
               version_tag_survey_info: dict[str, dict[str, float]]):
-    assert dc_sys_sheets == [DCSYS.Bal, DCSYS.IATPM_tags, DCSYS.IATPM_Version_Tags]
+    assert dc_sys_sheets == DCSYS.Bal or dc_sys_sheets == [DCSYS.Bal, DCSYS.IATPM_tags, DCSYS.IATPM_Version_Tags]
     assert res_sheet_name == "Tag"
 
-    dc_sys_dict = get_tags_dict(dc_sys_sheets)
-    tag_survey_info.update(dyn_tag_survey_info)
-    tag_survey_info.update(version_tag_survey_info)
+    if dc_sys_sheets == DCSYS.Bal:
+        dc_sys_dict = get_tags_dict([DCSYS.Bal])
+    else:
+        dc_sys_dict = get_tags_dict(dc_sys_sheets)
+        tag_survey_info.update(dyn_tag_survey_info)
+        tag_survey_info.update(version_tag_survey_info)
     list_used_object_names = list()
     res_dict = dict()
-    for object_name, object_value in dc_sys_dict.items():
+    for original_object_name, object_value in dc_sys_dict.items():
         dc_sys_sheet = object_value["dc_sys_sheet"]
         other_name = object_value["other_name"]
         original_dc_sys_track = object_value["track"]
         dc_sys_kp = object_value["kp"]
         dc_sys_track = clean_track_name(original_dc_sys_track, set_of_survey_tracks)
 
+        object_name = clean_object_name(original_object_name)
+        other_name = clean_object_name(other_name)
         test_names = [object_name, other_name]
         test_names.extend(_get_tags_test_names(object_name))
         survey_name = test_names_in_survey(test_names, dc_sys_track, tag_survey_info,
@@ -38,8 +43,9 @@ def check_tag(dc_sys_sheets, res_sheet_name: str, tag_survey_info: dict[str, dic
         if survey_object_info is not None:
             list_used_object_names.append(survey_name)
 
-        res_dict[(object_name, dc_sys_track)] = add_info_to_survey(survey_object_info, dc_sys_sheet,
-                                                                   dc_sys_track, original_dc_sys_track, dc_sys_kp)
+        res_dict[(original_object_name, dc_sys_track)] = add_info_to_survey(survey_object_info, dc_sys_sheet,
+                                                                            dc_sys_track, original_dc_sys_track,
+                                                                            dc_sys_kp)
 
     res_dict.update(add_extra_info_from_survey(list_used_object_names, tag_survey_info))
 

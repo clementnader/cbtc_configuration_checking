@@ -43,7 +43,7 @@ def get_sheet(wb: xlrd.Book, sheet_name: str) -> dict[str, dict]:
     if sheet_name not in get_xl_sheet_names(wb):
         print_error(f"Sheet {Color.orange}\"{sheet_name}\"{Color.reset} is not present in DC_SYS.")
         return {}
-    ws = wb.sheet_by_name(sheet_name)
+    ws = get_xl_sheet_by_name(wb, sheet_name)
     columns_dict = get_sheet_attributes_columns_dict(sheet_name)
     generic_object_name = GENERIC_OBJ_NAME.get(sheet_name, None)
     sheet_dict = get_sheet_dict(ws, columns_dict, generic_object_name)

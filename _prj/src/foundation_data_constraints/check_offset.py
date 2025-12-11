@@ -33,7 +33,7 @@ def check_dc_sys_track_kp_definition():
 
 def check_integers(ws: xlrd.sheet.Sheet):
     success = True
-    nb_cols = ws.ncols
+    nb_cols = get_xl_number_of_columns(ws)
     for j in range(1, nb_cols+1):
         for i in range(3, get_xl_number_of_rows(ws) + 1):
             cell_value = get_xl_cell_value(ws, row=i, column=j)
@@ -47,13 +47,13 @@ def check_integers(ws: xlrd.sheet.Sheet):
                     thousandth = round(round(cell_value*100, 6) % 1, 6)
                     cell_value_str = f"{cell_value}"
                 if thousandth > 1E-6:
-                    print_log(f"In sheet {Color.blue}{ws.name}{Color.reset}: "
+                    print_log(f"In sheet {Color.blue}{get_xl_sheet_name(ws)}{Color.reset}: "
                               f"cell at {Color.yellow}{get_xl_column_letter(j)}{i}{Color.reset} "
                               f"has more than 2 digits after the point: \"{cell_value_str}\".\t\t{thousandth = }")
                     success = False
             elif re.search(r"^[0-9]+([,.][0-9]+)?$", cell_value) is not None:
                 if "," in cell_value or "." in cell_value:
-                    print_warning(f"In sheet {Color.blue}{ws.name}{Color.reset}: "
+                    print_warning(f"In sheet {Color.blue}{get_xl_sheet_name(ws)}{Color.reset}: "
                                   f"cell at {Color.yellow}{get_xl_column_letter(j)}{i}{Color.reset} "
                                   f"is not parsed as a number in Excel, "
                                   f"check its decimal separator: \"{cell_value}\".")
@@ -71,14 +71,14 @@ def verify_sheet(ws: xlrd.sheet.Sheet) -> bool:
             first_cell = get_xl_cell_value(ws, row=i, column=1)
             seg = get_xl_cell_value(ws, row=i, column=seg_col)
             x = get_xl_cell_value(ws, row=i, column=x_col)
-            if verif_correct_offset_seg_x(seg, x, first_cell, i, seg_col, x_col, ws.name) is False:
+            if verif_correct_offset_seg_x(seg, x, first_cell, i, seg_col, x_col, get_xl_sheet_name(ws)) is False:
                 success = False
     for track_col, kp_col, _, _ in track_kp_cols:
         for i in range(START_LINE, get_xl_number_of_rows(ws) + 1):
             first_cell = get_xl_cell_value(ws, row=i, column=1)
             track = get_xl_cell_value(ws, row=i, column=track_col)
             kp = get_xl_cell_value(ws, row=i, column=kp_col)
-            if verif_correct_offset_track_kp(track, kp, first_cell, i, track_col, kp_col, ws.name) is False:
+            if verif_correct_offset_track_kp(track, kp, first_cell, i, track_col, kp_col, get_xl_sheet_name(ws)) is False:
                 success = False
     return success
 
@@ -152,7 +152,7 @@ def verif_correct_offset_track_kp(track, kp, first_cell, row, track_col, kp_col,
 
 
 def find_seg_x_cols(ws: xlrd.sheet.Sheet) -> tuple[list[tuple[int, int, str, str]], list[tuple[int, int, str, str]]]:
-    nb_cols = ws.ncols
+    nb_cols = get_xl_number_of_columns(ws)
     is_prev_seg = False
     is_prev_track = False
     seg_x_cols = list()
@@ -198,7 +198,7 @@ def check_correspondence_seg_x_track_kp(ws, seg_x_cols: list[tuple[int, int, str
             first_cell = get_xl_cell_value(ws, row=i, column=1)
             if first_cell is None:
                 continue
-            if not test_match_x_kp(ws, i, seg_col, x_col, track_col, kp_col, ws.name, first_cell,
+            if not test_match_x_kp(ws, i, seg_col, x_col, track_col, kp_col, get_xl_sheet_name(ws), first_cell,
                                    seg_column_name, x_column_name, track_column_name, kp_column_name):
                 success = False
     return success

@@ -29,10 +29,10 @@ MANUAL_VERIFICATION_COL = "L"
 COMMENTS_COL = "M"
 
 
-def create_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, extra_column: bool,
+def create_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, display_sheet_name: str, extra_column: bool,
                        middle_platform: bool) -> tuple[xl_ws.Worksheet, int]:
-    wb.create_sheet(sheet_name)
-    ws = wb[sheet_name]
+    wb.create_sheet(display_sheet_name)
+    ws = wb[display_sheet_name]
     # Set properties and display options for the sheet
     ws.sheet_properties.tabColor = "0070C0"
     _set_columns_width(ws, extra_column)
@@ -40,9 +40,9 @@ def create_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, extra_co
     ws.sheet_view.showGridLines = False  # turn off gridlines display
     _set_conditional_formatting(ws, extra_column)
     # Write location tolerance and set the defined name
-    row = _write_tolerance_variable(wb, ws, sheet_name)
+    row = _write_tolerance_variable(wb, ws, sheet_name, display_sheet_name)
     # Write platform length and set the defined name
-    row = _write_platform_length(wb, ws, sheet_name, row, middle_platform)
+    row = _write_platform_length(wb, ws, sheet_name, display_sheet_name, row, middle_platform)
     # Write columns titles
     row += 1
     _write_columns_title(ws, row, extra_column)
@@ -95,7 +95,8 @@ def _set_conditional_formatting(ws: xl_ws.Worksheet, extra_column: bool):
                                         value="\"NA\"", font_color=XlFontColor.na, bg_color=XlBgColor.na)
 
 
-def _write_tolerance_variable(wb: openpyxl.workbook.Workbook, ws: xl_ws.Worksheet, sheet_name: str):
+def _write_tolerance_variable(wb: openpyxl.workbook.Workbook, ws: xl_ws.Worksheet, sheet_name: str,
+                              display_sheet_name: str):
     tolerance_dict = get_tolerance_dict(sheet_name)
     if isinstance(tolerance_dict, tuple):
         list_tol = [tolerance_dict]
@@ -105,14 +106,14 @@ def _write_tolerance_variable(wb: openpyxl.workbook.Workbook, ws: xl_ws.Workshee
     for row, (type_str, tolerance, tol_value) in enumerate(list_tol, start=1):
         create_cell(ws, f"Tolerance on {type_str} location:", row=row, column=1, borders=True)
         create_cell(ws, tol_value, row=row, column=2, borders=True, bold=True, bg_color=XlBgColor.special_blue)
-        create_defined_name(wb, sheet_name, name=tolerance, row=row, column=2)
+        create_defined_name(wb, display_sheet_name, name=tolerance, row=row, column=2)
         create_cell(ws, "m", row=row, column=3, borders=True)
         row += 1
     return row
 
 
-def _write_platform_length(wb: openpyxl.workbook.Workbook, ws: xl_ws.Worksheet, sheet_name: str, row: int,
-                           middle_platform: bool):
+def _write_platform_length(wb: openpyxl.workbook.Workbook, ws: xl_ws.Worksheet, sheet_name: str, display_sheet_name: str,
+                           row: int, middle_platform: bool):
     plt_length = get_mid_plt_dict(sheet_name, middle_platform)
     if not plt_length:
         return row
@@ -120,7 +121,7 @@ def _write_platform_length(wb: openpyxl.workbook.Workbook, ws: xl_ws.Worksheet, 
     row += 1
     create_cell(ws, info_str, row=row, column=1, borders=True, line_wrap=True, bold=True)
     create_cell(ws, value, row=row, column=2, borders=True, bold=True, bg_color=XlBgColor.special_yellow)
-    create_defined_name(wb, sheet_name, name=defined_name, row=row, column=2)
+    create_defined_name(wb, display_sheet_name, name=defined_name, row=row, column=2)
     create_cell(ws, "m", row=row, column=3, borders=True)
     create_merged_cell(ws, description, start_row=row, end_row=row, start_column=4, end_column=6, borders=True,
                        italic=True)
@@ -143,9 +144,10 @@ def _write_columns_title(ws: xl_ws.Worksheet, row: int, extra_column: bool):
     draw_exterior_borders_of_a_range(ws, start_row=row, end_row=row+1, start_column=NAME_COL, end_column=DC_SYS_KP_COL)
     # Block Definition
     if extra_column:
-        create_merged_cell(ws, "Block Def. Name", start_row=row, end_row=row+1, start_column=BLOCK_DEF_LIMIT_NAME_COL,
-                           end_column=BLOCK_DEF_LIMIT_NAME_COL, borders=True, align_horizontal=XlAlign.center,
-                           bold=True, border_style=xl_borders.BORDER_MEDIUM, bg_color=XlBgColor.grey)
+        create_merged_cell(ws, "Block Def. Name", start_row=row, end_row=row+1,
+                           start_column=BLOCK_DEF_LIMIT_NAME_COL, end_column=BLOCK_DEF_LIMIT_NAME_COL,
+                           borders=True, align_horizontal=XlAlign.center, bold=True,
+                           border_style=xl_borders.BORDER_MEDIUM, bg_color=XlBgColor.grey)
     # Survey information
     create_merged_cell(ws, "Survey", start_row=row, end_row=row,
                        start_column=get_column(SURVEY_NAME_COL, extra_column),
@@ -197,6 +199,8 @@ def get_column(default_col: str, extra_col: bool = False) -> str:
 
 def get_tolerance_dict(sheet_name: str) -> Optional[Union[tuple[str, str, float], dict[str, tuple[str, str, float]]]]:
     for val in SURVEY_TYPES_DICT.values():
+        if val is None:
+            continue
         if val["res_sheet"] == sheet_name:
             return val["tol"]
     print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
@@ -209,6 +213,8 @@ def get_mid_plt_dict(sheet_name: str, middle_platform: bool) -> Optional[tuple[s
         return None
 
     for val in SURVEY_TYPES_DICT.values():
+        if val is None:
+            continue
         if val["res_sheet"] == sheet_name:
             return val.get("extra_defined_name")
 

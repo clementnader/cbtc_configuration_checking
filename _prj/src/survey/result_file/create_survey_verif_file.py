@@ -39,11 +39,12 @@ def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], bloc
 
     # Create Verification sheets
     for sheet_name, verif_dict in survey_verif_dict.items():
-        print_log(f" > Creating verification sheet \"{sheet_name}\"...")
+        display_sheet_name = _get_display_sheet_name(sheet_name)
+        print_log(f" > Creating verification sheet \"{display_sheet_name}\"...")
         extra_column = (sheet_name == SURVEY_TYPES_DICT["BLOCK"]["res_sheet"]) and block_def_exists_bool
         middle_platform = (sheet_name == SURVEY_TYPES_DICT["PLATFORM"]["res_sheet"]) and middle_platforms_exist_bool
-        ws, start_row = create_verif_sheet(wb, sheet_name, extra_column, middle_platform)
-        _update_verif_sheet(wb, sheet_name, ws, verif_dict, extra_column, start_row, middle_platform)
+        ws, start_row = create_verif_sheet(wb, sheet_name, display_sheet_name, extra_column, middle_platform)
+        _update_verif_sheet(wb, sheet_name, display_sheet_name, ws, verif_dict, extra_column, start_row, middle_platform)
 
     # Save workbook
     verif_file_name = f" - {get_current_version()}".join(os.path.splitext(VERIF_FILE_NAME))
@@ -55,14 +56,15 @@ def create_survey_verif_file(survey_verif_dict: dict[str, dict[str, dict]], bloc
 
 
 def _update_menu_sheet(wb: openpyxl.workbook.Workbook):
-    if get_ga_version() >= (7, 2, 0, 0):
+    ga_version = get_ga_version()
+    if isinstance(ga_version, tuple) and ga_version >= (7, 2, 0, 0):
         return
     ws = wb["FD - Site Survey"]
     ws.delete_rows(17)  # for older GA versions, delete PSD line that was not verified here
     ws.row_dimensions[17].height = 15  # restore default height
 
 
-def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_ws.Worksheet,
+def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, display_sheet_name: str, ws: xl_ws.Worksheet,
                         verif_dict: dict[str, dict], extra_column: bool, start_row: int,
                         middle_platform: bool) -> None:
     tolerance_dict = get_tolerance_dict(sheet_name)
@@ -102,7 +104,7 @@ def _update_verif_sheet(wb: openpyxl.workbook.Workbook, sheet_name: str, ws: xl_
         _add_line_calculations(ws, row, tolerance, extra_column)
         sheet_comments = _add_line_comments_column(ws, row, comments, tolerance, reverse_polarity, extra_column,
                                                    sheet_comments, defined_name_comments)
-        _set_defined_name(wb, sheet_name, row, defined_name, extra_column)
+        _set_defined_name(wb, display_sheet_name, row, defined_name, extra_column)
 
     if not sheet_comments:  # no automatic comments, the column can be hidden
         ws.column_dimensions[get_column(AUTOMATIC_COMMENTS_COL, extra_column)].hidden = True
@@ -151,7 +153,8 @@ def _add_line_cell_comments(ws: xl_ws.Worksheet, row: int,
                             surveyed_kp_comment: str, extra_column: bool) -> None:
     # Comments on Surveyed KP cell to tell from which survey info comes
     if surveyed_kp_comment is not None:
-        add_cell_comment(ws, surveyed_kp_comment, row=row, column=get_column(SURVEYED_KP_COL, extra_column))
+        add_cell_comment(ws, surveyed_kp_comment, row=row, column=get_column(SURVEYED_KP_COL, extra_column),
+                         comment_width=300)
 
 
 def _add_line_calculations(ws: xl_ws.Worksheet, row: int,
@@ -219,10 +222,11 @@ def _add_line_comments_column(ws: xl_ws.Worksheet, row: int,
     return sheet_comments
 
 
-def _set_defined_name(wb: openpyxl.workbook.Workbook, sheet_name: str, row: int, defined_name: Optional[str],
+def _set_defined_name(wb: openpyxl.workbook.Workbook, display_sheet_name: str, row: int, defined_name: Optional[str],
                       extra_column: bool) -> None:
     if defined_name is not None:
-        create_defined_name(wb, sheet_name, name=defined_name, row=row, column=get_column(SURVEYED_KP_COL, extra_column))
+        create_defined_name(wb, display_sheet_name, name=defined_name,
+                            row=row, column=get_column(SURVEYED_KP_COL, extra_column))
 
 
 def _get_tolerance(tolerance_dict: Optional[Union[tuple[str, str, float], dict[str, tuple[str, str, float]]]],
@@ -245,6 +249,8 @@ def _get_tolerance(tolerance_dict: Optional[Union[tuple[str, str, float], dict[s
 
 def _get_multiple_dc_sys_objets(sheet_name: str) -> Optional[list]:
     for val in SURVEY_TYPES_DICT.values():
+        if val is None:
+            continue
         if val["res_sheet"] == sheet_name:
             return val.get("multiple_dc_sys_objets")
     print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
@@ -253,7 +259,7 @@ def _get_multiple_dc_sys_objets(sheet_name: str) -> Optional[list]:
 
 
 def _get_dc_sys_color(multiple_dc_sys_objets: Optional[list], dc_sys_sheet: str):
-    list_colors = [XlBgColor.light_yellow, XlBgColor.light_orange, XlBgColor.light_pink, XlBgColor.light_red]
+    list_colors = [XlBgColor.light_yellow, XlBgColor.light_orange, XlBgColor.light_red, XlBgColor.light_yellow2]
     if dc_sys_sheet is None:
         return list_colors[0]
     if not multiple_dc_sys_objets:
@@ -269,6 +275,8 @@ def _get_dc_sys_color(multiple_dc_sys_objets: Optional[list], dc_sys_sheet: str)
 
 def _get_multiple_survey_objets(sheet_name: str) -> Optional[list[str]]:
     for val in SURVEY_TYPES_DICT.values():
+        if val is None:
+            continue
         if val["res_sheet"] == sheet_name:
             return val.get("multiple_survey_objets")
     print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
@@ -293,3 +301,22 @@ def _get_survey_color(multiple_survey_objets: Optional[list[tuple]], survey_type
                   f"{multiple_survey_objets = }\n"
                   f"{list_colors = }")
     return list_colors[0]
+
+
+def _get_display_sheet_name(sheet_name: str) -> str:
+    if get_cctool_oo_name() == "ADONF":  # for OCTYS only
+        french_sheet_name = _get_french_sheet_name(sheet_name)
+        if french_sheet_name:
+            return french_sheet_name
+    return sheet_name
+
+
+def _get_french_sheet_name(sheet_name: str) -> Optional[str]:
+    for val in SURVEY_TYPES_DICT.values():
+        if val is None:
+            continue
+        if val["res_sheet"] == sheet_name:
+            return val.get("french_res_sheet")
+    print_error(f"{sheet_name = } not found inside SURVEY_TYPES_DICT:\n"
+                f"{SURVEY_TYPES_DICT = }")
+    return None

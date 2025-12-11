@@ -26,7 +26,7 @@ class XlBgColor:
     warning = "FFCC99"
     # main colors
     yellow = "FFD050"
-    light_yellow = "FFFFBB"
+    light_yellow = "FFFFAA"
     green = "A0E0A0"
     light_green = "DDFFCC"
     blue = "9BC2E6"
@@ -36,6 +36,7 @@ class XlBgColor:
     light_orange = "FFCC99"
     light_pink = "FFCCCC"
     light_red = "FF9999"
+    light_yellow2 = "FFFFDD"
     light_blue2 = "CCFFFF"
     light_blue3 = "99CCFF"
     light_pink2 = "FFCCDD"

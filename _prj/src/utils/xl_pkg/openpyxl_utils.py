@@ -3,6 +3,7 @@
 
 import PIL.Image
 import openpyxl.comments as xl_comments
+import openpyxl.utils.units as xl_units
 import openpyxl.drawing.image as xl_image
 import openpyxl.workbook.defined_name as xl_defined_name
 from .xl_utils import *
@@ -15,9 +16,12 @@ __all__ = ["add_cell_comment", "add_image", "create_defined_name", "select_cell"
 # ------ Cell Comment ------ #
 
 def add_cell_comment(ws: xl_ws.Worksheet, comment: str,
-                     cell: str = None, row: int = None, column: Union[str, int] = None) -> None:
+                     cell: str = None, row: int = None, column: Union[str, int] = None,
+                     comment_width: float = 108.0, comment_height: float = 59.25) -> None:
     cell = get_cell_from_row_and_column(cell, row, column)
     comment = xl_comments.Comment(comment, None)
+    comment.width = xl_units.points_to_pixels(comment_width)
+    comment.height = xl_units.points_to_pixels(comment_height)
     ws[cell].comment = comment
 
 

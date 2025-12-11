@@ -13,5 +13,5 @@ CCTOOL_OO_SCHEMA_WB = None
 def load_cctool_oo_schema_wb(addr: str):
     global CCTOOL_OO_SCHEMA_WB
     if CCTOOL_OO_SCHEMA_WB is None:
-        CCTOOL_OO_SCHEMA_WB = load_xlrd_wb(addr)
+        CCTOOL_OO_SCHEMA_WB = load_xl_file(addr)
     return CCTOOL_OO_SCHEMA_WB
