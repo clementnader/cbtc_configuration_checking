@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from ....utils import *
+from ....database_location import DATABASE_LOCATION
 from .gui_dc_tu_utils import *
 from .dc_tu_verification import *
 
@@ -14,6 +15,7 @@ def dc_tu_window():
                 color=Color.mint_green)
     print(f"{Color.light_green}Select the C11_D470.{Color.reset}\n")
 
+    DATABASE_LOCATION.reset()  # reset database location information
     # Root window
     window = create_window("DC_TU Verification")
 

@@ -3,6 +3,7 @@
 
 from ..utils import *
 from ..dc_sys import *
+from ..database_location import DATABASE_LOCATION
 from .gui_control_tables_utils import *
 
 
@@ -16,6 +17,7 @@ def control_tables_window() -> None:
           f"{Color.cyan}{Color.underline}compatible with CCTool-OO Schema {ga_version}{Color.no_underline}"
           f"{Color.light_green}.{Color.reset}\n")
 
+    DATABASE_LOCATION.reset()  # reset database location information
     # Root window
     window_title = f"Control Table Verification (CCTool-OO Schema {ga_version})"
     window = create_window(window_title)

@@ -3,6 +3,7 @@
 
 import os
 from ...utils import *
+from ...cctool_oo_schema import *
 from ...dc_sys import *
 from ..survey_types import *
 from ..survey_utils import *
@@ -304,7 +305,7 @@ def _get_survey_color(multiple_survey_objets: Optional[list[tuple]], survey_type
 
 
 def _get_display_sheet_name(sheet_name: str) -> str:
-    if get_cctool_oo_name() == "ADONF":  # for OCTYS only
+    if is_ga_octys():  # for OCTYS only
         french_sheet_name = _get_french_sheet_name(sheet_name)
         if french_sheet_name:
             return french_sheet_name

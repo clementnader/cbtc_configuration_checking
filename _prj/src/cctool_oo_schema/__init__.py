@@ -3,6 +3,7 @@
 
 from .cctool_oo_class_utils import *
 from .cctool_oo_exception_utils import *
+from .get_cctool_oo_schema_ga import *
 
 # Automatically generated Python files
 from .cctool_oo_enum_lists import *

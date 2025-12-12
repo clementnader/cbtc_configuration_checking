@@ -3,7 +3,6 @@
 
 from ..utils import *
 from ..cctool_oo_schema import *
-from ..dc_sys import *
 from .survey_verification.check_survey_sheets import *
 
 
@@ -70,7 +69,7 @@ SURVEY_TYPES_DICT = {
                                                    (("OSP",), "OSPs")],
                           "extra_defined_name":  ("Length of the platforms:", "platform_length", None,
                                                   "Used to compute platform extremity position from middle platform."),
-                          } if get_cctool_oo_name() != "ADONF"
+                          } if not is_ga_octys()
                           else {  # for OCTYS, we separate the PtA in another sheet, and we don't check plt OSP
                           "res_sheet": "Platform",
                           "french_res_sheet": "Quai",
@@ -101,7 +100,7 @@ SURVEY_TYPES_DICT = {
                               "GAR", "GARAGE",
                           ]),
                           "display_name": "PtA",
-                          } if get_cctool_oo_name() == "ADONF" else None,  # for OCTYS only
+                          } if is_ga_octys() else None,  # for OCTYS only
     "BLOCK":             {"res_sheet": "Block",
                           "french_res_sheet": "CDV",
                           "dc_sys_sheet": DCSYS.CDV,
@@ -177,7 +176,7 @@ SURVEY_TYPES_DICT = {
                                                    ((get_sheet_name(DCSYS.IATPM_tags),), "Dynamic Tags")],
                           } if ("IATPM_tags" in get_class_attributes_dict(DCSYS)
                                 and "IATPM_Version_Tags" in get_class_attributes_dict(DCSYS)
-                                and get_cctool_oo_name() != "ADONF")
+                                and not is_ga_octys())
                           else {  # for OCTYS, we only have static tags and dynamic tags sheets don't exist
                           "res_sheet": "Tag",
                           "french_res_sheet": "Bal",
@@ -224,7 +223,7 @@ SURVEY_TYPES_DICT = {
                           ]),
                           "display_name": "ZVR",
                           } if "ZVR" in get_class_attributes_dict(DCSYS)
-                               and get_cctool_oo_name() == "ADONF" else None,  # for OCTYS only
+                               and is_ga_octys() else None,  # for OCTYS only
     "SS":                {"res_sheet": "SS",
                           "dc_sys_sheet": DCSYS.SS,
                           "func": check_sse,
@@ -234,5 +233,5 @@ SURVEY_TYPES_DICT = {
                           ]),
                           "display_name": "SS",
                           } if "SS" in get_class_attributes_dict(DCSYS)
-                               and get_cctool_oo_name() == "ADONF" else None,  # for OCTYS only
+                               and is_ga_octys() else None,  # for OCTYS only
 }
