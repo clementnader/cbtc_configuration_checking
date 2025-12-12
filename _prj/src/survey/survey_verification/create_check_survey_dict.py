@@ -52,6 +52,11 @@ def create_verif_survey_dict(survey_info, block_def_dict: Optional[dict[str, dic
                 func(dc_sys_sheet, res_sheet, survey_info.get("SWP"),
                      set_of_survey_tracks, survey_info.get("DERAILER")))
 
+        elif survey_type == "PTA":
+            survey_verif_dict[res_sheet] = _order_survey_verif_dict(
+                func(dc_sys_sheet, res_sheet, survey_info.get("PTA"),
+                     set_of_survey_tracks, survey_info.get("PLAQUES")))
+
         else:
             survey_verif_dict[res_sheet] = _order_survey_verif_dict(
                 func(dc_sys_sheet, res_sheet, survey_info.get(survey_type),

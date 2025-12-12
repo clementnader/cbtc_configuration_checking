@@ -6,6 +6,9 @@ from ...cctool_oo_schema import *
 from ...dc_sys import *
 
 
+__all__ = ["verify_switches_along_the_routes"]
+
+
 def verify_switches_along_the_routes():  # TODO
     route_dict = _get_route_dict()
     ivb_dict = load_sheet(DCSYS.IVB)

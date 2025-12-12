@@ -89,4 +89,9 @@ GENERIC_OBJ_NAME = {
         {"attribute": DCSYS.Chainage.CivilKpEnd, "type": str},
         {"attribute": DCSYS.Chainage.ChainageType, "type": str}
     ]} if "Chainage" in get_class_attributes_dict(DCSYS) else None,
+
+    "Group_Res": {"columns": [
+        {"attribute": DCSYS.Group_Res.Nom, "type": str},
+        {"attribute": DCSYS.Group_Res.ClasseReseau, "type": str}
+    ]} if "Group_Res" in get_class_attributes_dict(DCSYS) else None,
 }

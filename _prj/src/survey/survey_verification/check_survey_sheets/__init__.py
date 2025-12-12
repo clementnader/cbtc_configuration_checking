@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from .check_flood_gate import check_flood_gate
-from .check_garage import check_garage
+from .check_pta import check_pta
 from .check_joint import check_joint
 from .check_platform import check_platform
 from .check_signal import check_signal

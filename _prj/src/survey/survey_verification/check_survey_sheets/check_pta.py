@@ -8,16 +8,17 @@ from ...survey_utils import clean_track_name, clean_object_name
 from .common_utils import *
 
 
-__all__ = ["check_garage"]
+__all__ = ["check_pta"]
 
 
-# Garage
-def check_garage(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
-                 set_of_survey_tracks: set[str]):
+# PtA
+def check_pta(dc_sys_sheet, res_sheet_name: str, survey_info: dict,
+              set_of_survey_tracks: set[str], plaques_survey_info: dict):
     assert dc_sys_sheet == DCSYS.PtA
     assert res_sheet_name == "PtA"
 
     dc_sys_dict = load_sheet(DCSYS.PtA)
+    survey_info.update(plaques_survey_info)
     list_used_object_names = list()
     res_dict = dict()
     for object_name, object_value in dc_sys_dict.items():
@@ -52,6 +53,4 @@ def _get_test_names(object_name: str) -> list[str]:
         test_names.append(test_name)
     if test_name.startswith("PAEHQ_"):
         test_names.append(test_name.removeprefix("PAEHQ_"))
-    elif test_name.startswith("PLM_"):
-        test_names.append(test_name.removeprefix("PLM_"))
     return test_names
